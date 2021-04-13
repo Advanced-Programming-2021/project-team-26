@@ -1,8 +1,11 @@
 package view;
 
 public enum MenuType {
-    REGISTER,
+    LOGIN,
     MAIN,
-    CARD,
-    GAME,
+    DECK,
+    DUEL,
+    SCOREBOARD,
+    PROFILE,
+    INTERCHANGE
 }

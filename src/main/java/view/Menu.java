@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 abstract public class Menu {
     public static Scanner scanner;
-    private HashMap<Integer, Menu> subMenus;
+    private HashMap<MenuType, Menu> subMenus;
     public Menu(Menu menu){
     }
 
