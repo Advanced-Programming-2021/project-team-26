@@ -13,9 +13,10 @@ enum MonsterPosition {
 }
 
 public class MonsterController {
-    private static HashMap<String, MonsterMakerInterface> monsterMakers = new HashMap<>();
+    private static HashMap<String, MonsterMakerInterface> monsterMakers;
 
     static {
+        monsterMakers = new HashMap<>();
         monsterMakers.put("Command knight", MonsterController::makeCommandKnight);
     }
 

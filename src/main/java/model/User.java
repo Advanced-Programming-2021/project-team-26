@@ -1,10 +1,15 @@
-package model.cards;
+package model;
+
+import java.util.ArrayList;
 
 public class User {
     private String username;
     private String password;
     private String nickname;
     private int Score;
+    private int money;
+    private ArrayList<Deck> allDecks;
+    private Deck activeDeck;
 
     public User(String username, String password, String nickname, int score) {
         setUsername(username);
