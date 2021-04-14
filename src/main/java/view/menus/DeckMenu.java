@@ -11,4 +11,8 @@ public class DeckMenu extends Menu {
     public void run(){
 
     }
+
+    private enum regexOfCommands{
+
+    }
 }

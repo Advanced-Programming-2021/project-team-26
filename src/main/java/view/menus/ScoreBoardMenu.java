@@ -11,4 +11,7 @@ public class ScoreBoardMenu extends Menu {
 
     }
 
+    private enum regexOfCommands{
+
+    }
 }

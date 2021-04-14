@@ -10,4 +10,8 @@ public class InterchangeMenu extends Menu {
     public void run(){
 
     }
+
+    private enum regexOfCommands{
+
+    }
 }

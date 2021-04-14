@@ -10,4 +10,8 @@ public class ProfileMenu extends Menu {
     public void run(){
 
     }
+
+    private enum regexOfCommands{
+
+    }
 }
