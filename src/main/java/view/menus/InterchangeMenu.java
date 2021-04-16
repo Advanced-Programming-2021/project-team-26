@@ -11,7 +11,4 @@ public class InterchangeMenu extends Menu {
 
     }
 
-    private enum regexOfCommands{
-
-    }
 }

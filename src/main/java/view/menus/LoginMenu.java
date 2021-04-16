@@ -11,7 +11,4 @@ public class LoginMenu extends Menu {
 
     }
 
-    private enum regexOfCommands{
-
-    }
 }

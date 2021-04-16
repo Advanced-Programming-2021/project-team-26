@@ -12,7 +12,4 @@ public class DeckMenu extends Menu {
 
     }
 
-    private enum regexOfCommands{
-
-    }
 }

@@ -10,8 +10,4 @@ public class DuelMenu extends Menu {
     public void run(){
 
     }
-
-    private enum regexOfCommands{
-
-    }
 }

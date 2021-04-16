@@ -10,8 +10,4 @@ public class ScoreBoardMenu extends Menu {
     public void run(){
 
     }
-
-    private enum regexOfCommands{
-
-    }
 }

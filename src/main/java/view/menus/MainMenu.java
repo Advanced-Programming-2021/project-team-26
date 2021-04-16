@@ -10,7 +10,4 @@ public class MainMenu extends Menu {
     public void run(){
     }
 
-    private enum regexOfCommands{
-
-    }
 }
