@@ -4,6 +4,7 @@ import model.Shop;
 import model.User;
 
 public class ShopController {
+    private User user;
     private Shop shop;
     private String cardName;
 
@@ -26,7 +27,6 @@ public class ShopController {
     public ShopController(User user, String cardName){
         setCardName(cardName);
         setUser(user);
-        this.shop = Shop.genstanc();
     }
 
     public boolean isHaveEnoughMoney(int price, User user){
