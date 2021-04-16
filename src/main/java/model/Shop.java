@@ -1,9 +1,12 @@
 package model;
 
 public class Shop {
-    private User user;
-    private static final HashMap<String/*NAME*/, Integer/*PRICE*/> cardsPrice = new HashMap<>();
+    private static HashMap<String/*NAME*/, Integer/*PRICE*/> cardsPrice = new HashMap<>();
     private static Shop;
+
+    public  Shop(){
+
+    }
 
     private static Shop getInstance() {
         if (shop == null)

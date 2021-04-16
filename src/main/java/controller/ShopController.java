@@ -3,16 +3,28 @@ package controller;
 import model.User;
 
 public class ShopController {
-    private static ShopController shopController;
-    public ShopController(){
+    private User user = new User();
+    private String cardName;
 
+    public User getUser() {
+        return user;
     }
 
-    private static ShopController getInstance(){
-        if (shopController == null)
-            shopController = new ShopController();
-        else
-            return shopController;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getCardName() {
+        return cardName;
+    }
+
+    public void setCardName(String cardName) {
+        this.cardName = cardName;
+    }
+
+    public ShopController(User user, String cardName){
+        setCardName(cardName);
+        setUser(user);
     }
 
     public boolean isHaveEnoughMoney(int price, User user){
