@@ -8,6 +8,15 @@ public class ShopController {
     private Shop shop;
     private String cardName;
 
+    public ShopController(User user, String cardName) {
+        setCardName(cardName);
+        setUser(user);
+    }
+
+    public void buyCard(String cardName){
+
+    }
+
     public User getUser() {
         return user;
     }
@@ -24,20 +33,11 @@ public class ShopController {
         this.cardName = cardName;
     }
 
-    public ShopController(User user, String cardName){
-        setCardName(cardName);
-        setUser(user);
-    }
-
-    public boolean isHaveEnoughMoney(int price, User user){
+    public boolean isHaveEnoughMoney(int price, User user) {
         return true;
     }
 
-    public void showAll(){
-
-    }
-
-    public void buyCard(String cardName, User user){
+    public void showAll() {
 
     }
 }

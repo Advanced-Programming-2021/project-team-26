@@ -1,26 +1,38 @@
 package model;
 
+import model.cards.Card;
+
 import java.util.ArrayList;
 
 public class User {
     private static ArrayList<User> allUsers;
+
+    static {
+        allUsers = new ArrayList<>();
+    }
+
     private String username;
     private String password;
     private String nickname;
     private int Score;
     private int money;
     private ArrayList<Deck> allDecks;
+    private ArrayList<Card> allCards;
     private Deck activeDeck;
-
-    static {
-        allUsers = new ArrayList<>();
-    }
 
     public User(String username, String password, String nickname) {
         setUsername(username);
         setPassword(password);
         setNickname(nickname);
         allUsers.add(this);
+    }
+
+    public static String getPasswordByUsername(String username) {
+        return null;
+    }
+
+    public static User getUserByUsername(String username){
+        return null;
     }
 
     public String getUsername() {
@@ -53,5 +65,9 @@ public class User {
 
     public void setScore(int score) {
         Score = score;
+    }
+
+    public static int compareTo(User first,User second){
+        return 0;
     }
 }

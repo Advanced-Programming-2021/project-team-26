@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 abstract public class Menu {
     public static Scanner scanner;
     private HashMap<MenuType, Menu> subMenus;
+    protected String name;
 
     public Menu(Menu menu) {
     }
@@ -16,4 +17,8 @@ abstract public class Menu {
     }
 
     abstract protected void run();
+
+    protected void showCurrentMenu(){
+
+    }
 }

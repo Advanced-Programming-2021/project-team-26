@@ -14,6 +14,7 @@ public class MainMenu extends Menu {
     }
     public MainMenu(Menu menu) {
         super(menu);
+        super.name = "Main";
     }
 
     public void run(){

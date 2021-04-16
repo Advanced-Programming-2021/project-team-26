@@ -1,9 +1,11 @@
 package controller;
 
 import model.Game;
+import model.cards.Card;
 
 public class GameController {
     private Game game;
+    private Card selectedCard;
 
     public GameController(String firstPlayer,String secondPayer,int round){
 
