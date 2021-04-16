@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class User {
+    private static ArrayList<User> allUsers;
     private String username;
     private String password;
     private String nickname;
@@ -11,10 +12,15 @@ public class User {
     private ArrayList<Deck> allDecks;
     private Deck activeDeck;
 
+    static {
+        allUsers = new ArrayList<>();
+    }
+
     public User(String username, String password, String nickname) {
         setUsername(username);
         setPassword(password);
         setNickname(nickname);
+        allUsers.add(this);
     }
 
     public String getUsername() {

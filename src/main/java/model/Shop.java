@@ -1,8 +1,10 @@
 package model;
 
+import java.util.HashMap;
+
 public class Shop {
     private static HashMap<String/*NAME*/, Integer/*PRICE*/> cardsPrice = new HashMap<>();
-    private static Shop;
+    private static Shop shop;
 
     public  Shop(){
 
@@ -20,7 +22,8 @@ public class Shop {
     }
 
     public int getPriceByCardName(String cardName) {
-
+        //TODO
+        return 0;
     }
 
     public boolean isExistThisCardName(String cardName) {
