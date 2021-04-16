@@ -15,12 +15,7 @@ public class ShopController {
             return shopController;
     }
 
-
-    public boolean isExistThisCardName(String name){
-        return true;
-    }
-
-    public boolean isHaveEnoughMoney(User user){
+    public boolean isHaveEnoughMoney(int price, User user){
         return true;
     }
 
