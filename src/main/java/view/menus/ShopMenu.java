@@ -1,19 +1,10 @@
-package model;
-
+package view.menus;
 import model.cards.Card;
-
+import java.util.HashMap;
 public class ShopMenu {
-    private static HashMap <String/*NAME*/, Integer/*PRICE*/> cardsPrice = new HashMap<>();
 
     public ShopMenu(){
     }
 
-    static {
-        //TODO
-        //setCardsPrice
-    }
 
-    public boolean isExistThisCardName(String name){
-        return true;
-    }
 }
