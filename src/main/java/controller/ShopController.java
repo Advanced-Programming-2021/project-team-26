@@ -5,7 +5,6 @@ import model.User;
 
 public class ShopController {
     private Shop shop;
-    private User user = new User();
     private String cardName;
 
     public User getUser() {
