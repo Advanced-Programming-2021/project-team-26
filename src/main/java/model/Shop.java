@@ -8,7 +8,7 @@ public class Shop {
 
     }
 
-    private static Shop getInstance() {
+    private Shop getInstance() {
         if (shop == null)
             shop = new Shop();
         return shop;
