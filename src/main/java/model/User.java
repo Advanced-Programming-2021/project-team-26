@@ -11,11 +11,10 @@ public class User {
     private ArrayList<Deck> allDecks;
     private Deck activeDeck;
 
-    public User(String username, String password, String nickname, int score) {
+    public User(String username, String password, String nickname) {
         setUsername(username);
         setPassword(password);
         setNickname(nickname);
-        setScore(score);
     }
 
     public String getUsername() {

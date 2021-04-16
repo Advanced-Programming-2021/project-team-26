@@ -38,6 +38,4 @@ public class ShopController {
     public void buyCard(String cardName, User user){
 
     }
-
-
 }
