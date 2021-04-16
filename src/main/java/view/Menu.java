@@ -7,11 +7,12 @@ import java.util.regex.Matcher;
 abstract public class Menu {
     public static Scanner scanner;
     private HashMap<MenuType, Menu> subMenus;
-    private Matcher getCommendMatcher(String input, String regex){
-        return null;
+
+    public Menu(Menu menu) {
     }
 
-    public Menu(Menu menu){
+    private Matcher getCommendMatcher(String input, String regex) {
+        return null;
     }
 
     abstract protected void run();
