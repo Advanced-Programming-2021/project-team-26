@@ -49,19 +49,19 @@ public class Deck {
         this.sideDeck = sideDeck;
     }
 
-    public void addCardToMainDeck() {
+    public void addCardToMainDeck(Card card) {
 
     }
 
-    public void addCardToSideDeck() {
+    public void addCardToSideDeck(Card card) {
 
     }
 
-    public void deleteCardToMainDeck() {
+    public void deleteCardToMainDeck(Card card) {
 
     }
 
-    public void deleteCardToSideDeck() {
+    public void deleteCardToSideDeck(Card card) {
 
     }
 

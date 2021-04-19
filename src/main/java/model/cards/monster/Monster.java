@@ -20,6 +20,26 @@ public class Monster extends Card {
         this.hasEffect = o.hasEffect;
     }
 
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public int getDefencePower() {
+        return defencePower;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public MonsterType getType() {
+        return type;
+    }
+
+    public boolean isHasEffect() {
+        return hasEffect;
+    }
+
     public static Monster getMonster(String name) throws MonsterNotFoundException {
         throw new MonsterNotFoundException();
     }

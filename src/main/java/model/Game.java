@@ -1,9 +1,13 @@
 package model;
 
 public class Game {
-    private Board firstBoard;
-    private Board secondBoard;
+    private Board[] boards = new Board[2];
 
-    private User firstUser;
-    private User secondUser;
+    private User[] users = new User[2];
+
+    private int turn = 0;
+
+    public void showGame (){
+
+    }
 }

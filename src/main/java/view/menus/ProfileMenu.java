@@ -9,9 +9,8 @@ import java.util.Map;
 public class ProfileMenu extends Menu {
     private static final Map<String , Method> REGEX;
 
-    static {
-        REGEX = new HashMap<>();
-    }
+    static {        REGEX = new HashMap<>(); }
+
     public ProfileMenu(Menu menu) {
         super(menu);
     }
