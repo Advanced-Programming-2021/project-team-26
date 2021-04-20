@@ -2,6 +2,7 @@ package view.menus;
 
 import view.Menu;
 
+import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;

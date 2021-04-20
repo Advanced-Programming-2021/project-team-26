@@ -28,10 +28,16 @@ public class User {
     }
 
     public static String getPasswordByUsername(String username) {
-        return null;
+        if (getUserByUsername(username) == null)
+            return null;
+        return getUserByUsername(username).getPassword();
     }
 
     public static User getUserByUsername(String username){
+        for(User user: allUsers){
+            if (user.getUsername().equals(username))
+                return user;
+        }
         return null;
     }
 
