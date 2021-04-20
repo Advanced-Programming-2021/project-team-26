@@ -11,11 +11,32 @@ import model.cards.trap.Trap;
 public abstract class Card {
     protected String name;
     protected String Description;
-
+    protected int price;
     //copy constructor
     public Card(Card o){
-        this.name = o.name;
-        this.Description = o.Description;
+        setName(o.name);
+        setDescription(o.Description);
+        setPrice(o.price);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public String getName(){

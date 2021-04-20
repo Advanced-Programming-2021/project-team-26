@@ -11,27 +11,35 @@ public class Shop {
     private static Shop shop;
 
     static {
-        //TODO
-        //set card names and their price
+        for (Card card : allCards){
+            cardsPrice.put(card.getName(), card.getPrice());
+        }
     }
 
-    public Shop() {
+    private Shop() {
 
     }
 
-    private Shop getInstance() {
+    public static Shop getInstance() {
         if (shop == null)
             shop = new Shop();
         return shop;
     }
 
     public int getPriceByCardName(String cardName) {
-        //TODO
+        for (Card card  : allCards){
+            if (card.getName().equals(cardName))
+                return card.getPrice();
+        }
         return 0;
     }
 
-    public boolean isExistThisCardName(String cardName) {
-        return true;
+    public boolean checkCardNameExistence(String cardName) {
+        for (Card card  : allCards){
+            if (card.getName().equals(cardName))
+                return true;
+        }
+        return false;
     }
 
 }
