@@ -5,12 +5,13 @@ import view.Menu;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class InterchangeMenu extends Menu {
-    private static final Map<String , Method> REGEX;
+    private static final Map<Pattern, Method> PATTERNS;
 
     static {
-        REGEX = new HashMap<>();
+        PATTERNS = new HashMap<>();
     }
     public InterchangeMenu(Menu menu) {
         super(menu);
