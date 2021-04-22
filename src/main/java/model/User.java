@@ -3,24 +3,27 @@ package model;
 import model.cards.Card;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private static ArrayList<User> allUsers;
+    private String username;
+    private String password;
+    private String nickname;
+    private int score;
+    private int money;
+    private List<Deck> allDecks;
+    private List<Card> allCards;
+    private Deck activeDeck;
 
     static {
         allUsers = new ArrayList<>();
     }
 
-    private String username;
-    private String password;
-    private String nickname;
-    private int Score;
-    private int money;
-    private ArrayList<Deck> allDecks;
-    private ArrayList<Card> allCards;
-    private Deck activeDeck;
-
     public User(String username, String password, String nickname) {
+        allDecks = new ArrayList<>();
+        allCards = new ArrayList<>();
+        setMoney(0);
         setUsername(username);
         setPassword(password);
         setNickname(nickname);
@@ -33,12 +36,16 @@ public class User {
         return getUserByUsername(username).getPassword();
     }
 
-    public static User getUserByUsername(String username){
-        for(User user: allUsers){
+    public static User getUserByUsername(String username) {
+        for (User user : allUsers) {
             if (user.getUsername().equals(username))
                 return user;
         }
         return null;
+    }
+
+    public static int compareTo(User first, User second) {
+        return 0;
     }
 
     public String getUsername() {
@@ -66,14 +73,34 @@ public class User {
     }
 
     public int getScore() {
-        return Score;
+        return score;
     }
 
     public void setScore(int score) {
-        Score = score;
+        this.score = score;
     }
 
-    public static int compareTo(User first,User second){
-        return 0;
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public void increaseMoney(int amount){
+        this.money += amount;
+    }
+
+    public void decreaseMoney(int amount){
+        this.money -= amount;
+    }
+
+    public void addCardToUserCards(Card card){
+        this.allCards.add(card);
+    }
+
+    public void addDeckToUserDecks(Deck deck){
+        this.allDecks.add(deck);
+    }
+
+    public void setActiveDeck(Deck deck){
+        this.activeDeck = deck;
     }
 }
