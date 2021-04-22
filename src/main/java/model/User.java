@@ -45,7 +45,13 @@ public class User {
     }
 
     public static int compareTo(User first, User second) {
-        return 0;
+        //return 1: firstUser has priority
+        if (first.getScore() > second.getScore())
+            return 1;
+        else if (first.getScore() == second.getScore() &&
+                first.getUsername().compareTo(second.getUsername()) < 0)
+            return 1;
+        return -1;
     }
 
     public String getUsername() {
@@ -84,23 +90,23 @@ public class User {
         this.money = money;
     }
 
-    public void increaseMoney(int amount){
+    public void increaseMoney(int amount) {
         this.money += amount;
     }
 
-    public void decreaseMoney(int amount){
+    public void decreaseMoney(int amount) {
         this.money -= amount;
     }
 
-    public void addCardToUserCards(Card card){
+    public void addCardToUserCards(Card card) {
         this.allCards.add(card);
     }
 
-    public void addDeckToUserDecks(Deck deck){
+    public void addDeckToUserDecks(Deck deck) {
         this.allDecks.add(deck);
     }
 
-    public void setActiveDeck(Deck deck){
+    public void setActiveDeck(Deck deck) {
         this.activeDeck = deck;
     }
 }

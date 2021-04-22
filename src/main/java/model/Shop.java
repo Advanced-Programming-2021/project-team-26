@@ -6,15 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Shop {
-    private static HashMap<String/*NAME*/, Integer/*PRICE*/> cardsPrice = new HashMap<>();
     private static ArrayList<Card> allCards;
     private static Shop shop;
-
-    static {
-        for (Card card : allCards){
-            cardsPrice.put(card.getName(), card.getPrice());
-        }
-    }
 
     private Shop() {
 

@@ -75,7 +75,7 @@ public class Deck {
         return "";
     }
 
-    public static boolean checkDeckNameExist(String name){
+    public static boolean checkDeckNameExistence(String name){
         return true;
     }
 }
