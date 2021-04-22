@@ -1,9 +1,9 @@
 package model.cards.spell;
 
 import controller.exceptions.SpellNotFoundException;
-import model.cards.Card;
+import model.cards.SpellTrap;
 
-public class Spell extends Card {
+public class Spell extends SpellTrap {
     private final SpellType type;
 
     //copy constructor

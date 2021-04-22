@@ -6,12 +6,6 @@ import model.cards.monster.Monster;
 import java.util.HashMap;
 
 
-enum MonsterPosition {
-    ATTACK,
-    DEFENCE_UP,
-    DEFENCE_DOWN,
-}
-
 public class MonsterController {
     private static HashMap<String, MonsterMakerInterface> monsterMakers;
 
@@ -22,6 +16,11 @@ public class MonsterController {
 
     private final GameController gameController;
     private final Monster monster;
+
+    public MonsterPosition getPosition() {
+        return position;
+    }
+
     private final MonsterPosition position;
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {

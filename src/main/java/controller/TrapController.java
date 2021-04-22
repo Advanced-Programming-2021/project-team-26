@@ -5,29 +5,23 @@ import model.cards.trap.Trap;
 
 import java.util.HashMap;
 
-enum TrapPosition {
-    UP,
-    DOWN
-}
 
-public class TrapController {
+public class TrapController extends SpellTrapController {
     private static HashMap<String, TrapController.TrapMakerInterface> trapMakers = new HashMap<>();
 
     static {
         trapMakers.put("Magic Cylinder", TrapController::makeMagicCylinder);
     }
 
-    private final GameController gameController;
     private final Trap trap;
-    private final TrapPosition position;
 
-    private TrapController(GameController gameController, Trap trap, TrapPosition position) {
+    private TrapController(GameController gameController, Trap trap, SpellTrapPosition position) {
         this.gameController = gameController;
         this.trap = new Trap(trap);
         this.position = position;
     }
 
-    public static TrapController getInstance(GameController gameController, Trap trap, TrapPosition position) throws TrapNotFoundException {
+    public static TrapController getInstance(GameController gameController, Trap trap, SpellTrapPosition position) throws TrapNotFoundException {
         for (String trapName : trapMakers.keySet()) {
             if (trap.getName().equals(trapName)) {
                 return trapMakers.get(trapName).make(gameController, trap, position);
@@ -36,7 +30,7 @@ public class TrapController {
         throw new TrapNotFoundException();
     }
 
-    private static TrapController makeMagicCylinder(GameController gameController, Trap trap, TrapPosition position) {
+    private static TrapController makeMagicCylinder(GameController gameController, Trap trap, SpellTrapPosition position) {
         return new TrapController(gameController, trap, position) {
             //here override methods
         };
@@ -51,6 +45,6 @@ public class TrapController {
     }
 
     public interface TrapMakerInterface {
-        TrapController make(GameController gameController, Trap trap, TrapPosition position);
+        TrapController make(GameController gameController, Trap trap, SpellTrapPosition position);
     }
 }

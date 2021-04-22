@@ -1,9 +1,9 @@
 package model.cards.trap;
 
 import controller.exceptions.TrapNotFoundException;
-import model.cards.Card;
+import model.cards.SpellTrap;
 
-public class Trap extends Card {
+public class Trap extends SpellTrap {
     private final TrapType type;
 
     //copy constructor

@@ -5,29 +5,23 @@ import model.cards.spell.Spell;
 
 import java.util.HashMap;
 
-enum SpellPosition {
-    UP,
-    DOWN
-}
-
-public class SpellController {
+public class SpellController extends SpellTrapController {
     private static HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
 
     static {
         spellMakers.put("Monster Reborn", SpellController::makeMonsterReborn);
     }
 
-    private final GameController gameController;
-    private final Spell spell;
-    private final SpellPosition position;
 
-    private SpellController(GameController gameController, Spell spell, SpellPosition position) {
-        this.gameController = gameController;
+    private final Spell spell;
+
+    private SpellController(GameController gameController, Spell spell, SpellTrapPosition position) {
+        setGameController(gameController);
+        setPosition(position);
         this.spell = new Spell(spell);
-        this.position = position;
     }
 
-    public static SpellController getInstance(GameController gameController, Spell spell, SpellPosition position) throws SpellNotFoundException {
+    public static SpellController getInstance(GameController gameController, Spell spell, SpellTrapPosition position) throws SpellNotFoundException {
         for (String spellName : spellMakers.keySet()) {
             if (spell.getName().equals(spellName)) {
                 return spellMakers.get(spellName).make(gameController, spell, position);
@@ -36,7 +30,7 @@ public class SpellController {
         throw new SpellNotFoundException();
     }
 
-    private static SpellController makeMonsterReborn(GameController gameController, Spell spell, SpellPosition position) {
+    private static SpellController makeMonsterReborn(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
             //here override methods
         };
@@ -63,6 +57,6 @@ public class SpellController {
     }
 
     public interface SpellMakerInterface {
-        SpellController make(GameController gameController, Spell spell, SpellPosition position);
+        SpellController make(GameController gameController, Spell spell, SpellTrapPosition position);
     }
 }
