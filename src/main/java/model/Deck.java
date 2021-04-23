@@ -5,13 +5,21 @@ import model.cards.Card;
 import java.util.ArrayList;
 
 public class Deck {
-    private static ArrayList<Deck> allDecks = new ArrayList<>();
+    private static ArrayList<Deck> allDecks;
+
+    static {
+        allDecks = new ArrayList<>();
+    }
+
     private String name;
+    private User deckOwner;
     private ArrayList<Card> mainDeck;
     private ArrayList<Card> sideDeck;
 
-    public Deck(String name) {
-        this.name = name;
+
+    public Deck(String name, User deckOwner) {
+        setName(name);
+        setDeckOwner(deckOwner);
         setMainDeck(new ArrayList<>());
         setSideDeck(new ArrayList<>());
         allDecks.add(this);
@@ -21,8 +29,25 @@ public class Deck {
         return allDecks;
     }
 
-    public static void deleteDeck(String name) {
+    public static void setAllDecks(ArrayList<Deck> allDecks) {
+        Deck.allDecks = allDecks;
+    }
 
+    public static boolean checkDeckNameExistence(String name) {
+        return true;
+    }
+
+    public User getDeckOwner() {
+        return deckOwner;
+    }
+
+    public void setDeckOwner(User deckOwner) {
+        this.deckOwner = deckOwner;
+    }
+
+    public void deleteDeck(String name) {
+        getDeckOwner().getAllDecks().removeIf(deck -> deck.getName().equals(name));
+        allDecks.removeIf(deck -> deck.getName().equals(name));
     }
 
     public String getName() {
@@ -65,17 +90,13 @@ public class Deck {
 
     }
 
-    public boolean isValidDeck(){
+    public boolean isDeckValid() {
         //TODO
         return true;
     }
 
-    public String toString(){
+    public String toString() {
         //TODO
         return "";
-    }
-
-    public static boolean checkDeckNameExistence(String name){
-        return true;
     }
 }

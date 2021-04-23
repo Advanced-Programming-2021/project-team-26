@@ -31,14 +31,14 @@ public class Database {
     }
 
     public HashMap<String, Card> getAllCards() {
-        HashMap<String , Card> cards = new HashMap<>();
-        HashMap<String,Monster> monsters = getAllMonsters();
-        if(monsters==null)
+        HashMap<String, Card> cards = new HashMap<>();
+        HashMap<String, Monster> monsters = getAllMonsters();
+        if (monsters == null)
             return null;
         cards.putAll(monsters);
 
-        HashMap<String,SpellTrap> spellTraps = getAllSpellTraps();
-        if(spellTraps==null)
+        HashMap<String, SpellTrap> spellTraps = getAllSpellTraps();
+        if (spellTraps == null)
             return null;
         cards.putAll(spellTraps);
         return cards;
@@ -78,7 +78,7 @@ public class Database {
             while ((nextRecord = reader.readNext()) != null) {
                 if (nextRecord[1].equals("Trap"))
                     spellTraps.put(nextRecord[0], new Trap(nextRecord));
-                else if(nextRecord[1].equals("Spell"))
+                else if (nextRecord[1].equals("Spell"))
                     spellTraps.put(nextRecord[0], new Spell(nextRecord));
             }
 
@@ -100,7 +100,7 @@ public class Database {
             reader.readNext();
 
             while ((nextRecord = reader.readNext()) != null) {
-                if(nextRecord[1].equals("Spell"))
+                if (nextRecord[1].equals("Spell"))
                     spells.put(nextRecord[0], new Spell(nextRecord));
             }
 
@@ -122,7 +122,7 @@ public class Database {
             reader.readNext();
 
             while ((nextRecord = reader.readNext()) != null) {
-                if(nextRecord[1].equals("Trap"))
+                if (nextRecord[1].equals("Trap"))
                     traps.put(nextRecord[0], new Trap(nextRecord));
             }
 

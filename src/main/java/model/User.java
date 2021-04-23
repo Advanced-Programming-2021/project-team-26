@@ -3,7 +3,6 @@ package model;
 import model.cards.Card;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class User {
     private static ArrayList<User> allUsers;
@@ -17,8 +16,8 @@ public class User {
     private String nickname;
     private int score;
     private int money;
-    private List<Deck> allDecks;
-    private List<Card> allCards;
+    private ArrayList<Deck> allDecks;
+    private ArrayList<Card> allCards;
     private Deck activeDeck;
 
     public User(String username, String password, String nickname) {
@@ -29,6 +28,14 @@ public class User {
         setPassword(password);
         setNickname(nickname);
         allUsers.add(this);
+    }
+
+    public static ArrayList<User> getAllUsers() {
+        return allUsers;
+    }
+
+    public static void setAllUsers(ArrayList<User> allUsers) {
+        User.allUsers = allUsers;
     }
 
     public static String getPasswordByUsername(String username) {
@@ -53,6 +60,30 @@ public class User {
                 first.getUsername().compareTo(second.getUsername()) < 0)
             return 1;
         return -1;
+    }
+
+    public ArrayList<Deck> getAllDecks() {
+        return allDecks;
+    }
+
+    public void setAllDecks(ArrayList<Deck> allDecks) {
+        this.allDecks = allDecks;
+    }
+
+    public ArrayList<Card> getAllCards() {
+        return allCards;
+    }
+
+    public void setAllCards(ArrayList<Card> allCards) {
+        this.allCards = allCards;
+    }
+
+    public Deck getActiveDeck() {
+        return activeDeck;
+    }
+
+    public void setActiveDeck(Deck deck) {
+        this.activeDeck = deck;
     }
 
     public String getUsername() {
@@ -105,9 +136,5 @@ public class User {
 
     public void addDeckToUserDecks(Deck deck) {
         this.allDecks.add(deck);
-    }
-
-    public void setActiveDeck(Deck deck) {
-        this.activeDeck = deck;
     }
 }

@@ -1,16 +1,20 @@
 package model;
 
+import controller.Database;
 import model.cards.Card;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Shop {
-    private static ArrayList<Card> allCards;
+    private static final HashMap<String, Card> allCards;
     private static Shop shop;
 
-    private Shop() {
+    static {
+        allCards = new HashMap<>();
+    }
 
+    private Shop() {
+        allCards.putAll(Database.getInstance().getAllCards());
     }
 
     public static Shop getInstance() {
@@ -19,20 +23,25 @@ public class Shop {
         return shop;
     }
 
+    public static HashMap<String, Card> getAllCards() {
+        return allCards;
+    }
+
     public int getPriceByCardName(String cardName) {
-        for (Card card  : allCards){
-            if (card.getName().equals(cardName))
-                return card.getPrice();
+        for (String key : allCards.keySet()) {
+            if (key.equals(cardName)) {
+                return allCards.get(key).getPrice();
+            }
         }
         return 0;
     }
 
     public boolean checkCardNameExistence(String cardName) {
-        for (Card card  : allCards){
-            if (card.getName().equals(cardName))
+        for (String key : allCards.keySet()) {
+            if (key.equals(cardName)) {
                 return true;
+            }
         }
         return false;
     }
-
 }
