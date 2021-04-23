@@ -7,6 +7,11 @@ import java.util.List;
 
 public class User {
     private static ArrayList<User> allUsers;
+
+    static {
+        allUsers = new ArrayList<>();
+    }
+
     private String username;
     private String password;
     private String nickname;
@@ -15,10 +20,6 @@ public class User {
     private List<Deck> allDecks;
     private List<Card> allCards;
     private Deck activeDeck;
-
-    static {
-        allUsers = new ArrayList<>();
-    }
 
     public User(String username, String password, String nickname) {
         allDecks = new ArrayList<>();

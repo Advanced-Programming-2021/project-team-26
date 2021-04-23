@@ -5,7 +5,7 @@ public enum MonsterPosition {
     DEFENCE_UP("DO"),
     DEFENCE_DOWN("DH");
 
-    private String string;
+    private final String string;
     MonsterPosition(String string){
         this.string = string;
     }

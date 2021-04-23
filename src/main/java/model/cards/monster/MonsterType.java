@@ -26,4 +26,12 @@ public enum MonsterType {
     public String getString(){
         return this.string;
     }
+
+    public static MonsterType stringToMonsterType(String string){
+        for (MonsterType monsterType : MonsterType.values()){
+            if(monsterType.string.equals(string))
+                return monsterType;
+        }
+        return null;
+    }
 }

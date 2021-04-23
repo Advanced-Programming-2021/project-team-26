@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 
 public class TrapController extends SpellTrapController {
-    private static HashMap<String, TrapController.TrapMakerInterface> trapMakers = new HashMap<>();
+    private static final HashMap<String, TrapController.TrapMakerInterface> trapMakers = new HashMap<>();
 
     static {
         trapMakers.put("Magic Cylinder", TrapController::makeMagicCylinder);

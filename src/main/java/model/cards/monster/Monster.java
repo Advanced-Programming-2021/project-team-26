@@ -1,23 +1,46 @@
 package model.cards.monster;
 
+import controller.Database;
 import controller.exceptions.MonsterNotFoundException;
 import model.cards.Card;
 
+import java.util.Map;
+
 public class Monster extends Card {
+    private static final Map<String,Monster> allMonsters;
+    static {
+        allMonsters = Database.getInstance().getAllMonsters();
+    }
     private final int attackPower;
     private final int defencePower;
     private final int level;
     private final MonsterType type;
-    private final boolean hasEffect;
+    private final CardType cardType;
+    private final String attribute;
 
     //copy constructor
-    public Monster(Monster o){
+    public Monster(Monster o) {
         super(o);
         this.attackPower = o.attackPower;
         this.defencePower = o.defencePower;
         this.level = o.level;
         this.type = o.type;
-        this.hasEffect = o.hasEffect;
+        this.cardType = o.cardType;
+        this.attribute = o.attribute;
+    }
+
+    public Monster(String[] fields) {
+        super(fields[0], fields[7], Integer.parseInt(fields[8]));
+        this.level = Integer.parseInt(fields[1]);
+        this.attribute = fields[2];
+        this.type = MonsterType.stringToMonsterType(fields[3]);
+        this.cardType = CardType.stringToCardType(fields[4]);
+        this.attackPower = Integer.parseInt(fields[5]);
+        this.defencePower = Integer.parseInt(fields[6]);
+    }
+
+    public static Monster getMonster(String name) throws MonsterNotFoundException {
+        throw new MonsterNotFoundException();
     }
 
     public int getAttackPower() {
@@ -36,11 +59,7 @@ public class Monster extends Card {
         return type;
     }
 
-    public boolean isHasEffect() {
-        return hasEffect;
-    }
-
-    public static Monster getMonster(String name) throws MonsterNotFoundException {
-        throw new MonsterNotFoundException();
+    public CardType getCardType() {
+        return cardType;
     }
 }
