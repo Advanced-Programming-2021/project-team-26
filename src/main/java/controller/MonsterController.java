@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 
 public class MonsterController {
-    private static HashMap<String, MonsterMakerInterface> monsterMakers;
+    private static final HashMap<String, MonsterMakerInterface> monsterMakers;
 
     static {
         monsterMakers = new HashMap<>();

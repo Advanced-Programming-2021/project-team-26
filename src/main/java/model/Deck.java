@@ -25,6 +25,10 @@ public class Deck {
 
     }
 
+    public static boolean checkDeckNameExist(String name) {
+        return true;
+    }
+
     public String getName() {
         return name;
     }
@@ -65,17 +69,13 @@ public class Deck {
 
     }
 
-    public boolean isValidDeck(){
+    public boolean isValidDeck() {
         //TODO
         return true;
     }
 
-    public String toString(){
+    public String toString() {
         //TODO
         return "";
-    }
-
-    public static boolean checkDeckNameExist(String name){
-        return true;
     }
 }

@@ -1,5 +1,6 @@
 package model.cards;
 
+import controller.Database;
 import controller.exceptions.CardNotFoundException;
 import controller.exceptions.MonsterNotFoundException;
 import controller.exceptions.SpellNotFoundException;
@@ -8,7 +9,13 @@ import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 import model.cards.trap.Trap;
 
+import java.util.Map;
+
 public abstract class Card {
+    private static final Map<String , Card> allCards;
+    static {
+        allCards = Database.getInstance().getAllCards();
+    }
     protected String name;
     protected String Description;
     protected int price;
@@ -17,6 +24,12 @@ public abstract class Card {
         setName(o.name);
         setDescription(o.Description);
         setPrice(o.price);
+    }
+
+    public Card(String name,String description,int price){
+        setName(name);
+        setDescription(description);
+        setPrice(price);
     }
 
     public void setName(String name) {

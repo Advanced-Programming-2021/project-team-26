@@ -11,7 +11,7 @@ public class Shop {
     private static Shop shop;
 
     static {
-        for (Card card : allCards){
+        for (Card card : allCards) {
             cardsPrice.put(card.getName(), card.getPrice());
         }
     }
@@ -27,7 +27,7 @@ public class Shop {
     }
 
     public int getPriceByCardName(String cardName) {
-        for (Card card  : allCards){
+        for (Card card : allCards) {
             if (card.getName().equals(cardName))
                 return card.getPrice();
         }
@@ -35,7 +35,7 @@ public class Shop {
     }
 
     public boolean checkCardNameExistence(String cardName) {
-        for (Card card  : allCards){
+        for (Card card : allCards) {
             if (card.getName().equals(cardName))
                 return true;
         }

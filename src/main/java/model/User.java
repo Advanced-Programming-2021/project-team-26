@@ -7,6 +7,11 @@ import java.util.List;
 
 public class User {
     private static ArrayList<User> allUsers;
+
+    static {
+        allUsers = new ArrayList<>();
+    }
+
     private String username;
     private String password;
     private String nickname;
@@ -15,10 +20,6 @@ public class User {
     private List<Deck> allDecks;
     private List<Card> allCards;
     private Deck activeDeck;
-
-    static {
-        allUsers = new ArrayList<>();
-    }
 
     public User(String username, String password, String nickname) {
         allDecks = new ArrayList<>();
@@ -84,23 +85,23 @@ public class User {
         this.money = money;
     }
 
-    public void increaseMoney(int amount){
+    public void increaseMoney(int amount) {
         this.money += amount;
     }
 
-    public void decreaseMoney(int amount){
+    public void decreaseMoney(int amount) {
         this.money -= amount;
     }
 
-    public void addCardToUserCards(Card card){
+    public void addCardToUserCards(Card card) {
         this.allCards.add(card);
     }
 
-    public void addDeckToUserDecks(Deck deck){
+    public void addDeckToUserDecks(Deck deck) {
         this.allDecks.add(deck);
     }
 
-    public void setActiveDeck(Deck deck){
+    public void setActiveDeck(Deck deck) {
         this.activeDeck = deck;
     }
 }

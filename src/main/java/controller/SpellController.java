@@ -6,7 +6,7 @@ import model.cards.spell.Spell;
 import java.util.HashMap;
 
 public class SpellController extends SpellTrapController {
-    private static HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
+    private static final HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
 
     static {
         spellMakers.put("Monster Reborn", SpellController::makeMonsterReborn);

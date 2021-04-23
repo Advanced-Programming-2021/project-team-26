@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Scan {
     private static Scan scan;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     private Scan(){
         scanner = new Scanner(System.in);

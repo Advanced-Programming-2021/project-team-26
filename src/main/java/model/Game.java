@@ -6,19 +6,19 @@ public class Game {
     private int[] lifePoints = new int[2];
     private int turn = 0;
 
-    public int getTurn(){
+    public int getTurn() {
         return turn;
     }
 
-    public User getUser(int turn){
+    public User getUser(int turn) {
         return users[turn];
     }
 
-    public Board getBoard(int turn){
+    public Board getBoard(int turn) {
         return boards[turn];
     }
 
-    public int getLifePoint(int turn){
+    public int getLifePoint(int turn) {
         return lifePoints[turn];
     }
 }
