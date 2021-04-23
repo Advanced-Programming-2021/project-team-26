@@ -29,12 +29,13 @@ public class Deck {
         return allDecks;
     }
 
-    public static void setAllDecks(ArrayList<Deck> allDecks) {
-        Deck.allDecks = allDecks;
-    }
-
     public static boolean checkDeckNameExistence(String name) {
-        return true;
+        for (Deck deck : allDecks) {
+            if (deck.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public User getDeckOwner() {
@@ -74,27 +75,60 @@ public class Deck {
         this.sideDeck = sideDeck;
     }
 
-    public void addCardToMainDeck(Card card) {
-
+    public int addCardToMainDeck(Card card) {
+        if (!doesUserHaveThisCard(card))
+            return -2; //user doesnt have this card
+        else if (mainDeck.size() == 60)
+            return -1; //deck is full
+        else {
+            mainDeck.add(card);
+            return 1; //method has been run successfully
+        }
     }
 
-    public void addCardToSideDeck(Card card) {
-
+    public int addCardToSideDeck(Card card) {
+        if (!doesUserHaveThisCard(card))
+            return -2; //user doesnt have this card
+        else if (sideDeck.size() == 15)
+            return -1; //deck is full
+        else {
+            sideDeck.add(card);
+            return 1; //method has been run successfully
+        }
     }
 
-    public void deleteCardToMainDeck(Card card) {
-
+    public int deleteCardFromMainDeck(Card card) {
+        if (!doesUserHaveThisCard(card))
+            return -1; //user doesnt have this card
+        else {
+            mainDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
+            return 1; //method has been run successfully
+        }
     }
 
-    public void deleteCardToSideDeck(Card card) {
+    public int deleteCardFromSideDeck(Card card) {
+        if (!doesUserHaveThisCard(card))
+            return -1; //user doesnt have this card
+        else {
+            sideDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
+            return 1; //method has been run successfully
+        }
+    }
 
+    public boolean doesUserHaveThisCard(Card card) {
+        ArrayList<Card> allCards = getDeckOwner().getAllCards();
+        for (Card theCard : allCards) {
+            if (theCard.getName().equals(card.getName()))
+                return true;
+        }
+        return false;
     }
 
     public boolean isDeckValid() {
-        //TODO
-        return true;
+        return mainDeck.size() >= 40;
     }
 
+    @Override
     public String toString() {
         //TODO
         return "";
