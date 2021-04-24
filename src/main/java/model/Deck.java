@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class Deck {
-    private static final ArrayList<Deck> allDecks;
+    private static ArrayList<Deck> allDecks;
 
     static {
         allDecks = new ArrayList<>();
@@ -52,7 +52,7 @@ public class Deck {
     }
 
     public void deleteDeck(String name) {
-        getDeckOwner().getAllDecks().removeIf(deck -> deck.getName().equals(name));
+        getDeckOwner().getAllDecks().remove(name);
         allDecks.removeIf(deck -> deck.getName().equals(name));
     }
 
@@ -121,9 +121,8 @@ public class Deck {
     }
 
     public boolean doesUserHaveThisCard(Card card) {
-        ArrayList<Card> allCards = getDeckOwner().getAllCards();
-        for (Card theCard : allCards) {
-            if (theCard.getName().equals(card.getName()))
+        for (String name : getDeckOwner().getAllCards().keySet()){
+            if (card.getName().equals(name))
                 return true;
         }
         return false;
@@ -146,16 +145,29 @@ public class Deck {
         stringToReturn.append("Monsters:").append("\n");
         ArrayList<String> sortedMonsters = new ArrayList<>(monsters.keySet());
         Collections.sort(sortedMonsters);
-        for (String key : sortedMonsters) {
-            stringToReturn.append(key).append(": ").append(monsters.get(key).getDescription());
+        for (String name : sortedMonsters) {
+            stringToReturn.append(name).append(": ").append(monsters.get(name).getDescription()).append("\n");
         }
 
         stringToReturn.append("Spell and Traps:").append("\n");
         ArrayList<String> sortedSpellTraps = new ArrayList<>(spellTraps.keySet());
         Collections.sort(sortedSpellTraps);
-        for (String key : sortedSpellTraps) {
-            stringToReturn.append(key).append(": ").append(spellTraps.get(key).getDescription());
+        for (String name : sortedSpellTraps) {
+            stringToReturn.append(name).append(": ").append(spellTraps.get(name).getDescription()).append("\n");
         }
+        return stringToReturn.toString();
+    }
+
+    public String allCardsToString(){
+        StringBuilder stringToReturn = new StringBuilder();
+        HashMap<String, Card> allCards = getDeckOwner().getAllCards();
+        ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
+        Collections.sort(sortedCardNames);
+
+        for (String name : sortedCardNames){
+            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
+        }
+
         return stringToReturn.toString();
     }
 }
