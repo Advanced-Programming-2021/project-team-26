@@ -1,11 +1,16 @@
 package model;
 
+import controller.Database;
 import model.cards.Card;
+import model.cards.SpellTrap;
+import model.cards.monster.Monster;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Deck {
-    private static ArrayList<Deck> allDecks;
+    private static final ArrayList<Deck> allDecks;
 
     static {
         allDecks = new ArrayList<>();
@@ -130,7 +135,27 @@ public class Deck {
 
     @Override
     public String toString() {
-        //TODO
-        return "";
+        StringBuilder stringToReturn = new StringBuilder();
+
+        HashMap<String, Monster> monsters = Database.getInstance().getAllMonsters();
+        HashMap<String, SpellTrap> spellTraps = Database.getInstance().getAllSpellTraps();
+
+        stringToReturn.append("Deck: ").append(getName()).append("\n");
+        stringToReturn.append("Main deck:").append("\n");
+
+        stringToReturn.append("Monsters:").append("\n");
+        ArrayList<String> sortedMonsters = new ArrayList<>(monsters.keySet());
+        Collections.sort(sortedMonsters);
+        for (String key : sortedMonsters) {
+            stringToReturn.append(key).append(": ").append(monsters.get(key).getDescription());
+        }
+
+        stringToReturn.append("Spell and Traps:").append("\n");
+        ArrayList<String> sortedSpellTraps = new ArrayList<>(spellTraps.keySet());
+        Collections.sort(sortedSpellTraps);
+        for (String key : sortedSpellTraps) {
+            stringToReturn.append(key).append(": ").append(spellTraps.get(key).getDescription());
+        }
+        return stringToReturn.toString();
     }
 }
