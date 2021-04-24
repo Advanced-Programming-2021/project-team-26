@@ -12,6 +12,7 @@ public class LoginMenu extends Menu {
 
     static {
         PATTERNS = new HashMap<>();
+        PATTERNS.put("user login --([^-]+)--(.+)")
     }
     public LoginMenu(Menu menu) {
         super(menu);

@@ -6,10 +6,8 @@ import model.User;
 public class ShopController {
     private User user;
     private Shop shop;
-    private String cardName;
 
-    public ShopController(User user, String cardName) {
-        setCardName(cardName);
+    public ShopController(User user) {
         setUser(user);
     }
 
