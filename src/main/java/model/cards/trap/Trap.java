@@ -1,7 +1,6 @@
 package model.cards.trap;
 
 import controller.Database;
-import controller.exceptions.TrapNotFoundException;
 import model.cards.SpellTrap;
 import model.cards.TrapSpellStatus;
 
@@ -30,7 +29,9 @@ public class Trap extends SpellTrap {
         this.type = TrapType.stringToTrapType(fields[2]);
     }
 
-    public static Trap getTrap(String name) throws TrapNotFoundException {
-        throw new TrapNotFoundException();
+    public static Trap getTrap(String name) {
+        if (allTraps.containsKey(name))
+            return allTraps.get(name);
+        return null;
     }
 }

@@ -1,39 +1,37 @@
 package model.cards;
 
 import controller.Database;
-import controller.exceptions.CardNotFoundException;
-import controller.exceptions.MonsterNotFoundException;
-import controller.exceptions.SpellNotFoundException;
-import controller.exceptions.TrapNotFoundException;
-import model.cards.monster.Monster;
-import model.cards.spell.Spell;
-import model.cards.trap.Trap;
 
 import java.util.Map;
 
 public abstract class Card {
-    private static final Map<String , Card> allCards;
+    private static final Map<String, Card> allCards;
+
     static {
         allCards = Database.getInstance().getAllCards();
     }
+
     protected String name;
     protected String Description;
     protected int price;
+
     //copy constructor
-    public Card(Card o){
+    public Card(Card o) {
         setName(o.name);
         setDescription(o.Description);
         setPrice(o.price);
     }
 
-    public Card(String name,String description,int price){
+    public Card(String name, String description, int price) {
         setName(name);
         setDescription(description);
         setPrice(price);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static Card getCard(String name) {
+        if (allCards.containsKey(name))
+            return allCards.get(name);
+        return null;
     }
 
     public String getDescription() {
@@ -52,23 +50,11 @@ public abstract class Card {
         this.price = price;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public static Card getCard(String name) throws CardNotFoundException {
-        try {
-            return Monster.getMonster(name);
-        }catch (MonsterNotFoundException monsterNotFoundException){
-            try {
-                return Spell.getSpell(name);
-            }catch (SpellNotFoundException spellNotFoundException){
-                try {
-                    return Trap.getTrap(name);
-                }catch (TrapNotFoundException trapNotFoundException){
-                    throw new CardNotFoundException();
-                }
-            }
-        }
+    public void setName(String name) {
+        this.name = name;
     }
 }

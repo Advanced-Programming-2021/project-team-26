@@ -1,16 +1,17 @@
 package model.cards.monster;
 
 import controller.Database;
-import controller.exceptions.MonsterNotFoundException;
 import model.cards.Card;
 
 import java.util.Map;
 
 public class Monster extends Card {
-    private static final Map<String,Monster> allMonsters;
+    private static final Map<String, Monster> allMonsters;
+
     static {
         allMonsters = Database.getInstance().getAllMonsters();
     }
+
     private final int attackPower;
     private final int defencePower;
     private final int level;
@@ -39,8 +40,10 @@ public class Monster extends Card {
         this.defencePower = Integer.parseInt(fields[6]);
     }
 
-    public static Monster getMonster(String name) throws MonsterNotFoundException {
-        throw new MonsterNotFoundException();
+    public static Monster getMonster(String name) {
+        if (allMonsters.containsKey(name))
+            return allMonsters.get(name);
+        return null;
     }
 
     public int getAttackPower() {

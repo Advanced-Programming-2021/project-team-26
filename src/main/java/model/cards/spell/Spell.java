@@ -1,21 +1,22 @@
 package model.cards.spell;
 
 import controller.Database;
-import controller.exceptions.SpellNotFoundException;
 import model.cards.SpellTrap;
 import model.cards.TrapSpellStatus;
 
 import java.util.Map;
 
 public class Spell extends SpellTrap {
-    private static final Map<String,Spell> allSpells;
+    private static final Map<String, Spell> allSpells;
+
     static {
         allSpells = Database.getInstance().getAllSpells();
     }
+
     private final SpellType type;
 
     //copy constructor
-    public Spell(Spell o){
+    public Spell(Spell o) {
         super(o);
         this.type = o.type;
     }
@@ -28,7 +29,9 @@ public class Spell extends SpellTrap {
         this.type = SpellType.stringToSpellType(fields[2]);
     }
 
-    public static Spell getSpell(String name) throws SpellNotFoundException {
-        throw new SpellNotFoundException();
+    public static Spell getSpell(String name) {
+        if (allSpells.containsKey(name))
+            return allSpells.get(name);
+        return null;
     }
 }
