@@ -18,11 +18,10 @@ public class UserController {
         return userController;
     }
 
-    public void addNewUser(String username, String nickName, String password) {
+    public void addNewUser(Matcher matcher) {
 
     }
-
-    public void removeUser(String username) {
+    public void removeUser(Matcher matcher) {
 
     }
 
@@ -34,11 +33,11 @@ public class UserController {
 
     }
 
-    public void loginUser(String username, String password){
+    public void loginUser(Matcher matcher){
 
     }
 
-    public void logout(){
+    public void logout(Matcher matcher){
 
     }
 

@@ -12,18 +12,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProfileMenu extends Menu {
-    private static final Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
-    private static UserController userController = UserController.getInstance();
-    static {
-
-        MAP.put(Pattern.compile("^profile change --nickname (.+)"), userController::changeNickname);
-        MAP.put(Pattern.compile("^profile change --password --current ([^ ]+) --new (.+)"),userController::changePassword);
+    private static final UserController USER_CONTROLLER = UserController.getInstance();
+     {
+        super.MAP.put(Pattern.compile("^profile change --nickname (.+)"), USER_CONTROLLER::changeNickname);
+        super.MAP.put(Pattern.compile("^profile change --password --current ([^ ]+) --new (.+)"),USER_CONTROLLER::changePassword);
             }
     public ProfileMenu(Menu menu) {
         super(menu);
+        super.name = "ProfileMenu";
     }
 
     public void run(){
-
+        super.run();
     }
 }

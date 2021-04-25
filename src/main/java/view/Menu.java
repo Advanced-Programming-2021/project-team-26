@@ -1,6 +1,7 @@
 package view;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 
 abstract public class Menu {
     public static Scanner scanner;
+    protected Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
     private HashMap<MenuType, Menu> subMenus;
     protected String name;
 
@@ -17,7 +19,7 @@ abstract public class Menu {
     private Matcher getCommendMatcher(String input, String regex) {
         return null;
     }
-    protected void run(HashMap<Pattern, Consumer<Matcher>> MAP){
+    protected void run(){
         while (true) {
             String input = scanner.nextLine();
             Matcher matcher = null;
@@ -34,7 +36,7 @@ abstract public class Menu {
         }
     }
 
-//    protected void showCurrentMenu(){
-//
-//    }
+    protected void showCurrentMenu(Matcher matcher){
+        System.out.println(this.name);
+    }
 }

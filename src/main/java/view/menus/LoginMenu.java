@@ -8,14 +8,15 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class LoginMenu extends Menu {
-    private static final Map<Pattern, Method> PATTERNS;
+  //  private static final Map<Pattern, Method> PATTERNS;
 
-    static {
-        PATTERNS = new HashMap<>();
-        PATTERNS.put("user login --([^-]+)--(.+)")
+     {
+      //  PATTERNS = new HashMap<>();
+       // PATTERNS.put("user login --([^-]+)--(.+)")
     }
     public LoginMenu(Menu menu) {
         super(menu);
+        super.name = "LoginMenu";
     }
 
     public void run(){

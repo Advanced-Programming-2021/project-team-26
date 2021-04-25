@@ -15,6 +15,7 @@ public class DeckMenu extends Menu {
     }
     public DeckMenu(Menu menu) {
         super(menu);
+        super.name = "DeckMenu";
     }
 
     public void run(){

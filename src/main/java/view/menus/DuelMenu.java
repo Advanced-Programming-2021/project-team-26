@@ -15,6 +15,7 @@ public class DuelMenu extends Menu {
     }
     public DuelMenu(Menu menu) {
         super(menu);
+        super.name = "DuelMenu";
     }
 
     public void run(){
