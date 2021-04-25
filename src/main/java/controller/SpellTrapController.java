@@ -1,6 +1,5 @@
 package controller;
 
-import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.spell.Spell;
 import model.cards.trap.Trap;

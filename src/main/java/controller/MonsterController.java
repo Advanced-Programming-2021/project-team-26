@@ -1,7 +1,6 @@
 package controller;
 
 import controller.exceptions.MonsterNotFoundException;
-import model.cards.Card;
 import model.cards.monster.Monster;
 
 import java.util.HashMap;
@@ -17,11 +16,6 @@ public class MonsterController {
 
     private final GameController gameController;
     private final Monster monster;
-
-    public MonsterPosition getPosition() {
-        return position;
-    }
-
     private final MonsterPosition position;
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
@@ -43,6 +37,10 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position) {
             //here override methods
         };
+    }
+
+    public MonsterPosition getPosition() {
+        return position;
     }
 
     public boolean canBeAttacked(MonsterController monster) {

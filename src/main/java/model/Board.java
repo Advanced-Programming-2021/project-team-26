@@ -1,7 +1,10 @@
 package model;
 
 import controller.*;
-import controller.exceptions.*;
+import controller.exceptions.FullMonsterZone;
+import controller.exceptions.FullSpellTrapZone;
+import controller.exceptions.MonsterNotFoundException;
+import controller.exceptions.SpellTrapNotFoundException;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
@@ -104,33 +107,33 @@ public class Board {
             throw new FullMonsterZone();
         }
         hand.remove(monster);
-        monstersZone[lastEmpty] = MonsterController.getInstance(gameController,monster,position);
+        monstersZone[lastEmpty] = MonsterController.getInstance(gameController, monster, position);
     }
 
     public void putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
-        if(!hand.contains(spellTrap)){
+        if (!hand.contains(spellTrap)) {
             throw new SpellTrapNotFoundException();
         }
         int lastEmpty = 0;
-        while(lastEmpty<spellTrapZone.length && spellTrapZone[lastEmpty]!=null){
+        while (lastEmpty < spellTrapZone.length && spellTrapZone[lastEmpty] != null) {
             lastEmpty++;
         }
-        if(lastEmpty>=spellTrapZone.length){
+        if (lastEmpty >= spellTrapZone.length) {
             throw new FullSpellTrapZone();
         }
         hand.remove(spellTrap);
-        spellTrapZone[lastEmpty] = SpellTrapController.getInstance(gameController,spellTrap,position);
+        spellTrapZone[lastEmpty] = SpellTrapController.getInstance(gameController, spellTrap, position);
     }
 
-    public void removeMonster(int index){
-        if(monstersZone[index]==null)
+    public void removeMonster(int index) {
+        if (monstersZone[index] == null)
             return;
         graveyard.add(monstersZone[index].getCard());
         monstersZone[index] = null;
     }
 
-    public void removeSpellTrap(int index){
-        if(spellTrapZone[index]==null)
+    public void removeSpellTrap(int index) {
+        if (spellTrapZone[index] == null)
             return;
         graveyard.add(spellTrapZone[index].getCard());
         spellTrapZone[index] = null;

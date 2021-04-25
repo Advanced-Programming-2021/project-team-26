@@ -1,7 +1,6 @@
 package controller;
 
 import controller.exceptions.TrapNotFoundException;
-import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.trap.Trap;
 
