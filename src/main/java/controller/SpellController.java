@@ -1,6 +1,7 @@
 package controller;
 
 import controller.exceptions.SpellNotFoundException;
+import model.cards.SpellTrap;
 import model.cards.spell.Spell;
 
 import java.util.HashMap;
@@ -54,6 +55,11 @@ public class SpellController extends SpellTrapController {
 
     public void remove() {
 
+    }
+
+    @Override
+    public SpellTrap getCard() {
+        return this.spell;
     }
 
     public interface SpellMakerInterface {

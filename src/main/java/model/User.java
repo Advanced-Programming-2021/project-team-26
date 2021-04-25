@@ -3,6 +3,7 @@ package model;
 import model.cards.Card;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
     private static ArrayList<User> allUsers;
@@ -16,13 +17,13 @@ public class User {
     private String nickname;
     private int score;
     private int money;
-    private ArrayList<Deck> allDecks;
-    private ArrayList<Card> allCards;
+    private HashMap<String, Deck> allDecks;
+    private HashMap<String, Card> allCards;
     private Deck activeDeck;
 
     public User(String username, String password, String nickname) {
-        allDecks = new ArrayList<>();
-        allCards = new ArrayList<>();
+        allDecks = new HashMap<>();
+        allCards = new HashMap<>();
         setMoney(0);
         setUsername(username);
         setPassword(password);
@@ -62,19 +63,19 @@ public class User {
         return -1;
     }
 
-    public ArrayList<Deck> getAllDecks() {
+    public HashMap<String, Deck> getAllDecks() {
         return allDecks;
     }
 
-    public void setAllDecks(ArrayList<Deck> allDecks) {
+    public void setAllDecks(HashMap<String, Deck> allDecks) {
         this.allDecks = allDecks;
     }
 
-    public ArrayList<Card> getAllCards() {
+    public HashMap<String, Card> getAllCards() {
         return allCards;
     }
 
-    public void setAllCards(ArrayList<Card> allCards) {
+    public void setAllCards(HashMap<String, Card> allCards) {
         this.allCards = allCards;
     }
 
@@ -82,8 +83,8 @@ public class User {
         return activeDeck;
     }
 
-    public void setActiveDeck(Deck deck) {
-        this.activeDeck = deck;
+    public void setActiveDeck(Deck activeDeck) {
+        this.activeDeck = activeDeck;
     }
 
     public String getUsername() {
@@ -131,10 +132,10 @@ public class User {
     }
 
     public void addCardToUserCards(Card card) {
-        this.allCards.add(card);
+        this.allCards.put(card.getName(), card);
     }
 
     public void addDeckToUserDecks(Deck deck) {
-        this.allDecks.add(deck);
+        this.allDecks.put(deck.getName(), deck);
     }
 }

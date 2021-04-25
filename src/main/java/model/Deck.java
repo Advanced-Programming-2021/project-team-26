@@ -1,8 +1,13 @@
 package model;
 
+import controller.Database;
 import model.cards.Card;
+import model.cards.SpellTrap;
+import model.cards.monster.Monster;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Deck {
     private static ArrayList<Deck> allDecks;
@@ -47,7 +52,7 @@ public class Deck {
     }
 
     public void deleteDeck(String name) {
-        getDeckOwner().getAllDecks().removeIf(deck -> deck.getName().equals(name));
+        getDeckOwner().getAllDecks().remove(name);
         allDecks.removeIf(deck -> deck.getName().equals(name));
     }
 
@@ -116,9 +121,8 @@ public class Deck {
     }
 
     public boolean doesUserHaveThisCard(Card card) {
-        ArrayList<Card> allCards = getDeckOwner().getAllCards();
-        for (Card theCard : allCards) {
-            if (theCard.getName().equals(card.getName()))
+        for (String name : getDeckOwner().getAllCards().keySet()){
+            if (card.getName().equals(name))
                 return true;
         }
         return false;
@@ -130,7 +134,40 @@ public class Deck {
 
     @Override
     public String toString() {
-        //TODO
-        return "";
+        StringBuilder stringToReturn = new StringBuilder();
+
+        HashMap<String, Monster> monsters = Database.getInstance().getAllMonsters();
+        HashMap<String, SpellTrap> spellTraps = Database.getInstance().getAllSpellTraps();
+
+        stringToReturn.append("Deck: ").append(getName()).append("\n");
+        stringToReturn.append("Main deck:").append("\n");
+
+        stringToReturn.append("Monsters:").append("\n");
+        ArrayList<String> sortedMonsters = new ArrayList<>(monsters.keySet());
+        Collections.sort(sortedMonsters);
+        for (String name : sortedMonsters) {
+            stringToReturn.append(name).append(": ").append(monsters.get(name).getDescription()).append("\n");
+        }
+
+        stringToReturn.append("Spell and Traps:").append("\n");
+        ArrayList<String> sortedSpellTraps = new ArrayList<>(spellTraps.keySet());
+        Collections.sort(sortedSpellTraps);
+        for (String name : sortedSpellTraps) {
+            stringToReturn.append(name).append(": ").append(spellTraps.get(name).getDescription()).append("\n");
+        }
+        return stringToReturn.toString();
+    }
+
+    public String allCardsToString(){
+        StringBuilder stringToReturn = new StringBuilder();
+        HashMap<String, Card> allCards = getDeckOwner().getAllCards();
+        ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
+        Collections.sort(sortedCardNames);
+
+        for (String name : sortedCardNames){
+            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
+        }
+
+        return stringToReturn.toString();
     }
 }
