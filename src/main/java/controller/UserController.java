@@ -2,17 +2,19 @@ package controller;
 
 import model.User;
 
+import java.util.regex.Matcher;
+
 public class UserController {
     private static UserController userController;
     private User user;
 
-    private UserController(User user) {
-        this.user = user;
-    }
+//    private UserController(User user) {
+//        this.user = user;
+//    }
 
-    public static UserController getInstance(User user) {
+    public static UserController getInstance() {
         if (userController == null)
-            userController = new UserController(user);
+            userController = new UserController();
         return userController;
     }
 
@@ -24,11 +26,11 @@ public class UserController {
 
     }
 
-    public void changePassword(String oldPassword, String newPassword) {
+    public void changePassword(Matcher matcher) {
 
     }
 
-    public void changeNickname(String username,String nickname){
+    public void changeNickname(Matcher matcher){
 
     }
 
@@ -51,4 +53,5 @@ public class UserController {
     private boolean checkPassword(String username, String password){
         return true;
     }
+
 }

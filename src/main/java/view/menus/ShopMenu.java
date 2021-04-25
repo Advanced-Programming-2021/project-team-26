@@ -27,6 +27,5 @@ public class ShopMenu extends Menu {
         super(menu);
     }
 
-    public void run(){
-    }
+    public void run(){}
 }
