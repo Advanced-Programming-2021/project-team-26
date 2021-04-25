@@ -1,8 +1,10 @@
 package model;
 
-import controller.MonsterController;
-import controller.SpellTrapController;
+import controller.*;
+import controller.exceptions.*;
 import model.cards.Card;
+import model.cards.SpellTrap;
+import model.cards.monster.Monster;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,15 +19,18 @@ public class Board {
     private List<Card> graveyard;
     private List<Card> hand;
     private Card FieldZone;
+    private GameController gameController;
 
-    public Board(List<Card> deck) {
+    public Board(GameController gameController, List<Card> deck) {
         initDeck(deck);
+        setGameController(gameController);
         initMonstersZone();
         initSpellTrapZone();
         initGraveyard();
         initHand();
         initFieldZone();
     }
+
 
     public List<Card> getDeck() {
         return deck;
@@ -56,6 +61,10 @@ public class Board {
         Collections.shuffle(this.deck);
     }
 
+    private void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
+
     private void initMonstersZone() {
         this.monstersZone = new MonsterController[CARD_NUMBER_IN_ROW];
     }
@@ -81,5 +90,49 @@ public class Board {
     public void addCardToHand() {
         Card addedCard = this.deck.remove(0);
         hand.add(addedCard);
+    }
+
+    public void putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {
+        if (!hand.contains(monster)) {
+            throw new MonsterNotFoundException();
+        }
+        int lastEmpty = 0;
+        while (lastEmpty < monstersZone.length && monstersZone[lastEmpty] != null) {
+            lastEmpty++;
+        }
+        if (lastEmpty >= monstersZone.length) {
+            throw new FullMonsterZone();
+        }
+        hand.remove(monster);
+        monstersZone[lastEmpty] = MonsterController.getInstance(gameController,monster,position);
+    }
+
+    public void putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
+        if(!hand.contains(spellTrap)){
+            throw new SpellTrapNotFoundException();
+        }
+        int lastEmpty = 0;
+        while(lastEmpty<spellTrapZone.length && spellTrapZone[lastEmpty]!=null){
+            lastEmpty++;
+        }
+        if(lastEmpty>=spellTrapZone.length){
+            throw new FullSpellTrapZone();
+        }
+        hand.remove(spellTrap);
+        spellTrapZone[lastEmpty] = SpellTrapController.getInstance(gameController,spellTrap,position);
+    }
+
+    public void removeMonster(int index){
+        if(monstersZone[index]==null)
+            return;
+        graveyard.add(monstersZone[index].getCard());
+        monstersZone[index] = null;
+    }
+
+    public void removeSpellTrap(int index){
+        if(spellTrapZone[index]==null)
+            return;
+        graveyard.add(spellTrapZone[index].getCard());
+        spellTrapZone[index] = null;
     }
 }

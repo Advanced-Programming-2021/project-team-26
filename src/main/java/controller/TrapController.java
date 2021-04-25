@@ -1,6 +1,8 @@
 package controller;
 
 import controller.exceptions.TrapNotFoundException;
+import model.cards.Card;
+import model.cards.SpellTrap;
 import model.cards.trap.Trap;
 
 import java.util.HashMap;
@@ -42,6 +44,11 @@ public class TrapController extends SpellTrapController {
 
     public void remove() {
 
+    }
+
+    @Override
+    public SpellTrap getCard() {
+        return this.trap;
     }
 
     public interface TrapMakerInterface {

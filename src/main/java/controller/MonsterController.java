@@ -1,6 +1,7 @@
 package controller;
 
 import controller.exceptions.MonsterNotFoundException;
+import model.cards.Card;
 import model.cards.monster.Monster;
 
 import java.util.HashMap;
@@ -74,6 +75,14 @@ public class MonsterController {
 
     public void remove() {
 
+    }
+
+    public String getName() {
+        return monster.getName();
+    }
+
+    public Monster getCard() {
+        return this.monster;
     }
 
     public interface MonsterMakerInterface {
