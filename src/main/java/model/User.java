@@ -54,13 +54,13 @@ public class User {
     }
 
     public static int compareTo(User first, User second) {
-        //return 1: firstUser has priority
+        //return -1: firstUser has priority
         if (first.getScore() > second.getScore())
-            return 1;
+            return -1;
         else if (first.getScore() == second.getScore() &&
                 first.getUsername().compareTo(second.getUsername()) < 0)
             return 1;
-        return -1;
+        return 0;
     }
 
     public HashMap<String, Deck> getAllDecks() {
