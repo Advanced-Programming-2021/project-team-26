@@ -3,6 +3,8 @@ package model;
 import controller.Database;
 import model.cards.Card;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Shop {
@@ -13,18 +15,29 @@ public class Shop {
         allCards = new HashMap<>();
     }
 
-    private Shop() {
+    private User currentUserInShop;
+
+    private Shop(User currentUserInShop) {
+        setCurrentUserInShop(currentUserInShop);
         allCards.putAll(Database.getInstance().getAllCards());
     }
 
-    public static Shop getInstance() {
+    public static Shop getInstance(User currentUserInShop) {
         if (shop == null)
-            shop = new Shop();
+            shop = new Shop(currentUserInShop);
         return shop;
     }
 
     public static HashMap<String, Card> getAllCards() {
         return allCards;
+    }
+
+    public User getCurrentUserInShop() {
+        return currentUserInShop;
+    }
+
+    public void setCurrentUserInShop(User currentUserInShop) {
+        this.currentUserInShop = currentUserInShop;
     }
 
     public int getPriceByCardName(String cardName) {
@@ -43,5 +56,27 @@ public class Shop {
             }
         }
         return false;
+    }
+
+    public int addCardToUsersCards(Card card){
+        if (getCurrentUserInShop().getMoney() < card.getPrice())
+            return 0; // user didnt have enough money
+        else {
+            getCurrentUserInShop().getAllCards().put(card.getName(), card);
+            return 1; //card added to users cards
+        }
+    }
+
+    public String allCardsToString(){
+        StringBuilder stringToReturn = new StringBuilder();
+        HashMap<String, Card> allCards = getAllCards();
+        ArrayList<String> sortedCardNames = new ArrayList<>(getAllCards().keySet());
+        Collections.sort(sortedCardNames);
+
+        for (String name : sortedCardNames){
+            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
+        }
+
+        return stringToReturn.toString();
     }
 }

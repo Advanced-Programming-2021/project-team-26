@@ -127,6 +127,10 @@ public class User {
         this.money += amount;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
     public void decreaseMoney(int amount) {
         this.money -= amount;
     }
