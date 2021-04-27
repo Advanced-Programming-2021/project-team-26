@@ -17,14 +17,14 @@ public class Deck {
     }
 
     private String name;
-    private User deckOwner;
+    private String deckOwnerUsername;
     private ArrayList<Card> mainDeck;
     private ArrayList<Card> sideDeck;
 
 
     public Deck(String name, User deckOwner) {
         setName(name);
-        setDeckOwner(deckOwner);
+        setDeckOwner(deckOwnerUsername);
         setMainDeck(new ArrayList<>());
         setSideDeck(new ArrayList<>());
         allDecks.add(this);
@@ -43,16 +43,12 @@ public class Deck {
         return false;
     }
 
-    public User getDeckOwner() {
-        return deckOwner;
-    }
-
-    public void setDeckOwner(User deckOwner) {
-        this.deckOwner = deckOwner;
+    public void setDeckOwner(String deckOwnerUsername) {
+        this.deckOwnerUsername = deckOwnerUsername;
     }
 
     public void deleteDeck(String name) {
-        getDeckOwner().getAllDecks().remove(name);
+        User.getUserByUsername(deckOwnerUsername).getAllDecks().remove(name);
         allDecks.removeIf(deck -> deck.getName().equals(name));
     }
 
@@ -121,7 +117,7 @@ public class Deck {
     }
 
     public boolean doesUserHaveThisCard(Card card) {
-        for (String name : getDeckOwner().getAllCards().keySet()){
+        for (String name : User.getUserByUsername(deckOwnerUsername).getAllCards().keySet()){
             if (card.getName().equals(name))
                 return true;
         }
@@ -160,7 +156,7 @@ public class Deck {
 
     public String allCardsToString(){
         StringBuilder stringToReturn = new StringBuilder();
-        HashMap<String, Card> allCards = getDeckOwner().getAllCards();
+        HashMap<String, Card> allCards = User.getUserByUsername(deckOwnerUsername).getAllCards();
         ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
         Collections.sort(sortedCardNames);
 
