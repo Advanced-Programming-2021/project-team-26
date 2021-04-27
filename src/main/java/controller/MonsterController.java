@@ -1,6 +1,6 @@
 package controller;
 
-import controller.exceptions.MonsterNotFoundException;
+import exceptions.MonsterNotFoundException;
 import model.cards.monster.Monster;
 
 import java.util.HashMap;

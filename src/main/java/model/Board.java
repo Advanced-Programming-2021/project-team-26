@@ -1,10 +1,10 @@
 package model;
 
 import controller.*;
-import controller.exceptions.FullMonsterZone;
-import controller.exceptions.FullSpellTrapZone;
-import controller.exceptions.MonsterNotFoundException;
-import controller.exceptions.SpellTrapNotFoundException;
+import exceptions.FullMonsterZone;
+import exceptions.FullSpellTrapZone;
+import exceptions.MonsterNotFoundException;
+import exceptions.SpellTrapNotFoundException;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;

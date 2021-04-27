@@ -1,6 +1,6 @@
 package controller;
 
-import controller.exceptions.SpellNotFoundException;
+import exceptions.SpellNotFoundException;
 import model.cards.SpellTrap;
 import model.cards.spell.Spell;
 

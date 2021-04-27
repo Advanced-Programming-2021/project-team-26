@@ -1,4 +1,4 @@
-package controller.exceptions;
+package exceptions;
 
 public class SpellTrapNotFoundException extends Exception {
 }

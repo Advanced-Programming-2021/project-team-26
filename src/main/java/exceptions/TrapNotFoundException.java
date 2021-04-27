@@ -1,4 +1,4 @@
-package controller.exceptions;
+package exceptions;
 
 public class TrapNotFoundException extends CardNotFoundException {
 }
