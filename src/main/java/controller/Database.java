@@ -1,27 +1,34 @@
 package controller;
 
+import com.google.gson.Gson;
 import com.opencsv.CSVReader;
+import model.User;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 import model.cards.trap.Trap;
 
-import java.io.FileReader;
+import java.io.*;
 import java.util.HashMap;
 
 public class Database {
-    private static final String monsterPath;
-    private static final String spellTrapPath;
     private static Database database;
+    private final String monsterPath;
+    private final String spellTrapPath;
+    private final String userDirectoryPath;
+    private final String databasePath;
 
-    static {
-        monsterPath = "Monster.csv";
-        spellTrapPath = "SpellTrap.csv";
+    {
+        monsterPath = getClass().getClassLoader().getResource("Monster.csv").getPath();
+        spellTrapPath = getClass().getClassLoader().getResource("SpellTrap.csv").getPath();
+        databasePath = System.getProperty("user.dir") + File.separator + "database";
+        userDirectoryPath = System.getProperty("user.dir") + File.separator + "database" + File.separator + "Users";
     }
 
     private Database() {
-
+        createFolder(databasePath);
+        createFolder(userDirectoryPath);
     }
 
     public static Database getInstance() {
@@ -30,12 +37,16 @@ public class Database {
         return database;
     }
 
+    public void createFolder(String path) {
+        File file = new File(path);
+        file.mkdir();
+    }
+
     public HashMap<String, Card> getAllCards() {
-        HashMap<String, Card> cards = new HashMap<>();
         HashMap<String, Monster> monsters = getAllMonsters();
         if (monsters == null)
             return null;
-        cards.putAll(monsters);
+        HashMap<String, Card> cards = new HashMap<>(monsters);
 
         HashMap<String, SpellTrap> spellTraps = getAllSpellTraps();
         if (spellTraps == null)
@@ -48,7 +59,7 @@ public class Database {
     public HashMap<String, Monster> getAllMonsters() {
         HashMap<String, Monster> monsters = new HashMap<>();
         try {
-            FileReader monsterFile = new FileReader(getClass().getClassLoader().getResource(monsterPath).getPath());
+            FileReader monsterFile = new FileReader(monsterPath);
             CSVReader reader = new CSVReader(monsterFile);
 
             String[] nextRecord;
@@ -69,7 +80,7 @@ public class Database {
     public HashMap<String, SpellTrap> getAllSpellTraps() {
         HashMap<String, SpellTrap> spellTraps = new HashMap<>();
         try {
-            FileReader spellTrapFile = new FileReader(getClass().getClassLoader().getResource(spellTrapPath).getPath());
+            FileReader spellTrapFile = new FileReader(spellTrapPath);
             CSVReader reader = new CSVReader(spellTrapFile);
 
             String[] nextRecord;
@@ -93,7 +104,7 @@ public class Database {
     public HashMap<String, Spell> getAllSpells() {
         HashMap<String, Spell> spells = new HashMap<>();
         try {
-            FileReader spellTrapFile = new FileReader(getClass().getClassLoader().getResource(spellTrapPath).getPath());
+            FileReader spellTrapFile = new FileReader(spellTrapPath);
             CSVReader reader = new CSVReader(spellTrapFile);
 
             String[] nextRecord;
@@ -115,7 +126,7 @@ public class Database {
     public HashMap<String, Trap> getAllTraps() {
         HashMap<String, Trap> traps = new HashMap<>();
         try {
-            FileReader spellTrapFile = new FileReader(getClass().getClassLoader().getResource(spellTrapPath).getPath());
+            FileReader spellTrapFile = new FileReader(spellTrapPath);
             CSVReader reader = new CSVReader(spellTrapFile);
 
             String[] nextRecord;
@@ -132,5 +143,49 @@ public class Database {
         }
 
         return null;
+    }
+
+    public User readUser(String username) {
+        try {
+            String path = userDirectoryPath + File.separator + username + ".json";
+            FileReader userFile = new FileReader(path);
+            return new Gson().fromJson(userFile, User.class);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+    }
+
+    public boolean writeUser(User user) {
+        try {
+            String path = userDirectoryPath + File.separator + user.getUsername() + ".json";
+            FileWriter fileWriter = new FileWriter(path);
+            new Gson().toJson(user, fileWriter);
+            fileWriter.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public HashMap<String, User> getAllUsers() {
+        File userDirectory = new File(userDirectoryPath);
+        File[] userFiles = userDirectory.listFiles();
+
+        if (userFiles != null) {
+            HashMap<String, User> allUsers = new HashMap<>();
+            for (File userFile : userFiles) {
+                try {
+                    FileReader fileReader = new FileReader(userFile);
+                    User user = new Gson().fromJson(fileReader, User.class);
+                    allUsers.put(user.getUsername(), user);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return allUsers;
+        } else {
+            return null;
+        }
     }
 }

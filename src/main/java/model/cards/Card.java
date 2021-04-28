@@ -4,7 +4,7 @@ import controller.Database;
 
 import java.util.Map;
 
-public abstract class Card {
+public class Card {
     private static final Map<String, Card> allCards;
 
     static {

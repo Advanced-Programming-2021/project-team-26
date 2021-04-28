@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class Deck {
-    private static ArrayList<Deck> allDecks;
+    private static final ArrayList<Deck> allDecks;
 
     static {
         allDecks = new ArrayList<>();
@@ -24,7 +24,7 @@ public class Deck {
     private ArrayList<Card> sideDeck;
 
 
-    public Deck(String name, User deckOwner) {
+    public Deck(String name, String deckOwnerUsername) {
         setName(name);
         setDeckOwner(deckOwnerUsername);
         setMainDeck(new ArrayList<>());
