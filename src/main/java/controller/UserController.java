@@ -3,6 +3,7 @@ package controller;
 import exceptions.DuplicateNickname;
 import exceptions.DuplicateUsername;
 import exceptions.InvalidInput;
+import exceptions.WrongUsernamePassword;
 import model.User;
 import view.Scan;
 
@@ -74,12 +75,34 @@ public class UserController {
 
     }
 
-    public void loginUser(Matcher matcher) {
+    public void loginUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+
+        String username = null;
+        if (input.containsKey("username"))
+            username = input.get("username");
+        else if (input.containsKey("u"))
+            username = input.get("u");
+        if (username == null)
+            throw new InvalidInput();
+
+        String password = null;
+        if (input.containsKey("password"))
+            password = input.get("password");
+        else if (input.containsKey("p"))
+            password = input.get("p");
+        if (password == null)
+            throw new InvalidInput();
+
+        user = User.getUserByUsername(username);
+        if (user == null || !user.getPassword().equals(password))
+            throw new WrongUsernamePassword();
 
     }
 
     public void logout(Matcher matcher) {
-
+        user = null;
     }
 
     private boolean checkUsernameExistence(String username) {
