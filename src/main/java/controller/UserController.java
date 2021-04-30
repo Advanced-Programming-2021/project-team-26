@@ -71,8 +71,22 @@ public class UserController {
 
     }
 
-    public void changeNickname(Matcher matcher) {
+    public void changeNickname(Matcher matcher) throws InvalidInput, DuplicateNickname {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
+        String nickname = null;
+        if (input.containsKey("nickname"))
+            nickname = input.get("nickname");
+        else if (input.containsKey("n"))
+            nickname = input.get("n");
+        if (nickname == null)
+            throw new InvalidInput();
+
+        if (checkNicknameExistence(nickname))
+            throw new DuplicateNickname();
+
+        user.setNickname(nickname);
     }
 
     public void loginUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
