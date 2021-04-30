@@ -1,9 +1,6 @@
 package controller;
 
-import exceptions.DuplicateNickname;
-import exceptions.DuplicateUsername;
-import exceptions.InvalidInput;
-import exceptions.WrongUsernamePassword;
+import exceptions.*;
 import model.User;
 import view.Scan;
 
@@ -67,8 +64,36 @@ public class UserController {
 
     }
 
-    public void changePassword(Matcher matcher) {
+    public void changePassword(Matcher matcher) throws InvalidInput, WrongPassword, SamePassword {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
+        if (!input.containsKey("password") || !input.containsKey("p"))
+            throw new InvalidInput();
+
+        String currentPassword = null;
+        if (input.containsKey("current"))
+            currentPassword = input.get("current");
+        else if (input.containsKey("c"))
+            currentPassword = input.get("c");
+        if (currentPassword == null)
+            throw new InvalidInput();
+
+        String newPassword = null;
+        if (input.containsKey("new"))
+            newPassword = input.get("new");
+        else if (input.containsKey("n"))
+            newPassword = input.get("n");
+        if (newPassword == null)
+            throw new InvalidInput();
+
+        if (!user.getPassword().equals(currentPassword))
+            throw new WrongPassword();
+
+        if (currentPassword.equals(newPassword))
+            throw new SamePassword();
+
+        user.setPassword(newPassword);
     }
 
     public void changeNickname(Matcher matcher) throws InvalidInput, DuplicateNickname {
