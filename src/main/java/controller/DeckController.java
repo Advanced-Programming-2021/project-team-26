@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.regex.Matcher;
+
 public class DeckController {
     private static DeckController deckController;
 
@@ -12,35 +14,35 @@ public class DeckController {
         return deckController;
     }
 
-    public void createDeck(String name){
+    public void createDeck(Matcher matcher){
 
     }
 
-    public void removeDeck(String name){
+    public void removeDeck(Matcher matcher){
 
     }
 
-    public void setActive(String name){
+    public void setActive(Matcher matcher){
 
     }
 
-    public void addCard(String cardName,String deckName,boolean side){
+    public void addCard(Matcher matcher){
 
     }
 
-    public void removeCard(String cardName,String deckName,boolean side){
+    public void removeCard(Matcher matcher){
 
     }
 
-    public void showAllDeck(){
+    public void showAllDeck(Matcher matcher){
 
     }
 
-    public void showDeck(String name,boolean side){
+    public void showDeck(Matcher matcher){
 
     }
 
-    public void showCards(){
+    public void showCards(Matcher matcher){
 
     }
 }

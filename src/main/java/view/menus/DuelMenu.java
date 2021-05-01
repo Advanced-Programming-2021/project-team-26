@@ -6,12 +6,12 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import controller.GameController;
 
 public class DuelMenu extends Menu {
-    private static final Map<Pattern, Method> PATTERNS;
 
-    static {
-        PATTERNS = new HashMap<>();
+    {
+
     }
     public DuelMenu(Menu menu) {
         super(menu);

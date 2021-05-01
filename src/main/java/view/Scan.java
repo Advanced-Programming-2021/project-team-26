@@ -5,11 +5,9 @@ import java.util.Scanner;
 public class Scan {
     private static Scan scan;
     private final Scanner scanner;
-
     private Scan(){
         scanner = new Scanner(System.in);
     }
-
     public static Scan getInstance(){
         if(scan==null)
             scan = new Scan();

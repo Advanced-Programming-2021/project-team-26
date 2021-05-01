@@ -11,13 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainMenu extends Menu {
-    private static  UserController userController = UserController.getInstance();
-     {
-        super.MAP.put(Pattern.compile("^menu show-current$"), super::showCurrentMenu);
-        super.MAP.put(Pattern.compile("^user creat --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::addNewUser);
-        super.MAP.put(Pattern.compile("^user login --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::loginUser);
-        super.MAP.put(Pattern.compile("^user logout$"), userController::logout);
-    }
+
     public MainMenu(Menu menu) {
         super(menu);
         super.name = "Main";
