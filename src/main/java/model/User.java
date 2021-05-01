@@ -19,7 +19,7 @@ public class User {
     private int money;
     private HashMap<String, Deck> allDecks;
     private HashMap<String, Card> allCards;
-    private Deck activeDeck;
+    private String activeDeckName;
 
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
@@ -79,12 +79,12 @@ public class User {
         this.allCards = allCards;
     }
 
-    public Deck getActiveDeck() {
-        return activeDeck;
+    public String getActiveDeck() {
+        return activeDeckName;
     }
 
-    public void setActiveDeck(Deck activeDeck) {
-        this.activeDeck = activeDeck;
+    public void setActiveDeck(String activeDeckName) {
+        this.activeDeckName = activeDeckName;
     }
 
     public String getUsername() {

@@ -49,11 +49,6 @@ public class Deck {
         this.deckOwnerUsername = deckOwnerUsername;
     }
 
-    public void deleteDeck(String name) {
-        User.getUserByUsername(deckOwnerUsername).getAllDecks().remove(name);
-        allDecks.removeIf(deck -> deck.getName().equals(name));
-    }
-
     public String getName() {
         return name;
     }

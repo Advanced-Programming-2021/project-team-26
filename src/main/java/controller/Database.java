@@ -18,6 +18,11 @@ public class Database {
     private final String spellTrapPath;
     private final String userDirectoryPath;
     private final String databasePath;
+    private User currentUser;
+
+    {
+        currentUser = null;
+    }
 
     {
         monsterPath = getClass().getClassLoader().getResource("Monster.csv").getPath();
@@ -35,6 +40,14 @@ public class Database {
         if (database == null)
             database = new Database();
         return database;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     public void createFolder(String path) {
