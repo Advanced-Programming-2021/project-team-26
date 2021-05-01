@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 public class UserController {
     private static UserController userController;
     private final HashMap<String, User> allUsers;
-    private User user;
 
     private UserController() {
         allUsers = Database.getInstance().getAllUsers();
@@ -87,13 +86,13 @@ public class UserController {
         if (newPassword == null)
             throw new InvalidInput();
 
-        if (!user.getPassword().equals(currentPassword))
+        if (!Database.getInstance().getCurrentUser().getPassword().equals(currentPassword))
             throw new WrongPassword();
 
         if (currentPassword.equals(newPassword))
             throw new SamePassword();
 
-        user.setPassword(newPassword);
+        Database.getInstance().getCurrentUser().setPassword(newPassword);
     }
 
     public void changeNickname(Matcher matcher) throws InvalidInput, DuplicateNickname {
@@ -111,7 +110,7 @@ public class UserController {
         if (checkNicknameExistence(nickname))
             throw new DuplicateNickname();
 
-        user.setNickname(nickname);
+        Database.getInstance().getCurrentUser().setNickname(nickname);
     }
 
     public void loginUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
@@ -134,14 +133,14 @@ public class UserController {
         if (password == null)
             throw new InvalidInput();
 
-        user = User.getUserByUsername(username);
+        User user = User.getUserByUsername(username);
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
-
+        Database.getInstance().setCurrentUser(user);
     }
 
     public void logout(Matcher matcher) {
-        user = null;
+        Database.getInstance().setCurrentUser(null);
     }
 
     private boolean checkUsernameExistence(String username) {
