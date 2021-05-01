@@ -3,7 +3,7 @@ package view;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Scan {
+public class  Scan {
     private static Scan scan;
     private final Scanner scanner;
 
