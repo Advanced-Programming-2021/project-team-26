@@ -44,7 +44,7 @@ public class DeckController {
     }
 
     public void addCard(Matcher matcher) throws InvalidInput, DeckNotFoundException, CardNotFoundException,
-            FullDeckException, InvalidNumberOfACardException {
+            InvalidNumberOfACardException, FullMainDeckException, FullSideDeckException {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -67,10 +67,10 @@ public class DeckController {
 
         if (input.containsKey("side")) {
             if (Deck.getDeckByDeckName(deckName).getSideDeck().size() == 15)
-                throw new FullDeckException();
+                throw new FullSideDeckException();
         } else {
             if (Deck.getDeckByDeckName(deckName).getMainDeck().size() == 60)
-                throw new FullDeckException();
+                throw new FullMainDeckException();
         }
 
         if (!Deck.getDeckByDeckName(deckName).IsNumberOfTheCardInDeckValid(cardName))
@@ -82,16 +82,39 @@ public class DeckController {
             Deck.getDeckByDeckName(deckName).addCardToMainDeck(Card.getCard(cardName));
     }
 
-    private void addCardToMainDeck(HashMap<String, String> input) throws InvalidInput {
+    public void removeCard(Matcher matcher) throws InvalidInput, DeckNotFoundException,
+            CardNotFoundInSideDeck, CardNotFoundInMainDeck {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
-    }
+        String cardName = null;
+        if (input.containsKey("card") || input.containsKey("c"))
+            cardName = input.get("card");
+        if (cardName == null)
+            throw new InvalidInput();
 
-    private void addCardToSideDeck(HashMap<String, String> input) {
+        String deckName = null;
+        if (input.containsKey("deck") || input.containsKey("d"))
+            deckName = input.get("deck");
+        if (deckName == null)
+            throw new InvalidInput();
 
-    }
+        if (!Deck.checkDeckNameExistence(deckName))
+            throw new DeckNotFoundException();
 
-    public void removeCard(Matcher matcher) {
+        if (input.containsKey("side")) {
+            if (!Deck.getDeckByDeckName(deckName).doesCardExistInSideDeck(cardName))
+                throw new CardNotFoundInSideDeck();
+        } else {
+            if (!Deck.getDeckByDeckName(deckName).doesCardExistInMainDeck(cardName))
+                throw new CardNotFoundInMainDeck();
+        }
 
+
+        if (input.containsKey("side"))
+            Deck.getDeckByDeckName(deckName).deleteCardFromSideDeck(Card.getCard(cardName));
+        else
+            Deck.getDeckByDeckName(deckName).deleteCardFromMainDeck(Card.getCard(cardName));
     }
 
 

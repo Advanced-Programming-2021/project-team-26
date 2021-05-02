@@ -52,6 +52,22 @@ public class Deck {
         return null;
     }
 
+    public boolean doesCardExistInMainDeck(String cardName) {
+        for (Card card : mainDeck) {
+            if (card.getName().equals(cardName))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean doesCardExistInSideDeck(String cardName) {
+        for (Card card : sideDeck) {
+            if (card.getName().equals(cardName))
+                return true;
+        }
+        return false;
+    }
+
     public ArrayList<Card> getAllCards() {
         return allCards;
     }
