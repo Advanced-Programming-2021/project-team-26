@@ -28,6 +28,10 @@ public class Card {
         setPrice(price);
     }
 
+    public static boolean checkCardNameExistence(String cardName) {
+        return allCards.containsKey(cardName);
+    }
+
     public static Card getCard(String name) {
         if (allCards.containsKey(name))
             return allCards.get(name);

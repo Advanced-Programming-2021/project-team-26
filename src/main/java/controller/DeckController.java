@@ -1,9 +1,12 @@
 package controller;
 
-import exceptions.UnreachableDeckNameException;
+import exceptions.*;
 import model.Deck;
 import model.User;
+import model.cards.Card;
+import view.Scan;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 
 public class DeckController {
@@ -36,11 +39,54 @@ public class DeckController {
     public void setActive(Matcher matcher) throws UnreachableDeckNameException {
         String deckName = matcher.group(1);
         if (!Deck.checkDeckNameExistence(deckName))
-        Database.getInstance().getCurrentUser().setActiveDeck(deckName);
+            Database.getInstance().getCurrentUser().setActiveDeck(deckName);
         else throw new UnreachableDeckNameException();
     }
 
-    public void addCard(Matcher matcher) {
+    public void addCard(Matcher matcher) throws InvalidInput, DeckNotFoundException, CardNotFoundException,
+            FullDeckException, InvalidNumberOfACardException {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+
+        String cardName = null;
+        if (input.containsKey("card") || input.containsKey("c"))
+            cardName = input.get("card");
+        if (cardName == null)
+            throw new InvalidInput();
+
+        String deckName = null;
+        if (input.containsKey("deck") || input.containsKey("d"))
+            deckName = input.get("deck");
+        if (deckName == null)
+            throw new InvalidInput();
+
+        if (!Database.getInstance().getCurrentUser().doesUserHaveThisCard(cardName))
+            throw new CardNotFoundException();
+        if (!Deck.checkDeckNameExistence(deckName))
+            throw new DeckNotFoundException();
+
+        if (input.containsKey("side")) {
+            if (Deck.getDeckByDeckName(deckName).getSideDeck().size() == 15)
+                throw new FullDeckException();
+        } else {
+            if (Deck.getDeckByDeckName(deckName).getMainDeck().size() == 60)
+                throw new FullDeckException();
+        }
+
+        if (!Deck.getDeckByDeckName(deckName).IsNumberOfTheCardInDeckValid(cardName))
+            throw new InvalidNumberOfACardException();
+
+        if (input.containsKey("side"))
+            Deck.getDeckByDeckName(deckName).addCardToSideDeck(Card.getCard(cardName));
+        else
+            Deck.getDeckByDeckName(deckName).addCardToMainDeck(Card.getCard(cardName));
+    }
+
+    private void addCardToMainDeck(HashMap<String, String> input) throws InvalidInput {
+
+    }
+
+    private void addCardToSideDeck(HashMap<String, String> input) {
 
     }
 

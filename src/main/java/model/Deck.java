@@ -1,8 +1,6 @@
 package model;
 
 import controller.Database;
-import exceptions.CardNotFoundException;
-import exceptions.FullDeckException;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
@@ -22,13 +20,14 @@ public class Deck {
     private String deckOwnerUsername;
     private ArrayList<Card> mainDeck;
     private ArrayList<Card> sideDeck;
-
+    private ArrayList<Card> allCards;
 
     public Deck(String name, String deckOwnerUsername) {
         setName(name);
         setDeckOwner(deckOwnerUsername);
         setMainDeck(new ArrayList<>());
         setSideDeck(new ArrayList<>());
+        setAllCards(new ArrayList<>());
         allDecks.add(this);
     }
 
@@ -43,6 +42,22 @@ public class Deck {
             }
         }
         return false;
+    }
+
+    public static Deck getDeckByDeckName(String name) {
+        for (Deck deck : allDecks) {
+            if (deck.getName().equals(name))
+                return deck;
+        }
+        return null;
+    }
+
+    public ArrayList<Card> getAllCards() {
+        return allCards;
+    }
+
+    public void setAllCards(ArrayList<Card> allCards) {
+        this.allCards = allCards;
     }
 
     public void setDeckOwner(String deckOwnerUsername) {
@@ -73,45 +88,32 @@ public class Deck {
         this.sideDeck = sideDeck;
     }
 
-    public void addCardToMainDeck(Card card) throws CardNotFoundException, FullDeckException {
-        if (!doesUserHaveThisCard(card))
-            throw new CardNotFoundException();
-        else if (mainDeck.size() == 60)
-            throw new FullDeckException();
-        else
-            mainDeck.add(card);
+    public void addCardToMainDeck(Card card) {
+        mainDeck.add(card);
+        allCards.add(card);
     }
 
-    public void addCardToSideDeck(Card card) throws CardNotFoundException, FullDeckException {
-        if (!doesUserHaveThisCard(card))
-            throw new CardNotFoundException();
-        else if (sideDeck.size() == 15)
-            throw new FullDeckException();
-        else
-            sideDeck.add(card);
+    public void addCardToSideDeck(Card card) {
+        sideDeck.add(card);
+        allCards.add(card);
     }
 
-    public void deleteCardFromMainDeck(Card card) throws CardNotFoundException {
-        if (!doesUserHaveThisCard(card))
-            throw new CardNotFoundException();
-        else
-            mainDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
+    public boolean IsNumberOfTheCardInDeckValid(String cardName) {
+        int count = 0;
 
-    }
-
-    public void deleteCardFromSideDeck(Card card) throws CardNotFoundException {
-        if (!doesUserHaveThisCard(card))
-            throw new CardNotFoundException();
-        else
-            sideDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
-    }
-
-    public boolean doesUserHaveThisCard(Card card) {
-        for (String name : User.getUserByUsername(deckOwnerUsername).getAllCards().keySet()) {
-            if (card.getName().equals(name))
-                return true;
+        for (Card card : allCards) {
+            if (card.getName().equals(cardName))
+                count++;
         }
-        return false;
+        return count < 3;
+    }
+
+    public void deleteCardFromMainDeck(Card card) {
+        mainDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
+    }
+
+    public void deleteCardFromSideDeck(Card card) {
+        sideDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
     }
 
     public boolean isDeckValid() {

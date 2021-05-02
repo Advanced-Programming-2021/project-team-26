@@ -63,6 +63,10 @@ public class User {
         return 0;
     }
 
+    public boolean doesUserHaveThisCard(String cardName) {
+        return allCards.containsKey(cardName);
+    }
+
     public HashMap<String, Deck> getAllDecks() {
         return allDecks;
     }
@@ -119,16 +123,16 @@ public class User {
         this.score = score;
     }
 
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
     public void increaseMoney(int amount) {
         this.money += amount;
     }
 
     public int getMoney() {
         return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public void decreaseMoney(int amount) {

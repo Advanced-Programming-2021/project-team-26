@@ -1,5 +1,7 @@
 package view;
 
+import exceptions.ExceptionForPrint;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -28,7 +30,7 @@ abstract public class Menu {
                 if(matcher != null) {
                     try {
                         MAP.get(pattern).accept(matcher);
-                    }catch (ExeptionForPrint e){
+                    }catch (ExceptionForPrint e){
                         System.out.println(e.getMessage());
                     }
                 }
