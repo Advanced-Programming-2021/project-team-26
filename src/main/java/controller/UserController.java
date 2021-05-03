@@ -9,10 +9,8 @@ import java.util.regex.Matcher;
 
 public class UserController {
     private static UserController userController;
-    private final HashMap<String, User> allUsers;
 
     private UserController() {
-        allUsers = Database.getInstance().getAllUsers();
     }
 
     public static UserController getInstance() {
@@ -49,18 +47,39 @@ public class UserController {
         if (password == null)
             throw new InvalidInput();
 
-        if (checkUsernameExistence(username))
+        if (User.checkUsernameExistence(username))
             throw new DuplicateUsername();
-        if (checkNicknameExistence(nickname))
+        if (User.checkNicknameExistence(nickname))
             throw new DuplicateNickname();
 
         User user = new User(username, password, nickname);
-        allUsers.put(username, user);
-        Database.getInstance().writeUser(user);
     }
 
-    public void removeUser(Matcher matcher) {
+    public void removeUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
+        String username = null;
+        if (input.containsKey("username"))
+            username = input.get("username");
+        else if (input.containsKey("u"))
+            username = input.get("u");
+        if (username == null)
+            throw new InvalidInput();
+
+        String password = null;
+        if (input.containsKey("password"))
+            password = input.get("password");
+        else if (input.containsKey("p"))
+            password = input.get("p");
+        if (password == null)
+            throw new InvalidInput();
+
+        User user = User.getUserByUsername(username);
+        if (user == null || !user.getPassword().equals(password))
+            throw new WrongUsernamePassword();
+
+        User.removeUser(user.getUsername());
     }
 
     public void changePassword(Matcher matcher) throws InvalidInput, WrongPassword, SamePassword {
@@ -107,7 +126,7 @@ public class UserController {
         if (nickname == null)
             throw new InvalidInput();
 
-        if (checkNicknameExistence(nickname))
+        if (User.checkNicknameExistence(nickname))
             throw new DuplicateNickname();
 
         Database.getInstance().getCurrentUser().setNickname(nickname);
@@ -142,21 +161,4 @@ public class UserController {
     public void logout(Matcher matcher) {
         Database.getInstance().setCurrentUser(null);
     }
-
-    private boolean checkUsernameExistence(String username) {
-        return allUsers.containsKey(username);
-    }
-
-    private boolean checkNicknameExistence(String nickname) {
-        for (User user : allUsers.values()) {
-            if (user.getNickname().equals(nickname))
-                return true;
-        }
-        return false;
-    }
-
-    private boolean checkPassword(String username, String password) {
-        return true;
-    }
-
 }

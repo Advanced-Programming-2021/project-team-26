@@ -3,13 +3,14 @@ package controller;
 import exceptions.DuplicateNickname;
 import exceptions.DuplicateUsername;
 import exceptions.InvalidInput;
+import exceptions.WrongUsernamePassword;
+import model.User;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
     @Test
@@ -89,5 +90,33 @@ class UserControllerTest {
             if (!(e instanceof InvalidInput))
                 fail();
         }
+    }
+
+    @Test
+    public void removeUser() {
+        String user = "user create --nickname nick -u user -p thisIsPass";
+        Matcher matcher = Pattern.compile(user).matcher(user);
+        matcher.find();
+
+        try {
+            UserController.getInstance().addNewUser(matcher);
+        } catch (Exception e) {
+            fail();
+        }
+
+        String removeUser = "remove user --username user --password thisIsPass";
+        Matcher removeMatcher = Pattern.compile(removeUser).matcher(removeUser);
+        removeMatcher.find();
+
+        try {
+            UserController.getInstance().removeUser(removeMatcher);
+        } catch (InvalidInput invalidInput) {
+            fail();
+        } catch (WrongUsernamePassword wrongUsernamePassword) {
+            fail();
+        }
+
+        assertEquals(null, User.getUserByUsername("user"));
+        assertEquals(null, Database.getInstance().readUser("user"));
     }
 }

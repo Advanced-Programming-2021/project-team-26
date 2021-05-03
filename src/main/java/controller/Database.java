@@ -201,4 +201,10 @@ public class Database {
             return null;
         }
     }
+
+    public void removeUser(String username) {
+        String path = userDirectoryPath + File.separator + username + ".json";
+        File file = new File(path);
+        file.delete();
+    }
 }

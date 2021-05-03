@@ -1,15 +1,15 @@
 package model;
 
+import controller.Database;
 import model.cards.Card;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class User {
-    private static ArrayList<User> allUsers;
+    private static final HashMap<String, User> allUsers;
 
     static {
-        allUsers = new ArrayList<>();
+        allUsers = Database.getInstance().getAllUsers();
     }
 
     private String username;
@@ -24,20 +24,18 @@ public class User {
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
         allCards = new HashMap<>();
-        setMoney(0);
         setUsername(username);
         setPassword(password);
         setNickname(nickname);
-        allUsers.add(this);
+        setMoney(0);
+        allUsers.put(username, this);
+        Database.getInstance().writeUser(this);
     }
 
-    public static ArrayList<User> getAllUsers() {
+    public static HashMap<String, User> getAllUsers() {
         return allUsers;
     }
 
-    public static void setAllUsers(ArrayList<User> allUsers) {
-        User.allUsers = allUsers;
-    }
 
     public static String getPasswordByUsername(String username) {
         if (getUserByUsername(username) == null)
@@ -46,10 +44,8 @@ public class User {
     }
 
     public static User getUserByUsername(String username) {
-        for (User user : allUsers) {
-            if (user.getUsername().equals(username))
-                return user;
-        }
+        if (allUsers.containsKey(username))
+            return allUsers.get(username);
         return null;
     }
 
@@ -61,6 +57,23 @@ public class User {
                 first.getUsername().compareTo(second.getUsername()) < 0)
             return 1;
         return 0;
+    }
+
+    public static void removeUser(String username) {
+        allUsers.remove(username);
+        Database.getInstance().removeUser(username);
+    }
+
+    public static boolean checkUsernameExistence(String username) {
+        return allUsers.containsKey(username);
+    }
+
+    public static boolean checkNicknameExistence(String nickname) {
+        for (User user : allUsers.values()) {
+            if (user.getNickname().equals(nickname))
+                return true;
+        }
+        return false;
     }
 
     public boolean doesUserHaveThisCard(String cardName) {
@@ -105,6 +118,7 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+        Database.getInstance().writeUser(this);
     }
 
     public String getNickname() {
@@ -113,6 +127,7 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+        Database.getInstance().writeUser(this);
     }
 
     public int getScore() {
@@ -121,6 +136,7 @@ public class User {
 
     public void setScore(int score) {
         this.score = score;
+        Database.getInstance().writeUser(this);
     }
 
     public void increaseMoney(int amount) {
@@ -133,10 +149,7 @@ public class User {
 
     public void setMoney(int money) {
         this.money = money;
-    }
-
-    public void decreaseMoney(int amount) {
-        this.money -= amount;
+        Database.getInstance().writeUser(this);
     }
 
     public void addCardToUserCards(Card card) {
@@ -145,5 +158,9 @@ public class User {
 
     public void addDeckToUserDecks(Deck deck) {
         this.allDecks.put(deck.getName(), deck);
+    }
+
+    public void decreaseMoney(int amount) {
+        setMoney(this.money - amount);
     }
 }
