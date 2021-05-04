@@ -118,16 +118,31 @@ public class DeckController {
     }
 
 
-    public void showDeck(Matcher matcher) {
+    public String showDeck(Matcher matcher) throws InvalidInput, DeckNotFoundException {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
+        String deckName = null;
+        if (input.containsKey("deck-name") || input.containsKey("d-n"))
+            deckName = input.get("deck");
+        if (deckName == null)
+            throw new InvalidInput();
+
+        if (!Deck.checkDeckNameExistence(deckName))
+            throw new DeckNotFoundException();
+
+        if (input.containsKey("side"))
+            return Deck.getDeckByDeckName(deckName).showDeck("side");
+        else
+            return Deck.getDeckByDeckName(deckName).showDeck("main");
     }
 
-    public void showCards() {
-
+    public String showCards() {
+        return Database.getInstance().getCurrentUser().showAllCards();
     }
 
 
-    public void showAllDeck() {
-
+    public String showAllDeck() {
+        return Database.getInstance().getCurrentUser().showAllDecks();
     }
 }

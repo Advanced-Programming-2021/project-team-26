@@ -3,6 +3,8 @@ package model;
 import controller.Database;
 import model.cards.Card;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class User {
@@ -28,6 +30,7 @@ public class User {
         setPassword(password);
         setNickname(nickname);
         setMoney(0);
+        setActiveDeck(null);
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
     }
@@ -162,5 +165,48 @@ public class User {
 
     public void decreaseMoney(int amount) {
         setMoney(this.money - amount);
+    }
+
+    public String showAllCards() {
+        StringBuilder stringToReturn = new StringBuilder();
+        HashMap<String, Card> allCards = getAllCards();
+        ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
+        Collections.sort(sortedCardNames);
+
+        for (String name : sortedCardNames) {
+            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
+        }
+
+        return stringToReturn.toString();
+    }
+
+    public String showAllDecks() {
+        StringBuilder stringToReturn = new StringBuilder();
+
+        stringToReturn.append("Decks").append("\n");
+        stringToReturn.append("Active deck:").append("\n");
+
+        if (activeDeckName != null)
+            stringToReturn.append(deckToString(activeDeckName));
+
+        stringToReturn.append("Other decks:").append("\n");
+
+        for (String deckName : allDecks.keySet()) {
+            if (!deckName.equals(activeDeckName))
+                stringToReturn.append(deckToString(deckName));
+        }
+
+        return stringToReturn.toString();
+    }
+
+    private String deckToString(String name) {
+        StringBuilder stringToReturn = new StringBuilder();
+
+        stringToReturn.append(name).append(": ").append("main deck ").
+                append(Deck.getDeckByDeckName(name).getMainDeck().size()).append(", ").append("side deck ").
+                append(Deck.getDeckByDeckName(name).getSideDeck().size()).append(", ").
+                append(Deck.getDeckByDeckName(name).isDeckValid());
+
+        return stringToReturn.toString();
     }
 }

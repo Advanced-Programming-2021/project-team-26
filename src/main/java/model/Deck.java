@@ -1,6 +1,5 @@
 package model;
 
-import controller.Database;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
@@ -156,19 +155,46 @@ public class Deck {
         }
     }
 
-    public boolean isDeckValid() {
-        return mainDeck.size() >= 40;
+    public String isDeckValid() {
+        if (mainDeck.size() >= 40)
+            return "valid";
+        else return "invalid";
     }
 
-    @Override
-    public String toString() {
+    public String showDeck(String deckType) {
         StringBuilder stringToReturn = new StringBuilder();
 
-        HashMap<String, Monster> monsters = Database.getInstance().getAllMonsters();
-        HashMap<String, SpellTrap> spellTraps = Database.getInstance().getAllSpellTraps();
+        HashMap<String, Monster> monsters = new HashMap<>();
+        HashMap<String, SpellTrap> spellTraps = new HashMap<>();
+
+        if (deckType.equals("main")) {
+            for (Card card : mainDeck) {
+                if (card instanceof Monster)
+                    monsters.put(card.getName(), (Monster) card);
+            }
+
+            for (Card card : mainDeck) {
+                if (card instanceof SpellTrap)
+                    spellTraps.put(card.getName(), (SpellTrap) card);
+            }
+        } else {
+            for (Card card : sideDeck) {
+                if (card instanceof Monster)
+                    monsters.put(card.getName(), (Monster) card);
+            }
+
+            for (Card card : sideDeck) {
+                if (card instanceof SpellTrap)
+                    spellTraps.put(card.getName(), (SpellTrap) card);
+            }
+        }
 
         stringToReturn.append("Deck: ").append(getName()).append("\n");
-        stringToReturn.append("Main deck:").append("\n");
+
+        if (deckType.equals("main"))
+            stringToReturn.append("Main deck:").append("\n");
+        else
+            stringToReturn.append("Side deck:").append("\n");
 
         stringToReturn.append("Monsters:").append("\n");
         ArrayList<String> sortedMonsters = new ArrayList<>(monsters.keySet());
@@ -183,19 +209,6 @@ public class Deck {
         for (String name : sortedSpellTraps) {
             stringToReturn.append(name).append(": ").append(spellTraps.get(name).getDescription()).append("\n");
         }
-        return stringToReturn.toString();
-    }
-
-    public String allCardsToString() {
-        StringBuilder stringToReturn = new StringBuilder();
-        HashMap<String, Card> allCards = User.getUserByUsername(deckOwnerUsername).getAllCards();
-        ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
-        Collections.sort(sortedCardNames);
-
-        for (String name : sortedCardNames) {
-            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
-        }
-
         return stringToReturn.toString();
     }
 }
