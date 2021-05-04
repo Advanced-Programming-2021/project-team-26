@@ -24,7 +24,8 @@ public class MonsterController {
         this.position = position;
     }
 
-    public static MonsterController getInstance(GameController gameController, Monster monster, MonsterPosition position) throws MonsterNotFoundException {
+    public static MonsterController getInstance(GameController gameController, Monster monster, MonsterPosition position)
+            throws MonsterNotFoundException {
         for (String monsterName : monsterMakers.keySet()) {
             if (monster.getName().equals(monsterName)) {
                 return monsterMakers.get(monsterName).make(gameController, monster, position);
@@ -33,7 +34,8 @@ public class MonsterController {
         throw new MonsterNotFoundException();
     }
 
-    private static MonsterController makeCommandKnight(GameController gameController, Monster monster, MonsterPosition position) {
+    private static MonsterController makeCommandKnight(GameController gameController,
+                                                       Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
             //here override methods
         };

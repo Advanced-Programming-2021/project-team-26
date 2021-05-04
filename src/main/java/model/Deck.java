@@ -125,11 +125,35 @@ public class Deck {
     }
 
     public void deleteCardFromMainDeck(Card card) {
-        mainDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
+        for (Card card1 : mainDeck) {
+            if (card1.getName().equals(card.getName())) {
+                mainDeck.remove(card1);
+                break;
+            }
+        }
+
+        for (Card card1 : allCards) {
+            if (card1.getName().equals(card.getName())) {
+                allCards.remove(card1);
+                break;
+            }
+        }
     }
 
     public void deleteCardFromSideDeck(Card card) {
-        sideDeck.removeIf(theCard -> theCard.getName().equals(card.getName()));
+        for (Card card1 : sideDeck) {
+            if (card1.getName().equals(card.getName())) {
+                sideDeck.remove(card1);
+                break;
+            }
+        }
+
+        for (Card card1 : allCards) {
+            if (card1.getName().equals(card.getName())) {
+                allCards.remove(card1);
+                break;
+            }
+        }
     }
 
     public boolean isDeckValid() {
