@@ -62,6 +62,11 @@ public class SpellController extends SpellTrapController {
         return this.spell;
     }
 
+    @Override
+    public void standBy() {
+
+    }
+
     public interface SpellMakerInterface {
         SpellController make(GameController gameController, Spell spell, SpellTrapPosition position);
     }

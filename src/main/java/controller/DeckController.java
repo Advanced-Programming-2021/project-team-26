@@ -39,7 +39,7 @@ public class DeckController {
     public void setActive(Matcher matcher) throws UnreachableDeckNameException {
         String deckName = matcher.group(1);
         if (!Deck.checkDeckNameExistence(deckName))
-            Database.getInstance().getCurrentUser().setActiveDeck(deckName);
+            Database.getInstance().getCurrentUser().setActiveDeck(Deck.getDeckByDeckName(deckName));
         else throw new UnreachableDeckNameException();
     }
 

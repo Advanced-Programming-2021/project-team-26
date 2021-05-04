@@ -50,6 +50,11 @@ public class TrapController extends SpellTrapController {
         return this.trap;
     }
 
+    @Override
+    public void standBy() {
+
+    }
+
     public interface TrapMakerInterface {
         TrapController make(GameController gameController, Trap trap, SpellTrapPosition position);
     }

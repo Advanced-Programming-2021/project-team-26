@@ -35,4 +35,13 @@ public class Scan {
         }
         return values;
     }
+
+    public String getValue(HashMap<String, String> map, String key, String keyAbbreviation) {
+        if (map.containsKey(key))
+            return map.get(key);
+        else if (map.containsKey(keyAbbreviation))
+            return map.get(keyAbbreviation);
+        else
+            return null;
+    }
 }

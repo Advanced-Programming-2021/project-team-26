@@ -24,7 +24,7 @@ public class Board {
     private Card FieldZone;
     private GameController gameController;
 
-    public Board(GameController gameController, List<Card> deck) {
+    public Board(GameController gameController, Deck deck) {
         initDeck(deck);
         setGameController(gameController);
         initMonstersZone();
@@ -59,8 +59,8 @@ public class Board {
         return FieldZone;
     }
 
-    private void initDeck(List<Card> deck) {
-        this.deck = new ArrayList<>(deck);
+    private void initDeck(Deck deck) {
+        this.deck = new ArrayList<>(deck.getMainDeck());
         Collections.shuffle(this.deck);
     }
 
@@ -90,9 +90,12 @@ public class Board {
         FieldZone = null;
     }
 
-    public void addCardToHand() {
+    public Card addCardToHand() {
+        if (this.deck.size() == 0)
+            return null;
         Card addedCard = this.deck.remove(0);
         hand.add(addedCard);
+        return addedCard;
     }
 
     public void putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {
@@ -137,5 +140,10 @@ public class Board {
             return;
         graveyard.add(spellTrapZone[index].getCard());
         spellTrapZone[index] = null;
+    }
+
+    public void standByPhase() {
+        for (SpellTrapController spellTrap : this.spellTrapZone)
+            spellTrap.standBy();
     }
 }

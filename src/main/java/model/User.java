@@ -21,7 +21,7 @@ public class User {
     private int money;
     private HashMap<String, Deck> allDecks;
     private HashMap<String, Card> allCards;
-    private String activeDeckName;
+    private Deck activeDeckName;
 
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
@@ -99,11 +99,11 @@ public class User {
         this.allCards = allCards;
     }
 
-    public String getActiveDeck() {
+    public Deck getActiveDeck() {
         return activeDeckName;
     }
 
-    public void setActiveDeck(String activeDeckName) {
+    public void setActiveDeck(Deck activeDeckName) {
         this.activeDeckName = activeDeckName;
     }
 
@@ -187,7 +187,7 @@ public class User {
         stringToReturn.append("Active deck:").append("\n");
 
         if (activeDeckName != null)
-            stringToReturn.append(deckToString(activeDeckName));
+            stringToReturn.append(deckToString(activeDeckName.getName()));
 
         stringToReturn.append("Other decks:").append("\n");
 
