@@ -1,8 +1,6 @@
 package controller;
-
 import exceptions.MonsterNotFoundException;
 import model.cards.monster.Monster;
-
 import java.util.HashMap;
 
 
@@ -34,13 +32,33 @@ public class MonsterController {
         throw new MonsterNotFoundException();
     }
 
-    private static MonsterController makeCommandKnight(GameController gameController,
-                                                       Monster monster, MonsterPosition position) {
+    private static MonsterController makeCommandKnight
+            (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
-            //here override methods
+            @Override
+            public void monsterEffectConditions() {
+                if (position.equals(MonsterPosition.ATTACK)){
+
+                    //increase other monsters attackPower for 400
+                    MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                    for (MonsterController monsterController: monstersZone) {
+                        monsterController.monster.increaseAttackPower(400);
+                    }
+
+                    //cant be attacked while there are some other monsters in the field
+                    if (gameController.getGame().getThisBoard().getMonstersZone().length >= 2){
+                        //??
+                    }
+                }
+
+
+            }
         };
     }
 
+    public void monsterEffectConditions(){
+
+    }
     public MonsterPosition getPosition() {
         return position;
     }

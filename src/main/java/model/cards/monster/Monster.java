@@ -12,12 +12,12 @@ public class Monster extends Card {
         allMonsters = Database.getInstance().getAllMonsters();
     }
 
-    private final int attackPower;
-    private final int defencePower;
-    private final int level;
-    private final MonsterType type;
-    private final CardType cardType;
-    private final String attribute;
+    private int attackPower;
+    private int defencePower;
+    private int level;
+    private MonsterType type;
+    private CardType cardType;
+    private String attribute;
 
     //copy constructor
     public Monster(Monster o) {
@@ -48,6 +48,10 @@ public class Monster extends Card {
 
     public int getAttackPower() {
         return attackPower;
+    }
+
+    public void increaseAttackPower(int amount){
+        this.attackPower += amount;
     }
 
     public int getDefencePower() {

@@ -31,6 +31,14 @@ public class GameController {
 
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     public void select(String address) throws InvalidSelection, CardNotFoundException, InvalidInput {
         HashMap<String, String> input = Scan.getInstance().parseInput(address.split("\\s+"));
 
