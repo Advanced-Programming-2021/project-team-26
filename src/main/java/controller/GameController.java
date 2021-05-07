@@ -113,7 +113,9 @@ public class GameController {
         game.nextPhase();
     }
 
-    public void summon() throws NoCardSelectedException, CannotSummonException, ActionNotAllowed, MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute, InvalidSelection {
+    public void summon() throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+            MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
+            InvalidSelection {
         if (selectedCard == null)
             throw new NoCardSelectedException();
 

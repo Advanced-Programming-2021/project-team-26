@@ -14,6 +14,8 @@ public class MonsterController {
     static {
         monsterMakers = new HashMap<>();
         monsterMakers.put("Command knight", MonsterController::makeCommandKnight);
+        monsterMakers.put("Yomi Ship", MonsterController::makeYomiShip);
+        monsterMakers.put("Suijin", MonsterController::makeSuijin);
     }
 
     private final GameController gameController;
@@ -57,7 +59,7 @@ public class MonsterController {
 
             //cant be attacked while there are some other monsters in the field
             @Override
-            public boolean canBeAttacked(MonsterController monster) {
+            public boolean canBeAttacked(MonsterController attacker) {
                 if (position.equals(MonsterPosition.ATTACK)) {
                     return gameController.getGame().getThisBoard().getMonstersZone().length < 2;
                 }
@@ -73,6 +75,35 @@ public class MonsterController {
         };
     }
 
+    private static MonsterController makeYomiShip
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+            @Override
+            public void remove(MonsterController attacker) {
+                MonsterController[] rivalMonsterZone = gameController.getGame().getOtherBoard().getMonstersZone();
+                for(MonsterController rivalMonster : rivalMonsterZone){
+                    if (rivalMonster.monster.getName().equals(attacker.monster.getName())){
+                        rivalMonster = null;
+                    }
+                }
+
+                MonsterController[] playerMonsterZone = gameController.getGame().getThisBoard().getMonstersZone();
+                for(MonsterController playerMonster : playerMonsterZone){
+                    if (playerMonster.monster.getName().equals(attacker.monster.getName())){
+                        playerMonster = null;
+                    }
+                }
+            }
+        };
+    }
+
+    private static MonsterController makeSuijin
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+
+        };
+    }
+
     public void runMonsterEffect() {
 
     }
@@ -85,12 +116,11 @@ public class MonsterController {
         return position;
     }
 
-    public boolean canBeAttacked(MonsterController monster) {
+    public boolean canBeAttacked(MonsterController attacker) {
         return true;
     }
 
-    public void attacked(MonsterController monster) {
-
+    public void attacked(MonsterController attacker) {
     }
 
     public boolean canBeSummoned() {
@@ -113,7 +143,7 @@ public class MonsterController {
 
     }
 
-    public void remove() {
+    public void remove(MonsterController attacker) {
 
     }
 
