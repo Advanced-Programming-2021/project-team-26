@@ -1,6 +1,8 @@
 package controller;
+
 import exceptions.MonsterNotFoundException;
 import model.cards.monster.Monster;
+
 import java.util.HashMap;
 
 
@@ -35,35 +37,37 @@ public class MonsterController {
     private static MonsterController makeCommandKnight
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
-            @Override
-            public void monsterEffectConditions() {
-                if (position.equals(MonsterPosition.ATTACK)){
+            public void runMonsterEffect() {
+                if (position.equals(MonsterPosition.ATTACK)) {
 
                     //increase other monsters attackPower for 400
                     MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
-                    for (MonsterController monsterController: monstersZone) {
+                    for (MonsterController monsterController : monstersZone) {
                         monsterController.monster.increaseAttackPower(400);
                     }
-
-                    //cant be attacked while there are some other monsters in the field
-                    if (gameController.getGame().getThisBoard().getMonstersZone().length >= 2){
-                        //??
-                    }
                 }
+            }
 
-
+            //cant be attacked while there are some other monsters in the field
+            @Override
+            public boolean canBeAttacked() {
+                if (position.equals(MonsterPosition.ATTACK)) {
+                    return gameController.getGame().getThisBoard().getMonstersZone().length < 2;
+                }
+                return true;
             }
         };
     }
 
-    public void monsterEffectConditions(){
+    public void runMonsterEffect() {
 
     }
+
     public MonsterPosition getPosition() {
         return position;
     }
 
-    public boolean canBeAttacked(MonsterController monster) {
+    public boolean canBeAttacked() {
         return true;
     }
 
