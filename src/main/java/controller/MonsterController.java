@@ -4,6 +4,8 @@ import exceptions.MonsterNotFoundException;
 import model.cards.monster.Monster;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MonsterController {
@@ -37,24 +39,36 @@ public class MonsterController {
     private static MonsterController makeCommandKnight
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
+            private final Set<MonsterController> underEffectMonsters = new HashSet<>();
+
+            @Override
             public void runMonsterEffect() {
                 if (position.equals(MonsterPosition.ATTACK)) {
-
                     //increase other monsters attackPower for 400
                     MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
                     for (MonsterController monsterController : monstersZone) {
-                        monsterController.monster.increaseAttackPower(400);
+                        if (!underEffectMonsters.contains(monsterController)) {
+                            monsterController.monster.increaseAttackPower(400);
+                            underEffectMonsters.add(monsterController);
+                        }
                     }
                 }
             }
 
             //cant be attacked while there are some other monsters in the field
             @Override
-            public boolean canBeAttacked() {
+            public boolean canBeAttacked(MonsterController monster) {
                 if (position.equals(MonsterPosition.ATTACK)) {
                     return gameController.getGame().getThisBoard().getMonstersZone().length < 2;
                 }
                 return true;
+            }
+
+            @Override
+            public void endMonsterEffect() {
+                for (MonsterController monsterController : underEffectMonsters) {
+                    monsterController.monster.decreaseAttackPower(400);
+                }
             }
         };
     }
@@ -63,11 +77,15 @@ public class MonsterController {
 
     }
 
+    public void endMonsterEffect() {
+
+    }
+
     public MonsterPosition getPosition() {
         return position;
     }
 
-    public boolean canBeAttacked() {
+    public boolean canBeAttacked(MonsterController monster) {
         return true;
     }
 
