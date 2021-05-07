@@ -44,4 +44,11 @@ public class Scan {
         else
             return null;
     }
+
+    public Integer getInteger() {
+        String integerString = scanner.nextLine();
+        if (integerString.equals("cancel"))
+            return null;
+        return Integer.parseInt(integerString);
+    }
 }

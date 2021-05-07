@@ -14,6 +14,7 @@ public class Game {
     private int turn = 1;
     private Phase phase = Phase.END;
     private boolean finished = false;
+    private boolean summonOrSetThisTurn = false;
 
     public Game(GameController gameController, User first, User second) {
         this.gameController = gameController;
@@ -21,6 +22,14 @@ public class Game {
         users[1] = second;
         boards[0] = new Board(gameController, users[0].getActiveDeck());
         boards[1] = new Board(gameController, users[1].getActiveDeck());
+    }
+
+    public boolean isSummonOrSetThisTurn() {
+        return summonOrSetThisTurn;
+    }
+
+    public void setSummonOrSetThisTurn(boolean summonOrSetThisTurn) {
+        this.summonOrSetThisTurn = summonOrSetThisTurn;
     }
 
     public void nextPhase() {
@@ -61,6 +70,8 @@ public class Game {
 
     public void changeTurn() {
         this.turn = 1 - this.turn;
+        summonOrSetThisTurn = false;
+        gameController.deselect();
         Print.getInstance().printMessage("its " + getThisUser().getNickname() + "’s turn");
     }
 
@@ -102,5 +113,9 @@ public class Game {
 
     public int getOtherLifePint() {
         return lifePoints[1 - turn];
+    }
+
+    public Phase getPhase() {
+        return this.phase;
     }
 }

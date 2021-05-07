@@ -98,7 +98,7 @@ public class Board {
         return addedCard;
     }
 
-    public void putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {
+    public MonsterController putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {
         if (!hand.contains(monster)) {
             throw new MonsterNotFoundException();
         }
@@ -111,6 +111,7 @@ public class Board {
         }
         hand.remove(monster);
         monstersZone[lastEmpty] = MonsterController.getInstance(gameController, monster, position);
+        return monstersZone[lastEmpty];
     }
 
     public void putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
@@ -145,5 +146,14 @@ public class Board {
     public void standByPhase() {
         for (SpellTrapController spellTrap : this.spellTrapZone)
             spellTrap.standBy();
+    }
+
+    public int getMonsterZoneNumber() {
+        int number = 0;
+        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++)
+            if (monstersZone[i] != null)
+                number++;
+
+        return number;
     }
 }
