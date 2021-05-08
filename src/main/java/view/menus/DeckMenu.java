@@ -1,6 +1,4 @@
 package view.menus;
-
-import exceptions.ExceptionForPrint;
 import view.Menu;
 import controller.DeckController;
 
@@ -25,7 +23,6 @@ public class DeckMenu extends Menu {
         MAP.put(Pattern.compile("^deck show --cards$"),deckController::showCards);
     }
     public DeckMenu(Menu menu) {
-        super(menu);
         super.name = "DeckMenu";
     }
 
@@ -38,7 +35,7 @@ public class DeckMenu extends Menu {
                 if(matcher != null) {
                     try {
                         MAP.get(pattern).accept(matcher);
-                    }catch (ExceptionForPrint e){
+                    }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
                 }

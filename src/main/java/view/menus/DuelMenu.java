@@ -1,6 +1,4 @@
 package view.menus;
-
-import exceptions.ExceptionForPrint;
 import view.Menu;
 
 import java.lang.reflect.Method;
@@ -18,11 +16,10 @@ public class DuelMenu extends Menu {
 
     }
     public DuelMenu(Menu menu) {
-        super(menu);
         super.name = "DuelMenu";
     }
 
-    private void run(){
+    public void run(){
         while (true) {
             String input = scanner.nextLine();
             Matcher matcher = null;
@@ -31,7 +28,7 @@ public class DuelMenu extends Menu {
                 if(matcher != null) {
                     try {
                         MAP.get(pattern).accept(matcher);
-                    }catch (ExceptionForPrint e){
+                    }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
                 }

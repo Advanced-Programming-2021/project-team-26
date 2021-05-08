@@ -1,7 +1,6 @@
 package view.menus;
 
 import controller.UserController;
-import exceptions.ExceptionForPrint;
 import view.Menu;
 
 import java.lang.reflect.Method;
@@ -20,12 +19,11 @@ public class LoginMenu extends Menu {
         MAP.put(Pattern.compile("^user login --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::loginUser);
         MAP.put(Pattern.compile("^user logout$"), userController::logout);
     }
-    public LoginMenu(Menu menu) {
-        super(menu);
-        super.name = "LoginMenu";
+    public LoginMenu() {
+       super.name = "LoginMenu";
     }
 
-    private void run(){
+    public void run(){
         while (true) {
             String input = scanner.nextLine();
             Matcher matcher = null;
@@ -34,7 +32,7 @@ public class LoginMenu extends Menu {
                 if(matcher != null) {
                     try {
                         MAP.get(pattern).accept(matcher);
-                    }catch (ExceptionForPrint e){
+                    }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
                 }

@@ -1,7 +1,6 @@
 package view.menus;
 
 import controller.UserController;
-import exceptions.ExceptionForPrint;
 import view.Menu;
 
 import java.lang.reflect.Method;
@@ -15,10 +14,9 @@ public class MainMenu extends Menu {
     private static final Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
 
     public MainMenu(Menu menu) {
-        super(menu);
         super.name = "Main";
     }
-    private void run(){
+    public void run(){
         while (true) {
             String input = scanner.nextLine();
             Matcher matcher = null;
@@ -27,7 +25,7 @@ public class MainMenu extends Menu {
                 if(matcher != null) {
                     try {
                         MAP.get(pattern).accept(matcher);
-                    }catch (ExceptionForPrint e){
+                    }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
                 }

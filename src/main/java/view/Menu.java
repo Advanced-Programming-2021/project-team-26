@@ -1,7 +1,5 @@
 package view;
 
-import exceptions.ExceptionForPrint;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -12,7 +10,7 @@ import java.util.regex.Pattern;
 abstract public class Menu {
     protected static final Scanner scanner = new Scanner(System.in);
     protected static String name;
-    public Menu(Menu menu) {
+    public Menu() {
     }
 
     private static Matcher getCommendMatcher(String input, String regex) {

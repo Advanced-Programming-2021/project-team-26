@@ -1,6 +1,6 @@
 package view.menus;
+
 import controller.ShopController;
-import exceptions.ExceptionForPrint;
 import model.cards.Card;
 import view.Menu;
 
@@ -15,25 +15,26 @@ public class ShopMenu extends Menu {
     private static ArrayList<Card> shopCards = new ArrayList<>();
     private static ShopController shopController;
     private static final Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
-    static{
+
+    static {
         MAP.put(Pattern.compile("^shop buy (.+)$"), shopController::buyCard);
         MAP.put(Pattern.compile("^shop show --all$"), shopController::showAll);
     }
 
     public ShopMenu(Menu menu) {
-        super(menu);
         super.name = "ShopMenu";
     }
-    private void run(){
+
+    private void run() {
         while (true) {
             String input = scanner.nextLine();
             Matcher matcher = null;
             for (Pattern pattern : MAP.keySet()) {
                 matcher = pattern.matcher(input);
-                if(matcher != null) {
+                if (matcher != null) {
                     try {
                         MAP.get(pattern).accept(matcher);
-                    }catch (ExceptionForPrint e){
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 }

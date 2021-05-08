@@ -14,7 +14,7 @@ public class InterchangeMenu extends Menu {
         PATTERNS = new HashMap<>();
     }
     public InterchangeMenu(Menu menu) {
-        super(menu);
+        super();
     }
 
     public void run(){

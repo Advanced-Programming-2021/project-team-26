@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class ScoreBoardMenu extends Menu {
     public ScoreBoardMenu(Menu menu) {
-        super(menu);
+        super();
         super.name = "ScoreBoardMenu";
     }
 }
