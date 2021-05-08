@@ -136,6 +136,15 @@ public class Board {
         monstersZone[index] = null;
     }
 
+    public void removeMonster(MonsterController monster) {
+        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
+            if (monstersZone[i] == monster) {
+                removeMonster(i);
+                return;
+            }
+        }
+    }
+
     public void removeSpellTrap(int index) {
         if (spellTrapZone[index] == null)
             return;

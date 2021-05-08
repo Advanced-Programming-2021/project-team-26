@@ -57,7 +57,6 @@ public class GameController {
             if (selectedCard == null)
                 throw new CardNotFoundException();
 
-
         } else if ((addressNumber = Scan.getInstance().getValue(input, "spell", "s")) != null) {
             int spellNumber = Integer.parseInt(addressNumber);
             if (spellNumber > Board.CARD_NUMBER_IN_ROW)
@@ -113,7 +112,9 @@ public class GameController {
         game.nextPhase();
     }
 
-    public void summon() throws NoCardSelectedException, CannotSummonException, ActionNotAllowed, MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute, InvalidSelection {
+    public void summon() throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+            MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
+            InvalidSelection {
         if (selectedCard == null)
             throw new NoCardSelectedException();
 

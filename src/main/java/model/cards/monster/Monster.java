@@ -19,6 +19,7 @@ public class Monster extends Card {
     private CardType cardType;
     private String attribute;
 
+
     //copy constructor
     public Monster(Monster o) {
         super(o);
@@ -52,6 +53,10 @@ public class Monster extends Card {
 
     public void increaseAttackPower(int amount){
         this.attackPower += amount;
+    }
+
+    public void decreaseAttackPower(int amount){
+        this.attackPower -= amount;
     }
 
     public int getDefencePower() {
