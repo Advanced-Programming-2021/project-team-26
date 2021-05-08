@@ -57,7 +57,6 @@ public class GameController {
             if (selectedCard == null)
                 throw new CardNotFoundException();
 
-
         } else if ((addressNumber = Scan.getInstance().getValue(input, "spell", "s")) != null) {
             int spellNumber = Integer.parseInt(addressNumber);
             if (spellNumber > Board.CARD_NUMBER_IN_ROW)

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class MonsterController {
     private static final HashMap<String, MonsterMakerInterface> monsterMakers;
 
@@ -20,7 +19,7 @@ public class MonsterController {
 
     private final GameController gameController;
     private final Monster monster;
-    private final MonsterPosition position;
+    private MonsterPosition position;
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
@@ -80,19 +79,8 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position) {
             @Override
             public void remove(MonsterController attacker) {
-                MonsterController[] rivalMonsterZone = gameController.getGame().getOtherBoard().getMonstersZone();
-                for(MonsterController rivalMonster : rivalMonsterZone){
-                    if (rivalMonster.monster.getName().equals(attacker.monster.getName())){
-                        rivalMonster = null;
-                    }
-                }
-
-                MonsterController[] playerMonsterZone = gameController.getGame().getThisBoard().getMonstersZone();
-                for(MonsterController playerMonster : playerMonsterZone){
-                    if (playerMonster.monster.getName().equals(attacker.monster.getName())){
-                        playerMonster = null;
-                    }
-                }
+                gameController.getGame().getThisBoard().removeMonster(this);
+                gameController.getGame().getOtherBoard().removeMonster(attacker);
             }
         };
     }
@@ -131,6 +119,17 @@ public class MonsterController {
 
     }
 
+    public void oneTributeSummon(MonsterController tributeMonster) {
+        remove(tributeMonster);
+        position = MonsterPosition.ATTACK;
+    }
+
+    public void twoTributeSummon(MonsterController firstTributeMonster, MonsterController secondTributeMonster) {
+        remove(firstTributeMonster);
+        remove(secondTributeMonster);
+        position = MonsterPosition.ATTACK;
+    }
+
     public void flip() {
 
     }
@@ -144,7 +143,7 @@ public class MonsterController {
     }
 
     public void remove(MonsterController attacker) {
-
+        gameController.getGame().getThisBoard().removeMonster(this);
     }
 
     public String getName() {
