@@ -1,4 +1,4 @@
 package exceptions;
 
-public class ActionNotAllowed extends Exception {
+public class ActionNotAllowed extends RuntimeException {
 }

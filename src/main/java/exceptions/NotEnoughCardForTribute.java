@@ -1,4 +1,4 @@
 package exceptions;
 
-public class NotEnoughCardForTribute extends Exception {
+public class NotEnoughCardForTribute extends RuntimeException {
 }

@@ -14,8 +14,4 @@ public class ScoreBoardMenu extends Menu {
         super(menu);
         super.name = "ScoreBoardMenu";
     }
-
-    public void run() {
-
-    }
 }

@@ -38,7 +38,7 @@ public class ShopController {
     }
 
     private static final HashMap<String, Card> allCards;
-    private static Shop shop;
+  //  private static Shop shop;
 
     static {
         allCards = new HashMap<>();
@@ -46,16 +46,16 @@ public class ShopController {
 
     private User currentUserInShop;
 
-    private Shop(User currentUserInShop) {
-        setCurrentUserInShop(currentUserInShop);
-        allCards.putAll(Database.getInstance().getAllCards());
-    }
+//    private Shop(User currentUserInShop) {
+//        setCurrentUserInShop(currentUserInShop);
+//        allCards.putAll(Database.getInstance().getAllCards());
+//    }
 
-    public static Shop getInstance(User currentUserInShop) {
-        if (shop == null)
-            shop = new Shop(currentUserInShop);
-        return shop;
-    }
+//    public static Shop getInstance(User currentUserInShop) {
+//        if (shop == null)
+//            shop = new Shop(currentUserInShop);
+//        return shop;
+//    }
 
     public static HashMap<String, Card> getAllCards() {
         return allCards;

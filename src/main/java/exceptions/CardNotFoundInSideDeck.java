@@ -1,4 +1,4 @@
 package exceptions;
 
-public class CardNotFoundInSideDeck extends Exception{
+public class CardNotFoundInSideDeck extends RuntimeException{
 }

@@ -1,4 +1,4 @@
 package exceptions;
 
-public class CardNotFoundInMainDeck extends Exception{
+public class CardNotFoundInMainDeck extends RuntimeException{
 }

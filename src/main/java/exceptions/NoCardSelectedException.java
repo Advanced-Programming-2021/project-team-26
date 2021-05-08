@@ -1,4 +1,4 @@
 package exceptions;
 
-public class NoCardSelectedException extends Exception {
+public class NoCardSelectedException extends RuntimeException {
 }

@@ -1,4 +1,4 @@
 package exceptions;
 
-public class SpellTrapNotFoundException extends Exception {
+public class SpellTrapNotFoundException extends RuntimeException {
 }

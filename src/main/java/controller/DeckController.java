@@ -137,12 +137,12 @@ public class DeckController {
             return Deck.getDeckByDeckName(deckName).showDeck("main");
     }
 
-    public String showCards() {
+    public String showCards(Matcher matcher) {
         return Database.getInstance().getCurrentUser().showAllCards();
     }
 
 
-    public String showAllDeck() {
+    public String showAllDeck(Matcher matcher) {
         return Database.getInstance().getCurrentUser().showAllDecks();
     }
 }

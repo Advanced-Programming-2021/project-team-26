@@ -1,4 +1,4 @@
 package exceptions;
 
-public class UnreachableDeckNameException extends Exception{
+public class UnreachableDeckNameException extends RuntimeException{
 }

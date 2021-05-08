@@ -1,4 +1,4 @@
 package exceptions;
 
-public class FullSideDeckException extends Exception{
+public class FullSideDeckException extends RuntimeException{
 }

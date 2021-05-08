@@ -1,4 +1,4 @@
 package exceptions;
 
-public class SamePassword extends Exception {
+public class SamePassword extends RuntimeException {
 }

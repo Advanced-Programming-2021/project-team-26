@@ -1,4 +1,4 @@
 package exceptions;
 
-public class FullMonsterZone extends Exception {
+public class FullMonsterZone extends RuntimeException {
 }

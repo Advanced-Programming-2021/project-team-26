@@ -1,4 +1,4 @@
 package exceptions;
 
-public class WrongUsernamePassword extends Exception {
+public class WrongUsernamePassword extends RuntimeException {
 }

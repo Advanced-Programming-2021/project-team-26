@@ -1,4 +1,4 @@
 package exceptions;
 
-public class DeckNotFoundException extends Exception{
+public class DeckNotFoundException extends RuntimeException{
 }

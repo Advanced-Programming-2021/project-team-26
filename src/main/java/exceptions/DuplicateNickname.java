@@ -1,4 +1,4 @@
 package exceptions;
 
-public class DuplicateNickname extends Exception {
+public class DuplicateNickname extends RuntimeException {
 }

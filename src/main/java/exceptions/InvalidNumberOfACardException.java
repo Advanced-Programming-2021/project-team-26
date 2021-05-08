@@ -1,4 +1,4 @@
 package exceptions;
 
-public class InvalidNumberOfACardException extends Exception{
+public class InvalidNumberOfACardException extends RuntimeException{
 }

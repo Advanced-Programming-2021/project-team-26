@@ -1,4 +1,4 @@
 package exceptions;
 
-public class AlreadySummonException extends Exception {
+public class AlreadySummonException extends RuntimeException {
 }
