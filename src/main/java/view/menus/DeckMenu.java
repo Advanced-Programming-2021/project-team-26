@@ -13,8 +13,8 @@ public class DeckMenu extends Menu {
     private static final Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
     private DeckController deckController = DeckController.getInstance();
      {
-        MAP.put(Pattern.compile("^deck creat ([^ ]+)$"),deckController::createDeck );
-        MAP.put(Pattern.compile("^deck delet ([^ ]+)$"),deckController::removeDeck );
+        MAP.put(Pattern.compile("^deck create ([^ ]+)$"),deckController::createDeck );
+        MAP.put(Pattern.compile("^deck delete ([^ ]+)$"),deckController::removeDeck );
         MAP.put(Pattern.compile("^deck set-active ([^ ]+)$"),deckController::setActive );
         MAP.put(Pattern.compile("^deck add-card --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+) (--side)?$"), deckController::addCard);
         MAP.put(Pattern.compile("^deck rm-card --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+) (--side)?$"),deckController::removeCard );
