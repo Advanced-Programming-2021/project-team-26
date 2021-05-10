@@ -7,7 +7,8 @@ public class CardNotFoundInMainDeck extends RuntimeException{
         this.cardName = cardName;
     }
 
-    public void printMessage(){
-        System.out.println("card with name " + cardName + " does not exist in main deck");
+    @Override
+    public String getMessage(){
+       return "card with name " + cardName + " does not exist in main deck";
     }
 }

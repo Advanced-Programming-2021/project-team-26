@@ -9,7 +9,8 @@ public class InvalidNumberOfACardException extends RuntimeException {
         this.deckName = deckName;
     }
 
-    public void printMessage() {
-        System.out.println("there are already three cards with name " + cardName + " in deck " + deckName);
+    @Override
+    public String getMessage() {
+        return "there are already three cards with name " + cardName + " in deck " + deckName;
     }
 }

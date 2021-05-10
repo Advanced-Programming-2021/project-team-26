@@ -1,13 +1,14 @@
 package exceptions;
 
-public class CardNotFoundInSideDeck extends RuntimeException{
+public class CardNotFoundInSideDeck extends RuntimeException {
     String cardName;
 
-    public CardNotFoundInSideDeck(String cardName){
+    public CardNotFoundInSideDeck(String cardName) {
         this.cardName = cardName;
     }
 
-    public void printMessage(){
-        System.out.println("card with name " + cardName + " does not exist in side deck");
+    @Override
+    public String getMessage() {
+        return "card with name " + cardName + " does not exist in side deck";
     }
 }
