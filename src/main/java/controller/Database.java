@@ -16,6 +16,10 @@ public class Database {
     private static Database database;
     private final String monsterPath;
     private final String spellTrapPath;
+    private final String cardsJsonPath;
+    private final String monstersJsonPath;
+    private final String spellsJsonPath;
+    private final String trapsJsonPath;
     private final String userDirectoryPath;
     private final String databasePath;
     private User currentUser;
@@ -27,6 +31,10 @@ public class Database {
     {
         monsterPath = getClass().getClassLoader().getResource("Monster.csv").getPath();
         spellTrapPath = getClass().getClassLoader().getResource("SpellTrap.csv").getPath();
+        cardsJsonPath = getClass().getClassLoader().getResource("").getPath() + "Cards";
+        monstersJsonPath = cardsJsonPath + File.separator + "Monsters";
+        spellsJsonPath = cardsJsonPath + File.separator + "Spells";
+        trapsJsonPath = cardsJsonPath + File.separator + "Traps";
         databasePath = System.getProperty("user.dir") + File.separator + "database";
         userDirectoryPath = System.getProperty("user.dir") + File.separator + "database" + File.separator + "Users";
     }
@@ -34,6 +42,10 @@ public class Database {
     private Database() {
         createFolder(databasePath);
         createFolder(userDirectoryPath);
+        createFolder(cardsJsonPath);
+        createFolder(monstersJsonPath);
+        createFolder(spellsJsonPath);
+        createFolder(trapsJsonPath);
     }
 
     public static Database getInstance() {
@@ -156,6 +168,95 @@ public class Database {
         }
 
         return null;
+    }
+
+    public void writeCard(Card card) {
+        if (card instanceof Monster)
+            writeMonster((Monster) card);
+        else if (card instanceof Spell)
+            writeSpell((Spell) card);
+        else if (card instanceof Trap)
+            writeTrap((Trap) card);
+    }
+
+    public void writeMonster(Monster monster) {
+        try {
+            Gson gson = new Gson();
+            String path = monstersJsonPath + File.separator + monster.getName() + ".json";
+            FileWriter file = new FileWriter(path);
+            gson.toJson(monster, file);
+            file.close();
+        } catch (IOException ignored) {
+
+        }
+    }
+
+    public void writeSpell(Spell spell) {
+        try {
+            Gson gson = new Gson();
+            String path = spellsJsonPath + File.separator + spell.getName() + ".json";
+            FileWriter file = new FileWriter(path);
+            gson.toJson(spell, file);
+            file.close();
+        } catch (IOException ignored) {
+
+        }
+    }
+
+    public void writeTrap(Trap trap) {
+        try {
+            Gson gson = new Gson();
+            String path = trapsJsonPath + File.separator + trap.getName() + ".json";
+            FileWriter file = new FileWriter(path);
+            gson.toJson(trap, file);
+            file.close();
+        } catch (IOException ignored) {
+
+        }
+    }
+
+    public Card readCard(String name) {
+        Card card;
+        if ((card = readMonster(name)) != null)
+            return card;
+        else if ((card = readSpell(name)) != null)
+            return card;
+        else if ((card = readTrap(name)) != null)
+            return card;
+        return null;
+    }
+
+    public Monster readMonster(String name) {
+        try {
+            FileReader file = new FileReader(monstersJsonPath + File.separator + name);
+            Gson gson = new Gson();
+            Monster monster = gson.fromJson(file, Monster.class);
+            return monster;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Spell readSpell(String name) {
+        try {
+            FileReader file = new FileReader(spellsJsonPath + File.separator + name);
+            Gson gson = new Gson();
+            Spell spell = gson.fromJson(file, Spell.class);
+            return spell;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Trap readTrap(String name) {
+        try {
+            FileReader file = new FileReader(trapsJsonPath + File.separator + name);
+            Gson gson = new Gson();
+            Trap trap = gson.fromJson(file, Trap.class);
+            return trap;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public User readUser(String username) {

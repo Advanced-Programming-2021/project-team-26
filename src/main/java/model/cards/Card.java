@@ -28,6 +28,10 @@ public class Card {
         setPrice(price);
     }
 
+    public static Map<String, Card> getAllCards() {
+        return allCards;
+    }
+
     public static boolean checkCardNameExistence(String cardName) {
         return allCards.containsKey(cardName);
     }

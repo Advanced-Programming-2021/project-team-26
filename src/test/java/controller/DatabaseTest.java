@@ -10,6 +10,7 @@ import model.cards.trap.Trap;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,6 +57,29 @@ class DatabaseTest {
     }
 
     @Test
+    void writeReadCard() {
+        Database database = Database.getInstance();
+        String cardName = "Marshmallon";
+        Card expectedCard = Card.getCard(cardName);
+        database.writeCard(expectedCard);
+        Card readCard = database.readCard(cardName);
+        assertNotNull(readCard);
+        assertEquals(expectedCard.getName(), readCard.getName());
+    }
+
+    @Test
+    void writeReadAllCards() {
+        Database database = Database.getInstance();
+        Map<String, Card> allCards = Card.getAllCards();
+        for (Card card : allCards.values()) {
+            database.writeCard(card);
+            Card readCard = database.readCard(card.getName());
+            assertNotNull(readCard);
+            assertEquals(card.getName(), readCard.getName());
+        }
+    }
+
+    @Test
     void readNotAvailableUser() {
         String username = "NotAvailable";
         Database database = Database.getInstance();
@@ -71,7 +95,7 @@ class DatabaseTest {
 
         User user = new User(username, password, nickname);
         user.addCardToUserCards(Card.getCard("Magic Cylinder"));
-        Deck deck = new Deck("this",user.getUsername());
+        Deck deck = new Deck("this", user.getUsername());
         user.addDeckToUserDecks(deck);
 
         Database database = Database.getInstance();
@@ -79,7 +103,7 @@ class DatabaseTest {
     }
 
     @Test
-    void readUser(){
+    void readUser() {
         String username = "NewUser";
         String nickname = "NickName";
         String password = "Password";
@@ -92,20 +116,20 @@ class DatabaseTest {
         database.writeUser(user);
         User readUser = database.readUser(username);
         assertNotNull(readUser);
-        assertEquals(username,readUser.getUsername());
+        assertEquals(username, readUser.getUsername());
     }
 
     @Test
     void readAllUsers() {
-        User user1 = new User("user1","password","nickname1");
-        User user2 = new User("user2","password","nickname2");
+        User user1 = new User("user1", "password", "nickname1");
+        User user2 = new User("user2", "password", "nickname2");
 
         Database database = Database.getInstance();
         database.writeUser(user1);
         database.writeUser(user2);
 
-        HashMap<String,User> allUsers = database.getAllUsers();
+        HashMap<String, User> allUsers = database.getAllUsers();
         assertNotNull(allUsers);
-        assertEquals(3,allUsers.size());
+        assertEquals(3, allUsers.size());
     }
 }
