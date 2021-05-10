@@ -19,13 +19,14 @@ public class ShopMenu extends Menu {
     static {
         MAP.put(Pattern.compile("^shop buy (.+)$"), shopController::buyCard);
         MAP.put(Pattern.compile("^shop show --all$"), shopController::showAll);
+        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
     }
 
-    public ShopMenu(Menu menu) {
+    public ShopMenu() {
         name = "ShopMenu";
     }
 
-    private void execute() {
+    public void execute() {
         run(MAP);
     }
 }

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 
 public class ShopController {
-    private User userInShop = Database.getInstance().getCurrentUser();
+    private User userInShop ;
 
 
     public ShopController(User user) {

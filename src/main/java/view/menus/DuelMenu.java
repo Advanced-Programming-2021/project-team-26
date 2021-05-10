@@ -11,11 +11,13 @@ import controller.GameController;
 
 public class DuelMenu extends Menu {
     private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
-    public DuelMenu(Menu menu) {
+    private  GameController gameController;
+
+    public DuelMenu() {
         name = "DuelMenu";
     }
 
-    private void execute() {
+    public void execute() {
         run(MAP);
     }
 

@@ -17,11 +17,13 @@ public class ProfileMenu extends Menu {
     static {
         MAP.put(Pattern.compile("^profile change --nickname (.+)"), USER_CONTROLLER::changeNickname);
         MAP.put(Pattern.compile("^profile change --password --current ([^ ]+) --new (.+)"),USER_CONTROLLER::changePassword);
-            }
-    public ProfileMenu(Menu menu) {
+        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
+
+    }
+    public ProfileMenu() {
         name = "ProfileMenu";
     }
-    private void execute() {
+    public void execute() {
         run(MAP);
     }
 }

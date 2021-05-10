@@ -13,12 +13,15 @@ public class InterchangeMenu extends Menu {
     private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
 
     static {
+        // TODO: 5/10/21   MAP.put(Pattern.compile(""), );
+        // TODO: 5/10/21   MAP.put(Pattern.compile(""), );
+        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
     }
-    public InterchangeMenu(Menu menu) {
+    public InterchangeMenu() {
         super();
     }
 
-    private void execute() {
+    public void execute() {
         run(MAP);
     }
 

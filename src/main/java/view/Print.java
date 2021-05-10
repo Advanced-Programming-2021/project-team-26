@@ -1,13 +1,10 @@
 package view;
 
 import controller.MonsterController;
-import controller.SpellController;
 import controller.SpellTrapController;
-import controller.SpellTrapPosition;
 import model.Board;
 import model.Game;
 import model.cards.Card;
-import view.menus.Errors;
 
 public class Print {
     private static Print print;
@@ -27,9 +24,6 @@ public class Print {
         System.out.println(message);
     }
 
-    public void printError(Errors error) {
-        //TODO
-    }
 
     public void printCard(Card card) {
         //TODO

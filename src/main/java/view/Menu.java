@@ -1,7 +1,8 @@
 package view;
 
+import view.menus.*;
+
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -15,10 +16,6 @@ abstract public class Menu {
         mustBeStay = true;
     }
 
-    protected static void enterToNewMenu(Matcher matcher){
-
-    }
-
     protected  static void exitMenu(Matcher matcher){
         mustBeStay = false;
     }
@@ -28,11 +25,13 @@ abstract public class Menu {
 
     protected void run(HashMap <Pattern, Consumer<Matcher>>MAP){
         while (mustBeStay) {
+            boolean isMatched = false;
             String input = scanner.nextLine();
             Matcher matcher = null;
             for (Pattern pattern : MAP.keySet()) {
                 matcher = pattern.matcher(input);
                 if(matcher.find()) {
+                    isMatched = true;
                     try {
                         MAP.get(pattern).accept(matcher);
                     }catch (Exception e){
@@ -42,6 +41,8 @@ abstract public class Menu {
                     }
                 }
             }
+            if (!isMatched)
+                System.out.println("invalid command");
         }
         mustBeStay = true;
     }

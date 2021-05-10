@@ -17,13 +17,12 @@ public class LoginMenu extends Menu {
         MAP.put(Pattern.compile("^menu show-current$"), Menu::showCurrentMenu);
         MAP.put(Pattern.compile("^user creat --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::addNewUser);
         MAP.put(Pattern.compile("^user login --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::loginUser);
-        MAP.put(Pattern.compile("^user logout$"), userController::logout);
     }
     public LoginMenu() {
        name = "LoginMenu";
     }
 
-    private void execute() {
+    public void execute() {
         run(MAP);
     }
 }
