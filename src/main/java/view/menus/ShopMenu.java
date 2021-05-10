@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class ShopMenu extends Menu {
     private static ArrayList<Card> shopCards = new ArrayList<>();
     private static ShopController shopController;
-    private static final Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
+    private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
 
     static {
         MAP.put(Pattern.compile("^shop buy (.+)$"), shopController::buyCard);
@@ -25,20 +25,7 @@ public class ShopMenu extends Menu {
         super.name = "ShopMenu";
     }
 
-    private void run() {
-        while (true) {
-            String input = scanner.nextLine();
-            Matcher matcher = null;
-            for (Pattern pattern : MAP.keySet()) {
-                matcher = pattern.matcher(input);
-                if (matcher != null) {
-                    try {
-                        MAP.get(pattern).accept(matcher);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            }
-        }
+    private void execute() {
+        run(MAP);
     }
 }

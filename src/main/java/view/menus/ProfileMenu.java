@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 public class ProfileMenu extends Menu {
     private static final UserController USER_CONTROLLER = UserController.getInstance();
-    private static final Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
+    private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
     static {
         MAP.put(Pattern.compile("^profile change --nickname (.+)"), USER_CONTROLLER::changeNickname);
         MAP.put(Pattern.compile("^profile change --password --current ([^ ]+) --new (.+)"),USER_CONTROLLER::changePassword);
@@ -21,20 +21,7 @@ public class ProfileMenu extends Menu {
     public ProfileMenu(Menu menu) {
         super.name = "ProfileMenu";
     }
-    public void run(){
-        while (true) {
-            String input = scanner.nextLine();
-            Matcher matcher = null;
-            for (Pattern pattern : MAP.keySet()) {
-                matcher = pattern.matcher(input);
-                if(matcher != null) {
-                    try {
-                        MAP.get(pattern).accept(matcher);
-                    }catch (Exception e){
-                        System.out.println(e.getMessage());
-                    }
-                }
-            }
-        }
+    private void execute() {
+        run(MAP);
     }
 }

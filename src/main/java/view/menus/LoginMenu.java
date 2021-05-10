@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginMenu extends Menu {
-    private static final Map<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
+    private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
     private static UserController userController = UserController.getInstance();
    static {
         MAP.put(Pattern.compile("^menu show-current$"), Menu::showCurrentMenu);
@@ -23,21 +23,7 @@ public class LoginMenu extends Menu {
        super.name = "LoginMenu";
     }
 
-    public void run(){
-        while (true) {
-            String input = scanner.nextLine();
-            Matcher matcher = null;
-            for (Pattern pattern : MAP.keySet()) {
-                matcher = pattern.matcher(input);
-                if(matcher != null) {
-                    try {
-                        MAP.get(pattern).accept(matcher);
-                    }catch (Exception e){
-                        System.out.println(e.getMessage());
-                    }
-                }
-            }
-        }
+    private void execute() {
+        run(MAP);
     }
-
 }

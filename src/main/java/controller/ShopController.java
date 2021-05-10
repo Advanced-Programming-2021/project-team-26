@@ -10,23 +10,23 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 
 public class ShopController {
-    private User user;
-    private Shop shop;
+    private User userInShop = Database.getInstance().getCurrentUser();
+
 
     public ShopController(User user) {
-        setUser(user);
+        setUserInShop(Database.getInstance().getCurrentUser());
+    }
+
+    public User getUserInShop() {
+        return userInShop;
+    }
+
+    public void setUserInShop(User userInShop) {
+        this.userInShop = userInShop;
     }
 
     public void buyCard(Matcher matcher){
 
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public boolean isHaveEnoughMoney(int price, User user) {
