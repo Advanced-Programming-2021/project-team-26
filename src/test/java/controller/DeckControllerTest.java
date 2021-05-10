@@ -1,11 +1,10 @@
 package controller;
 
-import exceptions.UnreachableDeckNameException;
+import exceptions.RepeatedDeckNameException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Executable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +26,7 @@ public class DeckControllerTest {
             fail();
         }
 
-        Assertions.assertThrows(UnreachableDeckNameException.class, () ->
+        Assertions.assertThrows(RepeatedDeckNameException.class, () ->
         { DeckController.getInstance().createDeck(matcher1);});
     }
 }
