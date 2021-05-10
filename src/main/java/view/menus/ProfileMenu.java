@@ -19,7 +19,7 @@ public class ProfileMenu extends Menu {
         MAP.put(Pattern.compile("^profile change --password --current ([^ ]+) --new (.+)"),USER_CONTROLLER::changePassword);
             }
     public ProfileMenu(Menu menu) {
-        super.name = "ProfileMenu";
+        name = "ProfileMenu";
     }
     private void execute() {
         run(MAP);

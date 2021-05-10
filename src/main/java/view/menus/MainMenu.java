@@ -14,7 +14,7 @@ public class MainMenu extends Menu {
     private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
 
     public MainMenu(Menu menu) {
-        super.name = "Main";
+        name = "Main";
     }
     private void execute() {
         run(MAP);

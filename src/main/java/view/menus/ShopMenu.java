@@ -22,7 +22,7 @@ public class ShopMenu extends Menu {
     }
 
     public ShopMenu(Menu menu) {
-        super.name = "ShopMenu";
+        name = "ShopMenu";
     }
 
     private void execute() {

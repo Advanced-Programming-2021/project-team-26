@@ -12,7 +12,7 @@ import controller.GameController;
 public class DuelMenu extends Menu {
     private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
     public DuelMenu(Menu menu) {
-        super.name = "DuelMenu";
+        name = "DuelMenu";
     }
 
     private void execute() {

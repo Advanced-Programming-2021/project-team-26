@@ -20,7 +20,7 @@ public class LoginMenu extends Menu {
         MAP.put(Pattern.compile("^user logout$"), userController::logout);
     }
     public LoginMenu() {
-       super.name = "LoginMenu";
+       name = "LoginMenu";
     }
 
     private void execute() {

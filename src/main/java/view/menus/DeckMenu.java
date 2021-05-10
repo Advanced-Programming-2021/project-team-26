@@ -22,6 +22,7 @@ public class DeckMenu extends Menu {
         MAP.put(Pattern.compile("^deck show --deck-name ([^ ]+) (--side)?$"),deckController::showDeck );
         MAP.put(Pattern.compile("^deck show --cards$"),deckController::showCards);
     }
+
     public DeckMenu(Menu menu) {
         super.name = "DeckMenu";
     }
