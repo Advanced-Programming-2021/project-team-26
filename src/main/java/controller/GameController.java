@@ -271,7 +271,24 @@ public class GameController {
     }
 
     public void attackDirect(Matcher matcher) {
+        if (selectedCard == null)
+            throw new NoCardSelectedException();
 
+        if (selectedCardAddress.getOwner() != Owner.Me ||
+                selectedCardAddress.getPlace() != Place.MonsterZone ||
+                !(selectedCard instanceof Monster))
+            throw new CannotAttackException();
+
+        if (game.getPhase() != Phase.BATTLE)
+            throw new ActionNotAllowed();
+
+        if (selectedMonster.isAttackThisTurn())
+            throw new AlreadyAttackedException();
+
+        if (game.getOtherBoard().canDirectAttack())
+            throw new CannotAttackDirectlyException();
+
+        game.decreaseOtherLifePoint(selectedMonster.getCard().getAttackPower());
     }
 
     public void attack(Matcher matcher) {

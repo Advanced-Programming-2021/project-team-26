@@ -165,4 +165,8 @@ public class Board {
 
         return number;
     }
+
+    public boolean canDirectAttack() {
+        return true;
+    }
 }
