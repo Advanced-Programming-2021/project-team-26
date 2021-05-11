@@ -15,13 +15,15 @@ public class MonsterController {
         monsterMakers.put("Command knight", MonsterController::makeCommandKnight);
         monsterMakers.put("Yomi Ship", MonsterController::makeYomiShip);
         monsterMakers.put("Suijin", MonsterController::makeSuijin);
+        monsterMakers.put("Man-Eater Bug", MonsterController::makeManEaterBug);
+        monsterMakers.put("Gate Guardian", MonsterController::makeGateGuardian);
+        monsterMakers.put("Scanner", MonsterController::makeScanner);
+        monsterMakers.put("Marshmallon", MonsterController::makeMarshmallon);
     }
 
     private final GameController gameController;
     private final Monster monster;
     private MonsterPosition position;
-    private final boolean canMonsterBeAttacked;
-    private final boolean canMonsterBeSummoned;
     private boolean changedPosition = false;
     private boolean newMonster = true;
     private boolean attackThisTurn;
@@ -30,8 +32,6 @@ public class MonsterController {
         this.gameController = gameController;
         this.monster = new Monster(monster);
         this.position = position;
-        this.canMonsterBeAttacked = true;
-        this.canMonsterBeSummoned = true;
     }
 
     public static MonsterController getInstance(GameController gameController, Monster monster, MonsterPosition position)
@@ -134,6 +134,35 @@ public class MonsterController {
 
         };
     }
+
+    private static MonsterController makeManEaterBug
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+            @Override
+            public void flip(){
+
+            }
+        };
+    }
+
+    private static MonsterController makeGateGuardian
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
+    private static MonsterController makeScanner
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
+    private static MonsterController makeMarshmallon
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
 
     public boolean isChangedPosition() {
         return changedPosition;
