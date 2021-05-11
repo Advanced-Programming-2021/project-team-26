@@ -7,6 +7,7 @@ import model.cards.monster.Monster;
 import view.Scan;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
 
 public class GameController {
     private final int currentRound = 0;
@@ -18,7 +19,7 @@ public class GameController {
     private int roundNumber;
 
 
-    public GameController(String firstPlayer, String secondPayer, int round) {
+    public GameController(String firstPlayer, String secondPayer, int round) throws  NoPlayerAvailable{
         this.game = new Game(this, User.getUserByUsername(firstPlayer), User.getUserByUsername(secondPayer));
         this.roundNumber = round;
         game.nextPhase();
@@ -36,8 +37,8 @@ public class GameController {
         this.game = game;
     }
 
-    public void select(String address) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(address.split("\\s+"));
+    public void select(Matcher matcher) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group(1).split("\\s+"));
 
         String addressNumber;
         if ((addressNumber = Scan.getInstance().getValue(input, "monster", "m")) != null) {
@@ -112,7 +113,7 @@ public class GameController {
         game.nextPhase();
     }
 
-    public void summon() throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+    public void summon(Matcher matcher) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
         if (selectedCard == null)
@@ -165,39 +166,39 @@ public class GameController {
         monster.summon();
     }
 
-    public void set() {
+    public void set(Matcher matcher) {
 
     }
 
-    public void set(String position) {
+    public void setPosition(Matcher matcher) {
 
     }
 
-    public void flipSummon() {
+    public void flipSummon(Matcher matcher) {
 
     }
 
-    public void attack(int number) {
+    public void attackDirect(Matcher matcher) {
 
     }
 
-    public void attack() {
+    public void attack(Matcher matcher) {
 
     }
 
-    public void activateEffect() {
+    public void activateEffect(Matcher matcher) {
 
     }
 
-    public void showGraveyard() {
+    public void showGraveyard(Matcher matcher) {
 
     }
 
-    public void cardShow() {
+    public void showSelectedCard(Matcher matcher) {
 
     }
 
-    public void surrender() {
+    public void surrender(Matcher matcher) {
 
     }
 

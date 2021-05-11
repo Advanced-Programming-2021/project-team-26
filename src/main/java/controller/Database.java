@@ -289,7 +289,7 @@ public class Database {
         if (userFiles != null) {
             HashMap<String, User> allUsers = new HashMap<>();
             for (File userFile : userFiles) {
-                try {
+                    try {
                     FileReader fileReader = new FileReader(userFile);
                     User user = new Gson().fromJson(fileReader, User.class);
                     allUsers.put(user.getUsername(), user);
