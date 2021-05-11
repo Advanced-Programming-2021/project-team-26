@@ -20,7 +20,7 @@ public class MonsterController {
     private final GameController gameController;
     private final Monster monster;
     private MonsterPosition position;
-
+    private boolean changedPosition = false;
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
         this.monster = new Monster(monster);
@@ -92,6 +92,18 @@ public class MonsterController {
         };
     }
 
+    public boolean isChangedPosition() {
+        return changedPosition;
+    }
+
+    public void setChangedPosition(boolean changedPosition) {
+        this.changedPosition = changedPosition;
+    }
+
+    public void finishTurn() {
+        changedPosition = false;
+    }
+
     public void runMonsterEffect() {
 
     }
@@ -102,6 +114,10 @@ public class MonsterController {
 
     public MonsterPosition getPosition() {
         return position;
+    }
+
+    public void setPosition(MonsterPosition position) {
+        this.position = position;
     }
 
     public boolean canBeAttacked(MonsterController attacker) {
@@ -152,6 +168,9 @@ public class MonsterController {
 
     public Monster getCard() {
         return this.monster;
+    }
+
+    public void set() {
     }
 
     public interface MonsterMakerInterface {

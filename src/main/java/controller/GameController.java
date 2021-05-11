@@ -163,14 +163,91 @@ public class GameController {
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
         game.setSummonOrSetThisTurn(true);
         monster.summon();
+        deselect();
     }
 
-    public void set() {
+    public void set() throws NoCardSelectedException, CannotSetException {
+        if (selectedCard == null)
+            throw new NoCardSelectedException();
 
+        if (selectedCardAddress.getOwner() != Owner.Me ||
+                selectedCardAddress.getPlace() != Place.Hand ||
+                !(selectedCard instanceof Monster))
+            throw new CannotSetException();
+
+        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
+            throw new ActionNotAllowed();
+
+        if (game.getThisBoard().getMonsterZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
+            throw new FullMonsterZone();
+
+        if (game.isSummonOrSetThisTurn())
+            throw new AlreadySummonException();
+
+        Monster selectedMonster = (Monster) selectedCard;
+
+        if (selectedMonster.getLevel() > 4 && selectedMonster.getLevel() <= 6) {
+            if (game.getThisBoard().getMonsterZoneNumber() < 1)
+                throw new NotEnoughCardForTribute();
+
+            Integer monsterAddress = Scan.getInstance().getInteger();
+            if (monsterAddress == null)
+                return;
+            if (game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
+                throw new InvalidSelection();
+
+            game.getThisBoard().removeMonster(monsterAddress - 1);
+        } else if (selectedMonster.getLevel() > 6) {
+            if (game.getThisBoard().getMonsterZoneNumber() < 2)
+                throw new NotEnoughCardForTribute();
+
+            Integer monsterAddress1 = Scan.getInstance().getInteger();
+            Integer monsterAddress2 = Scan.getInstance().getInteger();
+            if (monsterAddress1 == null || monsterAddress2 == null)
+                return;
+            if (game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
+                    game.getThisBoard().getMonstersZone()[monsterAddress2 - 1] == null)
+                throw new InvalidSelection();
+
+            game.getThisBoard().removeMonster(monsterAddress1 - 1);
+            game.getThisBoard().removeMonster(monsterAddress2 - 1);
+        }
+        MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.DEFENCE_DOWN);
+        game.setSummonOrSetThisTurn(true);
+        monster.set();
+        deselect();
     }
 
     public void set(String position) {
+        if (selectedCard == null)
+            throw new NoCardSelectedException();
 
+        if (selectedCardAddress.getOwner() != Owner.Me ||
+                selectedCardAddress.getPlace() != Place.MonsterZone ||
+                !(selectedCard instanceof Monster))
+            throw new CannotChangeException();
+
+        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
+            throw new ActionNotAllowed();
+
+        MonsterPosition wantedPosition;
+        if (position.equals("attack"))
+            wantedPosition = MonsterPosition.ATTACK;
+        else if (position.equals("defence"))
+            wantedPosition = MonsterPosition.DEFENCE_UP;
+        else
+            throw new InvalidInput();
+
+        if (wantedPosition == MonsterPosition.ATTACK && selectedMonster.getPosition() != MonsterPosition.DEFENCE_UP)
+            throw new CannotChangeException();
+        if (wantedPosition == MonsterPosition.DEFENCE_UP && selectedMonster.getPosition() != MonsterPosition.ATTACK)
+            throw new CannotChangeException();
+
+        if (selectedMonster.isChangedPosition())
+            throw new AlreadyChangeException();
+
+        selectedMonster.setPosition(wantedPosition);
+        selectedMonster.flip();
     }
 
     public void flipSummon() {
