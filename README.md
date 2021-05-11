@@ -2,6 +2,6 @@
 ## Team 26
 
 ### Team Members:
-- Abolfazl Morovati 99102242
-- Mohammad Aghaie 99105248
-- Ali Bonaftizadeh 99105301
+- Student1 99102242
+- Student2 Aghaie 99105248
+- Student3 99105301
