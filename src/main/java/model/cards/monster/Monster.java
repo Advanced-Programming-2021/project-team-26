@@ -47,6 +47,10 @@ public class Monster extends Card {
         return null;
     }
 
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
+
     public int getAttackPower() {
         return attackPower;
     }

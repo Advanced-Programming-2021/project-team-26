@@ -21,29 +21,29 @@ public class DeckController {
         return deckController;
     }
 
-    public void createDeck(Matcher matcher) throws UnreachableDeckNameException {
+    public void createDeck(Matcher matcher) throws RepeatedDeckNameException {
         String deckName = matcher.group(1);
         if (!Deck.checkDeckNameExistence(deckName))
             new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
-        else throw new UnreachableDeckNameException();
+        else throw new RepeatedDeckNameException(deckName);
     }
 
-    public void removeDeck(Matcher matcher) throws UnreachableDeckNameException {
+    public void removeDeck(Matcher matcher) throws DeckNameDoesntExistException {
         String deckName = matcher.group(1);
         if (!Deck.checkDeckNameExistence(deckName)) {
             User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername()).getAllDecks().remove(deckName);
             Deck.getAllDecks().removeIf(deck -> deck.getName().equals(deckName));
-        } else throw new UnreachableDeckNameException();
+        } else throw new DeckNameDoesntExistException(deckName);
     }
 
-    public void setActive(Matcher matcher) throws UnreachableDeckNameException {
+    public void setActive(Matcher matcher) throws DeckNameDoesntExistException {
         String deckName = matcher.group(1);
         if (!Deck.checkDeckNameExistence(deckName))
             Database.getInstance().getCurrentUser().setActiveDeck(Deck.getDeckByDeckName(deckName));
-        else throw new UnreachableDeckNameException();
+        else throw new DeckNameDoesntExistException(deckName);
     }
 
-    public void addCard(Matcher matcher) throws InvalidInput, DeckNotFoundException, CardNotFoundException,
+    public void addCard(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException, CardNotFoundException,
             InvalidNumberOfACardException, FullMainDeckException, FullSideDeckException {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
@@ -63,7 +63,7 @@ public class DeckController {
         if (!Database.getInstance().getCurrentUser().doesUserHaveThisCard(cardName))
             throw new CardNotFoundException();
         if (!Deck.checkDeckNameExistence(deckName))
-            throw new DeckNotFoundException();
+            throw new DeckNameDoesntExistException(deckName);
 
         if (input.containsKey("side")) {
             if (Deck.getDeckByDeckName(deckName).getSideDeck().size() == 15)
@@ -74,7 +74,7 @@ public class DeckController {
         }
 
         if (!Deck.getDeckByDeckName(deckName).IsNumberOfTheCardInDeckValid(cardName))
-            throw new InvalidNumberOfACardException();
+            throw new InvalidNumberOfACardException(cardName, deckName);
 
         if (input.containsKey("side"))
             Deck.getDeckByDeckName(deckName).addCardToSideDeck(Card.getCard(cardName));
@@ -82,7 +82,7 @@ public class DeckController {
             Deck.getDeckByDeckName(deckName).addCardToMainDeck(Card.getCard(cardName));
     }
 
-    public void removeCard(Matcher matcher) throws InvalidInput, DeckNotFoundException,
+    public void removeCard(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException,
             CardNotFoundInSideDeck, CardNotFoundInMainDeck {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
@@ -100,14 +100,14 @@ public class DeckController {
             throw new InvalidInput();
 
         if (!Deck.checkDeckNameExistence(deckName))
-            throw new DeckNotFoundException();
+            throw new DeckNameDoesntExistException(deckName);
 
         if (input.containsKey("side")) {
             if (!Deck.getDeckByDeckName(deckName).doesCardExistInSideDeck(cardName))
-                throw new CardNotFoundInSideDeck();
+                throw new CardNotFoundInSideDeck(cardName);
         } else {
             if (!Deck.getDeckByDeckName(deckName).doesCardExistInMainDeck(cardName))
-                throw new CardNotFoundInMainDeck();
+                throw new CardNotFoundInMainDeck(cardName);
         }
 
 
@@ -118,7 +118,7 @@ public class DeckController {
     }
 
 
-    public String showDeck(Matcher matcher) throws InvalidInput, DeckNotFoundException {
+    public String showDeck(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -129,7 +129,7 @@ public class DeckController {
             throw new InvalidInput();
 
         if (!Deck.checkDeckNameExistence(deckName))
-            throw new DeckNotFoundException();
+            throw new DeckNameDoesntExistException(deckName);
 
         if (input.containsKey("side"))
             return Deck.getDeckByDeckName(deckName).showDeck("side");

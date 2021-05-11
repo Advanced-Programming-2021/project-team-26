@@ -1,21 +1,30 @@
 package controller;
 
-import exceptions.UnreachableDeckNameException;
+import exceptions.RepeatedDeckNameException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Executable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class DeckControllerTest {
+    @BeforeAll
+    public static void init() {
+        String user1 = "user create --nickname nick1 -u user1 -p thisIsPass";
+        Matcher matcher1 = Pattern.compile(user1).matcher(user1);
+        matcher1.find();
+
+        UserController.getInstance().addNewUser(matcher1);
+    }
+
     @Test
     @DisplayName("create new deck")
 
-    public void createDeck(){
+    public void createDeck() {
         String deck1 = "deck create deck1";
         String deckRegex = "deck create (deck1)";
         Matcher matcher1 = Pattern.compile(deckRegex).matcher(deck1);
@@ -23,11 +32,13 @@ public class DeckControllerTest {
         matcher1.find();
         try {
             DeckController.getInstance().createDeck(matcher1);
-        } catch (Exception e){
+        } catch (Exception e) {
             fail();
         }
 
-        Assertions.assertThrows(UnreachableDeckNameException.class, () ->
-        { DeckController.getInstance().createDeck(matcher1);});
+        Assertions.assertThrows(RepeatedDeckNameException.class, () ->
+        {
+            DeckController.getInstance().createDeck(matcher1);
+        });
     }
 }
