@@ -20,10 +20,11 @@ public class MonsterController {
     private final GameController gameController;
     private final Monster monster;
     private MonsterPosition position;
-    private boolean canMonsterBeAttacked;
-    private boolean canMonsterBeSummoned;
+    private final boolean canMonsterBeAttacked;
+    private final boolean canMonsterBeSummoned;
 
     private boolean changedPosition = false;
+
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
         this.monster = new Monster(monster);
@@ -97,33 +98,33 @@ public class MonsterController {
     private static MonsterController makeSuijin
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
-            private boolean wasEffectActiveBefore = false;
+            private final boolean wasEffectActiveBefore = false;
             private boolean isEffectActive = false;
 
             @Override
             public void runMonsterEffect() {
-                if (!wasEffectActiveBefore){
+                if (!wasEffectActiveBefore) {
                     isEffectActive = true;
                 }
             }
 
             @Override
-            public void attacked(MonsterController attacker){
-                if (isEffectActive){
-                   MonsterController[] monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
+            public void attacked(MonsterController attacker) {
+                if (isEffectActive) {
+                    MonsterController[] monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
                     int theAttackerPower = 0;
 
                     for (MonsterController monsterController : monstersZone) {
-                       if (monsterController.equals(attacker)){
-                           theAttackerPower = attacker.monster.getAttackPower();
-                           attacker.monster.setAttackPower(0);
-                       }
+                        if (monsterController.equals(attacker)) {
+                            theAttackerPower = attacker.monster.getAttackPower();
+                            attacker.monster.setAttackPower(0);
+                        }
                     }
 
                     //attacked default method
 
                     for (MonsterController monsterController : monstersZone) {
-                        if (monsterController.equals(attacker)){
+                        if (monsterController.equals(attacker)) {
                             attacker.monster.setAttackPower(theAttackerPower);
                         }
                     }
@@ -163,10 +164,6 @@ public class MonsterController {
 
     public void setPosition(MonsterPosition position) {
         this.position = position;
-    }
-
-    public boolean canBeAttacked(MonsterController attacker) {
-        return true;
     }
 
     public void attacked(MonsterController attacker) {
@@ -214,12 +211,8 @@ public class MonsterController {
     public void set() {
     }
 
-    public interface MonsterMakerInterface {
-        MonsterController make(GameController gameController, Monster monster, MonsterPosition position);
-    }
-
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
@@ -231,5 +224,9 @@ public class MonsterController {
         MonsterController monsterController = (MonsterController) o;
 
         return monsterController.monster.getName().equals(this.monster.getName());
+    }
+
+    public interface MonsterMakerInterface {
+        MonsterController make(GameController gameController, Monster monster, MonsterPosition position);
     }
 }
