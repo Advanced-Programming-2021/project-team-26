@@ -19,7 +19,7 @@ public class GameController {
     private int roundNumber;
 
 
-    public GameController(String firstPlayer, String secondPayer, int round) throws  NoPlayerAvailable{
+    public GameController(String firstPlayer, String secondPayer, int round) throws NoPlayerAvailable {
         this.game = new Game(this, User.getUserByUsername(firstPlayer), User.getUserByUsername(secondPayer));
         this.roundNumber = round;
         game.nextPhase();
@@ -249,11 +249,25 @@ public class GameController {
             throw new AlreadyChangeException();
 
         selectedMonster.setPosition(wantedPosition);
-        selectedMonster.flip();
     }
 
     public void flipSummon(Matcher matcher) {
+        if (selectedCard == null)
+            throw new NoCardSelectedException();
 
+        if (selectedCardAddress.getOwner() != Owner.Me ||
+                selectedCardAddress.getPlace() != Place.MonsterZone ||
+                !(selectedCard instanceof Monster))
+            throw new CannotChangeException();
+
+        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
+            throw new ActionNotAllowed();
+
+        if (selectedMonster.getPosition() != MonsterPosition.DEFENCE_DOWN || selectedMonster.isNewMonster())
+            throw new CannotFlipSummon();
+
+        selectedMonster.setPosition(MonsterPosition.ATTACK);
+        selectedMonster.flip();
     }
 
     public void attackDirect(Matcher matcher) {
@@ -261,7 +275,76 @@ public class GameController {
     }
 
     public void attack(Matcher matcher) {
+        if (selectedCard != null)
+            throw new NoCardSelectedException();
 
+        if (selectedCardAddress.getOwner() != Owner.Me ||
+                selectedCardAddress.getPlace() != Place.MonsterZone ||
+                !(selectedCard instanceof Monster) ||
+                selectedMonster.getPosition() != MonsterPosition.ATTACK)
+            throw new CannotAttackException();
+
+        if (game.getPhase() != Phase.BATTLE)
+            throw new ActionNotAllowed();
+
+        if (selectedMonster.isAttackThisTurn())
+            throw new AlreadyAttackedException();
+
+        int number = Integer.parseInt(matcher.group(1));
+        number--;
+        MonsterController toBeAttacked = game.getOtherBoard().getMonstersZone()[number];
+        if (toBeAttacked == null || toBeAttacked.canBeAttacked(selectedMonster))
+            throw new NoCardToAttackException();
+
+        String message = attack(selectedMonster, toBeAttacked);
+    }
+
+    public String attack(MonsterController attacker, MonsterController defender) {
+        int damage;
+        switch (defender.getPosition()) {
+            case ATTACK:
+                damage = attacker.getCard().getAttackPower() - defender.getCard().getAttackPower();
+                if (damage > 0) {
+                    defender.remove(attacker);
+                    game.decreaseOtherLifePoint(damage);
+                    return "your opponent’s monster is destroyed and your opponent receives " + damage + "battle damage";
+                } else if (damage == 0) {
+                    game.getThisBoard().removeMonster(attacker);
+                    defender.remove(attacker);
+                    return "both you and your opponent monster cards are destroyed and no one receives damage";
+                } else {
+                    damage = -damage;
+                    game.getThisBoard().removeMonster(attacker);
+                    game.decreaseThisLifePoint(damage);
+                    return "your monster is destroyed and you receives " + damage + "battle damage";
+                }
+            case DEFENCE_UP:
+                damage = attacker.getCard().getAttackPower() - defender.getCard().getDefencePower();
+                if (damage > 0) {
+                    defender.remove(attacker);
+                    return "the defense position monster is destroyed";
+                } else if (damage == 0) {
+                    return "no card is destroyed";
+                } else {
+                    damage = -damage;
+                    game.decreaseThisLifePoint(damage);
+                    return "no card is destroyed and you received " + damage + " battle damage";
+                }
+            case DEFENCE_DOWN:
+                String cardNameMessage = "opponent’s monster card was <monster card >name and ";
+                damage = attacker.getCard().getAttackPower() - defender.getCard().getDefencePower();
+                if (damage > 0) {
+                    defender.remove(attacker);
+                    return cardNameMessage + "the defense position monster is destroyed";
+                } else if (damage == 0) {
+                    return cardNameMessage + "no card is destroyed";
+                } else {
+                    damage = -damage;
+                    game.decreaseThisLifePoint(damage);
+                    return cardNameMessage + "no card is destroyed and you received " + damage + " battle damage";
+                }
+        }
+        return null;
     }
 
     public void activateEffect(Matcher matcher) {

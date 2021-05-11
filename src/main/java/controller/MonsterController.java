@@ -22,8 +22,9 @@ public class MonsterController {
     private MonsterPosition position;
     private final boolean canMonsterBeAttacked;
     private final boolean canMonsterBeSummoned;
-
     private boolean changedPosition = false;
+    private boolean newMonster = true;
+    private boolean attackThisTurn;
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
@@ -144,6 +145,7 @@ public class MonsterController {
 
     public void finishTurn() {
         changedPosition = false;
+        newMonster = false;
     }
 
     public void runMonsterEffect() {
@@ -224,6 +226,22 @@ public class MonsterController {
         MonsterController monsterController = (MonsterController) o;
 
         return monsterController.monster.getName().equals(this.monster.getName());
+    }
+
+    public boolean isNewMonster() {
+        return newMonster;
+    }
+
+    public void setNewMonster(boolean newMonster) {
+        this.newMonster = newMonster;
+    }
+
+    public boolean isAttackThisTurn() {
+        return attackThisTurn;
+    }
+
+    public void setAttackThisTurn(boolean attackThisTurn) {
+        this.attackThisTurn = attackThisTurn;
     }
 
     public interface MonsterMakerInterface {

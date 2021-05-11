@@ -2,6 +2,7 @@ package model;
 
 import controller.GameController;
 import controller.Phase;
+import exceptions.NoPlayerAvailable;
 import model.cards.Card;
 import view.Print;
 
@@ -16,7 +17,9 @@ public class Game {
     private boolean finished = false;
     private boolean summonOrSetThisTurn = false;
 
-    public Game(GameController gameController, User first, User second) {
+    public Game(GameController gameController, User first, User second) throws NoPlayerAvailable {
+        if (first == null || second == null)
+            throw new NoPlayerAvailable();
         this.gameController = gameController;
         users[0] = first;
         users[1] = second;
@@ -113,6 +116,18 @@ public class Game {
 
     public int getOtherLifePint() {
         return lifePoints[1 - turn];
+    }
+
+    public void decreaseThisLifePoint(int amount) {
+        lifePoints[turn] -= amount;
+        if (lifePoints[turn] < 0)
+            finished = true;
+    }
+
+    public void decreaseOtherLifePoint(int amount) {
+        lifePoints[1 - turn] -= amount;
+        if (lifePoints[1 - turn] < 0)
+            finished = true;
     }
 
     public Phase getPhase() {
