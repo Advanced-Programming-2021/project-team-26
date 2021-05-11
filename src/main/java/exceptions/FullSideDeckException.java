@@ -1,8 +1,7 @@
 package exceptions;
 
-public class FullSideDeckException extends RuntimeException{
-    @Override
-    public String getMessage() {
-        return "side deck is full";
+public class FullSideDeckException extends RuntimeException {
+    public FullSideDeckException() {
+        super("side deck is full");
     }
 }
