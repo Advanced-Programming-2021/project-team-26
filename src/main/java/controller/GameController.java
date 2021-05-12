@@ -266,8 +266,7 @@ public class GameController {
         if (selectedMonster.getPosition() != MonsterPosition.DEFENCE_DOWN || selectedMonster.isNewMonster())
             throw new CannotFlipSummon();
 
-        selectedMonster.setPosition(MonsterPosition.ATTACK);
-        selectedMonster.flip();
+        selectedMonster.flip(selectedMonster);
     }
 
     public void attackDirect(Matcher matcher) {
