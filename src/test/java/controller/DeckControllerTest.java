@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class DeckControllerTest {
     @BeforeAll
     public static void init() {
-        String user1 = "user create --nickname nick1 -u user1 -p thisIsPass";
+        String user1 = "user login -u user2 -p password";
         Matcher matcher1 = Pattern.compile(user1).matcher(user1);
         matcher1.find();
 
-        UserController.getInstance().addNewUser(matcher1);
+        UserController.getInstance().loginUser(matcher1);
     }
 
     @Test
