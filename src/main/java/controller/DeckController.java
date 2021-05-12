@@ -23,14 +23,16 @@ public class DeckController {
 
     public void createDeck(Matcher matcher) throws RepeatedDeckNameException {
         String deckName = matcher.group(1);
-        if (!Deck.checkDeckNameExistence(deckName))
+        if (!Deck.checkDeckNameExistence(deckName)) {
             new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
+            Database.getInstance().getCurrentUser().getAllDecks().put(deckName, Deck.getDeckByDeckName(deckName));
+        }
         else throw new RepeatedDeckNameException(deckName);
     }
 
     public void removeDeck(Matcher matcher) throws DeckNameDoesntExistException {
         String deckName = matcher.group(1);
-        if (!Deck.checkDeckNameExistence(deckName)) {
+        if (Deck.checkDeckNameExistence(deckName)) {
             User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername()).getAllDecks().remove(deckName);
             Deck.getAllDecks().removeIf(deck -> deck.getName().equals(deckName));
         } else throw new DeckNameDoesntExistException(deckName);
