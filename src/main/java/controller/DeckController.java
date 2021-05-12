@@ -40,7 +40,7 @@ public class DeckController {
 
     public void setActive(Matcher matcher) throws DeckNameDoesntExistException {
         String deckName = matcher.group(1);
-        if (!Deck.checkDeckNameExistence(deckName))
+        if (Deck.checkDeckNameExistence(deckName))
             Database.getInstance().getCurrentUser().setActiveDeck(Deck.getDeckByDeckName(deckName));
         else throw new DeckNameDoesntExistException(deckName);
     }

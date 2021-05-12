@@ -1,9 +1,12 @@
 package controller;
 
+import exceptions.CardNotFoundException;
 import exceptions.DeckNameDoesntExistException;
+import exceptions.InvalidNumberOfACardException;
 import exceptions.RepeatedDeckNameException;
 import model.Deck;
 import model.User;
+import model.cards.Card;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -77,5 +80,57 @@ public class DeckControllerTest {
 
         Assertions.assertNull(Deck.getDeckByDeckName("deck2"));
         Assertions.assertTrue(User.getUserByUsername("user2").getAllDecks().size() == 0);
+    }
+
+    @Test
+    @DisplayName("add card to deck")
+    public void addCard() {
+        String cardToMain = "deck add-card --card Suijin --deck deck2";
+        String invalidCardToMain = "deck add-card --card Alaki --deck deck2";
+        String cardToSide = "deck add-card --card Suijin --deck deck2 --side";
+
+        String cardToMainRegex = "deck add-card --card Suijin --deck deck2";
+        String cardToSideRegex = "deck add-card --card Suijin --deck deck2 --side";
+        String invalidCardToMainRegex = "deck add-card --card Alaki --deck deck2";
+
+        Matcher matcher = Pattern.compile(cardToMainRegex).matcher(cardToMain);
+        matcher.find();
+
+        Matcher matcher1 = Pattern.compile(cardToSideRegex).matcher(cardToSide);
+        matcher1.find();
+
+        Matcher matcher2 = Pattern.compile(invalidCardToMainRegex).matcher(invalidCardToMain);
+        matcher2.find();
+
+        User.getUserByUsername("user2").getAllCards().put("Suijin", Card.getCard("Suijin"));
+
+        try {
+            DeckController.getInstance().addCard(matcher);
+        } catch (Exception e) {
+            fail();
+        }
+
+        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getMainDeck().size() == 1);
+
+        try {
+            DeckController.getInstance().addCard(matcher1);
+        } catch (Exception e) {
+            fail();
+        }
+
+        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getSideDeck().size() == 1);
+
+        Assertions.assertThrows(CardNotFoundException.class, () ->
+        {
+            DeckController.getInstance().addCard(matcher2);
+        });
+
+        DeckController.getInstance().addCard(matcher);
+        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getMainDeck().size() == 2);
+
+        Assertions.assertThrows(InvalidNumberOfACardException.class, () ->
+        {
+            DeckController.getInstance().addCard(matcher);
+        });
     }
 }
