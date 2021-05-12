@@ -19,6 +19,7 @@ public class MonsterController {
         monsterMakers.put("Gate Guardian", MonsterController::makeGateGuardian);
         monsterMakers.put("Scanner", MonsterController::makeScanner);
         monsterMakers.put("Marshmallon", MonsterController::makeMarshmallon);
+        monsterMakers.put("The Calculator", MonsterController::makeTheCalculator);
     }
 
     private final GameController gameController;
@@ -50,7 +51,6 @@ public class MonsterController {
             private final Set<MonsterController> underEffectMonsters = new HashSet<>();
             private boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
 
-
             @Override
             public void runMonsterEffect() {
                 if (isEffectActive) {
@@ -63,7 +63,6 @@ public class MonsterController {
                         }
                     }
                 }
-
             }
 
             //cant be attacked while there are some other monsters in the field
@@ -112,23 +111,12 @@ public class MonsterController {
             @Override
             public void attacked(MonsterController attacker) {
                 if (isEffectActive) {
-                    MonsterController[] monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
-                    int theAttackerPower = 0;
-
-                    for (MonsterController monsterController : monstersZone) {
-                        if (monsterController.equals(attacker)) {
-                            theAttackerPower = attacker.monster.getAttackPower();
-                            attacker.monster.setAttackPower(0);
-                        }
-                    }
+                    int theAttackerPower = attacker.monster.getAttackPower();
+                    attacker.monster.setAttackPower(0);
 
                     //attacked default method
 
-                    for (MonsterController monsterController : monstersZone) {
-                        if (monsterController.equals(attacker)) {
-                            attacker.monster.setAttackPower(theAttackerPower);
-                        }
-                    }
+                    attacker.monster.setAttackPower(theAttackerPower);
                 }
             }
 
@@ -139,8 +127,9 @@ public class MonsterController {
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
             @Override
-            public void flip(){
-
+            public void flip(MonsterController selectedMonster) {
+                //
+                selectedMonster.setPosition(MonsterPosition.ATTACK);
             }
         };
     }
@@ -160,6 +149,21 @@ public class MonsterController {
     private static MonsterController makeMarshmallon
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
+        };
+    }
+
+    private static MonsterController makeTheCalculator
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+            @Override
+            public void runMonsterEffect(){
+                MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone){
+                    if (monsterController.position.equals(MonsterPosition.ATTACK)){
+                        monster.increaseAttackPower(monsterController.monster.getLevel() * 300);
+                    }
+                }
+            }
         };
     }
 
@@ -215,8 +219,8 @@ public class MonsterController {
         position = MonsterPosition.ATTACK;
     }
 
-    public void flip() {
-
+    public void flip(MonsterController selectedMonster) {
+        selectedMonster.setPosition(MonsterPosition.ATTACK);
     }
 
     public void specialSummon() {
