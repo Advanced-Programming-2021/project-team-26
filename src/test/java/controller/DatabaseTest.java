@@ -7,14 +7,35 @@ import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 import model.cards.trap.Trap;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DatabaseTest {
+
+    public static void deleteDir(File dirFile) {
+        if (dirFile.isDirectory()) {
+            for (File dir : dirFile.listFiles()) {
+                deleteDir(dir);
+            }
+        }
+        dirFile.delete();
+    }
+
+    @AfterEach
+    @BeforeEach
+    void removeDatabase() {
+        String databasePath = System.getProperty("user.dir") + File.separator + "database";
+        File file = new File(databasePath);
+        deleteDir(file);
+
+    }
 
     @Test
     void getAllCards() {
@@ -130,6 +151,6 @@ class DatabaseTest {
 
         HashMap<String, User> allUsers = database.getAllUsers();
         assertNotNull(allUsers);
-        assertEquals(3, allUsers.size());
+        assertEquals(2, allUsers.size());
     }
 }

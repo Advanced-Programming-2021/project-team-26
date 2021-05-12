@@ -5,6 +5,7 @@ import exceptions.DuplicateUsername;
 import exceptions.InvalidInput;
 import exceptions.WrongUsernamePassword;
 import model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
@@ -13,6 +14,11 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
+    @BeforeEach
+    void removeUsers() {
+        User.getAllUsers().clear();
+    }
+
     @Test
     public void createNewUser() {
         String user1 = "user create --nickname nick1 -u user1 -p thisIsPass";
@@ -110,13 +116,11 @@ class UserControllerTest {
 
         try {
             UserController.getInstance().removeUser(removeMatcher);
-        } catch (InvalidInput invalidInput) {
-            fail();
-        } catch (WrongUsernamePassword wrongUsernamePassword) {
+        } catch (InvalidInput | WrongUsernamePassword invalidInput) {
             fail();
         }
 
-        assertEquals(null, User.getUserByUsername("user"));
-        assertEquals(null, Database.getInstance().readUser("user"));
+        assertNull(User.getUserByUsername("user"));
+        assertNull(Database.getInstance().readUser("user"));
     }
 }

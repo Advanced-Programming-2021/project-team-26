@@ -228,10 +228,10 @@ public class Database {
 
     public Monster readMonster(String name) {
         try {
-            FileReader file = new FileReader(monstersJsonPath + File.separator + name);
+            String path = monstersJsonPath + File.separator + name + ".json";
+            FileReader file = new FileReader(path);
             Gson gson = new Gson();
-            Monster monster = gson.fromJson(file, Monster.class);
-            return monster;
+            return gson.fromJson(file, Monster.class);
         } catch (Exception e) {
             return null;
         }
@@ -239,10 +239,10 @@ public class Database {
 
     public Spell readSpell(String name) {
         try {
-            FileReader file = new FileReader(spellsJsonPath + File.separator + name);
+            String path = spellsJsonPath + File.separator + name + ".json";
+            FileReader file = new FileReader(path);
             Gson gson = new Gson();
-            Spell spell = gson.fromJson(file, Spell.class);
-            return spell;
+            return gson.fromJson(file, Spell.class);
         } catch (Exception e) {
             return null;
         }
@@ -250,10 +250,10 @@ public class Database {
 
     public Trap readTrap(String name) {
         try {
-            FileReader file = new FileReader(trapsJsonPath + File.separator + name);
+            String path = trapsJsonPath + File.separator + name + ".json";
+            FileReader file = new FileReader(path);
             Gson gson = new Gson();
-            Trap trap = gson.fromJson(file, Trap.class);
-            return trap;
+            return gson.fromJson(file, Trap.class);
         } catch (Exception e) {
             return null;
         }
@@ -289,7 +289,9 @@ public class Database {
         if (userFiles != null) {
             HashMap<String, User> allUsers = new HashMap<>();
             for (File userFile : userFiles) {
-                    try {
+                if (!userFile.getName().matches(".*json"))
+                    continue;
+                try {
                     FileReader fileReader = new FileReader(userFile);
                     User user = new Gson().fromJson(fileReader, User.class);
                     allUsers.put(user.getUsername(), user);
