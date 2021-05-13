@@ -1,9 +1,6 @@
 package controller;
 
-import exceptions.CardNotFoundException;
-import exceptions.DeckNameDoesntExistException;
-import exceptions.InvalidNumberOfACardException;
-import exceptions.RepeatedDeckNameException;
+import exceptions.*;
 import model.Deck;
 import model.User;
 import model.cards.Card;
@@ -32,6 +29,8 @@ public class DeckControllerTest {
         matcher2.find();
 
         DeckController.getInstance().createDeck(matcher2);
+
+        Deck.getDeckByDeckName("deck2").addCardToSideDeck(Card.getCard("Scanner"));
     }
 
     @Test
@@ -118,19 +117,83 @@ public class DeckControllerTest {
             fail();
         }
 
-        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getSideDeck().size() == 1);
+        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getSideDeck().size() == 2);
 
         Assertions.assertThrows(CardNotFoundException.class, () ->
         {
             DeckController.getInstance().addCard(matcher2);
         });
 
+        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getAllCards().size() == 3);
+        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getMainDeck().size() == 1);
         DeckController.getInstance().addCard(matcher);
-        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getMainDeck().size() == 2);
-
+        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getAllCards().size() == 4);
         Assertions.assertThrows(InvalidNumberOfACardException.class, () ->
         {
             DeckController.getInstance().addCard(matcher);
         });
+    }
+
+    @Test
+    @DisplayName("remove card from deck")
+    public void removeCard() {
+        String deck1 = "deck create deck2";
+        String deckRegex = "deck create (deck2)";
+        Matcher matcher2 = Pattern.compile(deckRegex).matcher(deck1);
+        matcher2.find();
+
+        DeckController.getInstance().createDeck(matcher2);
+        Deck.getDeckByDeckName("deck2").addCardToSideDeck(Card.getCard("Scanner"));
+
+        String invalidInput = "deck remove-card --card --deck deck2";
+        String invalidInputRegex = "deck remove-card --card --deck deck2";
+        Matcher matcher = Pattern.compile(invalidInputRegex).matcher(invalidInput);
+        matcher.find();
+
+        Assertions.assertThrows(InvalidInput.class, () ->
+        {
+            DeckController.getInstance().removeCard(matcher);
+        });
+
+        String deck2 = "deck remove-card --card Marshmallon --deck deck2";
+        String deck2Regex = "deck remove-card --card Marshmallon --deck deck2";
+        Matcher matcher1 = Pattern.compile(deck2Regex).matcher(deck2);
+        matcher1.find();
+
+        Assertions.assertThrows(CardNotFoundInMainDeck.class, () ->
+        {
+            DeckController.getInstance().removeCard(matcher1);
+        });
+
+        String deck21 = "deck remove-card --card Suijin --deck deck2 --side";
+        String deck21Regex = "deck remove-card --card Suijin --deck deck2 --side";
+        Matcher matcher5 = Pattern.compile(deck21Regex).matcher(deck21);
+        matcher5.find();
+
+        Assertions.assertThrows(CardNotFoundInSideDeck.class, () ->
+        {
+            DeckController.getInstance().removeCard(matcher5);
+        });
+
+        String deck3 = "deck remove-card --card Scanner --deck deck3 --side";
+        String deck3Regex = "deck remove-card --card Scanner --deck deck3 --side";
+        Matcher matcher3 = Pattern.compile(deck3Regex).matcher(deck3);
+        matcher3.find();
+
+        Assertions.assertThrows(DeckNameDoesntExistException.class, () ->
+        {
+            DeckController.getInstance().removeCard(matcher3);
+        });
+
+        String deck4 = "deck remove-card --card Scanner --deck deck2 --side";
+        String deck4Regex = "deck remove-card --card Scanner --deck deck2 --side";
+        Matcher matcher4 = Pattern.compile(deck4Regex).matcher(deck4);
+        matcher4.find();
+
+        try {
+            DeckController.getInstance().removeCard(matcher4);
+        } catch (Exception e) {
+            fail();
+        }
     }
 }

@@ -245,7 +245,7 @@ public class GameController {
         if (wantedPosition == MonsterPosition.DEFENCE_UP && selectedMonster.getPosition() != MonsterPosition.ATTACK)
             throw new CannotChangeException();
 
-        if (selectedMonster.isChangedPosition())
+        if (selectedMonster.isHasPositionChanged())
             throw new AlreadyChangeException();
 
         selectedMonster.setPosition(wantedPosition);
@@ -263,7 +263,7 @@ public class GameController {
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
 
-        if (selectedMonster.getPosition() != MonsterPosition.DEFENCE_DOWN || selectedMonster.isNewMonster())
+        if (selectedMonster.getPosition() != MonsterPosition.DEFENCE_DOWN || selectedMonster.isMonsterNew())
             throw new CannotFlipSummon();
 
         selectedMonster.flip(selectedMonster);
@@ -281,7 +281,7 @@ public class GameController {
         if (game.getPhase() != Phase.BATTLE)
             throw new ActionNotAllowed();
 
-        if (selectedMonster.isAttackThisTurn())
+        if (selectedMonster.isHasAttackedThisTurn())
             throw new AlreadyAttackedException();
 
         if (game.getOtherBoard().canDirectAttack())
@@ -303,7 +303,7 @@ public class GameController {
         if (game.getPhase() != Phase.BATTLE)
             throw new ActionNotAllowed();
 
-        if (selectedMonster.isAttackThisTurn())
+        if (selectedMonster.isHasAttackedThisTurn())
             throw new AlreadyAttackedException();
 
         int number = Integer.parseInt(matcher.group(1));

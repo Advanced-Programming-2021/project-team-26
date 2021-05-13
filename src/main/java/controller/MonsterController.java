@@ -8,26 +8,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MonsterController {
-    private static final HashMap<String, MonsterMakerInterface> monsterMakers;
+    private static final HashMap<String, MonsterMakerInterface> MONSTER_MAKERS;
 
     static {
-        monsterMakers = new HashMap<>();
-        monsterMakers.put("Command knight", MonsterController::makeCommandKnight);
-        monsterMakers.put("Yomi Ship", MonsterController::makeYomiShip);
-        monsterMakers.put("Suijin", MonsterController::makeSuijin);
-        monsterMakers.put("Man-Eater Bug", MonsterController::makeManEaterBug);
-        monsterMakers.put("Gate Guardian", MonsterController::makeGateGuardian);
-        monsterMakers.put("Scanner", MonsterController::makeScanner);
-        monsterMakers.put("Marshmallon", MonsterController::makeMarshmallon);
-        monsterMakers.put("The Calculator", MonsterController::makeTheCalculator);
+        MONSTER_MAKERS = new HashMap<>();
+        MONSTER_MAKERS.put("Command knight", MonsterController::makeCommandKnight);
+        MONSTER_MAKERS.put("Yomi Ship", MonsterController::makeYomiShip);
+        MONSTER_MAKERS.put("Suijin", MonsterController::makeSuijin);
+        MONSTER_MAKERS.put("Man-Eater Bug", MonsterController::makeManEaterBug);
+        MONSTER_MAKERS.put("Gate Guardian", MonsterController::makeGateGuardian);
+        MONSTER_MAKERS.put("Scanner", MonsterController::makeScanner);
+        MONSTER_MAKERS.put("Marshmallon", MonsterController::makeMarshmallon);
+        MONSTER_MAKERS.put("The Calculator", MonsterController::makeTheCalculator);
     }
 
     private final GameController gameController;
     private final Monster monster;
     private MonsterPosition position;
-    private boolean changedPosition = false;
-    private boolean newMonster = true;
-    private boolean attackThisTurn;
+    private boolean hasPositionChanged = false;
+    private boolean isMonsterNew = true;
+    private boolean hasAttackedThisTurn;
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
@@ -37,9 +37,9 @@ public class MonsterController {
 
     public static MonsterController getInstance(GameController gameController, Monster monster, MonsterPosition position)
             throws MonsterNotFoundException {
-        for (String monsterName : monsterMakers.keySet()) {
+        for (String monsterName : MONSTER_MAKERS.keySet()) {
             if (monster.getName().equals(monsterName)) {
-                return monsterMakers.get(monsterName).make(gameController, monster, position);
+                return MONSTER_MAKERS.get(monsterName).make(gameController, monster, position);
             }
         }
         throw new MonsterNotFoundException();
@@ -128,7 +128,7 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position) {
             @Override
             public void flip(MonsterController selectedMonster) {
-                //
+                // here we should select a monster to remove it
                 selectedMonster.setPosition(MonsterPosition.ATTACK);
             }
         };
@@ -141,8 +141,13 @@ public class MonsterController {
     }
 
     private static MonsterController makeScanner
-            (GameController gameController, Monster monster, MonsterPosition position) {
+            (GameController gameController, Monster monster1, MonsterPosition position) {
+        //select one of rival monsters to be like it
+        MonsterController rivalMonsterController = null;
+        Monster monster = new Monster(rivalMonsterController.monster);
+
         return new MonsterController(gameController, monster, position) {
+
         };
     }
 
@@ -156,10 +161,10 @@ public class MonsterController {
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
             @Override
-            public void runMonsterEffect(){
+            public void runMonsterEffect() {
                 MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
-                for (MonsterController monsterController : monstersZone){
-                    if (monsterController.position.equals(MonsterPosition.ATTACK)){
+                for (MonsterController monsterController : monstersZone) {
+                    if (monsterController.position.equals(MonsterPosition.ATTACK)) {
                         monster.increaseAttackPower(monsterController.monster.getLevel() * 300);
                     }
                 }
@@ -168,17 +173,17 @@ public class MonsterController {
     }
 
 
-    public boolean isChangedPosition() {
-        return changedPosition;
+    public boolean isHasPositionChanged() {
+        return hasPositionChanged;
     }
 
-    public void setChangedPosition(boolean changedPosition) {
-        this.changedPosition = changedPosition;
+    public void setHasPositionChanged(boolean hasPositionChanged) {
+        this.hasPositionChanged = hasPositionChanged;
     }
 
     public void finishTurn() {
-        changedPosition = false;
-        newMonster = false;
+        hasPositionChanged = false;
+        isMonsterNew = false;
     }
 
     public void runMonsterEffect() {
@@ -261,20 +266,20 @@ public class MonsterController {
         return monsterController.monster.getName().equals(this.monster.getName());
     }
 
-    public boolean isNewMonster() {
-        return newMonster;
+    public boolean isMonsterNew() {
+        return isMonsterNew;
     }
 
-    public void setNewMonster(boolean newMonster) {
-        this.newMonster = newMonster;
+    public void setMonsterNew(boolean monsterNew) {
+        this.isMonsterNew = monsterNew;
     }
 
-    public boolean isAttackThisTurn() {
-        return attackThisTurn;
+    public boolean isHasAttackedThisTurn() {
+        return hasAttackedThisTurn;
     }
 
-    public void setAttackThisTurn(boolean attackThisTurn) {
-        this.attackThisTurn = attackThisTurn;
+    public void setHasAttackedThisTurn(boolean hasAttackedThisTurn) {
+        this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 
     public interface MonsterMakerInterface {
