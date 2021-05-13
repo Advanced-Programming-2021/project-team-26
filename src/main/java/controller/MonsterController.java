@@ -142,7 +142,7 @@ public class MonsterController {
 
     private static MonsterController makeScanner
             (GameController gameController, Monster monster1, MonsterPosition position) {
-        //select one of rival monsters to be like it
+        //select one of rival monsters in graveYard to be like it
         MonsterController rivalMonsterController = null;
         Monster monster = new Monster(rivalMonsterController.monster);
 
@@ -154,6 +154,12 @@ public class MonsterController {
     private static MonsterController makeMarshmallon
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
+            @Override
+            public void remove(MonsterController attacker){
+                if (position.equals(MonsterPosition.DEFENCE_DOWN)){
+                    //-1000 lifePoint
+                }
+            }
         };
     }
 
