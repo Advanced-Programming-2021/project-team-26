@@ -8,6 +8,7 @@ import exceptions.SpellTrapNotFoundException;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
+import model.cards.spell.Spell;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class Board {
     private SpellTrapController[] spellTrapZone;
     private List<Card> graveyard;
     private List<Card> hand;
-    private Card FieldZone;
+    private SpellController fieldZone;
     private GameController gameController;
 
     public Board(GameController gameController, Deck deck) {
@@ -55,8 +56,8 @@ public class Board {
         return hand;
     }
 
-    public Card getFieldZone() {
-        return FieldZone;
+    public SpellController getFieldZone() {
+        return fieldZone;
     }
 
     private void initDeck(Deck deck) {
@@ -87,7 +88,14 @@ public class Board {
     }
 
     private void initFieldZone() {
-        FieldZone = null;
+        fieldZone = null;
+    }
+
+    private Board getOtherBoard() {
+        if (gameController.getGame().getOtherBoard() != this)
+            return gameController.getGame().getOtherBoard();
+        else
+            return gameController.getGame().getThisBoard();
     }
 
     public Card addCardToHand() {
@@ -114,7 +122,7 @@ public class Board {
         return monstersZone[lastEmpty];
     }
 
-    public void putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
+    public SpellTrapController putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
         if (!hand.contains(spellTrap)) {
             throw new SpellTrapNotFoundException();
         }
@@ -127,6 +135,7 @@ public class Board {
         }
         hand.remove(spellTrap);
         spellTrapZone[lastEmpty] = SpellTrapController.getInstance(gameController, spellTrap, position);
+        return spellTrapZone[lastEmpty];
     }
 
     public void removeMonster(int index) {
@@ -168,5 +177,20 @@ public class Board {
 
     public boolean canDirectAttack() {
         return true;
+    }
+
+    public int getSpellTrapZoneNumber() {
+        int number = 0;
+        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++)
+            if (spellTrapZone[i] != null)
+                number++;
+
+        return number;
+    }
+
+    public void putFiled(Spell spell) {
+        Board otherBoard = getOtherBoard();
+        otherBoard.fieldZone = null;
+        this.fieldZone = SpellController.getInstance(gameController, spell, SpellTrapPosition.UP);
     }
 }

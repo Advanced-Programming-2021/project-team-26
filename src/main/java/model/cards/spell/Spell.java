@@ -34,4 +34,8 @@ public class Spell extends SpellTrap {
             return allSpells.get(name);
         return null;
     }
+
+    public SpellType getType() {
+        return type;
+    }
 }
