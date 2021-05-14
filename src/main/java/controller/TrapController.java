@@ -37,14 +37,6 @@ public class TrapController extends SpellTrapController {
         };
     }
 
-    public void activate() {
-
-    }
-
-    public void remove() {
-
-    }
-
     @Override
     public SpellTrap getCard() {
         return this.trap;

@@ -33,6 +33,14 @@ public abstract class SpellTrapController {
         this.gameController = gameController;
     }
 
+    public void remove() {
+
+    }
+
+    public void activate() {
+
+    }
+
     public abstract SpellTrap getCard();
 
     public abstract void standBy();

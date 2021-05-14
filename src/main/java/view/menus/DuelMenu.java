@@ -1,10 +1,12 @@
 package view.menus;
+
+import controller.GameController;
 import view.Menu;
+
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import controller.GameController;
 
 public class DuelMenu extends Menu {
     private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
@@ -18,16 +20,16 @@ public class DuelMenu extends Menu {
         MAP.put(Pattern.compile("^attack (1-5)$"), gameController :: attack );
         MAP.put(Pattern.compile("^attack direct$"), gameController :: attackDirect);
         MAP.put(Pattern.compile("^activate effect$"), gameController :: activateEffect );
-        MAP.put(Pattern.compile("^show graveyard$"), gameController :: showGraveyard);
-        MAP.put(Pattern.compile("^card show --selected$"), gameController :: showSelectedCard );
-        MAP.put(Pattern.compile("^surrender$"), gameController :: surrender);
+        MAP.put(Pattern.compile("^show graveyard$"), gameController::showGraveyard);
+        MAP.put(Pattern.compile("^card show --selected$"), gameController::showCard);
+        MAP.put(Pattern.compile("^surrender$"), gameController::surrender);
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
         //MAP.put(Pattern.compile("^back$"), );
 
     }
 
     public DuelMenu(GameController gameController) {
-        this.gameController = gameController;
+        DuelMenu.gameController = gameController;
         name = "DuelMenu";
     }
 
