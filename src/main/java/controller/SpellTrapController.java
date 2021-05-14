@@ -36,4 +36,8 @@ public abstract class SpellTrapController {
     public abstract SpellTrap getCard();
 
     public abstract void standBy();
+
+    public boolean conditionMet() {
+        return true;
+    }
 }

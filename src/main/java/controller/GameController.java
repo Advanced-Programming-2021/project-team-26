@@ -4,6 +4,9 @@ import exceptions.*;
 import model.*;
 import model.cards.Card;
 import model.cards.monster.Monster;
+import model.cards.spell.Spell;
+import model.cards.spell.SpellType;
+import model.cards.trap.Trap;
 import view.Scan;
 
 import java.util.HashMap;
@@ -47,12 +50,16 @@ public class GameController {
                 throw new InvalidSelection();
 
             if (input.containsKey("opponent") || input.containsKey("o")) {
-                selectedCard = game.getOtherBoard().getMonstersZone()[monsterNumber - 1].getCard();
-                selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
+                if (game.getOtherBoard().getMonstersZone()[monsterNumber - 1] != null) {
+                    selectedCard = game.getOtherBoard().getMonstersZone()[monsterNumber - 1].getCard();
+                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
+                }
             } else {
-                selectedMonster = game.getThisBoard().getMonstersZone()[monsterNumber - 1];
-                selectedCard = selectedMonster.getCard();
-                selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
+                if (game.getThisBoard().getMonstersZone()[monsterNumber - 1] != null) {
+                    selectedMonster = game.getThisBoard().getMonstersZone()[monsterNumber - 1];
+                    selectedCard = selectedMonster.getCard();
+                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
+                }
             }
 
             if (selectedCard == null)
@@ -64,12 +71,16 @@ public class GameController {
                 throw new InvalidSelection();
 
             if (input.containsKey("opponent") || input.containsKey("o")) {
-                selectedCard = game.getOtherBoard().getSpellTrapZone()[spellNumber - 1].getCard();
-                selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Opponent, spellNumber - 1);
+                if (game.getOtherBoard().getSpellTrapZone()[spellNumber - 1] != null) {
+                    selectedCard = game.getOtherBoard().getSpellTrapZone()[spellNumber - 1].getCard();
+                    selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Opponent, spellNumber - 1);
+                }
             } else {
-                selectedSpellTrap = game.getThisBoard().getSpellTrapZone()[spellNumber - 1];
-                selectedCard = selectedSpellTrap.getCard();
-                selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Me, spellNumber - 1);
+                if (game.getThisBoard().getSpellTrapZone()[spellNumber - 1] != null) {
+                    selectedSpellTrap = game.getThisBoard().getSpellTrapZone()[spellNumber - 1];
+                    selectedCard = selectedSpellTrap.getCard();
+                    selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Me, spellNumber - 1);
+                }
             }
 
             if (selectedCard == null)
@@ -77,11 +88,17 @@ public class GameController {
 
         } else if (Scan.getInstance().getValue(input, "field", "f") != null) {
             if (input.containsKey("opponent") || input.containsKey("o")) {
-                selectedCard = game.getOtherBoard().getFieldZone();
-                selectedCardAddress = new CardAddress(Place.Field, Owner.Opponent);
+                if (game.getOtherBoard().getFieldZone() != null) {
+                    selectedSpellTrap = game.getOtherBoard().getFieldZone();
+                    selectedCard = selectedSpellTrap.getCard();
+                    selectedCardAddress = new CardAddress(Place.Field, Owner.Opponent);
+                }
             } else {
-                selectedCard = game.getThisBoard().getFieldZone();
-                selectedCardAddress = new CardAddress(Place.Field, Owner.Me);
+                if (game.getThisBoard().getFieldZone() != null) {
+                    selectedSpellTrap = game.getThisBoard().getFieldZone();
+                    selectedCard = selectedSpellTrap.getCard();
+                    selectedCardAddress = new CardAddress(Place.Field, Owner.Me);
+                }
             }
 
             if (selectedCard == null)
@@ -172,13 +189,39 @@ public class GameController {
             throw new NoCardSelectedException();
 
         if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.Hand ||
-                !(selectedCard instanceof Monster))
+                selectedCardAddress.getPlace() != Place.Hand)
             throw new CannotSetException();
 
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
 
+        if (selectedCard instanceof Monster) {
+            setMonster();
+        } else if (selectedCard instanceof Spell) {
+            setSpell();
+        } else if (selectedCard instanceof Trap) {
+            setTrap();
+        }
+        deselect();
+    }
+
+    private void setTrap() {
+        if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
+            throw new FullSpellTrapZone();
+
+        Trap trap = (Trap) selectedCard;
+        game.getThisBoard().putSpellTrap(trap, SpellTrapPosition.DOWN);
+    }
+
+    private void setSpell() {
+        if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
+            throw new FullSpellTrapZone();
+
+        Spell spell = (Spell) selectedCard;
+        game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.DOWN);
+    }
+
+    private void setMonster() {
         if (game.getThisBoard().getMonsterZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
             throw new FullMonsterZone();
 
@@ -216,7 +259,6 @@ public class GameController {
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.DEFENCE_DOWN);
         game.setSummonOrSetThisTurn(true);
         monster.set();
-        deselect();
     }
 
     public void setPosition(Matcher matcher) {
@@ -249,6 +291,7 @@ public class GameController {
             throw new AlreadyChangeException();
 
         selectedMonster.setPosition(wantedPosition);
+        deselect();
     }
 
     public void flipSummon(Matcher matcher) {
@@ -267,6 +310,7 @@ public class GameController {
             throw new CannotFlipSummon();
 
         selectedMonster.flip(selectedMonster);
+        deselect();
     }
 
     public void attackDirect(Matcher matcher) {
@@ -288,6 +332,7 @@ public class GameController {
             throw new CannotAttackDirectlyException();
 
         game.decreaseOtherLifePoint(selectedMonster.getCard().getAttackPower());
+        deselect();
     }
 
     public void attack(Matcher matcher) {
@@ -313,6 +358,7 @@ public class GameController {
             throw new NoCardToAttackException();
 
         String message = attack(selectedMonster, toBeAttacked);
+        deselect();
     }
 
     public String attack(MonsterController attacker, MonsterController defender) {
@@ -364,7 +410,34 @@ public class GameController {
     }
 
     public void activateEffect(Matcher matcher) {
+        if (selectedCard == null)
+            throw new NoCardSelectedException();
 
+        if (selectedCardAddress.getOwner() != Owner.Me ||
+                !(selectedCard instanceof Spell))
+            throw new CannotActivateException();
+
+        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
+            throw new ActionNotAllowed();
+
+        if (selectedCardAddress.getPlace() == Place.SpellTrapZone)
+            throw new AlreadyActivatedException();
+
+        Spell spell = (Spell) selectedCard;
+        if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW &&
+                spell.getType() != SpellType.FIELD)
+            throw new FullSpellTrapZone();
+
+        if (!selectedSpellTrap.conditionMet())
+            throw new PreparationFailException();
+
+        if (spell.getType() == SpellType.FIELD) {
+            game.getThisBoard().putFiled(spell);
+        } else {
+            SpellController controller = (SpellController) game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.UP);
+            controller.activate();
+        }
+        deselect();
     }
 
     public void showGraveyard(Matcher matcher) {
