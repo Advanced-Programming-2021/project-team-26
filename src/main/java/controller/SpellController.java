@@ -19,6 +19,7 @@ public class SpellController extends SpellTrapController {
     private SpellController(GameController gameController, Spell spell, SpellTrapPosition position) {
         setGameController(gameController);
         setPosition(position);
+        setCanSpellTrapsBeActive(true);
         this.spell = new Spell(spell);
     }
 

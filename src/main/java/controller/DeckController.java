@@ -25,7 +25,7 @@ public class DeckController {
         String deckName = matcher.group(1);
         if (!Deck.checkDeckNameExistence(deckName)) {
             new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
-            Database.getInstance().getCurrentUser().getAllDecks().put(deckName, Deck.getDeckByDeckName(deckName));
+            Database.getInstance().getCurrentUser().addDeckToUserDecks(Deck.getDeckByDeckName(deckName));
         }
         else throw new RepeatedDeckNameException(deckName);
     }
@@ -51,14 +51,18 @@ public class DeckController {
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
         String cardName = null;
-        if (input.containsKey("card") || input.containsKey("c"))
+        if (input.containsKey("card"))
             cardName = input.get("card");
+        else if (input.containsKey("c"))
+            cardName = input.get("c");
         if (cardName == null)
             throw new InvalidInput();
 
         String deckName = null;
-        if (input.containsKey("deck") || input.containsKey("d"))
+        if (input.containsKey("deck"))
             deckName = input.get("deck");
+        else if (input.containsKey("d"))
+            deckName = input.get("d");
         if (deckName == null)
             throw new InvalidInput();
 
@@ -90,14 +94,18 @@ public class DeckController {
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
         String cardName = null;
-        if (input.containsKey("card") || input.containsKey("c"))
+        if (input.containsKey("card"))
             cardName = input.get("card");
+        else if (input.containsKey("c"))
+            cardName = input.get("c");
         if (cardName == null)
             throw new InvalidInput();
 
         String deckName = null;
-        if (input.containsKey("deck") || input.containsKey("d"))
+        if (input.containsKey("deck"))
             deckName = input.get("deck");
+        else if (input.containsKey("d"))
+            deckName = input.get("d");
         if (deckName == null)
             throw new InvalidInput();
 
@@ -119,14 +127,15 @@ public class DeckController {
             Deck.getDeckByDeckName(deckName).deleteCardFromMainDeck(Card.getCard(cardName));
     }
 
-
     public String showDeck(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
         String deckName = null;
-        if (input.containsKey("deck-name") || input.containsKey("d-n"))
-            deckName = input.get("deck");
+        if (input.containsKey("deck-name"))
+            deckName = input.get("deck-name");
+        else if (input.containsKey("d-n"))
+            deckName = input.get("d-n");
         if (deckName == null)
             throw new InvalidInput();
 

@@ -175,8 +175,8 @@ public class DeckControllerTest {
             DeckController.getInstance().removeCard(matcher5);
         });
 
-        String deck3 = "deck remove-card --card Scanner --deck deck3 --side";
-        String deck3Regex = "deck remove-card --card Scanner --deck deck3 --side";
+        String deck3 = "deck remove-card --card Scanner --deck deck4 --side";
+        String deck3Regex = "deck remove-card --card Scanner --deck deck4 --side";
         Matcher matcher3 = Pattern.compile(deck3Regex).matcher(deck3);
         matcher3.find();
 
@@ -195,5 +195,79 @@ public class DeckControllerTest {
         } catch (Exception e) {
             fail();
         }
+    }
+
+    @Test
+    @DisplayName("show a deck")
+    public void showDeck() {
+        String deck1 = "deck create deck3";
+        String deckRegex3 = "deck create (deck3)";
+        Matcher matcher3 = Pattern.compile(deckRegex3).matcher(deck1);
+        matcher3.find();
+
+        DeckController.getInstance().createDeck(matcher3);
+        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Command Knight"));
+        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Trap Hole"));
+        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Command Knight"));
+        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Black Pendant"));
+        Deck.getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Black Pendant"));
+        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Black Pendant"));
+        Deck.getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Trap Hole"));
+        Deck.getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Trap Hole"));
+
+        String deck = "deck show --deck-name deck3";
+        String deckRegex = "deck show --deck-name deck3";
+        Matcher matcher = Pattern.compile(deckRegex).matcher(deck);
+        matcher.find();
+
+        String deck2 = "deck show --deck-name deck3 --side";
+        String deckRegex2 = "deck show --deck-name deck3 --side";
+        Matcher matcher2 = Pattern.compile(deckRegex2).matcher(deck2);
+        matcher2.find();
+
+        Assertions.assertTrue(DeckController.getInstance().showDeck(matcher).equals("Deck: deck3\n" +
+                "Main deck:\n" +
+                "Monsters:\n" +
+                "Command Knight: All Warrior-Type monsters you control gain 400 ATK. If you control another monster, monsters your opponent controls cannot target this card for an attack.\n" +
+                "Spell and Traps:\n" +
+                "Black Pendant: The equipped monster gains 500 ATK. When this card is sent from the field to the Graveyard: Inflict 500 damage to your opponent.\n" +
+                "Trap Hole: When your opponent Normal or Flip Summons 1 monster with 1000 or more ATK: Target that monster; destroy that target.\n"));
+
+        Assertions.assertTrue(DeckController.getInstance().showDeck(matcher2).equals("Deck: deck3\n" +
+                "Side deck:\n" +
+                "Monsters:\n" +
+                "Spell and Traps:\n" +
+                "Black Pendant: The equipped monster gains 500 ATK. When this card is sent from the field to the Graveyard: Inflict 500 damage to your opponent.\n" +
+                "Trap Hole: When your opponent Normal or Flip Summons 1 monster with 1000 or more ATK: Target that monster; destroy that target.\n"));
+    }
+
+
+    @Test
+    @DisplayName("show all cards of a user")
+    public void showAllCards() {
+        User.getUserByUsername("user2").addCardToUserCards(Card.getCard("Command Knight"));
+        User.getUserByUsername("user2").addCardToUserCards(Card.getCard("Trap Hole"));
+        User.getUserByUsername("user2").addCardToUserCards(Card.getCard("Black Pendant"));
+        User.getUserByUsername("user2").addCardToUserCards(Card.getCard("Scanner"));
+
+        String deck2 = "deck show --deck-name deck2 --side";
+        String deckRegex2 = "deck show --deck-name deck2 --side";
+        Matcher matcher2 = Pattern.compile(deckRegex2).matcher(deck2);
+        matcher2.find();
+
+
+        System.out.println(DeckController.getInstance().showCards(matcher2));
+        Assertions.assertTrue(DeckController.getInstance().showCards(matcher2).equals("Black Pendant:The equipped monster gains 500 ATK. When this card is sent from the field to the Graveyard: Inflict 500 damage to your opponent.\n" +
+                "Command Knight:All Warrior-Type monsters you control gain 400 ATK. If you control another monster, monsters your opponent controls cannot target this card for an attack.\n" +
+                "Scanner:Once per turn, you can select 1 of your opponent's monsters that is removed from play. Until the End Phase, this card's name is treated as the selected monster's name, and this card has the same Attribute, Level, ATK, and DEF as the selected monster. If this card is removed from the field while this effect is applied, remove it from play.\n" +
+                "Suijin:During damage calculation in your opponent's turn, if this card is being attacked: You can target the attacking monster; make that target's ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.\n" +
+                "Trap Hole:When your opponent Normal or Flip Summons 1 monster with 1000 or more ATK: Target that monster; destroy that target.\n"));
+    }
+
+
+    @Test
+    @DisplayName("show all decks of a user")
+    public void showAllDecks() {
+
     }
 }

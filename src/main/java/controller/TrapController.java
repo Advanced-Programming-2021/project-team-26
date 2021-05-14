@@ -17,6 +17,7 @@ public class TrapController extends SpellTrapController {
     private final Trap trap;
 
     private TrapController(GameController gameController, Trap trap, SpellTrapPosition position) {
+        setCanSpellTrapsBeActive(true);
         this.gameController = gameController;
         this.trap = new Trap(trap);
         this.position = position;

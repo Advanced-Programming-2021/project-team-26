@@ -8,6 +8,15 @@ public abstract class SpellTrapController {
 
     protected GameController gameController;
     protected SpellTrapPosition position;
+    protected boolean canSpellTrapsBeActive;
+
+    public boolean isCanSpellTrapsBeActive() {
+        return canSpellTrapsBeActive;
+    }
+
+    public void setCanSpellTrapsBeActive(boolean canSpellTrapsBeActive) {
+        this.canSpellTrapsBeActive = canSpellTrapsBeActive;
+    }
 
     public static SpellTrapController getInstance(GameController gameController, SpellTrap spellTrap, SpellTrapPosition position) {
         if (spellTrap instanceof Spell)

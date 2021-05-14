@@ -20,6 +20,7 @@ public class MonsterController {
         MONSTER_MAKERS.put("Scanner", MonsterController::makeScanner);
         MONSTER_MAKERS.put("Marshmallon", MonsterController::makeMarshmallon);
         MONSTER_MAKERS.put("The Calculator", MonsterController::makeTheCalculator);
+        MONSTER_MAKERS.put("Mirage Dragon", MonsterController::makeMirageDragon);
     }
 
     private final GameController gameController;
@@ -155,8 +156,8 @@ public class MonsterController {
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
             @Override
-            public void remove(MonsterController attacker){
-                if (position.equals(MonsterPosition.DEFENCE_DOWN)){
+            public void remove(MonsterController attacker) {
+                if (position.equals(MonsterPosition.DEFENCE_DOWN)) {
                     //-1000 lifePoint
                 }
             }
@@ -173,6 +174,20 @@ public class MonsterController {
                     if (monsterController.position.equals(MonsterPosition.ATTACK)) {
                         monster.increaseAttackPower(monsterController.monster.getLevel() * 300);
                     }
+                }
+            }
+        };
+    }
+
+    private static MonsterController makeMirageDragon
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+            boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
+
+            @Override
+            public void runMonsterEffect() {
+                if (isEffectActive) {
+                    //rival cannot active his spellTraps
                 }
             }
         };
