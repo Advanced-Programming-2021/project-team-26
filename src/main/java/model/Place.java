@@ -5,5 +5,6 @@ public enum Place {
     Deck,
     Field,
     MonsterZone,
-    SpellTrapZone
+    SpellTrapZone,
+    Graveyard
 }

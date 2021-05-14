@@ -30,7 +30,7 @@ class DatabaseTest {
 
     @AfterEach
     @BeforeEach
-    void removeDatabase() {
+    public void removeDatabase() {
         String databasePath = System.getProperty("user.dir") + File.separator + "database";
         File file = new File(databasePath);
         deleteDir(file);

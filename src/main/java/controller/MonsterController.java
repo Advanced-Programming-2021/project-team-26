@@ -1,12 +1,15 @@
 package controller;
 
-import exceptions.MonsterNotFoundException;
-import model.Game;
+import exceptions.*;
+import model.*;
+import model.cards.Card;
 import model.cards.monster.Monster;
+import view.Scan;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 public class MonsterController {
     private static final HashMap<String, MonsterMakerInterface> MONSTER_MAKERS;
@@ -27,14 +30,35 @@ public class MonsterController {
     private final GameController gameController;
     private final Monster monster;
     private MonsterPosition position;
-    private boolean hasPositionChanged = false;
-    private boolean isMonsterNew = true;
+    private boolean hasPositionChanged;
+    private boolean isMonsterNew;
     private boolean hasAttackedThisTurn;
+    private boolean isHandAccessible;
+    private boolean isRivalMonsterZoneAccessible;
+    private boolean isOurMonsterZoneAccessible;
+    private boolean isRivalGraveyardAccessible;
+    private boolean isOurGraveyardAccessible;
+    private Monster selectedMonster;
+    private CardAddress selectedCardAddress;
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
         this.monster = new Monster(monster);
-        this.position = position;
+        setPosition(position);
+        setMonsterNew(true);
+        setHasPositionChanged(false);
+        setHasAttackedThisTurn(false);
+        setHandAccessible(false);
+        setRivalGraveyardAccessible(false);
+        setRivalMonsterZoneAccessible(false);
+        setOurGraveyardAccessible(false);
+        setOurMonsterZoneAccessible(false);
+        setSelectedMonster(null);
+        setSelectedCardAddress(null);
+    }
+
+    public static HashMap<String, MonsterMakerInterface> getMonsterMakers() {
+        return MONSTER_MAKERS;
     }
 
     public static MonsterController getInstance(GameController gameController, Monster monster, MonsterPosition position)
@@ -111,15 +135,15 @@ public class MonsterController {
             }
 
             @Override
-            public void attacked(MonsterController attacker) {
+            public String attack(MonsterController attacker) {
                 if (isEffectActive) {
                     int theAttackerPower = attacker.monster.getAttackPower();
                     attacker.monster.setAttackPower(0);
-
-                    //attacked default method
-
+                    String toReturn = defaultAttack(attacker);
                     attacker.monster.setAttackPower(theAttackerPower);
+                    return toReturn;
                 }
+                return defaultAttack(attacker);
             }
 
         };
@@ -159,7 +183,7 @@ public class MonsterController {
             @Override
             public void remove(MonsterController attacker) {
                 if (position.equals(MonsterPosition.DEFENCE_DOWN)) {
-                    //-1000 lifePoint
+                    gameController.getGame().decreaseOtherLifePoint(1000);
                 }
             }
         };
@@ -194,6 +218,69 @@ public class MonsterController {
         };
     }
 
+    public CardAddress getSelectedCardAddress() {
+        return selectedCardAddress;
+    }
+
+    public void setSelectedCardAddress(CardAddress selectedCardAddress) {
+        this.selectedCardAddress = selectedCardAddress;
+    }
+
+    public Monster getSelectedMonster() {
+        return selectedMonster;
+    }
+
+    public void setSelectedMonster(Monster selectedMonster) {
+        this.selectedMonster = selectedMonster;
+    }
+
+    public GameController getGameController() {
+        return gameController;
+    }
+
+    public Monster getMonster() {
+        return monster;
+    }
+
+    public boolean isHandAccessible() {
+        return isHandAccessible;
+    }
+
+    public void setHandAccessible(boolean handAccessible) {
+        isHandAccessible = handAccessible;
+    }
+
+    public boolean isRivalMonsterZoneAccessible() {
+        return isRivalMonsterZoneAccessible;
+    }
+
+    public void setRivalMonsterZoneAccessible(boolean rivalMonsterZoneAccessible) {
+        isRivalMonsterZoneAccessible = rivalMonsterZoneAccessible;
+    }
+
+    public boolean isOurMonsterZoneAccessible() {
+        return isOurMonsterZoneAccessible;
+    }
+
+    public void setOurMonsterZoneAccessible(boolean ourMonsterZoneAccessible) {
+        isOurMonsterZoneAccessible = ourMonsterZoneAccessible;
+    }
+
+    public boolean isRivalGraveyardAccessible() {
+        return isRivalGraveyardAccessible;
+    }
+
+    public void setRivalGraveyardAccessible(boolean rivalGraveyardAccessible) {
+        isRivalGraveyardAccessible = rivalGraveyardAccessible;
+    }
+
+    public boolean isOurGraveyardAccessible() {
+        return isOurGraveyardAccessible;
+    }
+
+    public void setOurGraveyardAccessible(boolean ourGraveyardAccessible) {
+        isOurGraveyardAccessible = ourGraveyardAccessible;
+    }
 
     public boolean isHasPositionChanged() {
         return hasPositionChanged;
@@ -226,9 +313,6 @@ public class MonsterController {
 
     public void setPosition(MonsterPosition position) {
         this.position = position;
-    }
-
-    public void attacked(MonsterController attacker) {
     }
 
     public void summon() {
@@ -305,6 +389,10 @@ public class MonsterController {
     }
 
     public String attack(MonsterController attacker) {
+        return defaultAttack(attacker);
+    }
+
+    public String defaultAttack(MonsterController attacker) {
         int damage;
         MonsterController defender = this;
         Game game = gameController.getGame();
@@ -352,6 +440,82 @@ public class MonsterController {
                 }
         }
         return null;
+    }
+
+    public void select(Matcher matcher) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group(1).split("\\s+"));
+        Game game = gameController.getGame();
+        String addressNumber;
+
+
+        if ((addressNumber = Scan.getInstance().getValue(input, "monster", "m")) != null) {
+            int monsterNumber = Integer.parseInt(addressNumber);
+            if (monsterNumber > Board.CARD_NUMBER_IN_ROW)
+                throw new InvalidSelection();
+
+            if (input.containsKey("opponent") || input.containsKey("o") && isRivalMonsterZoneAccessible) {
+                if (game.getOtherBoard().getMonstersZone()[monsterNumber - 1] != null) {
+                    selectedMonster = game.getOtherBoard().getMonstersZone()[monsterNumber - 1].getMonster();
+                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
+                }
+            } else if (isOurMonsterZoneAccessible) {
+                if (game.getThisBoard().getMonstersZone()[monsterNumber - 1] != null) {
+                    selectedMonster = game.getThisBoard().getMonstersZone()[monsterNumber - 1].getMonster();
+                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
+                }
+            }
+
+            if (selectedMonster == null)
+                throw new CardNotFoundException();
+
+        } else if ((addressNumber = Scan.getInstance().getValue(input, "hand", "h")) != null && isHandAccessible) {
+            int handNumber = Integer.parseInt(addressNumber);
+            if (handNumber > game.getThisBoard().getHand().size())
+                throw new InvalidSelection();
+
+            Card selectedCard = game.getThisBoard().getHand().get(handNumber - 1);
+            if (selectedCard instanceof Monster) {
+                selectedMonster = (Monster) selectedCard;
+                selectedCardAddress = new CardAddress(Place.Hand, Owner.Me, handNumber - 1);
+            } else
+                throw new InvalidSelection();
+
+        } else if ((addressNumber = Scan.getInstance().getValue(input, "graveyard", "g")) != null) {
+            int graveyardNumber = Integer.parseInt(addressNumber);
+
+            if (input.containsKey("opponent") || input.containsKey("o") && isRivalGraveyardAccessible) {
+                if (graveyardNumber > game.getOtherBoard().getGraveyard().size())
+                    throw new InvalidSelection();
+                else {
+                    Card selectedCard = game.getOtherBoard().getGraveyard().get(graveyardNumber - 1);
+                    if (selectedCard instanceof Monster) {
+                        selectedMonster = (Monster) selectedCard;
+                        selectedCardAddress = new CardAddress(Place.Graveyard, Owner.Opponent, graveyardNumber - 1);
+                    } else throw new InvalidSelection();
+                }
+            } else if (isOurGraveyardAccessible) {
+                if (graveyardNumber > game.getThisBoard().getGraveyard().size())
+                    throw new InvalidSelection();
+                else {
+                    Card selectedCard = game.getThisBoard().getGraveyard().get(graveyardNumber - 1);
+                    if (selectedCard instanceof Monster) {
+                        selectedMonster = (Monster) selectedCard;
+                        selectedCardAddress = new CardAddress(Place.Graveyard, Owner.Me, graveyardNumber - 1);
+                    } else throw new InvalidSelection();
+                }
+            }
+        } else if (input.containsKey("-d")) {
+            if (selectedMonster == null) {
+                throw new NoCardSelectedException();
+            }
+            deselect();
+        } else
+            throw new InvalidInput();
+    }
+
+    public void deselect() {
+        selectedCardAddress = null;
+        selectedMonster = null;
     }
 
     public interface MonsterMakerInterface {

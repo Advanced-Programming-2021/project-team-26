@@ -9,14 +9,27 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static controller.DatabaseTest.deleteDir;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class DeckControllerTest {
+
     @BeforeAll
     public static void init() {
+        String databasePath = System.getProperty("user.dir") + File.separator + "database";
+        File file = new File(databasePath);
+        deleteDir(file);
+
+        String user = "user create --username user2 --nickname nick2 -p password";
+        Matcher matcher = Pattern.compile(user).matcher(user);
+        matcher.find();
+
+        UserController.getInstance().addNewUser(matcher);
+
         String user2 = "user login -u user2 -p password";
         Matcher matcher1 = Pattern.compile(user2).matcher(user2);
         matcher1.find();
@@ -241,7 +254,6 @@ public class DeckControllerTest {
                 "Trap Hole: When your opponent Normal or Flip Summons 1 monster with 1000 or more ATK: Target that monster; destroy that target.\n"));
     }
 
-
     @Test
     @DisplayName("show all cards of a user")
     public void showAllCards() {
@@ -255,15 +267,12 @@ public class DeckControllerTest {
         Matcher matcher2 = Pattern.compile(deckRegex2).matcher(deck2);
         matcher2.find();
 
-
-        System.out.println(DeckController.getInstance().showCards(matcher2));
         Assertions.assertTrue(DeckController.getInstance().showCards(matcher2).equals("Black Pendant:The equipped monster gains 500 ATK. When this card is sent from the field to the Graveyard: Inflict 500 damage to your opponent.\n" +
                 "Command Knight:All Warrior-Type monsters you control gain 400 ATK. If you control another monster, monsters your opponent controls cannot target this card for an attack.\n" +
                 "Scanner:Once per turn, you can select 1 of your opponent's monsters that is removed from play. Until the End Phase, this card's name is treated as the selected monster's name, and this card has the same Attribute, Level, ATK, and DEF as the selected monster. If this card is removed from the field while this effect is applied, remove it from play.\n" +
                 "Suijin:During damage calculation in your opponent's turn, if this card is being attacked: You can target the attacking monster; make that target's ATK 0 during damage calculation only (this is a Quick Effect). This effect can only be used once while this card is face-up on the field.\n" +
                 "Trap Hole:When your opponent Normal or Flip Summons 1 monster with 1000 or more ATK: Target that monster; destroy that target.\n"));
     }
-
 
     @Test
     @DisplayName("show all decks of a user")
