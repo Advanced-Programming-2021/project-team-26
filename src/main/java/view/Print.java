@@ -5,6 +5,9 @@ import controller.SpellTrapController;
 import model.Board;
 import model.Game;
 import model.cards.Card;
+import model.cards.monster.Monster;
+import model.cards.spell.Spell;
+import model.cards.trap.Trap;
 
 public class Print {
     private static Print print;
@@ -26,7 +29,28 @@ public class Print {
 
 
     public void printCard(Card card) {
-        //TODO
+        if (card instanceof Monster) {
+            Monster monster = (Monster) card;
+            System.out.println("Name: " + monster.getName());
+            System.out.println("Level:" + monster.getLevel());
+            System.out.println("Type: " + monster.getType());
+            System.out.println("ATK: " + monster.getAttackPower());
+            System.out.println("DEF:" + monster.getDefencePower());
+            System.out.println("Description: " + monster.getDescription());
+        } else if (card instanceof Spell) {
+            Spell spell = (Spell) card;
+            System.out.println("Name: " + spell.getName());
+            System.out.println("Spell");
+            System.out.println("Type: " + spell.getType());
+            System.out.println("Description: " + spell.getDescription());
+        } else if (card instanceof Trap) {
+            Trap trap = (Trap) card;
+            System.out.println("Name: " + trap.getName());
+            System.out.println("Spell");
+            System.out.println("Type: " + trap.getType());
+            System.out.println("Description: " + trap.getDescription());
+        }
+
     }
 
     private void printMultipleTimes(String s, int times) {
@@ -145,15 +169,15 @@ public class Print {
         System.out.print("\n");
     }
 
-    public void printGame(Game game){
+    public void printGame(Game game) {
         int turn = game.getTurn();
-        int otherTurn = 2-turn;
-        System.out.println(game.getUser(otherTurn).getUsername()+":"+
+        int otherTurn = 2 - turn;
+        System.out.println(game.getUser(otherTurn).getUsername() + ":" +
                 game.getLifePoint(otherTurn));
         printBoardReverse(game.getBoard(otherTurn));
-        printMultipleTimes("-",20);
+        printMultipleTimes("-", 20);
         printBoard(game.getBoard(turn));
-        System.out.println(game.getUser(turn).getUsername()+":"+
+        System.out.println(game.getUser(turn).getUsername() + ":" +
                 game.getLifePoint(turn));
     }
 }

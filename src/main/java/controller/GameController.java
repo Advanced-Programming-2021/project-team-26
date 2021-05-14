@@ -12,6 +12,8 @@ import view.Print;
 import view.Scan;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 public class GameController {
@@ -489,11 +491,42 @@ public class GameController {
     }
 
     public void showGraveyard(Matcher matcher) {
-
+        List<Card> graveyard = game.getThisBoard().getGraveyard();
+        if (graveyard.isEmpty()) {
+            Print.getInstance().printMessage("graveyard empty");
+        } else {
+            int i = 1;
+            for (Card card : graveyard) {
+                Print.getInstance().printMessage(i + ". " + card.getName() + ":" + card.getDescription());
+                i++;
+            }
+        }
+        while (true) {
+            if (Scan.getInstance().getString().equals("back"))
+                break;
+        }
     }
 
-    public void showSelectedCard(Matcher matcher) {
-
+    public void showCard(Matcher matcher) {
+        String[] rawInput = matcher.group().split("\\s+");
+        Map<String, String> input = Scan.getInstance().parseInput(rawInput);
+        if (input.containsKey("selected") || input.containsKey("s")) {
+            if (selectedCard == null)
+                throw new NoCardSelectedException();
+            if (selectedCardAddress.getOwner() == Owner.Opponent) {
+                if ((selectedCard instanceof Monster) && selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN)
+                    throw new CardNotVisibleException();
+                if ((selectedCard instanceof SpellTrap) && selectedSpellTrap.getPosition() == SpellTrapPosition.DOWN)
+                    throw new CardNotVisibleException();
+            }
+            Print.getInstance().printCard(selectedCard);
+        } else {
+            String cardName = rawInput[2];
+            Card card = Card.getCard(cardName);
+            if (card == null)
+                throw new CardNotFoundException();
+            Print.getInstance().printCard(card);
+        }
     }
 
     public void surrender(Matcher matcher) {
