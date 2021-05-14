@@ -3,10 +3,12 @@ package controller;
 import exceptions.*;
 import model.*;
 import model.cards.Card;
+import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 import model.cards.spell.SpellType;
 import model.cards.trap.Trap;
+import view.Print;
 import view.Scan;
 
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class GameController {
     private MonsterController selectedMonster = null;
     private SpellTrapController selectedSpellTrap = null;
     private int roundNumber;
-
+    private boolean temporaryTurnChange = false;
 
     public GameController(String firstPlayer, String secondPayer, int round) throws NoPlayerAvailable {
         this.game = new Game(this, User.getUserByUsername(firstPlayer), User.getUserByUsername(secondPayer));
@@ -30,6 +32,14 @@ public class GameController {
 
     public GameController(String player, int round) {
 
+    }
+
+    public boolean isTemporaryTurnChange() {
+        return temporaryTurnChange;
+    }
+
+    public void setTemporaryTurnChange(boolean temporaryTurnChange) {
+        this.temporaryTurnChange = temporaryTurnChange;
     }
 
     public Game getGame() {
@@ -133,6 +143,8 @@ public class GameController {
     public void summon(Matcher matcher) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
+        if (temporaryTurnChange)
+            throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
@@ -185,6 +197,8 @@ public class GameController {
     }
 
     public void set(Matcher matcher) throws NoCardSelectedException, CannotSetException {
+        if (temporaryTurnChange)
+            throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
@@ -262,6 +276,8 @@ public class GameController {
     }
 
     public void setPosition(Matcher matcher) {
+        if (temporaryTurnChange)
+            throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
@@ -295,6 +311,8 @@ public class GameController {
     }
 
     public void flipSummon(Matcher matcher) {
+        if (temporaryTurnChange)
+            throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
@@ -314,6 +332,8 @@ public class GameController {
     }
 
     public void attackDirect(Matcher matcher) {
+        if (temporaryTurnChange)
+            throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
@@ -336,6 +356,8 @@ public class GameController {
     }
 
     public void attack(Matcher matcher) {
+        if (temporaryTurnChange)
+            throw new NotYourTurnException();
         if (selectedCard != null)
             throw new NoCardSelectedException();
 
@@ -410,6 +432,10 @@ public class GameController {
     }
 
     public void activateEffect(Matcher matcher) {
+        if (temporaryTurnChange) {
+            activateEffectOnOpponentTurn();
+            return;
+        }
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
@@ -440,6 +466,28 @@ public class GameController {
         deselect();
     }
 
+    private void activateEffectOnOpponentTurn() {
+        if (selectedCard == null)
+            throw new NoCardSelectedException();
+
+        if (selectedCardAddress.getOwner() != Owner.Me ||
+                !(selectedCard instanceof SpellTrap))
+            throw new CannotActivateException();
+
+        SpellTrap spellTrap = (SpellTrap) selectedCard;
+        if (selectedCardAddress.getPlace() == Place.SpellTrapZone) {
+            selectedSpellTrap.activate();
+        } else if (selectedCardAddress.getPlace() == Place.Hand) {
+            if (spellTrap instanceof Spell && ((Spell) spellTrap).getType() != SpellType.QUICK_PLAY) {
+                throw new ActionNotAllowed();
+            }
+            SpellTrapController controller = game.getThisBoard().putSpellTrap(spellTrap, SpellTrapPosition.UP);
+            controller.activate();
+            controller.remove();
+        }
+        deselect();
+    }
+
     public void showGraveyard(Matcher matcher) {
 
     }
@@ -462,5 +510,25 @@ public class GameController {
 
     public void showBoard() {
 
+    }
+
+    public boolean conditionsForChangingTurn() {
+        return false;
+    }
+
+    public void finishTemporaryChangeTurn() {
+        if (temporaryTurnChange)
+            game.temporaryChangeTurn();
+    }
+
+    public void changeTurn() {
+        if (!temporaryTurnChange && conditionsForChangingTurn()) {
+            game.temporaryChangeTurn();
+            Print.getInstance().printMessage("do you want to activate your trap and spell?");
+            String answer = Scan.getInstance().getString();
+            if (!answer.equals("yse")) {
+                game.temporaryChangeTurn();
+            }
+        }
     }
 }

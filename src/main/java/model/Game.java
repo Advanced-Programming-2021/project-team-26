@@ -78,6 +78,14 @@ public class Game {
         Print.getInstance().printMessage("its " + getThisUser().getNickname() + "’s turn");
     }
 
+    public void temporaryChangeTurn() {
+        this.turn = 1 - this.turn;
+        gameController.deselect();
+        gameController.setTemporaryTurnChange(!gameController.isTemporaryTurnChange());
+        Print.getInstance().printMessage("now it will be " + users[turn].getUsername() + "’s turn");
+        Print.getInstance().printGame(this);
+    }
+
     public int getTurn() {
         return turn;
     }

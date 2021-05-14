@@ -37,10 +37,6 @@ public class SpellController extends SpellTrapController {
         };
     }
 
-    public void activate() {
-
-    }
-
     public void field() {
 
     }
@@ -50,10 +46,6 @@ public class SpellController extends SpellTrapController {
     }
 
     public void equip(MonsterController monster) {
-
-    }
-
-    public void remove() {
 
     }
 
