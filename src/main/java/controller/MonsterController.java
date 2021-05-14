@@ -1,6 +1,7 @@
 package controller;
 
 import exceptions.MonsterNotFoundException;
+import model.Game;
 import model.cards.monster.Monster;
 
 import java.util.HashMap;
@@ -182,7 +183,7 @@ public class MonsterController {
     private static MonsterController makeMirageDragon
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
-            boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
+            final boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
 
             @Override
             public void runMonsterEffect() {
@@ -301,6 +302,56 @@ public class MonsterController {
 
     public void setHasAttackedThisTurn(boolean hasAttackedThisTurn) {
         this.hasAttackedThisTurn = hasAttackedThisTurn;
+    }
+
+    public String attack(MonsterController attacker) {
+        int damage;
+        MonsterController defender = this;
+        Game game = gameController.getGame();
+        switch (defender.getPosition()) {
+            case ATTACK:
+                damage = attacker.getCard().getAttackPower() - defender.getCard().getAttackPower();
+                if (damage > 0) {
+                    defender.remove(attacker);
+                    game.decreaseOtherLifePoint(damage);
+                    return "your opponent’s monster is destroyed and your opponent receives " + damage + "battle damage";
+                } else if (damage == 0) {
+                    game.getThisBoard().removeMonster(attacker);
+                    defender.remove(attacker);
+                    return "both you and your opponent monster cards are destroyed and no one receives damage";
+                } else {
+                    damage = -damage;
+                    game.getThisBoard().removeMonster(attacker);
+                    game.decreaseThisLifePoint(damage);
+                    return "your monster is destroyed and you receives " + damage + "battle damage";
+                }
+            case DEFENCE_UP:
+                damage = attacker.getCard().getAttackPower() - defender.getCard().getDefencePower();
+                if (damage > 0) {
+                    defender.remove(attacker);
+                    return "the defense position monster is destroyed";
+                } else if (damage == 0) {
+                    return "no card is destroyed";
+                } else {
+                    damage = -damage;
+                    game.decreaseThisLifePoint(damage);
+                    return "no card is destroyed and you received " + damage + " battle damage";
+                }
+            case DEFENCE_DOWN:
+                String cardNameMessage = "opponent’s monster card was <monster card >name and ";
+                damage = attacker.getCard().getAttackPower() - defender.getCard().getDefencePower();
+                if (damage > 0) {
+                    defender.remove(attacker);
+                    return cardNameMessage + "the defense position monster is destroyed";
+                } else if (damage == 0) {
+                    return cardNameMessage + "no card is destroyed";
+                } else {
+                    damage = -damage;
+                    game.decreaseThisLifePoint(damage);
+                    return cardNameMessage + "no card is destroyed and you received " + damage + " battle damage";
+                }
+        }
+        return null;
     }
 
     public interface MonsterMakerInterface {
