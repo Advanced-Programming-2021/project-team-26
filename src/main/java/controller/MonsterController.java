@@ -6,9 +6,7 @@ import model.cards.Card;
 import model.cards.monster.Monster;
 import view.Scan;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 
 public class MonsterController {
@@ -16,15 +14,25 @@ public class MonsterController {
 
     static {
         MONSTER_MAKERS = new HashMap<>();
+        allMonsterControllers = new ArrayList<>();
+        //Effective Monsters
         MONSTER_MAKERS.put("Command knight", MonsterController::makeCommandKnight);
         MONSTER_MAKERS.put("Yomi Ship", MonsterController::makeYomiShip);
         MONSTER_MAKERS.put("Suijin", MonsterController::makeSuijin);
+        MONSTER_MAKERS.put("Crab Turtle", MonsterController::makeCrabTurtle);
+        MONSTER_MAKERS.put("Skull Gaurdian", MonsterController::makeSkullGaurdian);
         MONSTER_MAKERS.put("Man-Eater Bug", MonsterController::makeManEaterBug);
         MONSTER_MAKERS.put("Gate Guardian", MonsterController::makeGateGuardian);
         MONSTER_MAKERS.put("Scanner", MonsterController::makeScanner);
         MONSTER_MAKERS.put("Marshmallon", MonsterController::makeMarshmallon);
+        MONSTER_MAKERS.put("Beast King Barbaros", MonsterController::makeBeastKingBarbaros);
+        MONSTER_MAKERS.put("Texchanger", MonsterController::makeTexchanger);
         MONSTER_MAKERS.put("The Calculator", MonsterController::makeTheCalculator);
         MONSTER_MAKERS.put("Mirage Dragon", MonsterController::makeMirageDragon);
+        MONSTER_MAKERS.put("Hearld of Creation", MonsterController::makeHearldOfCreation);
+        MONSTER_MAKERS.put("Exploder Dragon", MonsterController::makeExploderDragon);
+        MONSTER_MAKERS.put("Terratiger, the Empowered Warrior\n", MonsterController::makeTerratiger);
+        MONSTER_MAKERS.put("The Tricky", MonsterController::makeTheTricky);
     }
 
     private final GameController gameController;
@@ -40,6 +48,12 @@ public class MonsterController {
     private boolean isOurGraveyardAccessible;
     private Monster selectedMonster;
     private CardAddress selectedCardAddress;
+    private static ArrayList<MonsterController> allMonsterControllers;
+
+    public ArrayList<MonsterController> getAllMonsterControllers() {
+        return allMonsterControllers;
+    }
+
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
@@ -55,8 +69,17 @@ public class MonsterController {
         setOurMonsterZoneAccessible(false);
         setSelectedMonster(null);
         setSelectedCardAddress(null);
+        allMonsterControllers.add(this);
     }
 
+    public static MonsterController getMonsterControllerByMonster(Monster monster){
+        for (MonsterController monsterController : allMonsterControllers){
+            if (monsterController.monster == monster){
+                return monsterController;
+            }
+        }
+        return null;
+    }
     public static HashMap<String, MonsterMakerInterface> getMonsterMakers() {
         return MONSTER_MAKERS;
     }
@@ -149,13 +172,38 @@ public class MonsterController {
         };
     }
 
+    private static MonsterController makeCrabTurtle
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+
+        };
+    }
+
+    private static MonsterController makeSkullGaurdian
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+
+        };
+    }
+
     private static MonsterController makeManEaterBug
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
             @Override
-            public void flip(MonsterController selectedMonster) {
-                // here we should select a monster to remove it
-                selectedMonster.setPosition(MonsterPosition.ATTACK);
+            public void flip() {
+                setRivalMonsterZoneAccessible(true);
+                Scanner scanner = Scan.getScanner();
+                select(scanner.nextLine());
+
+                MonsterController[] monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
+                for (MonsterController monster : monstersZone){
+                    if (monster.getMonster().getName().equals(getSelectedMonster().getName())){
+                        MonsterController selectedMonsterController = MonsterController.getMonsterControllerByMonster(getSelectedMonster());
+                        gameController.getGame().getOtherBoard().removeMonster(selectedMonsterController);
+                    }
+                }
+
+                this.setPosition(MonsterPosition.ATTACK);
             }
         };
     }
@@ -189,6 +237,18 @@ public class MonsterController {
         };
     }
 
+    private static MonsterController makeBeastKingBarbaros
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
+    private static MonsterController makeTexchanger
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
     private static MonsterController makeTheCalculator
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
@@ -215,6 +275,30 @@ public class MonsterController {
                     //rival cannot active his spellTraps
                 }
             }
+        };
+    }
+
+    private static MonsterController makeHearldOfCreation
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
+    private static MonsterController makeExploderDragon
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
+    private static MonsterController makeTerratiger
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
+        };
+    }
+
+    private static MonsterController makeTheTricky
+            (GameController gameController, Monster monster, MonsterPosition position) {
+        return new MonsterController(gameController, monster, position) {
         };
     }
 
@@ -330,8 +414,8 @@ public class MonsterController {
         position = MonsterPosition.ATTACK;
     }
 
-    public void flip(MonsterController selectedMonster) {
-        selectedMonster.setPosition(MonsterPosition.ATTACK);
+    public void flip() {
+        this.setPosition(MonsterPosition.ATTACK);
     }
 
     public void specialSummon() {
@@ -442,8 +526,8 @@ public class MonsterController {
         return null;
     }
 
-    public void select(Matcher matcher) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group(1).split("\\s+"));
+    public void select(String selectCommand ) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
+        HashMap<String, String> input = Scan.getInstance().parseInput(selectCommand.split("\\s+"));
         Game game = gameController.getGame();
         String addressNumber;
 
@@ -463,7 +547,7 @@ public class MonsterController {
                     selectedMonster = game.getThisBoard().getMonstersZone()[monsterNumber - 1].getMonster();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
                 }
-            }
+            }else throw new InvalidSelection();
 
             if (selectedMonster == null)
                 throw new CardNotFoundException();
@@ -479,6 +563,9 @@ public class MonsterController {
                 selectedCardAddress = new CardAddress(Place.Hand, Owner.Me, handNumber - 1);
             } else
                 throw new InvalidSelection();
+
+            if (selectedMonster == null)
+                throw new CardNotFoundException();
 
         } else if ((addressNumber = Scan.getInstance().getValue(input, "graveyard", "g")) != null) {
             int graveyardNumber = Integer.parseInt(addressNumber);
@@ -503,7 +590,11 @@ public class MonsterController {
                         selectedCardAddress = new CardAddress(Place.Graveyard, Owner.Me, graveyardNumber - 1);
                     } else throw new InvalidSelection();
                 }
-            }
+            }else throw new InvalidSelection();
+
+            if (selectedMonster == null)
+                throw new CardNotFoundException();
+
         } else if (input.containsKey("-d")) {
             if (selectedMonster == null) {
                 throw new NoCardSelectedException();
@@ -511,6 +602,9 @@ public class MonsterController {
             deselect();
         } else
             throw new InvalidInput();
+
+        if (selectedMonster == null)
+            throw new CardNotFoundException();
     }
 
     public void deselect() {
