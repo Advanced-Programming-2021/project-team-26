@@ -1,19 +1,24 @@
 package controller;
 
-import model.Shop;
+import exceptions.CardNotFoundException;
+import exceptions.NotEnoughMoneyException;
 import model.User;
 import model.cards.Card;
+import view.Print;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 public class ShopController {
     private User userInShop ;
-
-
-    public ShopController(User user) {
+    private static Map<String, Card> allCards;
+    static {
+        allCards = Card.getAllCards();
+    }
+    public ShopController() {
         setUserInShop(Database.getInstance().getCurrentUser());
     }
 
@@ -25,58 +30,30 @@ public class ShopController {
         this.userInShop = userInShop;
     }
 
-    public void buyCard(Matcher matcher){
-
-    }
-
-    public boolean isHaveEnoughMoney(int price, User user) {
-        return true;
+    public void buyCard(Matcher matcher) throws CardNotFoundException, NotEnoughMoneyException {
+        String cardName = matcher.group(1);
+        Card thisCard = Card.getCard(cardName);
+        if (thisCard == null)
+            throw new CardNotFoundException();
+        else {
+            int cardPrice = thisCard.getPrice();
+            if (cardPrice > userInShop.getMoney())
+                throw new NotEnoughMoneyException();
+            else {
+                userInShop.setMoney(userInShop.getMoney() - cardPrice);
+                userInShop.addCardToUserCards(thisCard);
+            }
+        }
     }
 
     public void showAll(Matcher matcher) {
-
+        Print.getInstance().printMessage(allCardsToString());
     }
 
-    private static final HashMap<String, Card> allCards;
-  //  private static Shop shop;
-
-    static {
-        allCards = new HashMap<>();
-    }
-
-    private User currentUserInShop;
-
-//    private Shop(User currentUserInShop) {
-//        setCurrentUserInShop(currentUserInShop);
-//        allCards.putAll(Database.getInstance().getAllCards());
-//    }
-
-//    public static Shop getInstance(User currentUserInShop) {
-//        if (shop == null)
-//            shop = new Shop(currentUserInShop);
-//        return shop;
-//    }
-
-    public static HashMap<String, Card> getAllCards() {
+    public static Map<String, Card> getAllCards() {
         return allCards;
     }
 
-    public User getCurrentUserInShop() {
-        return currentUserInShop;
-    }
-
-    public void setCurrentUserInShop(User currentUserInShop) {
-        this.currentUserInShop = currentUserInShop;
-    }
-
-    public int getPriceByCardName(String cardName) {
-        for (String key : allCards.keySet()) {
-            if (key.equals(cardName)) {
-                return allCards.get(key).getPrice();
-            }
-        }
-        return 0;
-    }
 
     public boolean checkCardNameExistence(String cardName) {
         for (String key : allCards.keySet()) {
@@ -87,18 +64,10 @@ public class ShopController {
         return false;
     }
 
-    public int addCardToUsersCards(Card card){
-        if (getCurrentUserInShop().getMoney() < card.getPrice())
-            return 0; // user didnt have enough money
-        else {
-            getCurrentUserInShop().getAllCards().put(card.getName(), card);
-            return 1; //card added to users cards
-        }
-    }
 
-    public String allCardsToString(){
+    private String allCardsToString(){
         StringBuilder stringToReturn = new StringBuilder();
-        HashMap<String, Card> allCards = getAllCards();
+        Map<String, Card> allCards = getAllCards();
         ArrayList<String> sortedCardNames = new ArrayList<>(getAllCards().keySet());
         Collections.sort(sortedCardNames);
 

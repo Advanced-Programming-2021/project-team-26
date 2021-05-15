@@ -13,8 +13,8 @@ public class InterchangeMenu extends Menu {
     private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
 
     static {
-        // TODO: 5/10/21   MAP.put(Pattern.compile(""), );
-        // TODO: 5/10/21   MAP.put(Pattern.compile(""), );
+        // TODO: 5/10/21   MAP.put(Pattern.compile("^import card ([^ ]+)$"), );
+        // TODO: 5/10/21   MAP.put(Pattern.compile("^export card ([^ ]+)$"), );
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
     }
     public InterchangeMenu() {
