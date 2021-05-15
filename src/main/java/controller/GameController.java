@@ -329,7 +329,7 @@ public class GameController {
         if (selectedMonster.getPosition() != MonsterPosition.DEFENCE_DOWN || selectedMonster.isMonsterNew())
             throw new CannotFlipSummon();
 
-        selectedMonster.flip(selectedMonster);
+        selectedMonster.flip();
         deselect();
     }
 

@@ -106,6 +106,10 @@ public class Board {
         return addedCard;
     }
 
+    public void addCardToHand(Card card) {
+        hand.add(card);
+    }
+
     public MonsterController putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {
         if (!hand.contains(monster)) {
             throw new MonsterNotFoundException();
