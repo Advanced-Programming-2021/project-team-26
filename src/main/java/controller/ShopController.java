@@ -30,7 +30,7 @@ public class ShopController {
         this.userInShop = userInShop;
     }
 
-    public void buyCard(Matcher matcher) throws CardNotFoundException, NotEnoughMoneyException {
+    public String buyCard(Matcher matcher) throws CardNotFoundException, NotEnoughMoneyException {
         String cardName = matcher.group(1);
         Card thisCard = Card.getCard(cardName);
         if (thisCard == null)
@@ -46,8 +46,8 @@ public class ShopController {
         }
     }
 
-    public void showAll(Matcher matcher) {
-        Print.getInstance().printMessage(allCardsToString());
+    public String showAll(Matcher matcher) {
+        return allCardsToString();
     }
 
     public static Map<String, Card> getAllCards() {
@@ -63,7 +63,6 @@ public class ShopController {
         }
         return false;
     }
-
 
     private String allCardsToString(){
         StringBuilder stringToReturn = new StringBuilder();

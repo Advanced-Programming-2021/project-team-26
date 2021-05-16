@@ -1,6 +1,7 @@
 package view.menus;
 
 import controller.GameController;
+import view.ConsumerSp;
 import view.Menu;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DuelMenu extends Menu {
-    private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
+    private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
     private static GameController gameController;
     static {
         MAP.put(Pattern.compile("^select (.+)$"), gameController :: select );
@@ -30,7 +31,6 @@ public class DuelMenu extends Menu {
 
     public DuelMenu(GameController gameController) {
         DuelMenu.gameController = gameController;
-        name = "DuelMenu";
     }
 
     public void execute() {

@@ -7,23 +7,23 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import view.ConsumerSp;
 
-abstract public class Menu {
+abstract public class Menu  {
     protected static final Scanner scanner = Scan.getScanner();
-    protected static String name;
     private static boolean mustBeStay;
     public Menu() {
         mustBeStay = true;
     }
 
-    protected  static void exitMenu(Matcher matcher){
+    protected  static String exitMenu(Matcher matcher){
         mustBeStay = false;
+        return null;
     }
-    protected static void showCurrentMenu(Matcher matcher){
-        System.out.println(name);
+    protected String showCurrentMenu(String currentMenu){
+        return currentMenu;
     }
-
-    protected void run(HashMap <Pattern, Consumer<Matcher>>MAP){
+    protected void run(HashMap <Pattern, ConsumerSp<Matcher>>MAP){
         while (mustBeStay) {
             boolean isMatched = false;
             String input = scanner.nextLine();
@@ -33,7 +33,10 @@ abstract public class Menu {
                 if(matcher.find()) {
                     isMatched = true;
                     try {
-                        MAP.get(pattern).accept(matcher);
+                        String msg = MAP.get(pattern).accept(matcher);
+                        if( msg != null){
+                            System.out.println(msg);
+                        }
                     }catch (Exception e){
                         System.out.println(e.getMessage());
                     }finally {

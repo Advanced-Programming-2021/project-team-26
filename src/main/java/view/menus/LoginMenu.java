@@ -1,6 +1,7 @@
 package view.menus;
 
 import controller.UserController;
+import view.ConsumerSp;
 import view.Menu;
 
 import java.lang.reflect.Method;
@@ -11,15 +12,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginMenu extends Menu {
-    private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
+    private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
     private static UserController userController = UserController.getInstance();
    static {
-        MAP.put(Pattern.compile("^menu show-current$"), Menu::showCurrentMenu);
+        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+            return "Login menu";
+        });
         MAP.put(Pattern.compile("^user create --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::addNewUser);
         MAP.put(Pattern.compile("^user login --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::loginUser);
     }
     public LoginMenu() {
-       name = "LoginMenu";
+
     }
 
     public void execute() {

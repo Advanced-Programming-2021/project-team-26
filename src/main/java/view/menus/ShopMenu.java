@@ -2,6 +2,7 @@ package view.menus;
 
 import controller.ShopController;
 import model.cards.Card;
+import view.ConsumerSp;
 import view.Menu;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
 public class ShopMenu extends Menu {
     private static ArrayList<Card> shopCards = new ArrayList<>();
     private static ShopController shopController;
-    private static final HashMap<Pattern, Consumer<Matcher>> MAP = new HashMap<>();
+    private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
 
     static {
         MAP.put(Pattern.compile("^shop buy (.+)$"), shopController::buyCard);
@@ -23,7 +24,7 @@ public class ShopMenu extends Menu {
     }
 
     public ShopMenu() {
-        name = "ShopMenu";
+
     }
 
     public void execute() {
