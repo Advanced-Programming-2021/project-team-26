@@ -37,8 +37,12 @@ public class MonsterController {
         MONSTER_MAKERS.put("The Tricky", MonsterController::makeTheTricky);
     }
 
+    public void setMonster(Monster monster) {
+        this.monster = monster;
+    }
+
     private final GameController gameController;
-    private final Monster monster;
+    private Monster monster;
     private MonsterPosition position;
     private boolean hasPositionChanged;
     private boolean isMonsterNew;
@@ -52,6 +56,8 @@ public class MonsterController {
     private Card selectedCard;
     private CardAddress selectedCardAddress;
     private boolean summonOrSetThisTurn;
+
+
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
         this.monster = new Monster(monster);
@@ -224,13 +230,37 @@ public class MonsterController {
     }
 
     private static MonsterController makeScanner
-            (GameController gameController, Monster monster1, MonsterPosition position) {
-        //select one of rival monsters in graveYard to be like it
-        MonsterController rivalMonsterController = null;
-        Monster monster = new Monster(rivalMonsterController.monster);
-
+            (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
+            @Override
+            public void runMonsterEffect() throws InvalidSelection {
+                if (!isHasActivateEffectThisTurn()) {
+                    Print.getInstance().printMessage("Do you want to activate the card effect?" +
+                            "1. yes" +
+                            "2. no");
+                    Scanner scanner = Scan.getScanner();
+                    String input = scanner.nextLine();
 
+                    if (Integer.parseInt(input) == 1) {
+                        Print.getInstance().printMessage("Select a monster from rival GRAVEYARD");
+                        input = scanner.nextLine();
+                        setRivalGraveyardAccessible(true);
+                        select(input);
+                        if (!(getSelectedCard() instanceof Monster)){
+                            throw new InvalidSelection();
+                        } else {
+                            Monster selectedMonster = (Monster) getSelectedCard();
+                            setMonster(new Monster(selectedMonster));
+                        }
+                    }
+                }
+                setHasActivateEffectThisTurn(true);
+            }
+
+            @Override
+            public void endMonsterEffect(){
+                setMonster(Monster.getMonster("Scanner"));
+            }
         };
     }
 
@@ -292,7 +322,7 @@ public class MonsterController {
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
             @Override
-            public void runMonsterEffect() {
+            public void runMonsterEffect() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
