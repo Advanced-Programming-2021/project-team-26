@@ -78,10 +78,6 @@ public class MonsterController {
         return null;
     }
 
-    public static HashMap<String, MonsterMakerInterface> getMonsterMakers() {
-        return MONSTER_MAKERS;
-    }
-
     public static MonsterController getInstance(GameController gameController, Monster monster, MonsterPosition position)
             throws MonsterNotFoundException {
         for (String monsterName : MONSTER_MAKERS.keySet()) {
@@ -198,6 +194,8 @@ public class MonsterController {
                 String input = scanner.nextLine();
 
                 if (Integer.parseInt(input) == 1) {
+                    System.out.println("Select one of rival Monsters to remove from his Monster Zone");
+                    input = scanner.nextLine();
                     select(input);
                     MonsterController[] monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
                     for (MonsterController monster : monstersZone) {
@@ -300,13 +298,18 @@ public class MonsterController {
                     String input = scanner.nextLine();
 
                     if (Integer.parseInt(input) == 1) {
+                        System.out.println("Select a Card from your HAND to remove");
+                        input = scanner.nextLine();
                         setHandAccessible(true);
                         select(input);
                         gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
 
+
                         setHandAccessible(false);
                         setOurGraveyardAccessible(true);
 
+                        System.out.println("Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND");
+                        input = scanner.nextLine();
                         select(input);
                         if (!(getSelectedCard() instanceof Monster)) {
                             throw new InvalidSelection();
@@ -330,7 +333,11 @@ public class MonsterController {
     private static MonsterController makeExploderDragon
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
-
+            @Override
+            public void remove(MonsterController attacker) {
+                gameController.getGame().getThisBoard().removeMonster(this);
+                gameController.getGame().getOtherBoard().removeMonster(attacker);
+            }
         };
     }
 
@@ -343,6 +350,26 @@ public class MonsterController {
     private static MonsterController makeTheTricky
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
+            @Override
+            public void summon() {
+                System.out.println("Do you want to summon this card specially with remove a card from your HAND?" +
+                        "1. yes" +
+                        "2. no");
+
+                Scanner scanner = Scan.getScanner();
+                String input = scanner.nextLine();
+
+                if (Integer.parseInt(input) == 1) {
+                    System.out.println("Select a card from your HAND to remove");
+
+                    input = scanner.nextLine();
+                    setHandAccessible(true);
+                    select(input);
+
+                    gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
+                    gameController.getGame().setSummonOrSetThisTurn(false);
+                }
+            }
         };
     }
 
@@ -352,14 +379,6 @@ public class MonsterController {
 
     public void setSummonOrSetThisTurn(boolean summonOrSetThisTurn) {
         this.summonOrSetThisTurn = summonOrSetThisTurn;
-    }
-
-    public ArrayList<MonsterController> getAllMonsterControllers() {
-        return allMonsterControllers;
-    }
-
-    public CardAddress getSelectedCardAddress() {
-        return selectedCardAddress;
     }
 
     public void setSelectedCardAddress(CardAddress selectedCardAddress) {
@@ -374,48 +393,24 @@ public class MonsterController {
         this.selectedCard = selectedCard;
     }
 
-    public GameController getGameController() {
-        return gameController;
-    }
-
     public Monster getMonster() {
         return monster;
-    }
-
-    public boolean isHandAccessible() {
-        return isHandAccessible;
     }
 
     public void setHandAccessible(boolean handAccessible) {
         isHandAccessible = handAccessible;
     }
 
-    public boolean isRivalMonsterZoneAccessible() {
-        return isRivalMonsterZoneAccessible;
-    }
-
     public void setRivalMonsterZoneAccessible(boolean rivalMonsterZoneAccessible) {
         isRivalMonsterZoneAccessible = rivalMonsterZoneAccessible;
-    }
-
-    public boolean isOurMonsterZoneAccessible() {
-        return isOurMonsterZoneAccessible;
     }
 
     public void setOurMonsterZoneAccessible(boolean ourMonsterZoneAccessible) {
         isOurMonsterZoneAccessible = ourMonsterZoneAccessible;
     }
 
-    public boolean isRivalGraveyardAccessible() {
-        return isRivalGraveyardAccessible;
-    }
-
     public void setRivalGraveyardAccessible(boolean rivalGraveyardAccessible) {
         isRivalGraveyardAccessible = rivalGraveyardAccessible;
-    }
-
-    public boolean isOurGraveyardAccessible() {
-        return isOurGraveyardAccessible;
     }
 
     public void setOurGraveyardAccessible(boolean ourGraveyardAccessible) {
@@ -459,27 +454,8 @@ public class MonsterController {
 
     }
 
-    public void oneTributeSummon(MonsterController tributeMonster) {
-        remove(tributeMonster);
-        position = MonsterPosition.ATTACK;
-    }
-
-    public void twoTributeSummon(MonsterController firstTributeMonster, MonsterController secondTributeMonster) {
-        remove(firstTributeMonster);
-        remove(secondTributeMonster);
-        position = MonsterPosition.ATTACK;
-    }
-
     public void flip() {
         this.setPosition(MonsterPosition.ATTACK);
-    }
-
-    public void specialSummon() {
-
-    }
-
-    public void activate() {
-
     }
 
     public void remove(MonsterController attacker) {
