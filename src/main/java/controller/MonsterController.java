@@ -4,6 +4,7 @@ import exceptions.*;
 import model.*;
 import model.cards.Card;
 import model.cards.monster.Monster;
+import view.Print;
 import view.Scan;
 
 import java.util.*;
@@ -42,6 +43,7 @@ public class MonsterController {
     private boolean hasPositionChanged;
     private boolean isMonsterNew;
     private boolean hasAttackedThisTurn;
+    private boolean hasActivateEffectThisTurn;
     private boolean isHandAccessible;
     private boolean isRivalMonsterZoneAccessible;
     private boolean isOurMonsterZoneAccessible;
@@ -50,7 +52,6 @@ public class MonsterController {
     private Card selectedCard;
     private CardAddress selectedCardAddress;
     private boolean summonOrSetThisTurn;
-
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
         this.monster = new Monster(monster);
@@ -58,6 +59,7 @@ public class MonsterController {
         setMonsterNew(true);
         setHasPositionChanged(false);
         setHasAttackedThisTurn(false);
+        setHasActivateEffectThisTurn(false);
         setHandAccessible(false);
         setRivalGraveyardAccessible(false);
         setRivalMonsterZoneAccessible(false);
@@ -67,6 +69,10 @@ public class MonsterController {
         setSelectedCardAddress(null);
         setSummonOrSetThisTurn(false);
         allMonsterControllers.add(this);
+    }
+
+    public static ArrayList<MonsterController> getAllMonsterControllers() {
+        return allMonsterControllers;
     }
 
     public static MonsterController getMonsterControllerByMonster(Monster monster) {
@@ -187,14 +193,14 @@ public class MonsterController {
             @Override
             public void flip() {
                 setRivalMonsterZoneAccessible(true);
-                System.out.println("Do you want to activate the card effect?" +
+                Print.getInstance().printMessage("Do you want to activate the card effect?" +
                         "1. yes" +
                         "2. no");
                 Scanner scanner = Scan.getScanner();
                 String input = scanner.nextLine();
 
                 if (Integer.parseInt(input) == 1) {
-                    System.out.println("Select one of rival Monsters to remove from his Monster Zone");
+                    Print.getInstance().printMessage("Select one of rival Monsters to remove from his Monster Zone");
                     input = scanner.nextLine();
                     select(input);
                     MonsterController[] monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
@@ -285,30 +291,26 @@ public class MonsterController {
     private static MonsterController makeHearldOfCreation
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
-            ///////
-            private boolean wasEffectActiveThisTurn = false;
-
             @Override
             public void runMonsterEffect() {
-                if (!wasEffectActiveThisTurn) {
-                    System.out.println("Do you want to activate the card effect?" +
+                if (!isHasActivateEffectThisTurn()) {
+                    Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
                             "2. no");
                     Scanner scanner = Scan.getScanner();
                     String input = scanner.nextLine();
 
                     if (Integer.parseInt(input) == 1) {
-                        System.out.println("Select a Card from your HAND to remove");
+                        Print.getInstance().printMessage("Select a Card from your HAND to remove");
                         input = scanner.nextLine();
                         setHandAccessible(true);
                         select(input);
                         gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
 
-
                         setHandAccessible(false);
                         setOurGraveyardAccessible(true);
 
-                        System.out.println("Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND");
+                        Print.getInstance().printMessage("Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND");
                         input = scanner.nextLine();
                         select(input);
                         if (!(getSelectedCard() instanceof Monster)) {
@@ -323,7 +325,7 @@ public class MonsterController {
                             }
                         }
                         setOurGraveyardAccessible(false);
-                        wasEffectActiveThisTurn = true;
+                        setHasActivateEffectThisTurn(true);
                     }
                 }
             }
@@ -352,7 +354,7 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position) {
             @Override
             public void summon() {
-                System.out.println("Do you want to summon this card specially with remove a card from your HAND?" +
+                Print.getInstance().printMessage("Do you want to summon this card specially with remove a card from your HAND?" +
                         "1. yes" +
                         "2. no");
 
@@ -360,7 +362,7 @@ public class MonsterController {
                 String input = scanner.nextLine();
 
                 if (Integer.parseInt(input) == 1) {
-                    System.out.println("Select a card from your HAND to remove");
+                    Print.getInstance().printMessage("Select a card from your HAND to remove");
 
                     input = scanner.nextLine();
                     setHandAccessible(true);
@@ -371,6 +373,14 @@ public class MonsterController {
                 }
             }
         };
+    }
+
+    public boolean isHasActivateEffectThisTurn() {
+        return hasActivateEffectThisTurn;
+    }
+
+    public void setHasActivateEffectThisTurn(boolean hasActivateEffectThisTurn) {
+        this.hasActivateEffectThisTurn = hasActivateEffectThisTurn;
     }
 
     public boolean isSummonOrSetThisTurn() {

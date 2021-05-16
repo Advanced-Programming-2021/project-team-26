@@ -26,7 +26,6 @@ public class DuelMenu extends Menu {
         MAP.put(Pattern.compile("^surrender$"), gameController::surrender);
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
         //MAP.put(Pattern.compile("^back$"), );
-
     }
 
     public DuelMenu(GameController gameController) {

@@ -1,10 +1,13 @@
 package model;
 
 import controller.GameController;
+import controller.MonsterController;
 import controller.Phase;
 import exceptions.NoPlayerAvailable;
 import model.cards.Card;
 import view.Print;
+
+import java.util.ArrayList;
 
 public class Game {
     private final GameController gameController;
@@ -75,6 +78,10 @@ public class Game {
         this.turn = 1 - this.turn;
         summonOrSetThisTurn = false;
         gameController.deselect();
+        ArrayList<MonsterController> monsterControllers = MonsterController.getAllMonsterControllers();
+        for (MonsterController monsterController : monsterControllers) {
+            monsterController.setHasActivateEffectThisTurn(false);
+        }
         Print.getInstance().printMessage("its " + getThisUser().getNickname() + "’s turn");
     }
 

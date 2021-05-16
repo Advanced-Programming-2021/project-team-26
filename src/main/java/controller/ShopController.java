@@ -44,6 +44,8 @@ public class ShopController {
                 userInShop.addCardToUserCards(thisCard);
             }
         }
+
+        return "You bought card " + cardName + " successfully";
     }
 
     public String showAll(Matcher matcher) {
