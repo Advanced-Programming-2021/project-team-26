@@ -10,11 +10,12 @@ import java.util.*;
 
 public class MonsterController {
     private static final HashMap<String, MonsterMakerInterface> MONSTER_MAKERS;
-    private static ArrayList<MonsterController> allMonsterControllers;
+    private static final ArrayList<MonsterController> allMonsterControllers;
 
     static {
         MONSTER_MAKERS = new HashMap<>();
         allMonsterControllers = new ArrayList<>();
+
         //Effective Monsters
         MONSTER_MAKERS.put("Command knight", MonsterController::makeCommandKnight);
         MONSTER_MAKERS.put("Yomi Ship", MonsterController::makeYomiShip);
@@ -48,6 +49,7 @@ public class MonsterController {
     private boolean isOurGraveyardAccessible;
     private Card selectedCard;
     private CardAddress selectedCardAddress;
+    private boolean summonOrSetThisTurn;
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
         this.gameController = gameController;
@@ -63,6 +65,7 @@ public class MonsterController {
         setOurMonsterZoneAccessible(false);
         setSelectedCard(null);
         setSelectedCardAddress(null);
+        setSummonOrSetThisTurn(false);
         allMonsterControllers.add(this);
     }
 
@@ -327,6 +330,7 @@ public class MonsterController {
     private static MonsterController makeExploderDragon
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
+
         };
     }
 
@@ -340,6 +344,14 @@ public class MonsterController {
             (GameController gameController, Monster monster, MonsterPosition position) {
         return new MonsterController(gameController, monster, position) {
         };
+    }
+
+    public boolean isSummonOrSetThisTurn() {
+        return summonOrSetThisTurn;
+    }
+
+    public void setSummonOrSetThisTurn(boolean summonOrSetThisTurn) {
+        this.summonOrSetThisTurn = summonOrSetThisTurn;
     }
 
     public ArrayList<MonsterController> getAllMonsterControllers() {
