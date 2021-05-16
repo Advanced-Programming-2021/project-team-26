@@ -19,7 +19,7 @@ public class UserController {
         return userController;
     }
 
-    public void addNewUser(Matcher matcher) throws InvalidInput, DuplicateUsername, DuplicateNickname {
+    public String addNewUser(Matcher matcher) throws InvalidInput, DuplicateUsername, DuplicateNickname {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -52,10 +52,11 @@ public class UserController {
         if (User.checkNicknameExistence(nickname))
             throw new DuplicateNickname();
 
-        User user = new User(username, password, nickname);
+        new User(username, password, nickname);
+        return "user created successfully!";
     }
 
-    public void removeUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
+    public String removeUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -80,9 +81,10 @@ public class UserController {
             throw new WrongUsernamePassword();
 
         User.removeUser(user.getUsername());
+        return "user removed successfully!";
     }
 
-    public void changePassword(Matcher matcher) throws InvalidInput, WrongPassword, SamePassword {
+    public String changePassword(Matcher matcher) throws InvalidInput, WrongPassword, SamePassword {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -112,9 +114,10 @@ public class UserController {
             throw new SamePassword();
 
         Database.getInstance().getCurrentUser().setPassword(newPassword);
+        return "password changed successfully!";
     }
 
-    public void changeNickname(Matcher matcher) throws InvalidInput, DuplicateNickname {
+    public String changeNickname(Matcher matcher) throws InvalidInput, DuplicateNickname {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -130,9 +133,10 @@ public class UserController {
             throw new DuplicateNickname();
 
         Database.getInstance().getCurrentUser().setNickname(nickname);
+        return "nickname changed successfully!";
     }
 
-    public void loginUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
+    public String loginUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -156,9 +160,11 @@ public class UserController {
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
         Database.getInstance().setCurrentUser(user);
+        return "user logged in successfully!";
     }
 
-    public void logout(Matcher matcher) {
+    public String logout(Matcher matcher) {
         Database.getInstance().setCurrentUser(null);
+        return "user logged out successfully!";
     }
 }
