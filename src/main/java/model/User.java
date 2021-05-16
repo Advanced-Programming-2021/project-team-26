@@ -205,7 +205,7 @@ public class User {
         stringToReturn.append(name).append(": ").append("main deck ").
                 append(Deck.getDeckByDeckName(name).getMainDeck().size()).append(", ").append("side deck ").
                 append(Deck.getDeckByDeckName(name).getSideDeck().size()).append(", ").
-                append(Deck.getDeckByDeckName(name).isDeckValid());
+                append(Deck.getDeckByDeckName(name).isDeckValid() ? "valid" : "invalid");
 
         return stringToReturn.toString();
     }

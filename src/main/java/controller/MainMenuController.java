@@ -1,23 +1,79 @@
 package controller;
+
 import exceptions.*;
+import model.User;
+import view.Scan;
 import view.menus.*;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 
 public class MainMenuController {
-    public  MainMenuController(){
+    public MainMenuController() {
 
     }
 
-    public void creatNewGameWithAI(Matcher matcher){
+    public void creatNewGameWithAI(Matcher matcher) {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
+        String roundString = Scan.getInstance().getValue(input, "round", "r");
+        if (roundString == null)
+            throw new InvalidInput();
+        int round;
+        try {
+            round = Integer.parseInt(roundString);
+        } catch (Exception e) {
+            throw new InvalidInput();
+        }
+        if (round != 1 && round != 3)
+            throw new NotSupportedRoundNumber();
+
+        GameController gameController = new GameController(Database.getInstance().getCurrentUser(), round);
+        new DuelMenu(gameController).execute();
     }
 
-    public void createNewGameWithRealPlayer(Matcher matcher){
+    public void createNewGameWithRealPlayer(Matcher matcher) {
+        String[] rawInput = matcher.group().split("\\s+");
+        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        String secondUsername = Scan.getInstance().getValue(input, "second-player", "sp");
+        if (secondUsername == null)
+            throw new InvalidInput();
+        String roundString = Scan.getInstance().getValue(input, "rounds", "r");
+        if (roundString == null)
+            throw new InvalidInput();
+        int round;
+        try {
+            round = Integer.parseInt(roundString);
+        } catch (Exception e) {
+            throw new InvalidInput();
+        }
+        User firstUser = Database.getInstance().getCurrentUser();
+        User secondUser = User.getUserByUsername(secondUsername);
+        if (secondUser == null)
+            throw new UsernameNotFoundException();
+        if (firstUser.getActiveDeck() == null)
+            throw new NoActiveDeck(firstUser.getUsername());
+        if (secondUser.getActiveDeck() == null)
+            throw new NoActiveDeck(secondUser.getUsername());
 
+        if (firstUser.getActiveDeck().isDeckValid())
+            throw new InvalidDeckException(firstUser.getUsername());
+        if (secondUser.getActiveDeck().isDeckValid())
+            throw new InvalidDeckException(secondUser.getUsername());
+
+        if (round != 1 && round != 3)
+            throw new NotSupportedRoundNumber();
+
+        try {
+            GameController gameController = new GameController(firstUser, secondUser, round);
+            new DuelMenu(gameController).execute();
+        } catch (NoPlayerAvailable ignored) {
+
+        }
     }
 
-    public void enterMenu(Matcher matcher){
+    public void enterMenu(Matcher matcher) {
         String newMenu = matcher.group(1);
         if (newMenu.contains("Login"))
             new LoginMenu().execute();

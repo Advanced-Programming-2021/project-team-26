@@ -26,13 +26,13 @@ public class GameController {
     private int roundNumber;
     private boolean temporaryTurnChange = false;
 
-    public GameController(String firstPlayer, String secondPayer, int round) throws NoPlayerAvailable {
-        this.game = new Game(this, User.getUserByUsername(firstPlayer), User.getUserByUsername(secondPayer));
+    public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
+        this.game = new Game(this, firstPlayer, secondPayer);
         this.roundNumber = round;
         game.nextPhase();
     }
 
-    public GameController(String player, int round) {
+    public GameController(User player, int round) {
 
     }
 

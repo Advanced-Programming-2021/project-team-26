@@ -155,10 +155,8 @@ public class Deck {
         }
     }
 
-    public String isDeckValid() {
-        if (mainDeck.size() >= 40)
-            return "valid";
-        else return "invalid";
+    public boolean isDeckValid() {
+        return mainDeck.size() >= 40;
     }
 
 
