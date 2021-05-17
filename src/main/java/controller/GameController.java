@@ -8,6 +8,7 @@ import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 import model.cards.spell.SpellType;
 import model.cards.trap.Trap;
+import view.Menu;
 import view.Print;
 import view.Scan;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 public class GameController {
-    private final int currentRound = 0;
+    private final int[] maxLifePoint = new int[]{0, 0};
     private Game game;
     private CardAddress selectedCardAddress = null;
     private Card selectedCard = null;
@@ -25,8 +26,13 @@ public class GameController {
     private SpellTrapController selectedSpellTrap = null;
     private int roundNumber;
     private boolean temporaryTurnChange = false;
+    private final int[] winningRounds = new int[]{0, 0};
+    private final User[] players = new User[2];
+    private int currentRound = 0;
 
     public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
+        players[0] = firstPlayer;
+        players[1] = secondPayer;
         this.game = new Game(this, firstPlayer, secondPayer);
         this.roundNumber = round;
         game.nextPhase();
@@ -505,7 +511,51 @@ public class GameController {
     }
 
     public void endGame() {
+        int winner = game.getWinner();
+        int winnerScore = game.getLifePoint(winner);
+        int score1 = 0;
+        int score2 = 0;
+        Print.getInstance().printMessage(game.getUser(winner).getUsername() + " won the game" +
+                " and the score is: " + score1 + "-" + score2);
+        winningRounds[winner]++;
+        maxLifePoint[winner] = Math.max(maxLifePoint[winner], game.getLifePoint(winner));
+        if (winningRounds[0] > roundNumber / 2 || winningRounds[1] > roundNumber / 2) {
+            endMatch();
+        } else {
+            currentRound++;
+            try {
+                game = new Game(this, players[0], players[1]);
+            } catch (NoPlayerAvailable ignored) {
 
+            }
+        }
+    }
+
+    public void endMatch() {
+        int winner;
+        if (winningRounds[0] > roundNumber / 2)
+            winner = 0;
+        else
+            winner = 1;
+        int looser = 1 - winner;
+        int winnerScore = 1000 * roundNumber;
+        int looserScore = 0;
+
+        int winnerPrize = roundNumber * (1000 + maxLifePoint[winner]);
+        int looserPrize = roundNumber * 100;
+
+        players[winner].increaseScore(winnerScore);
+        players[looser].increaseScore(looserScore);
+        players[winner].increaseMoney(winnerPrize);
+        players[looser].increaseMoney(looserPrize);
+
+        int[] scores = new int[2];
+        scores[winner] = winnerScore;
+        scores[looser] = looserScore;
+        Print.getInstance().printMessage(players[winner].getUsername() + " won the whole match" +
+                " with score: " + scores[0] + "-" + scores[1]);
+
+        Menu.exitMenu(null);
     }
 
     public void showBoard() {

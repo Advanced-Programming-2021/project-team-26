@@ -142,6 +142,10 @@ public class User {
         Database.getInstance().writeUser(this);
     }
 
+    public void increaseScore(int amount) {
+        setScore(this.score + amount);
+    }
+
     public void increaseMoney(int amount) {
         this.money += amount;
     }

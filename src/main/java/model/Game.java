@@ -20,6 +20,7 @@ public class Game {
     private boolean finished = false;
     private boolean summonOrSetThisTurn = false;
     private int surrenderPlayer = -1;
+    private int winner = -1;
 
     public Game(GameController gameController, User first, User second) throws NoPlayerAvailable {
         if (first == null || second == null)
@@ -78,6 +79,8 @@ public class Game {
         Card card = getThisBoard().addCardToHand();
         if (card == null) {
             finished = true;
+            winner = 1 - turn;
+            gameController.endGame();
             return;
         }
         Print.getInstance().printMessage("new card added to the hand : " + card.getName());
@@ -144,17 +147,31 @@ public class Game {
 
     public void decreaseThisLifePoint(int amount) {
         lifePoints[turn] -= amount;
-        if (lifePoints[turn] < 0)
+        if (lifePoints[turn] < 0) {
             finished = true;
+            winner = 1 - turn;
+            gameController.endGame();
+        }
     }
 
     public void decreaseOtherLifePoint(int amount) {
         lifePoints[1 - turn] -= amount;
-        if (lifePoints[1 - turn] < 0)
+        if (lifePoints[1 - turn] < 0) {
             finished = true;
+            winner = 1 - turn;
+            gameController.endGame();
+        }
     }
 
     public Phase getPhase() {
         return this.phase;
+    }
+
+    public int getWinner() {
+        return winner;
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
     }
 }
