@@ -33,6 +33,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Mystical space typhoon", SpellController::makeMysticalSpaceTyphoon);
         spellMakers.put("Yami", SpellController::makeYami);
         spellMakers.put("Forest", SpellController::makeForest);
+        spellMakers.put("Closed Forest", SpellController::makeClosedForest);
     }
 
 
@@ -326,6 +327,27 @@ public class SpellController extends SpellTrapController {
                             monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR) {
                         monsterController.getMonster().increaseAttackPower(200);
                         monsterController.getMonster().increaseDefencePower(200);
+                    }
+                }
+            }
+        };
+
+    }
+
+    private static SpellController makeClosedForest(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
+            }
+
+            private void setAttackAndDefenses(MonsterController[] monsterZone) {
+                int monstersINGraveyard = gameController.getGame().getThisBoard().geNumberOfMonstersINGraveyard();
+                for (MonsterController monsterController : monsterZone) {
+                    if (monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR||
+                            monsterController.getMonster().getType() == MonsterType.BEAST) {
+                        monsterController.getMonster().increaseAttackPower(100 * monstersINGraveyard);
+                        monsterController.getMonster().increaseDefencePower(200 * monstersINGraveyard);
                     }
                 }
             }

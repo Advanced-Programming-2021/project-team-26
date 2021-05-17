@@ -170,6 +170,15 @@ public class Board {
         }
     }
 
+    public int geNumberOfMonstersINGraveyard(){
+        int count = 0;
+        for (Card card : graveyard){
+            if (card instanceof Monster)
+                count++;
+        }
+
+        return count;
+    }
     public void removeAllMonsters(){
         for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
                 removeMonster(i);
