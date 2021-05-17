@@ -26,6 +26,9 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Raigeki", SpellController::makeRaigeki);
         spellMakers.put("Change of Heart", SpellController::makeChangeOfHeart);
         spellMakers.put("Harpie’s Feather Duster", SpellController::makeHarpiesFeatherDuster);
+        spellMakers.put("Dark Hole", SpellController::makeDarkHole);
+        spellMakers.put("Supply Squad", SpellController::makeSupplySquad);
+        spellMakers.put("Twin Twisters", SpellController::makeTwinTwisters);
     }
 
 
@@ -37,6 +40,15 @@ public class SpellController extends SpellTrapController {
         setCanSpellTrapsBeActive(true);
         this.spell = new Spell(spell);
         allSpellControllers.add(this);
+    }
+
+    public static SpellController getSpellControllerBySpell(Spell spell) {
+        for (SpellController spellController : allSpellControllers) {
+            if (spellController.spell.getName().equals(spell.getName())) {
+                return spellController;
+            }
+        }
+        return null;
     }
 
     public static SpellController getInstance(GameController gameController, Spell spell, SpellTrapPosition position) throws SpellNotFoundException {
@@ -164,6 +176,7 @@ public class SpellController extends SpellTrapController {
                 Scanner scanner = Scan.getScanner();
                 String input = scanner.nextLine();
                 select(input);
+                setRivalMonsterZoneAccessible(true);
 
                 if (!(selectedCard instanceof Monster)) {
                     throw new InvalidSelection();
@@ -188,6 +201,73 @@ public class SpellController extends SpellTrapController {
             @Override
             public void activate() {
                 gameController.getGame().getOtherBoard().removeAllSpellTraps();
+            }
+        };
+    }
+
+    private static SpellController makeDarkHole(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+                gameController.getGame().getOtherBoard().removeAllMonsters();
+                gameController.getGame().getThisBoard().removeAllMonsters();
+            }
+        };
+    }
+
+    private static SpellController makeSupplySquad(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() throws InvalidSelection {
+                Print.getInstance().printMessage("Select a card from yor HAND to remove");
+
+                setHandAccessible(true);
+                Scanner scanner = Scan.getScanner();
+                String input = scanner.nextLine();
+                select(input);
+                Card theSelectedCardFromHand = selectedCard;
+
+                Print.getInstance().printMessage("Do you want to destroy one SpellTrap or two ones?" +
+                        "1. one" +
+                        "2. two");
+                input = scanner.nextLine();
+
+                setHandAccessible(false);
+                setRivalSpellTrapAccessible(true);
+
+                if (Integer.parseInt(input) == 1) {
+                    Print.getInstance().printMessage("Select a spellTrap from rival spellTrapZone.");
+                    input = scanner.nextLine();
+                    select(input);
+                   removeSpell(selectedCard);
+                } else if (Integer.parseInt(input) == 2){
+                    Print.getInstance().printMessage("Select two spellTraps from rival spellTrapZone.");
+                    input = scanner.nextLine();
+                    select(input);
+                    removeSpell(selectedCard);
+
+                    input = scanner.nextLine();
+                    select(input);
+                    removeSpell(selectedCard);
+                }
+            }
+
+            private void removeSpell(Card selectedCard) throws InvalidSelection{
+                if (!(selectedCard instanceof SpellTrap)) {
+                    throw new InvalidSelection();
+                } else {
+                    gameController.getGame().getOtherBoard().
+                            removeSpellTrap(getSpellControllerBySpell((Spell) selectedCard));
+                }
+            }
+        };
+    }
+
+    private static SpellController makeTwinTwisters(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+
             }
         };
     }
