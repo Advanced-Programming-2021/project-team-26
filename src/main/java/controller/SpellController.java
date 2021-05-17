@@ -6,6 +6,7 @@ import model.Owner;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
+import model.cards.monster.MonsterType;
 import model.cards.spell.Spell;
 import model.cards.spell.SpellType;
 import view.Print;
@@ -30,6 +31,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Supply Squad", SpellController::makeSupplySquad);
         spellMakers.put("Twin Twisters", SpellController::makeTwinTwisters);
         spellMakers.put("Mystical space typhoon", SpellController::makeMysticalSpaceTyphoon);
+        spellMakers.put("Yami", SpellController::makeYami);
     }
 
 
@@ -282,6 +284,30 @@ public class SpellController extends SpellTrapController {
                 }
             }
         };
+    }
+
+    private static SpellController makeYami(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
+                setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
+            }
+
+            private void setAttackAndDefenses(MonsterController[] monsterZone) {
+                for (MonsterController monsterController : monsterZone) {
+                    if (monsterController.getMonster().getType() == MonsterType.SPELL_CASTER ||
+                            monsterController.getMonster().getType() == MonsterType.FIEND) {
+                        monsterController.getMonster().increaseAttackPower(200);
+                        monsterController.getMonster().increaseDefencePower(200);
+                    } else if (monsterController.getMonster().getType() == MonsterType.FAIRY) {
+                        monsterController.getMonster().decreaseDefencePower(200);
+                        monsterController.getMonster().decreaseDefencePower(200);
+                    }
+                }
+            }
+        };
+
     }
 
     public void field() {

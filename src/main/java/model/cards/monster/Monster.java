@@ -14,10 +14,10 @@ public class Monster extends Card {
 
     private int attackPower;
     private int defencePower;
-    private int level;
-    private MonsterType type;
-    private CardType cardType;
-    private String attribute;
+    private final int level;
+    private final MonsterType type;
+    private final CardType cardType;
+    private final String attribute;
 
 
     //copy constructor
@@ -47,24 +47,32 @@ public class Monster extends Card {
         return null;
     }
 
-    public void setAttackPower(int attackPower) {
-        this.attackPower = attackPower;
-    }
-
     public int getAttackPower() {
         return attackPower;
     }
 
-    public void increaseAttackPower(int amount){
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
+
+    public void increaseAttackPower(int amount) {
         this.attackPower += amount;
     }
 
-    public void decreaseAttackPower(int amount){
+    public void decreaseAttackPower(int amount) {
         this.attackPower -= amount;
     }
 
     public int getDefencePower() {
         return defencePower;
+    }
+
+    public void increaseDefencePower(int amount) {
+        this.defencePower += amount;
+    }
+
+    public void decreaseDefencePower(int amount) {
+        this.defencePower -= amount;
     }
 
     public int getLevel() {
