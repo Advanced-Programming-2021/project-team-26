@@ -10,7 +10,10 @@ import model.cards.spell.SpellType;
 import view.Print;
 import view.Scan;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
 
 public class SpellController extends SpellTrapController {
     private static final HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
@@ -18,6 +21,7 @@ public class SpellController extends SpellTrapController {
     static {
         spellMakers.put("Monster Reborn", SpellController::makeMonsterReborn);
         spellMakers.put("Terraforming", SpellController::makeTerraforming);
+        spellMakers.put("Pot of Greed", SpellController::makePotOfGreed);
     }
 
 
@@ -61,7 +65,7 @@ public class SpellController extends SpellTrapController {
                     Monster selectedMonster = (Monster) selectedCard;
                     if (whichGraveyard == 1) {
                         gameController.getGame().getThisBoard().getGraveyard().remove(selectedCard);
-                    } else if (whichGraveyard == 2){
+                    } else if (whichGraveyard == 2) {
                         gameController.getGame().getOtherBoard().getGraveyard().remove(selectedCard);
                     }
                     gameController.getGame().getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
@@ -74,7 +78,7 @@ public class SpellController extends SpellTrapController {
     private static SpellController makeTerraforming(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
             @Override
-            public void activate() throws InvalidSelection{
+            public void activate() throws InvalidSelection {
                 List<Card> deck = gameController.getGame().getThisBoard().getDeck();
                 ArrayList<Spell> fieldSpells = new ArrayList<>();
 
@@ -88,6 +92,7 @@ public class SpellController extends SpellTrapController {
                 }
 
                 Print.getInstance().printMessage(showCards(fieldSpells));
+                gameController.getGame().getThisBoard().shuffleDeck();
                 Print.getInstance().printMessage("\n");
                 Print.getInstance().printMessage("select number of the spell you want:");
 
@@ -118,6 +123,16 @@ public class SpellController extends SpellTrapController {
                     count++;
                 }
                 return stringToReturn.toString();
+            }
+        };
+    }
+
+    private static SpellController makePotOfGreed(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+                gameController.getGame().getThisBoard().addCardToHand();
+                gameController.getGame().getThisBoard().addCardToHand();
             }
         };
     }

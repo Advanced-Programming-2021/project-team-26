@@ -126,6 +126,10 @@ public class Board {
         return monstersZone[lastEmpty];
     }
 
+    public void shuffleDeck() {
+        Collections.shuffle(this.deck);
+    }
+
     public SpellTrapController putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
         if (!hand.contains(spellTrap)) {
             throw new SpellTrapNotFoundException();
