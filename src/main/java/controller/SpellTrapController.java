@@ -11,6 +11,7 @@ import model.cards.spell.Spell;
 import model.cards.trap.Trap;
 import view.Scan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class SpellTrapController {

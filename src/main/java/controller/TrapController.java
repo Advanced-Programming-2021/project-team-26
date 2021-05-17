@@ -21,6 +21,7 @@ public class TrapController extends SpellTrapController {
         this.gameController = gameController;
         this.trap = new Trap(trap);
         this.position = position;
+
     }
 
     public static TrapController getInstance(GameController gameController, Trap trap, SpellTrapPosition position) throws TrapNotFoundException {

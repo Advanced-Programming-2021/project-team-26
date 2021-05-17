@@ -153,6 +153,14 @@ public class Board {
         monstersZone[index] = null;
     }
 
+    public void removeMonsterWithoutAddingToGraveyard(Monster monster) {
+        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
+            if (monstersZone[i].getMonster() == monster) {
+                monstersZone[i] = null;
+            }
+        }
+    }
+
     public void removeMonster(MonsterController monster) {
         for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
             if (monstersZone[i] == monster) {
@@ -175,6 +183,20 @@ public class Board {
         spellTrapZone[index] = null;
     }
 
+    public void removeSpellTrap(SpellTrapController spellTrap) {
+        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
+            if (spellTrapZone[i] == spellTrap) {
+                removeSpellTrap(i);
+                return;
+            }
+        }
+    }
+
+    public void removeAllSpellTraps() {
+        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
+                removeSpellTrap(i);
+        }
+    }
     public void standByPhase() {
         for (SpellTrapController spellTrap : this.spellTrapZone)
             spellTrap.standBy();

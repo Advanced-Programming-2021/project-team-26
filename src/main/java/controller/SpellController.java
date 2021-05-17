@@ -17,12 +17,15 @@ import java.util.Scanner;
 
 public class SpellController extends SpellTrapController {
     private static final HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
+    public static ArrayList<SpellController> allSpellControllers = new ArrayList<>();
 
     static {
         spellMakers.put("Monster Reborn", SpellController::makeMonsterReborn);
         spellMakers.put("Terraforming", SpellController::makeTerraforming);
         spellMakers.put("Pot of Greed", SpellController::makePotOfGreed);
         spellMakers.put("Raigeki", SpellController::makeRaigeki);
+        spellMakers.put("Change of Heart", SpellController::makeChangeOfHeart);
+        spellMakers.put("Harpie’s Feather Duster", SpellController::makeHarpiesFeatherDuster);
     }
 
 
@@ -33,6 +36,7 @@ public class SpellController extends SpellTrapController {
         setPosition(position);
         setCanSpellTrapsBeActive(true);
         this.spell = new Spell(spell);
+        allSpellControllers.add(this);
     }
 
     public static SpellController getInstance(GameController gameController, Spell spell, SpellTrapPosition position) throws SpellNotFoundException {
@@ -55,10 +59,10 @@ public class SpellController extends SpellTrapController {
                 String input = scanner.nextLine();
                 int whichGraveyard = Integer.parseInt(input);
 
-                super.setOurGraveyardAccessible(true);
+                setOurGraveyardAccessible(true);
                 setRivalGraveyardAccessible(true);
                 input = scanner.nextLine();
-                super.select(input);
+                select(input);
 
                 if (!(super.selectedCard instanceof Monster)) {
                     throw new InvalidSelection();
@@ -114,7 +118,6 @@ public class SpellController extends SpellTrapController {
                 }
             }
 
-
             private String showCards(ArrayList<Spell> fieldSpells) {
                 StringBuilder stringToReturn = new StringBuilder();
 
@@ -127,6 +130,10 @@ public class SpellController extends SpellTrapController {
                 return stringToReturn.toString();
             }
         };
+    }
+
+    public static ArrayList<SpellController> getAllSpellControllers() {
+        return allSpellControllers;
     }
 
     private static SpellController makePotOfGreed(GameController gameController, Spell spell, SpellTrapPosition position) {
@@ -142,8 +149,45 @@ public class SpellController extends SpellTrapController {
     private static SpellController makeRaigeki(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
             @Override
-            public void activate(){
+            public void activate() {
                 gameController.getGame().getOtherBoard().removeAllMonsters();
+            }
+        };
+    }
+
+    private static SpellController makeChangeOfHeart(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() throws InvalidSelection {
+                Print.getInstance().printMessage("select a Monster from rival monsterZone:");
+
+                Scanner scanner = Scan.getScanner();
+                String input = scanner.nextLine();
+                select(input);
+
+                if (!(selectedCard instanceof Monster)) {
+                    throw new InvalidSelection();
+                } else {
+                    Monster selectedMonster = (Monster) selectedCard;
+                    gameController.getGame().getOtherBoard().removeMonsterWithoutAddingToGraveyard(selectedMonster);
+                    gameController.getGame().getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
+                }
+            }
+
+            @Override
+            public void endActivation() {
+                Monster selectedMonster = (Monster) selectedCard;
+                gameController.getGame().getThisBoard().removeMonsterWithoutAddingToGraveyard(selectedMonster);
+                gameController.getGame().getOtherBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
+            }
+        };
+    }
+
+    private static SpellController makeHarpiesFeatherDuster(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+                gameController.getGame().getOtherBoard().removeAllSpellTraps();
             }
         };
     }
@@ -157,6 +201,10 @@ public class SpellController extends SpellTrapController {
     }
 
     public void equip(MonsterController monster) {
+
+    }
+
+    public void endActivation() {
 
     }
 

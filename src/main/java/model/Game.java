@@ -3,6 +3,7 @@ package model;
 import controller.GameController;
 import controller.MonsterController;
 import controller.Phase;
+import controller.SpellController;
 import exceptions.NoPlayerAvailable;
 import model.cards.Card;
 import view.Print;
@@ -94,6 +95,12 @@ public class Game {
         for (MonsterController monsterController : monsterControllers) {
             monsterController.setHasActivateEffectThisTurn(false);
         }
+
+        ArrayList<SpellController> spellControllers = SpellController.getAllSpellControllers();
+        for (SpellController spellController : spellControllers) {
+            spellController.endActivation();
+        }
+
         Print.getInstance().printMessage("its " + getThisUser().getNickname() + "’s turn");
     }
 
