@@ -162,6 +162,12 @@ public class Board {
         }
     }
 
+    public void removeAllMonsters(){
+        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
+                removeMonster(i);
+        }
+    }
+
     public void removeSpellTrap(int index) {
         if (spellTrapZone[index] == null)
             return;

@@ -22,6 +22,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Monster Reborn", SpellController::makeMonsterReborn);
         spellMakers.put("Terraforming", SpellController::makeTerraforming);
         spellMakers.put("Pot of Greed", SpellController::makePotOfGreed);
+        spellMakers.put("Raigeki", SpellController::makeRaigeki);
     }
 
 
@@ -113,6 +114,7 @@ public class SpellController extends SpellTrapController {
                 }
             }
 
+
             private String showCards(ArrayList<Spell> fieldSpells) {
                 StringBuilder stringToReturn = new StringBuilder();
 
@@ -133,6 +135,15 @@ public class SpellController extends SpellTrapController {
             public void activate() {
                 gameController.getGame().getThisBoard().addCardToHand();
                 gameController.getGame().getThisBoard().addCardToHand();
+            }
+        };
+    }
+
+    private static SpellController makeRaigeki(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate(){
+                gameController.getGame().getOtherBoard().removeAllMonsters();
             }
         };
     }
