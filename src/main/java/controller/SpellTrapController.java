@@ -11,10 +11,12 @@ import model.cards.spell.Spell;
 import model.cards.trap.Trap;
 import view.Scan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class SpellTrapController {
 
+    protected static ArrayList<SpellTrapController> allSpellTrapControllers = new ArrayList<>();
     protected GameController gameController;
     protected SpellTrapPosition position;
     protected boolean canSpellTrapsBeActive = false;
@@ -27,6 +29,15 @@ public abstract class SpellTrapController {
     protected boolean isRivalSpellTrapAccessible = false;
     protected Card selectedCard = null;
     protected CardAddress selectedCardAddress = null;
+
+    public static SpellTrapController getSpellTrapControllerBySpellTrap(SpellTrap spellTrap) {
+        for (SpellTrapController spellTrapController : allSpellTrapControllers) {
+            if (spellTrapController.getCard().getName().equals(spellTrap.getName())) {
+                    return spellTrapController;
+            }
+        }
+        return null;
+    }
 
     public static SpellTrapController getInstance(GameController gameController, SpellTrap spellTrap, SpellTrapPosition position) {
         if (spellTrap instanceof Spell)

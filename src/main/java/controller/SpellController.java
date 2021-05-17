@@ -2,6 +2,7 @@ package controller;
 
 import exceptions.InvalidSelection;
 import exceptions.SpellNotFoundException;
+import model.Owner;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
@@ -17,7 +18,6 @@ import java.util.Scanner;
 
 public class SpellController extends SpellTrapController {
     private static final HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
-    public static ArrayList<SpellController> allSpellControllers = new ArrayList<>();
 
     static {
         spellMakers.put("Monster Reborn", SpellController::makeMonsterReborn);
@@ -29,6 +29,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Dark Hole", SpellController::makeDarkHole);
         spellMakers.put("Supply Squad", SpellController::makeSupplySquad);
         spellMakers.put("Twin Twisters", SpellController::makeTwinTwisters);
+        spellMakers.put("Mystical space typhoon", SpellController::makeMysticalSpaceTyphoon);
     }
 
 
@@ -39,16 +40,7 @@ public class SpellController extends SpellTrapController {
         setPosition(position);
         setCanSpellTrapsBeActive(true);
         this.spell = new Spell(spell);
-        allSpellControllers.add(this);
-    }
-
-    public static SpellController getSpellControllerBySpell(Spell spell) {
-        for (SpellController spellController : allSpellControllers) {
-            if (spellController.spell.getName().equals(spell.getName())) {
-                return spellController;
-            }
-        }
-        return null;
+        allSpellTrapControllers.add(this);
     }
 
     public static SpellController getInstance(GameController gameController, Spell spell, SpellTrapPosition position) throws SpellNotFoundException {
@@ -144,8 +136,8 @@ public class SpellController extends SpellTrapController {
         };
     }
 
-    public static ArrayList<SpellController> getAllSpellControllers() {
-        return allSpellControllers;
+    public static ArrayList<SpellTrapController> getAllSpellControllers() {
+        return allSpellTrapControllers;
     }
 
     private static SpellController makePotOfGreed(GameController gameController, Spell spell, SpellTrapPosition position) {
@@ -217,6 +209,12 @@ public class SpellController extends SpellTrapController {
 
     private static SpellController makeSupplySquad(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
+
+        };
+    }
+
+    private static SpellController makeTwinTwisters(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
             @Override
             public void activate() throws InvalidSelection {
                 Print.getInstance().printMessage("Select a card from yor HAND to remove");
@@ -239,8 +237,8 @@ public class SpellController extends SpellTrapController {
                     Print.getInstance().printMessage("Select a spellTrap from rival spellTrapZone.");
                     input = scanner.nextLine();
                     select(input);
-                   removeSpell(selectedCard);
-                } else if (Integer.parseInt(input) == 2){
+                    removeSpell(selectedCard);
+                } else if (Integer.parseInt(input) == 2) {
                     Print.getInstance().printMessage("Select two spellTraps from rival spellTrapZone.");
                     input = scanner.nextLine();
                     select(input);
@@ -252,22 +250,36 @@ public class SpellController extends SpellTrapController {
                 }
             }
 
-            private void removeSpell(Card selectedCard) throws InvalidSelection{
+            private void removeSpell(Card selectedCard) throws InvalidSelection {
                 if (!(selectedCard instanceof SpellTrap)) {
                     throw new InvalidSelection();
                 } else {
                     gameController.getGame().getOtherBoard().
-                            removeSpellTrap(getSpellControllerBySpell((Spell) selectedCard));
+                            removeSpellTrap(getSpellTrapControllerBySpellTrap((SpellTrap) selectedCard));
                 }
             }
         };
     }
 
-    private static SpellController makeTwinTwisters(GameController gameController, Spell spell, SpellTrapPosition position) {
+    private static SpellController makeMysticalSpaceTyphoon(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
             @Override
             public void activate() {
+                Print.getInstance().printMessage("Select a spellTrap from field to remove");
+                setRivalSpellTrapAccessible(true);
+                setOurSpellTrapAccessible(true);
 
+                Scanner scanner = Scan.getScanner();
+                String input = scanner.nextLine();
+                select(input);
+
+                if (selectedCardAddress.getOwner() == Owner.Me) {
+                    gameController.getGame().getThisBoard().
+                            removeSpellTrap(getSpellTrapControllerBySpellTrap((SpellTrap) selectedCard));
+                } else {
+                    gameController.getGame().getOtherBoard().
+                            removeSpellTrap(getSpellTrapControllerBySpellTrap((SpellTrap) selectedCard));
+                }
             }
         };
     }
