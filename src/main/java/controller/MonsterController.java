@@ -399,7 +399,6 @@ public class MonsterController {
                     select(input);
 
                     gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
-                    gameController.getGame().setSummonOrSetThisTurn(false);
                 }
             }
         };
