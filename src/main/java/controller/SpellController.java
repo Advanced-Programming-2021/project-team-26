@@ -32,6 +32,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Twin Twisters", SpellController::makeTwinTwisters);
         spellMakers.put("Mystical space typhoon", SpellController::makeMysticalSpaceTyphoon);
         spellMakers.put("Yami", SpellController::makeYami);
+        spellMakers.put("Forest", SpellController::makeForest);
     }
 
 
@@ -303,6 +304,28 @@ public class SpellController extends SpellTrapController {
                     } else if (monsterController.getMonster().getType() == MonsterType.FAIRY) {
                         monsterController.getMonster().decreaseDefencePower(200);
                         monsterController.getMonster().decreaseDefencePower(200);
+                    }
+                }
+            }
+        };
+
+    }
+
+    private static SpellController makeForest(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
+                setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
+            }
+
+            private void setAttackAndDefenses(MonsterController[] monsterZone) {
+                for (MonsterController monsterController : monsterZone) {
+                    if (monsterController.getMonster().getType() == MonsterType.INSECT ||
+                            monsterController.getMonster().getType() == MonsterType.BEAST ||
+                            monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR) {
+                        monsterController.getMonster().increaseAttackPower(200);
+                        monsterController.getMonster().increaseDefencePower(200);
                     }
                 }
             }
