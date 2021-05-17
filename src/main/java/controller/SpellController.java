@@ -2,20 +2,22 @@ package controller;
 
 import exceptions.InvalidSelection;
 import exceptions.SpellNotFoundException;
+import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 import model.cards.spell.Spell;
+import model.cards.spell.SpellType;
 import view.Print;
 import view.Scan;
 
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class SpellController extends SpellTrapController {
     private static final HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
 
     static {
         spellMakers.put("Monster Reborn", SpellController::makeMonsterReborn);
+        spellMakers.put("Terraforming", SpellController::makeTerraforming);
     }
 
 
@@ -40,7 +42,7 @@ public class SpellController extends SpellTrapController {
     private static SpellController makeMonsterReborn(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
             @Override
-            public void activate() throws InvalidSelection{
+            public void activate() throws InvalidSelection {
                 Print.getInstance().printMessage("Select a monster from your or the rival GRAVEYARD" +
                         "1. select from my GRAVEYARD" +
                         "2. select from rival GRAVEYARD");
@@ -53,17 +55,69 @@ public class SpellController extends SpellTrapController {
                 input = scanner.nextLine();
                 super.select(input);
 
-                if(!(super.selectedCard instanceof Monster)){
+                if (!(super.selectedCard instanceof Monster)) {
                     throw new InvalidSelection();
-                }else {
-                   Monster selectedMonster = (Monster) selectedCard;
-                   if (whichGraveyard == 1){
-                       gameController.getGame().getThisBoard().getGraveyard().remove(selectedCard);
-                   } else {
-                       gameController.getGame().getOtherBoard().getGraveyard().remove(selectedCard);
-                   }
-                   gameController.getGame().getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
+                } else {
+                    Monster selectedMonster = (Monster) selectedCard;
+                    if (whichGraveyard == 1) {
+                        gameController.getGame().getThisBoard().getGraveyard().remove(selectedCard);
+                    } else if (whichGraveyard == 2){
+                        gameController.getGame().getOtherBoard().getGraveyard().remove(selectedCard);
+                    }
+                    gameController.getGame().getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
                 }
+            }
+        };
+    }
+
+
+    private static SpellController makeTerraforming(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() throws InvalidSelection{
+                List<Card> deck = gameController.getGame().getThisBoard().getDeck();
+                ArrayList<Spell> fieldSpells = new ArrayList<>();
+
+                for (Card card : deck) {
+                    if (card instanceof Spell) {
+                        Spell spell = (Spell) card;
+                        if (spell.getType().equals(SpellType.FIELD)) {
+                            fieldSpells.add(spell);
+                        }
+                    }
+                }
+
+                Print.getInstance().printMessage(showCards(fieldSpells));
+                Print.getInstance().printMessage("\n");
+                Print.getInstance().printMessage("select number of the spell you want:");
+
+                Scanner scanner = Scan.getScanner();
+                String input = scanner.nextLine();
+
+                int select = Integer.parseInt(input);
+                if (select < 0 || select > fieldSpells.size())
+                    throw new InvalidSelection();
+                else {
+                    for (Card card : deck) {
+                        if (card.getName().equals(fieldSpells.get(select - 1).getName())) {
+                            deck.remove(card);
+                            break;
+                        }
+                    }
+                    gameController.getGame().getThisBoard().addCardToHand(fieldSpells.get(select - 1));
+                }
+            }
+
+            private String showCards(ArrayList<Spell> fieldSpells) {
+                StringBuilder stringToReturn = new StringBuilder();
+
+                int count = 1;
+                for (Spell spell : fieldSpells) {
+                    stringToReturn.append(count).append(". ").append(spell.getName()).append(":").
+                            append(spell.getDescription()).append("\n");
+                    count++;
+                }
+                return stringToReturn.toString();
             }
         };
     }

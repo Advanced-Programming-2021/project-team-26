@@ -55,7 +55,6 @@ public class MonsterController {
     private boolean isOurGraveyardAccessible;
     private Card selectedCard;
     private CardAddress selectedCardAddress;
-    private boolean summonOrSetThisTurn;
 
 
     private MonsterController(GameController gameController, Monster monster, MonsterPosition position) {
@@ -73,7 +72,6 @@ public class MonsterController {
         setOurMonsterZoneAccessible(false);
         setSelectedCard(null);
         setSelectedCardAddress(null);
-        setSummonOrSetThisTurn(false);
         allMonsterControllers.add(this);
     }
 
@@ -410,14 +408,6 @@ public class MonsterController {
 
     public void setHasActivateEffectThisTurn(boolean hasActivateEffectThisTurn) {
         this.hasActivateEffectThisTurn = hasActivateEffectThisTurn;
-    }
-
-    public boolean isSummonOrSetThisTurn() {
-        return summonOrSetThisTurn;
-    }
-
-    public void setSummonOrSetThisTurn(boolean summonOrSetThisTurn) {
-        this.summonOrSetThisTurn = summonOrSetThisTurn;
     }
 
     public void setSelectedCardAddress(CardAddress selectedCardAddress) {
