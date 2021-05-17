@@ -19,6 +19,7 @@ public class Game {
     private Phase phase = Phase.END;
     private boolean finished = false;
     private boolean summonOrSetThisTurn = false;
+    private int surrenderPlayer = -1;
 
     public Game(GameController gameController, User first, User second) throws NoPlayerAvailable {
         if (first == null || second == null)
@@ -28,6 +29,14 @@ public class Game {
         users[1] = second;
         boards[0] = new Board(gameController, users[0].getActiveDeck());
         boards[1] = new Board(gameController, users[1].getActiveDeck());
+    }
+
+    public int getSurrenderPlayer() {
+        return surrenderPlayer;
+    }
+
+    public void setSurrenderPlayer(int surrenderPlayer) {
+        this.surrenderPlayer = surrenderPlayer;
     }
 
     public boolean isSummonOrSetThisTurn() {

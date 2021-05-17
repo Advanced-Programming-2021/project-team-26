@@ -13,7 +13,7 @@ public class MainMenuController {
 
     }
 
-    public void creatNewGameWithAI(Matcher matcher) {
+    public String creatNewGameWithAI(Matcher matcher) {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
 
@@ -31,9 +31,10 @@ public class MainMenuController {
 
         GameController gameController = new GameController(Database.getInstance().getCurrentUser(), round);
         new DuelMenu(gameController).execute();
+        return null;
     }
 
-    public void createNewGameWithRealPlayer(Matcher matcher) {
+    public String createNewGameWithRealPlayer(Matcher matcher) {
         String[] rawInput = matcher.group().split("\\s+");
         HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
         String secondUsername = Scan.getInstance().getValue(input, "second-player", "sp");
@@ -71,9 +72,10 @@ public class MainMenuController {
         } catch (NoPlayerAvailable ignored) {
 
         }
+        return null;
     }
 
-    public void enterMenu(Matcher matcher) {
+    public String enterMenu(Matcher matcher) {
         String newMenu = matcher.group(1);
         if (newMenu.contains("Login"))
             new LoginMenu().execute();
@@ -87,5 +89,6 @@ public class MainMenuController {
             new ProfileMenu().execute();
         else if (newMenu.contains("Score"))
             new ScoreBoardMenu().execute();
+        return null;
     }
 }

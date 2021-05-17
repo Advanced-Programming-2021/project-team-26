@@ -52,7 +52,7 @@ public class GameController {
         this.game = game;
     }
 
-    public void select(Matcher matcher) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
+    public String select(Matcher matcher) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
         HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group(1).split("\\s+"));
 
         String addressNumber;
@@ -127,8 +127,10 @@ public class GameController {
                 throw new NoCardSelectedException();
             }
             deselect();
+            return "card deselected";
         } else
             throw new InvalidInput();
+        return "card selected";
     }
 
     public void deselect() {
@@ -142,7 +144,7 @@ public class GameController {
         game.nextPhase();
     }
 
-    public void summon(Matcher matcher) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+    public String summon(Matcher matcher) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
         if (temporaryTurnChange)
@@ -172,7 +174,7 @@ public class GameController {
 
             Integer monsterAddress = Scan.getInstance().getInteger();
             if (monsterAddress == null)
-                return;
+                return null;
             if (game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
                 throw new InvalidSelection();
 
@@ -184,7 +186,7 @@ public class GameController {
             Integer monsterAddress1 = Scan.getInstance().getInteger();
             Integer monsterAddress2 = Scan.getInstance().getInteger();
             if (monsterAddress1 == null || monsterAddress2 == null)
-                return;
+                return null;
             if (game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
                     game.getThisBoard().getMonstersZone()[monsterAddress2 - 1] == null)
                 throw new InvalidSelection();
@@ -196,9 +198,10 @@ public class GameController {
         game.setSummonOrSetThisTurn(true);
         monster.summon();
         deselect();
+        return "summoned successfully";
     }
 
-    public void set(Matcher matcher) throws NoCardSelectedException, CannotSetException {
+    public String set(Matcher matcher) throws NoCardSelectedException, CannotSetException {
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
@@ -219,6 +222,7 @@ public class GameController {
             setTrap();
         }
         deselect();
+        return "set successfully";
     }
 
     private void setTrap() {
@@ -277,7 +281,7 @@ public class GameController {
         monster.set();
     }
 
-    public void setPosition(Matcher matcher) {
+    public String setPosition(Matcher matcher) {
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
@@ -310,9 +314,10 @@ public class GameController {
 
         selectedMonster.setPosition(wantedPosition);
         deselect();
+        return "monster card position changed successfully";
     }
 
-    public void flipSummon(Matcher matcher) {
+    public String flipSummon(Matcher matcher) {
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
@@ -331,9 +336,10 @@ public class GameController {
 
         selectedMonster.flip();
         deselect();
+        return "flip summoned successfully";
     }
 
-    public void attackDirect(Matcher matcher) {
+    public String attackDirect(Matcher matcher) {
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
@@ -353,11 +359,13 @@ public class GameController {
         if (game.getOtherBoard().canDirectAttack())
             throw new CannotAttackDirectlyException();
 
-        game.decreaseOtherLifePoint(selectedMonster.getCard().getAttackPower());
+        int damage = selectedMonster.getCard().getAttackPower();
+        game.decreaseOtherLifePoint(damage);
         deselect();
+        return "you opponent receives " + damage + " battle damage";
     }
 
-    public void attack(Matcher matcher) {
+    public String attack(Matcher matcher) {
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard != null)
@@ -383,13 +391,14 @@ public class GameController {
 
         String message = toBeAttacked.attack(selectedMonster);
         deselect();
+        return message;
     }
 
 
-    public void activateEffect(Matcher matcher) {
+    public String activateEffect(Matcher matcher) {
         if (temporaryTurnChange) {
             activateEffectOnOpponentTurn();
-            return;
+            return null;
         }
         if (selectedCard == null)
             throw new NoCardSelectedException();
@@ -419,6 +428,7 @@ public class GameController {
             controller.activate();
         }
         deselect();
+        return "spell activated";
     }
 
     private void activateEffectOnOpponentTurn() {
@@ -443,7 +453,7 @@ public class GameController {
         deselect();
     }
 
-    public void showGraveyard(Matcher matcher) {
+    public String showGraveyard(Matcher matcher) {
         List<Card> graveyard = game.getThisBoard().getGraveyard();
         if (graveyard.isEmpty()) {
             Print.getInstance().printMessage("graveyard empty");
@@ -458,9 +468,10 @@ public class GameController {
             if (Scan.getInstance().getString().equals("back"))
                 break;
         }
+        return null;
     }
 
-    public void showCard(Matcher matcher) {
+    public String showCard(Matcher matcher) {
         String[] rawInput = matcher.group().split("\\s+");
         Map<String, String> input = Scan.getInstance().parseInput(rawInput);
         if (input.containsKey("selected") || input.containsKey("s")) {
@@ -480,10 +491,13 @@ public class GameController {
                 throw new CardNotFoundException();
             Print.getInstance().printCard(card);
         }
+        return null;
     }
 
-    public void surrender(Matcher matcher) {
-
+    public String surrender(Matcher matcher) {
+        game.setSurrenderPlayer(game.getTurn());
+        endGame();
+        return null;
     }
 
     public boolean isFinished() {
