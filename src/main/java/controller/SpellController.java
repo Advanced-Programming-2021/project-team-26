@@ -34,6 +34,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Yami", SpellController::makeYami);
         spellMakers.put("Forest", SpellController::makeForest);
         spellMakers.put("Closed Forest", SpellController::makeClosedForest);
+        spellMakers.put("UMIIRUKA", SpellController::makeUMIIRUKA);
     }
 
 
@@ -344,7 +345,7 @@ public class SpellController extends SpellTrapController {
             private void setAttackAndDefenses(MonsterController[] monsterZone) {
                 int monstersINGraveyard = gameController.getGame().getThisBoard().geNumberOfMonstersINGraveyard();
                 for (MonsterController monsterController : monsterZone) {
-                    if (monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR||
+                    if (monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR ||
                             monsterController.getMonster().getType() == MonsterType.BEAST) {
                         monsterController.getMonster().increaseAttackPower(100 * monstersINGraveyard);
                         monsterController.getMonster().increaseDefencePower(200 * monstersINGraveyard);
@@ -353,6 +354,25 @@ public class SpellController extends SpellTrapController {
             }
         };
 
+    }
+
+    private static SpellController makeUMIIRUKA(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate() {
+                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
+                setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
+            }
+
+            private void setAttackAndDefenses(MonsterController[] monsterZone) {
+                for (MonsterController monsterController : monsterZone) {
+                    if (monsterController.getMonster().getType() == MonsterType.AQUA) {
+                        monsterController.getMonster().increaseAttackPower(500);
+                        monsterController.getMonster().decreaseDefencePower(400);
+                    }
+                }
+            }
+        };
     }
 
     public void field() {
