@@ -19,6 +19,8 @@ import java.util.regex.Matcher;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
+    private final int[] winningRounds = new int[]{0, 0};
+    private final User[] players = new User[2];
     private Game game;
     private CardAddress selectedCardAddress = null;
     private Card selectedCard = null;
@@ -26,8 +28,6 @@ public class GameController {
     private SpellTrapController selectedSpellTrap = null;
     private int roundNumber;
     private boolean temporaryTurnChange = false;
-    private final int[] winningRounds = new int[]{0, 0};
-    private final User[] players = new User[2];
     private int currentRound = 0;
 
     public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
@@ -512,11 +512,11 @@ public class GameController {
 
     public void endGame() {
         int winner = game.getWinner();
-        int winnerScore = game.getLifePoint(winner);
-        int score1 = 0;
-        int score2 = 0;
+        int[] scores = new int[2];
+        scores[winner] = 1000;
+        scores[1 - winner] = 0;
         Print.getInstance().printMessage(game.getUser(winner).getUsername() + " won the game" +
-                " and the score is: " + score1 + "-" + score2);
+                " and the score is: " + scores[0] + "-" + scores[1]);
         winningRounds[winner]++;
         maxLifePoint[winner] = Math.max(maxLifePoint[winner], game.getLifePoint(winner));
         if (winningRounds[0] > roundNumber / 2 || winningRounds[1] > roundNumber / 2) {
