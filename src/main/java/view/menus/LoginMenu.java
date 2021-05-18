@@ -20,10 +20,11 @@ public class LoginMenu extends Menu {
         });
         MAP.put(Pattern.compile("^user create --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::addNewUser);
         MAP.put(Pattern.compile("^user login --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)$"), userController::loginUser);
+       MAP.put(Pattern.compile("^menu show-current$"), i -> {
+           return "login menu";
+       });
     }
-    public LoginMenu() {
-
-    }
+    public LoginMenu() {}
 
     public void execute() {
         run(MAP);

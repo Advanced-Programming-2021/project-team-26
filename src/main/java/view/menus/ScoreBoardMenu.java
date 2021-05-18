@@ -1,5 +1,6 @@
 package view.menus;
 
+import controller.ScoreBoardController;
 import controller.UserController;
 import view.ConsumerSp;
 import view.Menu;
@@ -13,9 +14,14 @@ import java.util.regex.Pattern;
 
 public class ScoreBoardMenu extends Menu {
     private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
+    private static ScoreBoardController scoreBoardController ;
     static {
-        // TODO: 5/10/21 MAP.put(Pattern.compile("^scoreboard show$"), );
+        scoreBoardController = new ScoreBoardController();
+        MAP.put(Pattern.compile("^scoreboard show$"), scoreBoardController::showScoreBoard);
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+            return "scoreboard menu";
+        });
     }
     public ScoreBoardMenu() {
         super();

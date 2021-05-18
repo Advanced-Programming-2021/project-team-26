@@ -23,7 +23,9 @@ public class DeckMenu extends Menu {
         MAP.put(Pattern.compile("^deck show --deck-name ([^ ]+) (--side)?$"),deckController::showDeck );
         MAP.put(Pattern.compile("^deck show --cards$"),deckController::showCards);
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
-
+         MAP.put(Pattern.compile("^menu show-current$"), i -> {
+             return "deck menu";
+         });
      }
 
     public DeckMenu() {}

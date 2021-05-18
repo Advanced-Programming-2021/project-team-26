@@ -19,11 +19,12 @@ public class ProfileMenu extends Menu {
         MAP.put(Pattern.compile("^profile change --nickname (.+)"), USER_CONTROLLER::changeNickname);
         MAP.put(Pattern.compile("^profile change --password --current ([^ ]+) --new (.+)"),USER_CONTROLLER::changePassword);
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+            return "profile menu";
+        });
 
     }
-    public ProfileMenu() {
-
-    }
+    public ProfileMenu() {}
     public void execute() {
         run(MAP);
     }

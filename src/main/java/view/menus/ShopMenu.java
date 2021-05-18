@@ -21,11 +21,12 @@ public class ShopMenu extends Menu {
         MAP.put(Pattern.compile("^shop buy (.+)$"), shopController::buyCard);
         MAP.put(Pattern.compile("^shop show --all$"), shopController::showAll);
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+            return "shop menu";
+        });
     }
 
-    public ShopMenu() {
-
-    }
+    public ShopMenu() {}
 
     public void execute() {
         run(MAP);
