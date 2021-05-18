@@ -14,14 +14,14 @@ public class User {
         allUsers = Database.getInstance().getAllUsers();
     }
 
-    private String username;
-    private String password;
-    private String nickname;
-    private int score;
-    private int money;
-    private HashMap<String, Deck> allDecks;
-    private HashMap<String, Card> allCards;
-    private Deck activeDeckName;
+    protected String username;
+    protected int score;
+    protected HashMap<String, Deck> allDecks;
+    protected HashMap<String, Card> allCards;
+    protected Deck activeDeckName;
+    protected int money;
+    protected String password;
+    protected String nickname;
 
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
@@ -33,6 +33,14 @@ public class User {
         setActiveDeck(null);
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
+    }
+
+    protected User() {
+        allDecks = new HashMap<>();
+        allCards = new HashMap<>();
+        this.username = "";
+        this.password = "";
+        this.nickname = "";
     }
 
     public static HashMap<String, User> getAllUsers() {

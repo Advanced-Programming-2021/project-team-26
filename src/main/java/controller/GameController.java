@@ -22,15 +22,15 @@ public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
+    private final Stack<SpellTrapController> chain = new Stack<>();
     private Game game;
     private CardAddress selectedCardAddress = null;
     private Card selectedCard = null;
     private MonsterController selectedMonster = null;
     private SpellTrapController selectedSpellTrap = null;
-    private int roundNumber;
+    private final int roundNumber;
     private boolean temporaryTurnChange = false;
     private int currentRound = 0;
-    private final Stack<SpellTrapController> chain = new Stack<>();
 
     public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
         players[0] = firstPlayer;
@@ -40,8 +40,12 @@ public class GameController {
         game.nextPhase();
     }
 
-    public GameController(User player, int round) {
-
+    public GameController(User player, int round) throws NoPlayerAvailable {
+        players[0] = player;
+        players[1] = new Ai(this);
+        this.game = new Game(this, players[0], players[1]);
+        this.roundNumber = round;
+        game.nextPhase();
     }
 
     public boolean isTemporaryTurnChange() {

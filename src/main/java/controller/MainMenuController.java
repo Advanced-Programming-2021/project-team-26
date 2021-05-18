@@ -29,7 +29,12 @@ public class MainMenuController {
         if (round != 1 && round != 3)
             throw new NotSupportedRoundNumber();
 
-        GameController gameController = new GameController(Database.getInstance().getCurrentUser(), round);
+        GameController gameController = null;
+        try {
+            gameController = new GameController(Database.getInstance().getCurrentUser(), round);
+        } catch (NoPlayerAvailable ignored) {
+
+        }
         new DuelMenu(gameController).execute();
         return null;
     }
