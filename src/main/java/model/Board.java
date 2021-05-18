@@ -122,7 +122,8 @@ public class Board {
             throw new FullMonsterZone();
         }
         hand.remove(monster);
-        monstersZone[lastEmpty] = MonsterController.getInstance(gameController, monster, position);
+        CardAddress monsterAddress = new CardAddress(Place.MonsterZone, Owner.Me, lastEmpty);
+        monstersZone[lastEmpty] = MonsterController.getInstance(gameController, monster, position, monsterAddress);
         return monstersZone[lastEmpty];
     }
 
@@ -170,18 +171,19 @@ public class Board {
         }
     }
 
-    public int geNumberOfMonstersINGraveyard(){
+    public int geNumberOfMonstersINGraveyard() {
         int count = 0;
-        for (Card card : graveyard){
+        for (Card card : graveyard) {
             if (card instanceof Monster)
                 count++;
         }
 
         return count;
     }
-    public void removeAllMonsters(){
+
+    public void removeAllMonsters() {
         for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
-                removeMonster(i);
+            removeMonster(i);
         }
     }
 
@@ -203,9 +205,10 @@ public class Board {
 
     public void removeAllSpellTraps() {
         for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
-                removeSpellTrap(i);
+            removeSpellTrap(i);
         }
     }
+
     public void standByPhase() {
         for (SpellTrapController spellTrap : this.spellTrapZone)
             spellTrap.standBy();
