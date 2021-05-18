@@ -15,6 +15,7 @@ import view.Scan;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.regex.Matcher;
 
 public class GameController {
@@ -29,6 +30,7 @@ public class GameController {
     private int roundNumber;
     private boolean temporaryTurnChange = false;
     private int currentRound = 0;
+    private final Stack<SpellTrapController> chain = new Stack<>();
 
     public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
         players[0] = firstPlayer;
@@ -431,7 +433,15 @@ public class GameController {
             game.getThisBoard().putFiled(spell);
         } else {
             SpellController controller = (SpellController) game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.UP);
-            controller.activate();
+            chain.push(controller);
+            if (conditionsForChangingTurn()) {
+                changeTurn();
+            } else {
+                while (!chain.isEmpty()) {
+                    SpellTrapController current = chain.pop();
+                    current.activate();
+                }
+            }
         }
         deselect();
         return "spell activated";
@@ -447,13 +457,21 @@ public class GameController {
 
         SpellTrap spellTrap = (SpellTrap) selectedCard;
         if (selectedCardAddress.getPlace() == Place.SpellTrapZone) {
-            selectedSpellTrap.activate();
+            chain.push(selectedSpellTrap);
+            while (!chain.isEmpty()) {
+                SpellTrapController current = chain.pop();
+                current.activate();
+            }
         } else if (selectedCardAddress.getPlace() == Place.Hand) {
             if (spellTrap instanceof Spell && ((Spell) spellTrap).getType() != SpellType.QUICK_PLAY) {
                 throw new ActionNotAllowed();
             }
             SpellTrapController controller = game.getThisBoard().putSpellTrap(spellTrap, SpellTrapPosition.UP);
-            controller.activate();
+            chain.push(controller);
+            while (!chain.isEmpty()) {
+                SpellTrapController current = chain.pop();
+                current.activate();
+            }
             controller.remove();
         }
         deselect();
