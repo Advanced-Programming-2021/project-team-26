@@ -204,21 +204,16 @@ public class User {
         stringToReturn.append("Other decks:").append("\n");
 
         for (String deckName : allDecks.keySet()) {
-            if (!deckName.equals(activeDeckName))
-                stringToReturn.append(deckToString(deckName));
+            stringToReturn.append(deckToString(deckName));
         }
 
         return stringToReturn.toString();
     }
 
     private String deckToString(String name) {
-        StringBuilder stringToReturn = new StringBuilder();
-
-        stringToReturn.append(name).append(": ").append("main deck ").
-                append(Deck.getDeckByDeckName(name).getMainDeck().size()).append(", ").append("side deck ").
-                append(Deck.getDeckByDeckName(name).getSideDeck().size()).append(", ").
-                append(Deck.getDeckByDeckName(name).isDeckValid() ? "valid" : "invalid");
-
-        return stringToReturn.toString();
+        return name + ": " + "main deck " +
+                Deck.getDeckByDeckName(name).getMainDeck().size() + ", " + "side deck " +
+                Deck.getDeckByDeckName(name).getSideDeck().size() + ", " +
+                (Deck.getDeckByDeckName(name).isDeckValid() ? "valid" : "invalid");
     }
 }

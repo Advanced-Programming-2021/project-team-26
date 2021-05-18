@@ -40,10 +40,7 @@ public class Scan {
     public String getValue(HashMap<String, String> map, String key, String keyAbbreviation) {
         if (map.containsKey(key))
             return map.get(key);
-        else if (map.containsKey(keyAbbreviation))
-            return map.get(keyAbbreviation);
-        else
-            return null;
+        else return map.getOrDefault(keyAbbreviation, null);
     }
 
     public Integer getInteger() {
