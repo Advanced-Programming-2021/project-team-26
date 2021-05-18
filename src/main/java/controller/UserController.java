@@ -3,6 +3,7 @@ package controller;
 import exceptions.*;
 import model.User;
 import view.Scan;
+import view.menus.MainMenu;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -160,6 +161,7 @@ public class UserController {
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
         Database.getInstance().setCurrentUser(user);
+        new MainMenu().execute();
         return "user logged in successfully!";
     }
 

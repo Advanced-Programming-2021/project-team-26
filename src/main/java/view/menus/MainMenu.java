@@ -28,7 +28,9 @@ public class MainMenu extends Menu {
         MAP.put(Pattern.compile("^duel --new --ai --rounds(1|3)$"), MAIN_MENU_CONTROLLER :: creatNewGameWithAI );
     }
 
-    public MainMenu() {}
+    public MainMenu(Menu menu) {
+
+    }
     public void execute() {
         run(MAP);
     }

@@ -29,7 +29,7 @@ public class User {
         setUsername(username);
         setPassword(password);
         setNickname(nickname);
-        setMoney(0);
+        setMoney(100000000);
         setActiveDeck(null);
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);

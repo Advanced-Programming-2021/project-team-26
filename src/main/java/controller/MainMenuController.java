@@ -88,7 +88,7 @@ public class MainMenuController {
             new DeckMenu().execute();
         else if (newMenu.contains("Export"))
             new InterchangeMenu().execute();
-        else if (newMenu.contains("shop"))
+        else if (newMenu.contains("Shop"))
             new ShopMenu().execute();
         else if (newMenu.contains("Profile"))
             new ProfileMenu().execute();

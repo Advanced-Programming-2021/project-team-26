@@ -18,6 +18,7 @@ public class ShopController {
     static {
         allCards = Card.getAllCards();
     }
+
     public ShopController() {
         setUserInShop(Database.getInstance().getCurrentUser());
     }
