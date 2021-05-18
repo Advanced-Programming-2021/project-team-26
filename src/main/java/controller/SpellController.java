@@ -35,7 +35,9 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Forest", SpellController::makeForest);
         spellMakers.put("Closed Forest", SpellController::makeClosedForest);
         spellMakers.put("UMIIRUKA", SpellController::makeUMIIRUKA);
-        spellMakers.put("UMIIRUKA", SpellController::makeSwordOfDarkDestruction);
+        spellMakers.put("Sword of Dark Destruction", SpellController::makeSwordOfDarkDestruction);
+        spellMakers.put("Black Pendant", SpellController::makeBlackPendant);
+        spellMakers.put("United We Stand", SpellController::makeUnitedWeStand);
     }
 
 
@@ -385,6 +387,28 @@ public class SpellController extends SpellTrapController {
                         equippedMonster.getMonster().getType() == MonsterType.SPELL_CASTER) {
                     equippedMonster.getMonster().increaseAttackPower(400);
                     equippedMonster.getMonster().decreaseDefencePower(200);
+                }
+            }
+        };
+    }
+
+    private static SpellController makeBlackPendant(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate(MonsterController equippedMonster) {
+                equippedMonster.getMonster().increaseAttackPower(500);
+            }
+        };
+    }
+
+    private static SpellController makeUnitedWeStand(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate(MonsterController equippedMonster) {
+                if (equippedMonster.getMonsterAddress().getOwner() == Owner.Me &&
+                        equippedMonster.getPosition() == MonsterPosition.ATTACK) {
+                    equippedMonster.getMonster().increaseAttackPower(800);
+                    equippedMonster.getMonster().increaseDefencePower(800);
                 }
             }
         };
