@@ -38,6 +38,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Sword of Dark Destruction", SpellController::makeSwordOfDarkDestruction);
         spellMakers.put("Black Pendant", SpellController::makeBlackPendant);
         spellMakers.put("United We Stand", SpellController::makeUnitedWeStand);
+        spellMakers.put("Magnum Shield", SpellController::makeMagnumShield);
     }
 
 
@@ -409,6 +410,22 @@ public class SpellController extends SpellTrapController {
                         equippedMonster.getPosition() == MonsterPosition.ATTACK) {
                     equippedMonster.getMonster().increaseAttackPower(800);
                     equippedMonster.getMonster().increaseDefencePower(800);
+                }
+            }
+        };
+    }
+
+    private static SpellController makeMagnumShield(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate(MonsterController equippedMonster) {
+                if (equippedMonster.getPosition() == MonsterPosition.ATTACK) {
+                    int defencePower = equippedMonster.getMonster().getDefencePower();
+                    equippedMonster.getMonster().increaseAttackPower(defencePower);
+                }else if (equippedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN ||
+                        equippedMonster.getPosition() == MonsterPosition.DEFENCE_UP  ) {
+                    int attackPower = equippedMonster.getMonster().getAttackPower();
+                    equippedMonster.getMonster().increaseDefencePower(attackPower);
                 }
             }
         };
