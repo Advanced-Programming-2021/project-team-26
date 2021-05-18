@@ -65,8 +65,21 @@ public class Game {
         } else if (this.phase == Phase.STANDBY) {
             standByPhase();
             nextPhase();
-        } else if (this.phase == Phase.MAIN1 || this.phase == Phase.MAIN2) {
-            Print.getInstance().printGame(this);
+        } else if (this.phase == Phase.MAIN1 || this.phase == Phase.MAIN2 || this.phase == Phase.BATTLE) {
+            if (getThisUser() instanceof Ai) {
+                switch (this.phase) {
+                    case MAIN1:
+                        ((Ai) getThisUser()).mainPhase1();
+                        break;
+                    case MAIN2:
+                        ((Ai) getThisUser()).mainPhase2();
+                        break;
+                    case BATTLE:
+                        ((Ai) getThisUser()).battlePhase();
+                        break;
+                }
+            } else
+                Print.getInstance().printGame(this);
         } else if (this.phase == Phase.END) {
             nextPhase();
         }

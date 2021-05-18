@@ -15,18 +15,20 @@ import view.Scan;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.regex.Matcher;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
+    private final Stack<SpellTrapController> chain = new Stack<>();
     private Game game;
     private CardAddress selectedCardAddress = null;
     private Card selectedCard = null;
     private MonsterController selectedMonster = null;
     private SpellTrapController selectedSpellTrap = null;
-    private int roundNumber;
+    private final int roundNumber;
     private boolean temporaryTurnChange = false;
     private int currentRound = 0;
 
@@ -38,8 +40,12 @@ public class GameController {
         game.nextPhase();
     }
 
-    public GameController(User player, int round) {
-
+    public GameController(User player, int round) throws NoPlayerAvailable {
+        players[0] = player;
+        players[1] = new Ai(this);
+        this.game = new Game(this, players[0], players[1]);
+        this.roundNumber = round;
+        game.nextPhase();
     }
 
     public boolean isTemporaryTurnChange() {
@@ -431,7 +437,15 @@ public class GameController {
             game.getThisBoard().putFiled(spell);
         } else {
             SpellController controller = (SpellController) game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.UP);
-            controller.activate();
+            chain.push(controller);
+            if (conditionsForChangingTurn()) {
+                changeTurn();
+            } else {
+                while (!chain.isEmpty()) {
+                    SpellTrapController current = chain.pop();
+                    current.activate();
+                }
+            }
         }
         deselect();
         return "spell activated";
@@ -447,13 +461,21 @@ public class GameController {
 
         SpellTrap spellTrap = (SpellTrap) selectedCard;
         if (selectedCardAddress.getPlace() == Place.SpellTrapZone) {
-            selectedSpellTrap.activate();
+            chain.push(selectedSpellTrap);
+            while (!chain.isEmpty()) {
+                SpellTrapController current = chain.pop();
+                current.activate();
+            }
         } else if (selectedCardAddress.getPlace() == Place.Hand) {
             if (spellTrap instanceof Spell && ((Spell) spellTrap).getType() != SpellType.QUICK_PLAY) {
                 throw new ActionNotAllowed();
             }
             SpellTrapController controller = game.getThisBoard().putSpellTrap(spellTrap, SpellTrapPosition.UP);
-            controller.activate();
+            chain.push(controller);
+            while (!chain.isEmpty()) {
+                SpellTrapController current = chain.pop();
+                current.activate();
+            }
             controller.remove();
         }
         deselect();
