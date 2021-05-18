@@ -35,6 +35,7 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Forest", SpellController::makeForest);
         spellMakers.put("Closed Forest", SpellController::makeClosedForest);
         spellMakers.put("UMIIRUKA", SpellController::makeUMIIRUKA);
+        spellMakers.put("UMIIRUKA", SpellController::makeSwordOfDarkDestruction);
     }
 
 
@@ -375,6 +376,20 @@ public class SpellController extends SpellTrapController {
         };
     }
 
+
+    private static SpellController makeSwordOfDarkDestruction(GameController gameController, Spell spell, SpellTrapPosition position) {
+        return new SpellController(gameController, spell, position) {
+            @Override
+            public void activate(MonsterController equippedMonster) {
+                if (equippedMonster.getMonster().getType() == MonsterType.FIEND ||
+                        equippedMonster.getMonster().getType() == MonsterType.SPELL_CASTER) {
+                    equippedMonster.getMonster().increaseAttackPower(400);
+                    equippedMonster.getMonster().decreaseDefencePower(200);
+                }
+            }
+        };
+    }
+
     public void field() {
 
     }
@@ -388,6 +403,10 @@ public class SpellController extends SpellTrapController {
     }
 
     public void endActivation() {
+
+    }
+
+    public void activate(MonsterController equippedMonster) {
 
     }
 
