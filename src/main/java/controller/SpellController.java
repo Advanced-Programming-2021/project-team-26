@@ -61,6 +61,10 @@ public class SpellController extends SpellTrapController {
         throw new SpellNotFoundException();
     }
 
+    public static ArrayList<SpellTrapController> getAllSpellControllers() {
+        return allSpellTrapControllers;
+    }
+
     private static SpellController makeMonsterReborn(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
             @Override
@@ -143,10 +147,6 @@ public class SpellController extends SpellTrapController {
                 return stringToReturn.toString();
             }
         };
-    }
-
-    public static ArrayList<SpellTrapController> getAllSpellControllers() {
-        return allSpellTrapControllers;
     }
 
     private static SpellController makePotOfGreed(GameController gameController, Spell spell, SpellTrapPosition position) {

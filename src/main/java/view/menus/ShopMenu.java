@@ -18,6 +18,7 @@ public class ShopMenu extends Menu {
     private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
 
     static {
+        shopController = new ShopController();
         MAP.put(Pattern.compile("^shop buy (.+)$"), shopController::buyCard);
         MAP.put(Pattern.compile("^shop show --all$"), shopController::showAll);
         MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);

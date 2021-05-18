@@ -36,10 +36,9 @@ abstract public class Menu  {
                         if( msg != null){
                             System.out.println(msg);
                         }
+                        break;
                     }catch (Exception e){
                         System.out.println(e.getMessage());
-                    }finally {
-                        break;
                     }
                 }
             }
