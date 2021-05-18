@@ -28,7 +28,6 @@ public class DuelMenu extends Menu {
         MAP.put(Pattern.compile("^menu show-current$"), i -> {
             return "game menu";
         });
-        //MAP.put(Pattern.compile("^back$"), );
     }
 
     public DuelMenu(GameController gameController) {
