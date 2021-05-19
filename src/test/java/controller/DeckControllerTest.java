@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,7 +115,10 @@ public class DeckControllerTest {
         Matcher matcher2 = Pattern.compile(invalidCardToMainRegex).matcher(invalidCardToMain);
         matcher2.find();
 
-        User.getUserByUsername("user2").getAllCards().put("Suijin", Card.getCard("Suijin"));
+        ArrayList<Integer> numberOfCards = new ArrayList<>();
+        numberOfCards.add(1);
+
+        User.getUserByUsername("user2").getAllCards().put("Suijin", numberOfCards);
 
         try {
             DeckController.getInstance().addCard(matcher);

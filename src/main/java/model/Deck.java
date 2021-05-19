@@ -51,6 +51,16 @@ public class Deck {
         return null;
     }
 
+    public int getNumberOfCardINDeck(String cardName){
+        int count = 0;
+
+        for (Card card:allCards){
+            if (card.getName().equals(cardName))
+                count++;
+        }
+
+        return count;
+    }
     public boolean doesCardExistInMainDeck(String cardName) {
         for (Card card : mainDeck) {
             if (card.getName().equals(cardName))

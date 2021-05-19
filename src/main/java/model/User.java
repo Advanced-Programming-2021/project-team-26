@@ -6,6 +6,7 @@ import model.cards.Card;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class User {
     private static final HashMap<String, User> allUsers;
@@ -17,7 +18,7 @@ public class User {
     protected String username;
     protected int score;
     protected HashMap<String, Deck> allDecks;
-    protected HashMap<String, Card> allCards;
+    protected HashMap<String, List<Integer>> allCards;
     protected Deck activeDeckName;
     protected int money;
     protected String password;
@@ -29,7 +30,7 @@ public class User {
         setUsername(username);
         setPassword(password);
         setNickname(nickname);
-        setMoney(100000000);
+        setMoney(10000000);
         setActiveDeck(null);
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
@@ -99,11 +100,11 @@ public class User {
         this.allDecks = allDecks;
     }
 
-    public HashMap<String, Card> getAllCards() {
+    public HashMap<String, List<Integer>>  getAllCards() {
         return allCards;
     }
 
-    public void setAllCards(HashMap<String, Card> allCards) {
+    public void setAllCards(HashMap<String, List<Integer>>  allCards) {
         this.allCards = allCards;
     }
 
@@ -168,7 +169,13 @@ public class User {
     }
 
     public void addCardToUserCards(Card card) {
-        this.allCards.put(card.getName(), card);
+        if (allCards.containsKey(card.getName())){
+            allCards.get(card.getName()).add(1);
+        } else {
+            List<Integer> numberOfCards = new ArrayList<>();
+            numberOfCards.add(1);
+            this.allCards.put(card.getName(), numberOfCards);
+        }
     }
 
     public void addDeckToUserDecks(Deck deck) {
@@ -181,12 +188,12 @@ public class User {
 
     public String showAllCards() {
         StringBuilder stringToReturn = new StringBuilder();
-        HashMap<String, Card> allCards = getAllCards();
+        HashMap<String, List<Integer>>  allCards = getAllCards();
         ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
         Collections.sort(sortedCardNames);
 
         for (String name : sortedCardNames) {
-            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
+            stringToReturn.append(name).append(":").append(Card.getCard(name).getDescription()).append("\n");
         }
 
         return stringToReturn.toString();

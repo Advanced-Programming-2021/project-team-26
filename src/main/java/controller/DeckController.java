@@ -7,6 +7,7 @@ import model.cards.Card;
 import view.Scan;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
@@ -28,8 +29,7 @@ public class DeckController {
             new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
             Database.getInstance().getCurrentUser().addDeckToUserDecks(Deck.getDeckByDeckName(deckName));
             return "deck created successfully!";
-        }
-        else throw new RepeatedDeckNameException(deckName);
+        } else throw new RepeatedDeckNameException(deckName);
     }
 
     public String removeDeck(Matcher matcher) throws DeckNameDoesntExistException {
@@ -46,8 +46,7 @@ public class DeckController {
         if (Deck.checkDeckNameExistence(deckName)) {
             Database.getInstance().getCurrentUser().setActiveDeck(Deck.getDeckByDeckName(deckName));
             return "deck activated successfully!";
-        }
-        else throw new DeckNameDoesntExistException(deckName);
+        } else throw new DeckNameDoesntExistException(deckName);
     }
 
     public String addCard(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException, CardNotFoundException,
@@ -86,6 +85,13 @@ public class DeckController {
 
         if (!Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).IsNumberOfTheCardInDeckValid(cardName))
             throw new InvalidNumberOfACardException(cardName, deckName);
+
+        HashMap<String, List<Integer>> userCards = Database.getInstance().getCurrentUser().getAllCards();
+        int numberOfTheCardInUserCards = userCards.get(cardName).size();
+        int numberOfTheCardInDeckCards = Deck.getDeckByDeckName(deckName).getNumberOfCardINDeck(cardName);
+
+        if (numberOfTheCardInDeckCards >= numberOfTheCardInUserCards)
+            throw new CardNotFoundException();
 
         if (input.containsKey("side"))
             Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).addCardToSideDeck(Card.getCard(cardName));
