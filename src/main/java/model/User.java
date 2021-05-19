@@ -30,7 +30,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
-        this.money = 1000000;
+        this.money = 10000000;
         this.activeDeckName = null;
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
@@ -96,9 +96,17 @@ public class User {
         return allDecks;
     }
 
+    public void setAllDecks(HashMap<String, Deck> allDecks) {
+        this.allDecks = allDecks;
+    }
 
     public HashMap<String, Integer>  getAllCards() {
         return allCards;
+    }
+
+    public void setAllCards(HashMap<String, Integer>  allCards) {
+        this.allCards = allCards;
+        Database.getInstance().writeUser(this);
     }
 
     public Deck getActiveDeck() {
@@ -107,6 +115,7 @@ public class User {
 
     public void setActiveDeck(Deck activeDeckName) {
         this.activeDeckName = activeDeckName;
+        Database.getInstance().writeUser(this);
     }
 
     public String getUsername() {
@@ -115,6 +124,7 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+        Database.getInstance().writeUser(this);
     }
 
     public String getPassword() {
@@ -149,7 +159,7 @@ public class User {
     }
 
     public void increaseMoney(int amount) {
-        this.money += amount;
+        setMoney(this.money + amount);
     }
 
     public int getMoney() {
@@ -168,10 +178,12 @@ public class User {
         } else {
             this.allCards.put(card.getName(), 1);
         }
+        Database.getInstance().writeUser(this);
     }
 
     public void addDeckToUserDecks(Deck deck) {
         this.allDecks.put(deck.getName(), deck);
+        Database.getInstance().writeUser(this);
     }
 
     public void decreaseMoney(int amount) {
