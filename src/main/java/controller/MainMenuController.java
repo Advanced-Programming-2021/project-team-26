@@ -14,8 +14,7 @@ public class MainMenuController {
     }
 
     public String creatNewGameWithAI(Matcher matcher) {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String roundString = Scan.getInstance().getValue(input, "round", "r");
         if (roundString == null)
@@ -40,8 +39,7 @@ public class MainMenuController {
     }
 
     public String createNewGameWithRealPlayer(Matcher matcher) {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
         String secondUsername = Scan.getInstance().getValue(input, "second-player", "sp");
         if (secondUsername == null)
             throw new InvalidInput();

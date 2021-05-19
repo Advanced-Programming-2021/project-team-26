@@ -33,7 +33,7 @@ public abstract class SpellTrapController {
     public static SpellTrapController getSpellTrapControllerBySpellTrap(SpellTrap spellTrap) {
         for (SpellTrapController spellTrapController : allSpellTrapControllers) {
             if (spellTrapController.getCard().getName().equals(spellTrap.getName())) {
-                    return spellTrapController;
+                return spellTrapController;
             }
         }
         return null;
@@ -120,7 +120,7 @@ public abstract class SpellTrapController {
     }
 
     public void select(String selectCommand) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(selectCommand.split("\\s+"));
+        HashMap<String, String> input = Scan.getInstance().parseInput(selectCommand);
         Game game = gameController.getGame();
         String addressNumber;
 

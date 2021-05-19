@@ -21,8 +21,7 @@ public class UserController {
     }
 
     public String addNewUser(Matcher matcher) throws InvalidInput, DuplicateUsername, DuplicateNickname {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String username = null;
         if (input.containsKey("username"))
@@ -58,8 +57,7 @@ public class UserController {
     }
 
     public String removeUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String username = null;
         if (input.containsKey("username"))
@@ -86,8 +84,7 @@ public class UserController {
     }
 
     public String changePassword(Matcher matcher) throws InvalidInput, WrongPassword, SamePassword {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         if (!input.containsKey("password") || !input.containsKey("p"))
             throw new InvalidInput();
@@ -119,8 +116,7 @@ public class UserController {
     }
 
     public String changeNickname(Matcher matcher) throws InvalidInput, DuplicateNickname {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String nickname = null;
         if (input.containsKey("nickname"))
@@ -138,8 +134,7 @@ public class UserController {
     }
 
     public String loginUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String username = null;
         if (input.containsKey("username"))

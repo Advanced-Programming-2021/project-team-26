@@ -616,7 +616,7 @@ public class MonsterController {
     }
 
     public void select(String selectCommand) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(selectCommand.split("\\s+"));
+        HashMap<String, String> input = Scan.getInstance().parseInput(selectCommand);
         Game game = gameController.getGame();
         String addressNumber;
 

@@ -51,8 +51,7 @@ public class DeckController {
 
     public String addCard(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException, CardNotFoundException,
             InvalidNumberOfACardException, FullMainDeckException, FullSideDeckException {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String cardName = null;
         if (input.containsKey("card"))
@@ -102,8 +101,7 @@ public class DeckController {
 
     public String removeCard(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException,
             CardNotFoundInSideDeck, CardNotFoundInMainDeck {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String cardName = null;
         if (input.containsKey("card"))
@@ -142,8 +140,7 @@ public class DeckController {
     }
 
     public String showDeck(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException {
-        String[] rawInput = matcher.group().split("\\s+");
-        HashMap<String, String> input = Scan.getInstance().parseInput(rawInput);
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String deckName = null;
         if (input.containsKey("deck-name"))

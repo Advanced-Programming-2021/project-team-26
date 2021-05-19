@@ -23,12 +23,12 @@ public class GameController {
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
+    private final int roundNumber;
     private Game game;
     private CardAddress selectedCardAddress = null;
     private Card selectedCard = null;
     private MonsterController selectedMonster = null;
     private SpellTrapController selectedSpellTrap = null;
-    private final int roundNumber;
     private boolean temporaryTurnChange = false;
     private int currentRound = 0;
 
@@ -65,7 +65,7 @@ public class GameController {
     }
 
     public String select(Matcher matcher) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group(1).split("\\s+"));
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
 
         String addressNumber;
         if ((addressNumber = Scan.getInstance().getValue(input, "monster", "m")) != null) {
@@ -501,7 +501,7 @@ public class GameController {
 
     public String showCard(Matcher matcher) {
         String[] rawInput = matcher.group().split("\\s+");
-        Map<String, String> input = Scan.getInstance().parseInput(rawInput);
+        Map<String, String> input = Scan.getInstance().parseInput(matcher.group());
         if (input.containsKey("selected") || input.containsKey("s")) {
             if (selectedCard == null)
                 throw new NoCardSelectedException();
