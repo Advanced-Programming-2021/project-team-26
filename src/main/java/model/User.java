@@ -27,11 +27,11 @@ public class User {
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
         allCards = new HashMap<>();
-        setUsername(username);
-        setPassword(password);
-        setNickname(nickname);
-        setMoney(10000000);
-        setActiveDeck(null);
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.money = 1000000;
+        this.activeDeckName = null;
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
     }
@@ -96,16 +96,9 @@ public class User {
         return allDecks;
     }
 
-    public void setAllDecks(HashMap<String, Deck> allDecks) {
-        this.allDecks = allDecks;
-    }
 
     public HashMap<String, Integer>  getAllCards() {
         return allCards;
-    }
-
-    public void setAllCards(HashMap<String, Integer>  allCards) {
-        this.allCards = allCards;
     }
 
     public Deck getActiveDeck() {
