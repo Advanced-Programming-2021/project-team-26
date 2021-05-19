@@ -85,8 +85,8 @@ public class DeckController {
         if (!Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).IsNumberOfTheCardInDeckValid(cardName))
             throw new InvalidNumberOfACardException(cardName, deckName);
 
-        HashMap<String, List<Integer>> userCards = Database.getInstance().getCurrentUser().getAllCards();
-        int numberOfTheCardInUserCards = userCards.get(cardName).size();
+        HashMap<String, Integer> userCards = Database.getInstance().getCurrentUser().getAllCards();
+        int numberOfTheCardInUserCards = userCards.get(cardName);
         int numberOfTheCardInDeckCards = Deck.getDeckByDeckName(deckName).getNumberOfCardINDeck(cardName);
 
         if (numberOfTheCardInDeckCards >= numberOfTheCardInUserCards)

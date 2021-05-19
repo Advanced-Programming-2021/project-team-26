@@ -18,7 +18,7 @@ public class User {
     protected String username;
     protected int score;
     protected HashMap<String, Deck> allDecks;
-    protected HashMap<String, List<Integer>> allCards;
+    protected HashMap<String, Integer> allCards;
     protected Deck activeDeckName;
     protected int money;
     protected String password;
@@ -100,11 +100,11 @@ public class User {
         this.allDecks = allDecks;
     }
 
-    public HashMap<String, List<Integer>>  getAllCards() {
+    public HashMap<String, Integer>  getAllCards() {
         return allCards;
     }
 
-    public void setAllCards(HashMap<String, List<Integer>>  allCards) {
+    public void setAllCards(HashMap<String, Integer>  allCards) {
         this.allCards = allCards;
     }
 
@@ -170,11 +170,11 @@ public class User {
 
     public void addCardToUserCards(Card card) {
         if (allCards.containsKey(card.getName())){
-            allCards.get(card.getName()).add(1);
+            int numberOfCards = allCards.get(card.getName());
+            numberOfCards++;
+            allCards.put(card.getName(), numberOfCards);
         } else {
-            List<Integer> numberOfCards = new ArrayList<>();
-            numberOfCards.add(1);
-            this.allCards.put(card.getName(), numberOfCards);
+            this.allCards.put(card.getName(), 1);
         }
     }
 
@@ -188,7 +188,7 @@ public class User {
 
     public String showAllCards() {
         StringBuilder stringToReturn = new StringBuilder();
-        HashMap<String, List<Integer>>  allCards = getAllCards();
+        HashMap<String, Integer>  allCards = getAllCards();
         ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
         Collections.sort(sortedCardNames);
 

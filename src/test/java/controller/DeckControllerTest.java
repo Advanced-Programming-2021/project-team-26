@@ -115,10 +115,7 @@ public class DeckControllerTest {
         Matcher matcher2 = Pattern.compile(invalidCardToMainRegex).matcher(invalidCardToMain);
         matcher2.find();
 
-        ArrayList<Integer> numberOfCards = new ArrayList<>();
-        numberOfCards.add(1);
-
-        User.getUserByUsername("user2").getAllCards().put("Suijin", numberOfCards);
+        User.getUserByUsername("user2").getAllCards().put("Suijin", 1);
 
         try {
             DeckController.getInstance().addCard(matcher);
