@@ -87,7 +87,7 @@ public class GameController {
             }
 
             if (selectedCard == null)
-                throw new CardNotFoundException();
+                throw new CardNotFoundInPositionException();
 
         } else if ((addressNumber = Scan.getInstance().getValue(input, "spell", "s")) != null) {
             int spellNumber = Integer.parseInt(addressNumber);
@@ -108,7 +108,7 @@ public class GameController {
             }
 
             if (selectedCard == null)
-                throw new CardNotFoundException();
+                throw new CardNotFoundInPositionException();
 
         } else if (Scan.getInstance().getValue(input, "field", "f") != null) {
             if (input.containsKey("opponent") || input.containsKey("o")) {
@@ -126,7 +126,7 @@ public class GameController {
             }
 
             if (selectedCard == null)
-                throw new CardNotFoundException();
+                throw new CardNotFoundInPositionException();
         } else if ((addressNumber = Scan.getInstance().getValue(input, "hand", "h")) != null) {
             int handNumber = Integer.parseInt(addressNumber);
             if (handNumber > game.getThisBoard().getHand().size())
@@ -187,8 +187,9 @@ public class GameController {
             Integer monsterAddress = Scan.getInstance().getInteger();
             if (monsterAddress == null)
                 return null;
-            if (game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
-                throw new InvalidSelection();
+            if (monsterAddress >= Board.CARD_NUMBER_IN_ROW ||
+                    game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
+                throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress - 1);
         } else if (selectedMonster.getLevel() > 6) {
@@ -199,9 +200,11 @@ public class GameController {
             Integer monsterAddress2 = Scan.getInstance().getInteger();
             if (monsterAddress1 == null || monsterAddress2 == null)
                 return null;
-            if (game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
+            if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||
+                    monsterAddress2 >= Board.CARD_NUMBER_IN_ROW ||
+                    game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
                     game.getThisBoard().getMonstersZone()[monsterAddress2 - 1] == null)
-                throw new InvalidSelection();
+                throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress1 - 1);
             game.getThisBoard().removeMonster(monsterAddress2 - 1);
@@ -269,8 +272,9 @@ public class GameController {
             Integer monsterAddress = Scan.getInstance().getInteger();
             if (monsterAddress == null)
                 return;
-            if (game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
-                throw new InvalidSelection();
+            if (monsterAddress >= Board.CARD_NUMBER_IN_ROW ||
+                    game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
+                throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress - 1);
         } else if (selectedMonster.getLevel() > 6) {
@@ -281,9 +285,11 @@ public class GameController {
             Integer monsterAddress2 = Scan.getInstance().getInteger();
             if (monsterAddress1 == null || monsterAddress2 == null)
                 return;
-            if (game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
+            if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||
+                    monsterAddress2 >= Board.CARD_NUMBER_IN_ROW ||
+                    game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
                     game.getThisBoard().getMonstersZone()[monsterAddress2 - 1] == null)
-                throw new InvalidSelection();
+                throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress1 - 1);
             game.getThisBoard().removeMonster(monsterAddress2 - 1);
@@ -516,7 +522,7 @@ public class GameController {
             String cardName = rawInput[2];
             Card card = Card.getCard(cardName);
             if (card == null)
-                throw new CardNotFoundException();
+                throw new CardNotFoundInPositionException();
             Print.getInstance().printCard(card);
         }
         return null;
