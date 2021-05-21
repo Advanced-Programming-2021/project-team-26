@@ -30,6 +30,10 @@ public class Game {
         boards[1] = new Board(gameController, users[1].getActiveDeck());
     }
 
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
     public int getSurrenderPlayer() {
         return surrenderPlayer;
     }
@@ -109,7 +113,7 @@ public class Game {
         ArrayList<SpellTrapController> spellTrapControllers = SpellController.getAllSpellControllers();
         for (SpellTrapController spellTrapController : spellTrapControllers) {
             if (spellTrapController instanceof SpellController) {
-                SpellController spellController = (SpellController)spellTrapController;
+                SpellController spellController = (SpellController) spellTrapController;
                 spellController.endActivation();
             }
         }

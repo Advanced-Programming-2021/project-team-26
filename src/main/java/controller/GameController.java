@@ -128,6 +128,21 @@ public class GameController {
             if (selectedCard == null)
                 throw new CardNotFoundInPositionException();
         } else if ((addressNumber = Scan.getInstance().getValue(input, "hand", "h")) != null) {
+            if (input.containsKey("force") || input.containsKey("f")) {
+                if (Database.getInstance().isDebuggingMode()) {
+                    String cardName = addressNumber;
+                    Card card = Card.getCard(cardName);
+                    if (card == null)
+                        throw new CardNotFoundException();
+                    game.getThisBoard().addCardToHand(card);
+                    int cardIndex = game.getThisBoard().getHand().size() - 1;
+                    selectedCard = card;
+                    selectedCardAddress = new CardAddress(Place.Hand, Owner.Me, cardIndex);
+                    return "card selected";
+                } else {
+                    throw new InvalidInput();
+                }
+            }
             int handNumber = Integer.parseInt(addressNumber);
             if (handNumber > game.getThisBoard().getHand().size())
                 throw new InvalidSelection();
@@ -608,5 +623,35 @@ public class GameController {
                 game.temporaryChangeTurn();
             }
         }
+    }
+
+    public String increaseLP(Matcher matcher) {
+        if (!Database.getInstance().isDebuggingMode())
+            throw new InvalidInput();
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
+        String lpString = Scan.getInstance().getValue(input, "LP", "LP");
+        if (lpString == null)
+            throw new InvalidInput();
+        int lp = Integer.parseInt(lpString);
+        game.decreaseThisLifePoint(-lp);
+        return "LifePoint added";
+    }
+
+    public String setWinner(Matcher matcher) {
+        if (!Database.getInstance().isDebuggingMode())
+            throw new InvalidInput();
+        String nickname = matcher.group(1);
+        if (game.getThisUser().getNickname().equals(nickname)) {
+            game.setFinished(true);
+            game.setWinner(game.getTurn());
+            endGame();
+            return null;
+        } else if (game.getOtherUser().getNickname().equals(nickname)) {
+            game.setFinished(true);
+            game.setWinner(1 - game.getTurn());
+            endGame();
+            return null;
+        } else
+            throw new InvalidInput();
     }
 }

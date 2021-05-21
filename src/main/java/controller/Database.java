@@ -22,6 +22,7 @@ public class Database {
     private final String trapsJsonPath;
     private final String userDirectoryPath;
     private final String databasePath;
+    private boolean debuggingMode = true;
     private User currentUser;
 
     {
@@ -52,6 +53,14 @@ public class Database {
         if (database == null)
             database = new Database();
         return database;
+    }
+
+    public boolean isDebuggingMode() {
+        return debuggingMode;
+    }
+
+    public void setDebuggingMode(boolean debuggingMode) {
+        this.debuggingMode = debuggingMode;
     }
 
     public User getCurrentUser() {
