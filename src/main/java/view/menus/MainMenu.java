@@ -18,18 +18,18 @@ public class MainMenu extends Menu {
     private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
     static {
         MAIN_MENU_CONTROLLER = new MainMenuController();
-        MAP.put(Pattern.compile("^user logout$"), UserController.getInstance()::logout);
-        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+        MAP.put(Pattern.compile("^\\s*user logout\\s*$"), UserController.getInstance()::logout);
+        MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "Main menu";
         });
-        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
-        MAP.put(Pattern.compile("^menu enter ([^ ]+)$"),MAIN_MENU_CONTROLLER::enterMenu );
-        MAP.put(Pattern.compile("^duel --new --second-player ([^ ]+) --rounds(1|3)$"), MAIN_MENU_CONTROLLER :: createNewGameWithRealPlayer);
-        MAP.put(Pattern.compile("^duel --new --ai --rounds(1|3)$"), MAIN_MENU_CONTROLLER :: creatNewGameWithAI );
+        MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^\\s*menu enter ([^ ]+)\\s*$"),MAIN_MENU_CONTROLLER::enterMenu );
+        MAP.put(Pattern.compile("^\\s*duel --new --second-player ([^ ]+) --rounds(1|3)\\s*$"), MAIN_MENU_CONTROLLER :: createNewGameWithRealPlayer);
+        MAP.put(Pattern.compile("^\\s*duel --new --ai --rounds(1|3)\\s*$"), MAIN_MENU_CONTROLLER :: creatNewGameWithAI );
     }
 
-    public MainMenu() {}
     public void execute() {
+        System.out.println("______MAIN MENU______");
         run(MAP);
     }
 }

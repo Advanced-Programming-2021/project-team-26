@@ -13,19 +13,19 @@ public class DuelMenu extends Menu {
     private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
     private static GameController gameController;
     static {
-        MAP.put(Pattern.compile("^select (.+)$"), gameController :: select );
-        MAP.put(Pattern.compile("^summon$"), gameController :: summon );
-        MAP.put(Pattern.compile("^set$"), gameController :: set);
-        MAP.put(Pattern.compile("^set --position (attack|defense)$"), gameController :: setPosition );
-        MAP.put(Pattern.compile("^flip-summon$"), gameController :: flipSummon);
-        MAP.put(Pattern.compile("^attack (1-5)$"), gameController :: attack );
-        MAP.put(Pattern.compile("^attack direct$"), gameController :: attackDirect);
-        MAP.put(Pattern.compile("^activate effect$"), gameController :: activateEffect );
-        MAP.put(Pattern.compile("^show graveyard$"), gameController::showGraveyard);
-        MAP.put(Pattern.compile("^card show --selected$"), gameController::showCard);
-        MAP.put(Pattern.compile("^surrender$"), gameController::surrender);
-        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
-        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+        MAP.put(Pattern.compile("^\\s*select (.+)\\s*$"), gameController :: select );
+        MAP.put(Pattern.compile("^\\s*summon\\s*$"), gameController :: summon );
+        MAP.put(Pattern.compile("^\\s*set\\s*$"), gameController :: set);
+        MAP.put(Pattern.compile("^\\s*set --position (attack|defense)\\s*$"), gameController :: setPosition );
+        MAP.put(Pattern.compile("^\\s*flip-summon\\s*$"), gameController :: flipSummon);
+        MAP.put(Pattern.compile("^\\s*attack (1-5)\\s*$"), gameController :: attack );
+        MAP.put(Pattern.compile("^\\s*attack direct\\s*$"), gameController :: attackDirect);
+        MAP.put(Pattern.compile("^\\s*activate effect\\s*$"), gameController :: activateEffect );
+        MAP.put(Pattern.compile("^\\s*show graveyard\\s*$"), gameController::showGraveyard);
+        MAP.put(Pattern.compile("^\\s*card show --selected\\s*$"), gameController::showCard);
+        MAP.put(Pattern.compile("^\\s*surrender\\s*$"), gameController::surrender);
+        MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "game menu";
         });
     }
@@ -35,6 +35,7 @@ public class DuelMenu extends Menu {
     }
 
     public void execute() {
+        System.out.println("______DUEL MENU______");
         run(MAP);
     }
 

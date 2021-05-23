@@ -17,9 +17,9 @@ public class ScoreBoardMenu extends Menu {
     private static ScoreBoardController scoreBoardController ;
     static {
         scoreBoardController = new ScoreBoardController();
-        MAP.put(Pattern.compile("^scoreboard show$"), scoreBoardController::showScoreBoard);
-        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
-        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+        MAP.put(Pattern.compile("^\\s*scoreboard show\\s*$"), scoreBoardController::showScoreBoard);
+        MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "scoreboard menu";
         });
     }
@@ -27,6 +27,7 @@ public class ScoreBoardMenu extends Menu {
         super();
     }
     public void execute(){
+        System.out.println("______SCORE BOARD MENU______");
         run(MAP);
     }
 }

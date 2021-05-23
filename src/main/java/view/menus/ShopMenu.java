@@ -7,29 +7,26 @@ import view.Menu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ShopMenu extends Menu {
-    private static ArrayList<Card> shopCards = new ArrayList<>();
-    private static ShopController shopController;
     private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
+    private static final ArrayList<Card> shopCards = new ArrayList<>();
+    private static final ShopController shopController;
 
     static {
         shopController = new ShopController();
-        MAP.put(Pattern.compile("^shop buy (.+)$"), shopController::buyCard);
-        MAP.put(Pattern.compile("^shop show --all$"), shopController::showAll);
-        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
-        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+        MAP.put(Pattern.compile("^\\s*shop buy (.+)\\s*$"), shopController::buyCard);
+        MAP.put(Pattern.compile("^\\s*shop show --all\\s*$"), shopController::showAll);
+        MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "shop menu";
         });
     }
 
-    public ShopMenu() {}
-
     public void execute() {
+        System.out.println("______SHOP MENU______");
         run(MAP);
     }
 }

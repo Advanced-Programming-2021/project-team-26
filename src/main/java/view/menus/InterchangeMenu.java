@@ -16,8 +16,8 @@ public class InterchangeMenu extends Menu {
     static {
         // TODO: 5/10/21   MAP.put(Pattern.compile("^import card ([^ ]+)$"), );
         // TODO: 5/10/21   MAP.put(Pattern.compile("^export card ([^ ]+)$"), );
-        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
-        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+        MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "import/export menu";
         });
     }
@@ -26,6 +26,7 @@ public class InterchangeMenu extends Menu {
     }
 
     public void execute() {
+        System.out.println("______IMPORT/EXPORT MENU______");
         run(MAP);
     }
 

@@ -78,20 +78,32 @@ public class MainMenuController {
         return null;
     }
 
-    public String enterMenu(Matcher matcher) {
+    public String enterMenu(Matcher matcher) throws InvalidMenuException{
         String newMenu = matcher.group(1);
-        if (newMenu.contains("Login"))
+        if (newMenu.contains("Login")) {
             new LoginMenu().execute();
-        else if (newMenu.contains("Deck"))
+            return "_______MAIN MENU_______";
+        }
+        else if (newMenu.contains("Deck")) {
             new DeckMenu().execute();
-        else if (newMenu.contains("Export"))
+            return "_______MAIN MENU_______";
+        }
+        else if (newMenu.contains("Export")) {
             new InterchangeMenu().execute();
-        else if (newMenu.contains("Shop"))
+            return "_______MAIN MENU_______";
+        }
+        else if (newMenu.contains("Shop")) {
             new ShopMenu().execute();
-        else if (newMenu.contains("Profile"))
+            return "_______MAIN MENU_______";
+        }
+        else if (newMenu.contains("Profile")) {
             new ProfileMenu().execute();
-        else if (newMenu.contains("Score"))
+            return "_______MAIN MENU_______";
+        }
+        else if (newMenu.contains("Score")) {
             new ScoreBoardMenu().execute();
-        return null;
+            return "_______MAIN MENU_______";
+        }
+        throw new InvalidMenuException();
     }
 }

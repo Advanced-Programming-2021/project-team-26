@@ -157,7 +157,7 @@ public class UserController {
             throw new WrongUsernamePassword();
         Database.getInstance().setCurrentUser(user);
         new MainMenu().execute();
-        return "user logged in successfully!";
+        return "______LOGIN MENU______";
     }
 
     public String logout(Matcher matcher) {

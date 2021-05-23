@@ -16,16 +16,16 @@ public class ProfileMenu extends Menu {
     private static final UserController USER_CONTROLLER = UserController.getInstance();
     private static final HashMap<Pattern, ConsumerSp<Matcher>> MAP = new HashMap<>();
     static {
-        MAP.put(Pattern.compile("^profile change --nickname (.+)"), USER_CONTROLLER::changeNickname);
-        MAP.put(Pattern.compile("^profile change --password --current ([^ ]+) --new (.+)"),USER_CONTROLLER::changePassword);
-        MAP.put(Pattern.compile("^menu exit$"), Menu::exitMenu);
-        MAP.put(Pattern.compile("^menu show-current$"), i -> {
+        MAP.put(Pattern.compile("^\\s*profile change --nickname (.+)\\s*"), USER_CONTROLLER::changeNickname);
+        MAP.put(Pattern.compile("^\\s*profile change --password --current ([^ ]+) --new (.+)\\s*"),USER_CONTROLLER::changePassword);
+        MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
+        MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "profile menu";
         });
 
     }
-    public ProfileMenu() {}
     public void execute() {
+        System.out.println("______PROFILE MENU______");
         run(MAP);
     }
 }
