@@ -20,10 +20,12 @@ public class DeckMenu extends Menu {
         MAP.put(Pattern.compile("^\\s*deck add-card (.+)\\s*$"), deckController::addCard);
         MAP.put(Pattern.compile("^\\s*deck rm-card (.+)\\s*$"),deckController::removeCard );
         MAP.put(Pattern.compile("^\\s*deck show --all\\s*$" ), deckController::showAllDeck);
-        //MAP.put(Pattern.compile("^\\s*deck show --deck-name ([^ ]+) (--side)?\\s*$"),deckController::showDeck );
-         MAP.put(Pattern.compile("^\\s*deck show (.+)\\s*$"),deckController::showDeck );
+        MAP.put(Pattern.compile("^\\s*deck show --deck-name ([^ ]+) (--side)?\\s*$"),deckController::showDeck );
         MAP.put(Pattern.compile("^\\s*deck show --cards\\s*$"),deckController::showCards);
         MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
+         MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
+             return "deck menu";
+         });
      }
 
     public DeckMenu() {}
