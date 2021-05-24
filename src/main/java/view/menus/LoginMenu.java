@@ -13,8 +13,8 @@ public class LoginMenu extends Menu {
     private static final UserController userController = UserController.getInstance();
 
     static {
-        MAP.put(Pattern.compile("^\\s*user create --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)\\s*$"), userController::addNewUser);
-        MAP.put(Pattern.compile("^\\s*user login --([^ ]+) ([^ ]+) --([^ ]+) ([^ ]+)\\s*$"), userController::loginUser);
+        MAP.put(Pattern.compile("^\\s*user create (.+)\\s*$"), userController::addNewUser);
+        MAP.put(Pattern.compile("^\\s*user login (.+)\\s*$"), userController::loginUser);
         MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "login menu";
         });

@@ -24,8 +24,8 @@ public class MainMenu extends Menu {
         });
         MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
         MAP.put(Pattern.compile("^\\s*menu enter ([^ ]+)\\s*$"),MAIN_MENU_CONTROLLER::enterMenu );
-        MAP.put(Pattern.compile("^\\s*duel --new --second-player ([^ ]+) --rounds(1|3)\\s*$"), MAIN_MENU_CONTROLLER :: createNewGameWithRealPlayer);
-        MAP.put(Pattern.compile("^\\s*duel --new --ai --rounds(1|3)\\s*$"), MAIN_MENU_CONTROLLER :: creatNewGameWithAI );
+        MAP.put(Pattern.compile("^\\s*duel (.+)\\s*$"), MAIN_MENU_CONTROLLER :: createNewGameWithRealPlayer);
+        MAP.put(Pattern.compile("^\\s*duel (.+)\\s*$"), MAIN_MENU_CONTROLLER :: creatNewGameWithAI );
     }
 
     public void execute() {

@@ -16,7 +16,7 @@ public class DuelMenu extends Menu {
         MAP.put(Pattern.compile("^\\s*select (.+)\\s*$"), gameController :: select );
         MAP.put(Pattern.compile("^\\s*summon\\s*$"), gameController :: summon );
         MAP.put(Pattern.compile("^\\s*set\\s*$"), gameController :: set);
-        MAP.put(Pattern.compile("^\\s*set --position (attack|defense)\\s*$"), gameController :: setPosition );
+        MAP.put(Pattern.compile("^\\s*set (.+)\\s*$"), gameController :: setPosition );
         MAP.put(Pattern.compile("^\\s*flip-summon\\s*$"), gameController :: flipSummon);
         MAP.put(Pattern.compile("^\\s*attack (1-5)\\s*$"), gameController :: attack );
         MAP.put(Pattern.compile("^\\s*attack direct\\s*$"), gameController :: attackDirect);
