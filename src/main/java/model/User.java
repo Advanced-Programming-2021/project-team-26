@@ -6,7 +6,6 @@ import model.cards.Card;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 public class User {
     private static final HashMap<String, User> allUsers;
@@ -19,7 +18,7 @@ public class User {
     protected int score;
     protected HashMap<String, Deck> allDecks;
     protected HashMap<String, Integer> allCards;
-    protected Deck activeDeckName;
+    protected Deck activeDeck;
     protected int money;
     protected String password;
     protected String nickname;
@@ -31,7 +30,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.money = 10000000;
-        this.activeDeckName = null;
+        this.activeDeck = null;
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
     }
@@ -48,6 +47,14 @@ public class User {
         return allUsers;
     }
 
+    public boolean checkDeckNameExistence(String name) {
+        return allDecks.containsKey(name);
+    }
+
+    public Deck getDeckByDeckName(String name) {
+        if (allDecks.containsKey(name)) return allDecks.get(name);
+        else return null;
+    }
 
     public static String getPasswordByUsername(String username) {
         if (getUserByUsername(username) == null)
@@ -110,11 +117,11 @@ public class User {
     }
 
     public Deck getActiveDeck() {
-        return activeDeckName;
+        return activeDeck;
     }
 
     public void setActiveDeck(Deck activeDeckName) {
-        this.activeDeckName = activeDeckName;
+        this.activeDeck = activeDeckName;
         Database.getInstance().writeUser(this);
     }
 
@@ -209,10 +216,10 @@ public class User {
         stringToReturn.append("Decks").append("\n");
         stringToReturn.append("Active deck:").append("\n");
 
-        if (activeDeckName != null)
-            stringToReturn.append(deckToString(activeDeckName.getName()));
+        if (activeDeck != null)
+            stringToReturn.append(deckToString(activeDeck.getName()));
 
-        stringToReturn.append("Other decks:").append("\n");
+        stringToReturn.append("\nOther decks:").append("\n");
 
         for (String deckName : allDecks.keySet()) {
             stringToReturn.append(deckToString(deckName));
@@ -223,8 +230,8 @@ public class User {
 
     private String deckToString(String name) {
         return name + ": " + "main deck " +
-                Deck.getDeckByDeckName(name).getMainDeck().size() + ", " + "side deck " +
-                Deck.getDeckByDeckName(name).getSideDeck().size() + ", " +
-                (Deck.getDeckByDeckName(name).isDeckValid() ? "valid" : "invalid");
+                allDecks.get(name).getMainDeck().size() + ", " + "side deck " +
+                allDecks.get(name).getSideDeck().size() + ", " +
+                ( allDecks.get(name).isDeckValid() ? "valid" : "invalid");
     }
 }

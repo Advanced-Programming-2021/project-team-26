@@ -25,26 +25,26 @@ public class DeckController {
 
     public String createDeck(Matcher matcher) throws RepeatedDeckNameException {
         String deckName = matcher.group(1);
-        if (!Deck.checkDeckNameExistence(deckName)) {
-            new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
-            Database.getInstance().getCurrentUser().addDeckToUserDecks(Deck.getDeckByDeckName(deckName));
+        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
+            Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
+            Database.getInstance().getCurrentUser().addDeckToUserDecks(deck);
             return "deck created successfully!";
         } else throw new RepeatedDeckNameException(deckName);
     }
 
     public String removeDeck(Matcher matcher) throws DeckNameDoesntExistException {
         String deckName = matcher.group(1);
-        if (Deck.checkDeckNameExistence(deckName)) {
+        if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Objects.requireNonNull(User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername())).getAllDecks().remove(deckName);
-            Deck.getAllDecks().removeIf(deck -> deck.getName().equals(deckName));
+            Database.getInstance().getCurrentUser().getAllDecks().remove(deckName);
             return "deck deleted successfully!";
         } else throw new DeckNameDoesntExistException(deckName);
     }
 
     public String setActive(Matcher matcher) throws DeckNameDoesntExistException {
         String deckName = matcher.group(1);
-        if (Deck.checkDeckNameExistence(deckName)) {
-            Database.getInstance().getCurrentUser().setActiveDeck(Deck.getDeckByDeckName(deckName));
+        if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
+            Database.getInstance().getCurrentUser().setActiveDeck(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName));
             return "deck activated successfully!";
         } else throw new DeckNameDoesntExistException(deckName);
     }
@@ -71,31 +71,31 @@ public class DeckController {
 
         if (!Database.getInstance().getCurrentUser().doesUserHaveThisCard(cardName))
             throw new CardNotFoundException();
-        if (!Deck.checkDeckNameExistence(deckName))
+        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
             throw new DeckNameDoesntExistException(deckName);
 
         if (input.containsKey("side")) {
-            if (Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).getSideDeck().size() == 15)
+            if (Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).getSideDeck().size() == 15)
                 throw new FullSideDeckException();
         } else {
-            if (Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).getMainDeck().size() == 60)
+            if (Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).getMainDeck().size() == 60)
                 throw new FullMainDeckException();
         }
 
-        if (!Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).IsNumberOfTheCardInDeckValid(cardName))
+        if (!Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).IsNumberOfTheCardInDeckValid(cardName))
             throw new InvalidNumberOfACardException(cardName, deckName);
 
         HashMap<String, Integer> userCards = Database.getInstance().getCurrentUser().getAllCards();
         int numberOfTheCardInUserCards = userCards.get(cardName);
-        int numberOfTheCardInDeckCards = Deck.getDeckByDeckName(deckName).getNumberOfCardINDeck(cardName);
+        int numberOfTheCardInDeckCards = Database.getInstance().getCurrentUser().getDeckByDeckName(deckName).getNumberOfCardINDeck(cardName);
 
         if (numberOfTheCardInDeckCards >= numberOfTheCardInUserCards)
             throw new CardNotFoundException();
 
         if (input.containsKey("side"))
-            Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).addCardToSideDeck(Card.getCard(cardName));
+            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToSideDeck(Card.getCard(cardName));
         else
-            Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).addCardToMainDeck(Card.getCard(cardName));
+            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToMainDeck(Card.getCard(cardName));
         return "card added to deck successfully!";
     }
 
@@ -119,22 +119,22 @@ public class DeckController {
         if (deckName == null)
             throw new InvalidInput();
 
-        if (!Deck.checkDeckNameExistence(deckName))
+        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
             throw new DeckNameDoesntExistException(deckName);
 
         if (input.containsKey("side")) {
-            if (!Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).doesCardExistInSideDeck(cardName))
+            if (!Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).doesCardExistInSideDeck(cardName))
                 throw new CardNotFoundInSideDeck(cardName);
         } else {
-            if (!Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).doesCardExistInMainDeck(cardName))
+            if (!Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).doesCardExistInMainDeck(cardName))
                 throw new CardNotFoundInMainDeck(cardName);
         }
 
 
         if (input.containsKey("side"))
-            Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).deleteCardFromSideDeck(Card.getCard(cardName));
+            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).deleteCardFromSideDeck(Card.getCard(cardName));
         else
-            Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).deleteCardFromMainDeck(Card.getCard(cardName));
+            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).deleteCardFromMainDeck(Card.getCard(cardName));
 
         return "card removed form deck successfully";
     }
@@ -150,13 +150,13 @@ public class DeckController {
         if (deckName == null)
             throw new InvalidInput();
 
-        if (!Deck.checkDeckNameExistence(deckName))
+        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
             throw new DeckNameDoesntExistException(deckName);
 
         if (input.containsKey("side"))
-            return Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).showDeck("side");
+            return Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).showDeck("side");
         else
-            return Objects.requireNonNull(Deck.getDeckByDeckName(deckName)).showDeck("main");
+            return Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).showDeck("main");
     }
 
     public String showCards(Matcher matcher) {

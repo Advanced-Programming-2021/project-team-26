@@ -16,11 +16,11 @@ public class DeckMenu extends Menu {
      {
         MAP.put(Pattern.compile("^\\s*deck create ([^ ]+)\\s*$"),deckController::createDeck );
         MAP.put(Pattern.compile("^\\s*deck delete ([^ ]+)\\s*$"),deckController::removeDeck );
-        MAP.put(Pattern.compile("^\\s*deck set-active ([^ ]+)\\s*$"),deckController::setActive );
+        MAP.put(Pattern.compile("^\\s*deck set-activate ([^ ]+)\\s*$"),deckController::setActive );
         MAP.put(Pattern.compile("^\\s*deck add-card (.+)\\s*$"), deckController::addCard);
         MAP.put(Pattern.compile("^\\s*deck rm-card (.+)\\s*$"),deckController::removeCard );
         MAP.put(Pattern.compile("^\\s*deck show --all\\s*$" ), deckController::showAllDeck);
-        MAP.put(Pattern.compile("^\\s*deck show --deck-name ([^ ]+) (--side)?\\s*$"),deckController::showDeck );
+        MAP.put(Pattern.compile("^\\s*deck show --deck-name ([^ ]+)(\\s--side)?\\s*$"),deckController::showDeck );
         MAP.put(Pattern.compile("^\\s*deck show --cards\\s*$"),deckController::showCards);
         MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
          MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {

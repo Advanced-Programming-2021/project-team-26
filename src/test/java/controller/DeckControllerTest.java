@@ -44,7 +44,7 @@ public class DeckControllerTest {
 
         DeckController.getInstance().createDeck(matcher2);
 
-        Deck.getDeckByDeckName("deck2").addCardToSideDeck(Card.getCard("Scanner"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck2").addCardToSideDeck(Card.getCard("Scanner"));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class DeckControllerTest {
             fail();
         }
 
-        Assertions.assertNull(Deck.getDeckByDeckName("deck2"));
+        Assertions.assertNull(Database.getInstance().getCurrentUser().getDeckByDeckName("deck2"));
         Assertions.assertTrue(User.getUserByUsername("user2").getAllDecks().size() == 0);
     }
 
@@ -123,7 +123,7 @@ public class DeckControllerTest {
             fail();
         }
 
-        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getMainDeck().size() == 1);
+        Assertions.assertTrue(Database.getInstance().getCurrentUser().getDeckByDeckName("deck2").getMainDeck().size() == 1);
 
         try {
             DeckController.getInstance().addCard(matcher1);
@@ -131,17 +131,17 @@ public class DeckControllerTest {
             fail();
         }
 
-        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getSideDeck().size() == 2);
+        Assertions.assertTrue(Database.getInstance().getCurrentUser().getDeckByDeckName("deck2").getSideDeck().size() == 2);
 
         Assertions.assertThrows(CardNotFoundException.class, () ->
         {
             DeckController.getInstance().addCard(matcher2);
         });
 
-        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getAllCards().size() == 3);
-        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getMainDeck().size() == 1);
+        Assertions.assertTrue(Database.getInstance().getCurrentUser().getDeckByDeckName("deck2").getAllCards().size() == 3);
+        Assertions.assertTrue(Database.getInstance().getCurrentUser().getDeckByDeckName("deck2").getMainDeck().size() == 1);
         DeckController.getInstance().addCard(matcher);
-        Assertions.assertTrue(Deck.getDeckByDeckName("deck2").getAllCards().size() == 4);
+        Assertions.assertTrue(Database.getInstance().getCurrentUser().getDeckByDeckName("deck2").getAllCards().size() == 4);
         Assertions.assertThrows(InvalidNumberOfACardException.class, () ->
         {
             DeckController.getInstance().addCard(matcher);
@@ -157,7 +157,7 @@ public class DeckControllerTest {
         matcher2.find();
 
         DeckController.getInstance().createDeck(matcher2);
-        Deck.getDeckByDeckName("deck2").addCardToSideDeck(Card.getCard("Scanner"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck2").addCardToSideDeck(Card.getCard("Scanner"));
 
         String invalidInput = "deck remove-card --card --deck deck2";
         String invalidInputRegex = "deck remove-card --card --deck deck2";
@@ -220,14 +220,14 @@ public class DeckControllerTest {
         matcher3.find();
 
         DeckController.getInstance().createDeck(matcher3);
-        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Command Knight"));
-        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Trap Hole"));
-        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Command Knight"));
-        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Black Pendant"));
-        Deck.getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Black Pendant"));
-        Deck.getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Black Pendant"));
-        Deck.getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Trap Hole"));
-        Deck.getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Trap Hole"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Command Knight"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Trap Hole"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Command Knight"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Black Pendant"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Black Pendant"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToMainDeck(Card.getCard("Black Pendant"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Trap Hole"));
+        Database.getInstance().getCurrentUser().getDeckByDeckName("deck3").addCardToSideDeck(Card.getCard("Trap Hole"));
 
         String deck = "deck show --deck-name deck3";
         String deckRegex = "deck show --deck-name deck3";

@@ -1,5 +1,6 @@
 package model;
 
+import controller.Database;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
@@ -9,11 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class Deck {
-    private static final ArrayList<Deck> allDecks;
-
-    static {
-        allDecks = new ArrayList<>();
-    }
 
     private String name;
     private String deckOwnerUsername;
@@ -27,28 +23,6 @@ public class Deck {
         setMainDeck(new ArrayList<>());
         setSideDeck(new ArrayList<>());
         setAllCards(new ArrayList<>());
-        allDecks.add(this);
-    }
-
-    public static ArrayList<Deck> getAllDecks() {
-        return allDecks;
-    }
-
-    public static boolean checkDeckNameExistence(String name) {
-        for (Deck deck : allDecks) {
-            if (deck.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static Deck getDeckByDeckName(String name) {
-        for (Deck deck : allDecks) {
-            if (deck.getName().equals(name))
-                return deck;
-        }
-        return null;
     }
 
     public int getNumberOfCardINDeck(String cardName){
@@ -116,11 +90,13 @@ public class Deck {
     public void addCardToMainDeck(Card card) {
         mainDeck.add(card);
         allCards.add(card);
+        Database.getInstance().writeUser(User.getUserByUsername(deckOwnerUsername));
     }
 
     public void addCardToSideDeck(Card card) {
         sideDeck.add(card);
         allCards.add(card);
+        Database.getInstance().writeUser(User.getUserByUsername(deckOwnerUsername));
     }
 
     public boolean IsNumberOfTheCardInDeckValid(String cardName) {

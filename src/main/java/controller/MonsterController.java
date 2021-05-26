@@ -507,7 +507,7 @@ public class MonsterController {
         this.position = position;
     }
 
-    public void summon() {
+    public void summon(){
 
     }
 

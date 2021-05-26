@@ -39,7 +39,7 @@ public class Ai extends User {
             deck.addCardToSideDeck(card);
         }
         allDecks.put(deck.getName(), deck);
-        activeDeckName = deck;
+        activeDeck = deck;
     }
 
     private ArrayList<Card> getSideCards() {

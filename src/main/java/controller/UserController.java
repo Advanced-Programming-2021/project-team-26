@@ -50,7 +50,7 @@ public class UserController {
         if (User.checkUsernameExistence(username))
             throw new DuplicateUsername();
         if (User.checkNicknameExistence(nickname))
-            throw new DuplicateNickname();
+            throw new DuplicateNickname(nickname);
 
         new User(username, password, nickname);
         return "user created successfully!";
@@ -127,7 +127,7 @@ public class UserController {
             throw new InvalidInput();
 
         if (User.checkNicknameExistence(nickname))
-            throw new DuplicateNickname();
+            throw new DuplicateNickname(nickname);
 
         Database.getInstance().getCurrentUser().setNickname(nickname);
         return "nickname changed successfully!";
