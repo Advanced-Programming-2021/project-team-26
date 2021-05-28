@@ -20,6 +20,13 @@ public class TrapController extends SpellTrapController {
         trapMakers.put("Magic Cylinder", TrapController::makeMagicCylinder);
         trapMakers.put("Mirror Force", TrapController::makeMirrorForce);
         trapMakers.put("Mind Crush", TrapController::makeMindCrush);
+        trapMakers.put("Trap Hole", TrapController::makeTrapHole);
+        trapMakers.put("Torrential Tribute", TrapController::makeTorrentialTribute);
+        trapMakers.put("Time Seal", TrapController::makeTimeSeal);
+        trapMakers.put("Negate Attack", TrapController::makeNegateAttack);
+        trapMakers.put("Solemn Warning", TrapController::makeSolemnWarning);
+        trapMakers.put("Magic Jammer", TrapController::makeMagicJammer);
+        trapMakers.put("Call of the Haunted", TrapController::makeCallOfTheHaunted);
     }
 
     private final Trap trap;
@@ -99,6 +106,51 @@ public class TrapController extends SpellTrapController {
                     myDeck.remove(rnd);
                 }
             }
+        };
+    }
+
+    private static TrapController makeTrapHole(GameController gameController, Trap trap, SpellTrapPosition position) {
+        return new TrapController(gameController, trap, position) {
+            @Override
+            public void onActive() {
+
+            }
+        };
+    }
+
+    private static TrapController makeTorrentialTribute(GameController gameController, Trap trap, SpellTrapPosition position) {
+        return new TrapController(gameController, trap, position) {
+
+        };
+    }
+
+    private static TrapController makeTimeSeal(GameController gameController, Trap trap, SpellTrapPosition position) {
+        return new TrapController(gameController, trap, position) {
+
+        };
+    }
+
+    private static TrapController makeNegateAttack(GameController gameController, Trap trap, SpellTrapPosition position) {
+        return new TrapController(gameController, trap, position) {
+
+        };
+    }
+
+    private static TrapController makeSolemnWarning(GameController gameController, Trap trap, SpellTrapPosition position) {
+        return new TrapController(gameController, trap, position) {
+
+        };
+    }
+
+    private static TrapController makeMagicJammer(GameController gameController, Trap trap, SpellTrapPosition position) {
+        return new TrapController(gameController, trap, position) {
+
+        };
+    }
+
+    private static TrapController makeCallOfTheHaunted(GameController gameController, Trap trap, SpellTrapPosition position) {
+        return new TrapController(gameController, trap, position) {
+
         };
     }
 
