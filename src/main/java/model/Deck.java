@@ -13,9 +13,9 @@ public class Deck {
 
     private String name;
     private String deckOwnerUsername;
-    private ArrayList<Card> mainDeck;
-    private ArrayList<Card> sideDeck;
-    private ArrayList<Card> allCards;
+    private ArrayList<String> mainDeck;
+    private ArrayList<String> sideDeck;
+    private ArrayList<String> allCards;
 
     public Deck(String name, String deckOwnerUsername) {
         setName(name);
@@ -25,39 +25,33 @@ public class Deck {
         setAllCards(new ArrayList<>());
     }
 
-    public int getNumberOfCardINDeck(String cardName){
+    public int getNumberOfCardINDeck(String cardName) {
         int count = 0;
 
-        for (Card card:allCards){
-            if (card.getName().equals(cardName))
+        for (String cardName1 : allCards) {
+            if (cardName1.equals(cardName))
                 count++;
         }
 
         return count;
     }
+
     public boolean doesCardExistInMainDeck(String cardName) {
-        for (Card card : mainDeck) {
-            if (card.getName().equals(cardName))
+        for (String cardName1 : mainDeck) {
+            if (cardName1.equals(cardName))
                 return true;
         }
         return false;
     }
 
     public boolean doesCardExistInSideDeck(String cardName) {
-        for (Card card : sideDeck) {
-            if (card.getName().equals(cardName))
+        for (String cardName1 : sideDeck) {
+            if (cardName1.equals(cardName))
                 return true;
         }
         return false;
     }
 
-    public ArrayList<Card> getAllCards() {
-        return allCards;
-    }
-
-    public void setAllCards(ArrayList<Card> allCards) {
-        this.allCards = allCards;
-    }
 
     public void setDeckOwner(String deckOwnerUsername) {
         this.deckOwnerUsername = deckOwnerUsername;
@@ -71,71 +65,88 @@ public class Deck {
         this.name = name;
     }
 
-    public ArrayList<Card> getMainDeck() {
+
+    public String getDeckOwnerUsername() {
+        return deckOwnerUsername;
+    }
+
+    public void setDeckOwnerUsername(String deckOwnerUsername) {
+        this.deckOwnerUsername = deckOwnerUsername;
+    }
+
+    public ArrayList<String> getMainDeck() {
         return mainDeck;
     }
 
-    public void setMainDeck(ArrayList<Card> mainDeck) {
+    public void setMainDeck(ArrayList<String> mainDeck) {
         this.mainDeck = mainDeck;
     }
 
-    public ArrayList<Card> getSideDeck() {
+    public ArrayList<String> getSideDeck() {
         return sideDeck;
     }
 
-    public void setSideDeck(ArrayList<Card> sideDeck) {
+    public void setSideDeck(ArrayList<String> sideDeck) {
         this.sideDeck = sideDeck;
     }
 
+    public ArrayList<String> getAllCards() {
+        return allCards;
+    }
+
+    public void setAllCards(ArrayList<String> allCards) {
+        this.allCards = allCards;
+    }
+
     public void addCardToMainDeck(Card card) {
-        mainDeck.add(card);
-        allCards.add(card);
+        mainDeck.add(card.getName());
+        allCards.add(card.getName());
         Database.getInstance().writeUser(User.getUserByUsername(deckOwnerUsername));
     }
 
     public void addCardToSideDeck(Card card) {
-        sideDeck.add(card);
-        allCards.add(card);
+        sideDeck.add(card.getName());
+        allCards.add(card.getName());
         Database.getInstance().writeUser(User.getUserByUsername(deckOwnerUsername));
     }
 
     public boolean IsNumberOfTheCardInDeckValid(String cardName) {
         int count = 0;
 
-        for (Card card : allCards) {
-            if (card.getName().equals(cardName))
+        for (String cardName1 : allCards) {
+            if (cardName1.equals(cardName))
                 count++;
         }
         return count < 3;
     }
 
     public void deleteCardFromMainDeck(Card card) {
-        for (Card card1 : mainDeck) {
-            if (card1.getName().equals(card.getName())) {
-                mainDeck.remove(card1);
+        for (String cardName1 : mainDeck) {
+            if (cardName1.equals(card.getName())) {
+                mainDeck.remove(cardName1);
                 break;
             }
         }
 
-        for (Card card1 : allCards) {
-            if (card1.getName().equals(card.getName())) {
-                allCards.remove(card1);
+        for (String cardName1 : allCards) {
+            if (cardName1.equals(card.getName())) {
+                allCards.remove(cardName1);
                 break;
             }
         }
     }
 
     public void deleteCardFromSideDeck(Card card) {
-        for (Card card1 : sideDeck) {
-            if (card1.getName().equals(card.getName())) {
-                sideDeck.remove(card1);
+        for (String cardName1 : sideDeck) {
+            if (cardName1.equals(card.getName())) {
+                sideDeck.remove(cardName1);
                 break;
             }
         }
 
-        for (Card card1 : allCards) {
-            if (card1.getName().equals(card.getName())) {
-                allCards.remove(card1);
+        for (String cardName1 : allCards) {
+            if (cardName1.equals(card.getName())) {
+                allCards.remove(cardName1);
                 break;
             }
         }
@@ -153,24 +164,24 @@ public class Deck {
         HashMap<String, SpellTrap> spellTraps = new HashMap<>();
 
         if (deckType.equals("main")) {
-            for (Card card : mainDeck) {
-                if (card instanceof Monster)
-                    monsters.put(card.getName(), (Monster) card);
+            for (String cardName : mainDeck) {
+                if (Card.getCard(cardName) instanceof Monster)
+                    monsters.put(cardName, (Monster) Card.getCard(cardName));
             }
 
-            for (Card card : mainDeck) {
-                if (card instanceof SpellTrap)
-                    spellTraps.put(card.getName(), (SpellTrap) card);
+            for (String cardName : mainDeck) {
+                if (Card.getCard(cardName) instanceof SpellTrap)
+                    spellTraps.put(cardName, (SpellTrap) Card.getCard(cardName));
             }
         } else {
-            for (Card card : sideDeck) {
-                if (card instanceof Monster)
-                    monsters.put(card.getName(), (Monster) card);
+            for (String cardName : sideDeck) {
+                if (Card.getCard(cardName) instanceof Monster)
+                    monsters.put(cardName, (Monster) Card.getCard(cardName));
             }
 
-            for (Card card : sideDeck) {
-                if (card instanceof SpellTrap)
-                    spellTraps.put(card.getName(), (SpellTrap) card);
+            for (String cardName : sideDeck) {
+                if (Card.getCard(cardName) instanceof SpellTrap)
+                    spellTraps.put(cardName, (SpellTrap) Card.getCard(cardName));
             }
         }
 

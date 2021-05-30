@@ -171,11 +171,12 @@ public class Print {
 
     public void printGame(Game game) {
         int turn = game.getTurn();
-        int otherTurn = 2 - turn;
+        int otherTurn = 1 - turn;
         System.out.println(game.getUser(otherTurn).getUsername() + ":" +
                 game.getLifePoint(otherTurn));
         printBoardReverse(game.getBoard(otherTurn));
         printMultipleTimes("-", 20);
+        System.out.println();
         printBoard(game.getBoard(turn));
         System.out.println(game.getUser(turn).getUsername() + ":" +
                 game.getLifePoint(turn));

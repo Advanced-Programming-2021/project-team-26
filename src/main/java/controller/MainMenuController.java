@@ -71,6 +71,7 @@ public class MainMenuController {
 
         try {
             GameController gameController = new GameController(firstUser, secondUser, round);
+            DuelMenu.setGameController(gameController);
             new DuelMenu(gameController).execute();
         } catch (NoPlayerAvailable ignored) {
 

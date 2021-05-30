@@ -61,7 +61,13 @@ public class Board {
     }
 
     private void initDeck(Deck deck) {
-        this.deck = new ArrayList<>(deck.getMainDeck());
+        ArrayList<String> mainDeck = deck.getMainDeck();
+        this.deck = new ArrayList<>();
+
+        for (String cardName : mainDeck) {
+            this.deck.add(Card.getCard(cardName));
+        }
+
         Collections.shuffle(this.deck);
     }
 
@@ -210,8 +216,10 @@ public class Board {
     }
 
     public void standByPhase() {
-        for (SpellTrapController spellTrap : this.spellTrapZone)
-            spellTrap.standBy();
+        for (SpellTrapController spellTrap : this.spellTrapZone) {
+            if (spellTrap != null)
+                spellTrap.standBy();
+        }
     }
 
     public int getMonsterZoneNumber() {
