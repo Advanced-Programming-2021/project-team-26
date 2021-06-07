@@ -18,11 +18,12 @@ public class DuelMenu extends Menu {
         MAP.put(Pattern.compile("^\\s*set\\s*$"), gameController::set);
         MAP.put(Pattern.compile("^\\s*set (.+)\\s*$"), gameController::setPosition);
         MAP.put(Pattern.compile("^\\s*flip-summon\\s*$"), gameController::flipSummon);
-        MAP.put(Pattern.compile("^\\s*attack (1-5)\\s*$"), gameController::attack);
+        MAP.put(Pattern.compile("^\\s*attack ([1-5])\\s*$"), gameController::attack);
         MAP.put(Pattern.compile("^\\s*attack direct\\s*$"), gameController::attackDirect);
         MAP.put(Pattern.compile("^\\s*activate effect\\s*$"), gameController::activateEffect);
         MAP.put(Pattern.compile("^\\s*show graveyard\\s*$"), gameController::showGraveyard);
         MAP.put(Pattern.compile("^\\s*card show --selected\\s*$"), gameController::showCard);
+        MAP.put(Pattern.compile("^\\s*next phase\\s*$"), gameController::nextPhase);
         MAP.put(Pattern.compile("^\\s*surrender\\s*$"), gameController::surrender);
         MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
         MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {

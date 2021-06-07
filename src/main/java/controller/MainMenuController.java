@@ -61,6 +61,10 @@ public class MainMenuController {
         if (secondUser.getActiveDeck() == null)
             throw new NoActiveDeck(secondUser.getUsername());
 
+        if (firstUser.getUsername().equals(secondUser.getUsername())) {
+            throw new PlayWithYourself();
+        }
+
         if (firstUser.getActiveDeck().isDeckValid())
             throw new InvalidDeckException(firstUser.getUsername());
         if (secondUser.getActiveDeck().isDeckValid())

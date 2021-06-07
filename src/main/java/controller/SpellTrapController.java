@@ -41,9 +41,9 @@ public abstract class SpellTrapController {
 
     public static SpellTrapController getInstance(GameController gameController, SpellTrap spellTrap, SpellTrapPosition position) {
         if (spellTrap instanceof Spell)
-            return SpellController.getInstance(gameController, spellTrap, position);
+            return SpellController.getInstance(gameController, (Spell) spellTrap, position);
         else if (spellTrap instanceof Trap)
-            return TrapController.getInstance(gameController, spellTrap, position);
+            return TrapController.getInstance(gameController, (Trap) spellTrap, position);
         return null;
     }
 

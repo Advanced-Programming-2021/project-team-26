@@ -6,6 +6,7 @@ import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 import model.cards.trap.Trap;
+import view.Print;
 import view.Scan;
 
 import java.util.HashMap;
@@ -87,6 +88,7 @@ public class TrapController extends SpellTrapController {
         return new TrapController(gameController, trap, position) {
             @Override
             public void onActive() {
+                Print.getInstance().printMessage("enter card name to remove:");
                 String cardName = Scan.getInstance().getString();
                 boolean found = false;
                 List<Card> hand = gameController.getGame().getOtherBoard().getHand();

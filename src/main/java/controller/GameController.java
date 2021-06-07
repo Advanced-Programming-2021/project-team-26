@@ -167,8 +167,9 @@ public class GameController {
         selectedSpellTrap = null;
     }
 
-    public void nextPhase() {
+    public String nextPhase(Matcher matcher) {
         game.nextPhase();
+        return null;
     }
 
     public String summon(Matcher matcher) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
@@ -450,9 +451,6 @@ public class GameController {
         if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW &&
                 spell.getType() != SpellType.FIELD)
             throw new FullSpellTrapZone();
-
-        if (!selectedSpellTrap.conditionMet())
-            throw new PreparationFailException();
 
         if (spell.getType() == SpellType.FIELD) {
             game.getThisBoard().putFiled(spell);
