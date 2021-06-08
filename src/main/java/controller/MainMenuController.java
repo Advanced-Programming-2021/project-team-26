@@ -40,6 +40,8 @@ public class MainMenuController {
 
     public String createNewGameWithRealPlayer(Matcher matcher) {
         HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
+        if (input.containsKey("ai"))
+            return creatNewGameWithAI(matcher);
         String secondUsername = Scan.getInstance().getValue(input, "second-player", "sp");
         if (secondUsername == null)
             throw new InvalidInput();
@@ -83,29 +85,24 @@ public class MainMenuController {
         return null;
     }
 
-    public String enterMenu(Matcher matcher) throws InvalidMenuException{
+    public String enterMenu(Matcher matcher) throws InvalidMenuException {
         String newMenu = matcher.group(1);
         if (newMenu.contains("Login")) {
             new LoginMenu().execute();
             return "_______MAIN MENU_______";
-        }
-        else if (newMenu.contains("Deck")) {
+        } else if (newMenu.contains("Deck")) {
             new DeckMenu().execute();
             return "_______MAIN MENU_______";
-        }
-        else if (newMenu.contains("Export")) {
+        } else if (newMenu.contains("Export")) {
             new InterchangeMenu().execute();
             return "_______MAIN MENU_______";
-        }
-        else if (newMenu.contains("Shop")) {
+        } else if (newMenu.contains("Shop")) {
             new ShopMenu().execute();
             return "_______MAIN MENU_______";
-        }
-        else if (newMenu.contains("Profile")) {
+        } else if (newMenu.contains("Profile")) {
             new ProfileMenu().execute();
             return "_______MAIN MENU_______";
-        }
-        else if (newMenu.contains("Score")) {
+        } else if (newMenu.contains("Score")) {
             new ScoreBoardMenu().execute();
             return "_______MAIN MENU_______";
         }
