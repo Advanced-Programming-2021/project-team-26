@@ -272,6 +272,11 @@ public class Database {
         try {
             String path = userDirectoryPath + File.separator + username + ".json";
             FileReader userFile = new FileReader(path);
+            try {
+                userFile.close();
+            } catch (IOException e){
+                return null;
+            }
             return new Gson().fromJson(userFile, User.class);
         } catch (FileNotFoundException e) {
             return null;

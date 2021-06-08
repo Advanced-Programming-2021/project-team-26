@@ -75,6 +75,7 @@ public class GameController {
 
             if (input.containsKey("opponent") || input.containsKey("o")) {
                 if (game.getOtherBoard().getMonstersZone()[monsterNumber - 1] != null) {
+                    selectedMonster = game.getOtherBoard().getMonstersZone()[monsterNumber - 1];
                     selectedCard = game.getOtherBoard().getMonstersZone()[monsterNumber - 1].getCard();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
                 }
@@ -96,6 +97,7 @@ public class GameController {
 
             if (input.containsKey("opponent") || input.containsKey("o")) {
                 if (game.getOtherBoard().getSpellTrapZone()[spellNumber - 1] != null) {
+                    selectedSpellTrap = game.getOtherBoard().getSpellTrapZone()[spellNumber - 1];
                     selectedCard = game.getOtherBoard().getSpellTrapZone()[spellNumber - 1].getCard();
                     selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Opponent, spellNumber - 1);
                 }
@@ -390,7 +392,7 @@ public class GameController {
         if (selectedMonster.isHasAttackedThisTurn())
             throw new AlreadyAttackedException();
 
-        if (game.getOtherBoard().canDirectAttack())
+        if (!game.getOtherBoard().canDirectAttack())
             throw new CannotAttackDirectlyException();
 
         int damage = selectedMonster.getCard().getAttackPower();
@@ -402,7 +404,7 @@ public class GameController {
     public String attack(Matcher matcher) {
         if (temporaryTurnChange)
             throw new NotYourTurnException();
-        if (selectedCard != null)
+        if (selectedCard == null)
             throw new NoCardSelectedException();
 
         if (selectedCardAddress.getOwner() != Owner.Me ||
@@ -420,7 +422,7 @@ public class GameController {
         int number = Integer.parseInt(matcher.group(1));
         number--;
         MonsterController toBeAttacked = game.getOtherBoard().getMonstersZone()[number];
-        if (toBeAttacked == null || toBeAttacked.canBeAttacked(selectedMonster))
+        if (toBeAttacked == null || !toBeAttacked.canBeAttacked(selectedMonster))
             throw new NoCardToAttackException();
 
         String message = toBeAttacked.attack(selectedMonster);

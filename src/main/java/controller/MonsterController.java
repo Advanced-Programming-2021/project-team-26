@@ -88,14 +88,13 @@ public class MonsterController {
     }
 
     public static MonsterController getInstance(GameController gameController, Monster monster,
-                                                MonsterPosition position, CardAddress monsterAddress)
-            throws MonsterNotFoundException {
+                                                MonsterPosition position, CardAddress monsterAddress) {
         for (String monsterName : MONSTER_MAKERS.keySet()) {
             if (monster.getName().equals(monsterName)) {
                 return MONSTER_MAKERS.get(monsterName).make(gameController, monster, position, monsterAddress);
             }
         }
-        throw new MonsterNotFoundException();
+        return new MonsterController(gameController, monster, position, monsterAddress);
     }
 
     private static MonsterController makeCommandKnight(GameController gameController, Monster monster,
@@ -575,7 +574,7 @@ public class MonsterController {
                 if (damage > 0) {
                     defender.remove(attacker);
                     game.decreaseOtherLifePoint(damage);
-                    return "your opponent’s monster is destroyed and your opponent receives " + damage + "battle damage";
+                    return "your opponent’s monster is destroyed and your opponent receives " + damage + " battle damage";
                 } else if (damage == 0) {
                     game.getThisBoard().removeMonster(attacker);
                     defender.remove(attacker);
@@ -584,7 +583,7 @@ public class MonsterController {
                     damage = -damage;
                     game.getThisBoard().removeMonster(attacker);
                     game.decreaseThisLifePoint(damage);
-                    return "your monster is destroyed and you receives " + damage + "battle damage";
+                    return "your monster is destroyed and you receive " + damage + " battle damage";
                 }
             case DEFENCE_UP:
                 damage = attacker.getCard().getAttackPower() - defender.getCard().getDefencePower();

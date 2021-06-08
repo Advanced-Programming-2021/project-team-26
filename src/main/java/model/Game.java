@@ -28,6 +28,8 @@ public class Game {
         users[1] = second;
         boards[0] = new Board(gameController, users[0].getActiveDeck());
         boards[1] = new Board(gameController, users[1].getActiveDeck());
+        lifePoints[0] = 8000;
+        lifePoints[1] = 8000;
     }
 
     public void setFinished(boolean finished) {
