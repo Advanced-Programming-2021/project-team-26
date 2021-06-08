@@ -12,7 +12,7 @@ public class Game {
     private final Board[] boards = new Board[2];
     private final User[] users = new User[2];
     private final int[] lifePoints = new int[2];
-    private final boolean firstTurn = true;
+    private boolean firstTurn = true;
     private int turn = 1;
     private Phase phase = Phase.END;
     private boolean finished = false;
@@ -40,6 +40,8 @@ public class Game {
 
     public void setSurrenderPlayer(int surrenderPlayer) {
         this.surrenderPlayer = surrenderPlayer;
+        winner = 1 - surrenderPlayer;
+        finished = true;
     }
 
     public boolean isSummonOrSetThisTurn() {
@@ -54,6 +56,8 @@ public class Game {
         if (finished)
             return;
         Phase nextPhase = this.phase.nextPhase();
+        if (firstTurn && nextPhase == Phase.BATTLE)
+            nextPhase = null;
         if (nextPhase == null) {
             changeTurn();
             nextPhase = Phase.DRAW;
@@ -102,6 +106,8 @@ public class Game {
     }
 
     public void changeTurn() {
+        if (firstTurn && this.turn == 0)
+            firstTurn = false;
         this.turn = 1 - this.turn;
         summonOrSetThisTurn = false;
         gameController.deselect();
