@@ -425,7 +425,7 @@ public class GameController {
         if (toBeAttacked == null || !toBeAttacked.canBeAttacked(selectedMonster))
             throw new NoCardToAttackException();
 
-        String message = toBeAttacked.attack(selectedMonster);
+        String message = toBeAttacked.attack(selectedMonster).getMessage();
         deselect();
         return message;
     }

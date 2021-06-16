@@ -101,7 +101,7 @@ public class MonsterController {
     }
 
     private static MonsterController makeCommandKnight(GameController gameController, Monster monster,
-                                                       MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             private final Set<MonsterController> underEffectMonsters = new HashSet<>();
             private boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
@@ -141,7 +141,7 @@ public class MonsterController {
 
     private static MonsterController makeYomiShip
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void remove(MonsterController attacker) {
@@ -153,42 +153,45 @@ public class MonsterController {
 
     private static MonsterController makeSuijin
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             private final boolean wasEffectActiveBefore = false;
             private boolean isEffectActive = false;
 
             @Override
-            public String attack(MonsterController attacker) {
+            public void runMonsterEffect() {
                 if (!wasEffectActiveBefore) {
-                    // TODO ask the user weather to active or not
                     isEffectActive = true;
                 }
+            }
 
+            @Override
+            public AttackResult attack(MonsterController attacker) {
                 if (isEffectActive) {
                     int theAttackerPower = attacker.monster.getAttackPower();
                     attacker.monster.setAttackPower(0);
-                    String toReturn = defaultAttack(attacker);
+                    AttackResult toReturn = new AttackResult(attacker, this);
                     attacker.monster.setAttackPower(theAttackerPower);
                     isEffectActive = false;
                     return toReturn;
                 }
-                return defaultAttack(attacker);
+                return null;
             }
+
         };
     }
 
     private static MonsterController makeCrabTurtle
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
-        return new MonsterController(gameController, monster, position, monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
+        return new MonsterController(gameController, monster, position,monsterAddress) {
 
         };
     }
 
     private static MonsterController makeSkullGaurdian
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
 
         };
@@ -196,7 +199,7 @@ public class MonsterController {
 
     private static MonsterController makeManEaterBug
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void flip() {
@@ -227,18 +230,17 @@ public class MonsterController {
 
     private static MonsterController makeGateGuardian
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
-            //TODO
         };
     }
 
     private static MonsterController makeScanner
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
-            public void runMonsterEffectAtTheBeginning() throws InvalidSelection {
+            public void runMonsterEffect() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
@@ -257,7 +259,6 @@ public class MonsterController {
                             Monster selectedMonster = (Monster) getSelectedCard();
                             setMonster(new Monster(selectedMonster));
                         }
-                        setRivalGraveyardAccessible(false);
                     }
                 }
                 setHasActivateEffectThisTurn(true);
@@ -272,7 +273,7 @@ public class MonsterController {
 
     private static MonsterController makeMarshmallon
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void remove(MonsterController attacker) {
@@ -285,7 +286,7 @@ public class MonsterController {
 
     private static MonsterController makeBeastKingBarbaros
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
 
         };
@@ -293,19 +294,19 @@ public class MonsterController {
 
     private static MonsterController makeTexchanger
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
         };
     }
 
     private static MonsterController makeTheCalculator
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
-            {
+            @Override
+            public void runMonsterEffect() {
                 MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
                 for (MonsterController monsterController : monstersZone) {
-                    if (monsterController == null) continue;
                     if (monsterController.position.equals(MonsterPosition.ATTACK)) {
                         monster.increaseAttackPower(monsterController.monster.getLevel() * 300);
                     }
@@ -316,14 +317,14 @@ public class MonsterController {
 
     private static MonsterController makeMirageDragon
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             final boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
 
             @Override
             public void runMonsterEffect() {
                 if (isEffectActive) {
-                    //TODO rival cannot active his spellTraps
+                    //rival cannot active his spellTraps
                 }
             }
         };
@@ -331,10 +332,10 @@ public class MonsterController {
 
     private static MonsterController makeHearldOfCreation
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
-            public void runMonsterEffectAtTheBeginning() throws InvalidSelection {
+            public void runMonsterEffect() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
@@ -376,7 +377,7 @@ public class MonsterController {
 
     private static MonsterController makeExploderDragon
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void remove(MonsterController attacker) {
@@ -388,14 +389,14 @@ public class MonsterController {
 
     private static MonsterController makeTerratiger
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
         };
     }
 
     private static MonsterController makeTheTricky
             (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
+             MonsterPosition position, CardAddress monsterAddress){
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void summon() {
@@ -492,10 +493,6 @@ public class MonsterController {
 
     }
 
-    public void runMonsterEffectAtTheBeginning() {
-
-    }
-
     public void endMonsterEffect() {
 
     }
@@ -512,7 +509,7 @@ public class MonsterController {
         this.position = position;
     }
 
-    public void summon() {
+    public void summon(){
 
     }
 
@@ -566,8 +563,8 @@ public class MonsterController {
         this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 
-    public String attack(MonsterController attacker) {
-        return defaultAttack(attacker);
+    public AttackResult attack(MonsterController attacker) {
+        return null;
     }
 
     public String defaultAttack(MonsterController attacker) {
@@ -624,6 +621,7 @@ public class MonsterController {
         HashMap<String, String> input = Scan.getInstance().parseInput(selectCommand);
         Game game = gameController.getGame();
         String addressNumber;
+
 
         if ((addressNumber = Scan.getInstance().getValue(input, "monster", "m")) != null) {
             int monsterNumber = Integer.parseInt(addressNumber);
