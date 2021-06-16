@@ -54,20 +54,40 @@ public class AttackResult {
         return myLPDecrease;
     }
 
+    public void setMyLPDecrease(int myLPDecrease) {
+        this.myLPDecrease = myLPDecrease;
+    }
+
     public int getOpLPDecrease() {
         return opLPDecrease;
+    }
+
+    public void setOpLPDecrease(int opLPDecrease) {
+        this.opLPDecrease = opLPDecrease;
     }
 
     public boolean isRemoveMyCard() {
         return removeMyCard;
     }
 
+    public void setRemoveMyCard(boolean removeMyCard) {
+        this.removeMyCard = removeMyCard;
+    }
+
     public boolean isRemoveOpCard() {
         return removeOpCard;
     }
 
+    public void setRemoveOpCard(boolean removeOpCard) {
+        this.removeOpCard = removeOpCard;
+    }
+
     public Monster getFlippedCard() {
         return flippedCard;
+    }
+
+    public void setFlippedCard(Monster flippedCard) {
+        this.flippedCard = flippedCard;
     }
 
     public String getMessage() {
