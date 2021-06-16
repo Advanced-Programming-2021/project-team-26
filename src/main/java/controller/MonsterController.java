@@ -1,6 +1,9 @@
 package controller;
 
-import exceptions.*;
+import exceptions.CardNotFoundException;
+import exceptions.InvalidInput;
+import exceptions.InvalidSelection;
+import exceptions.NoCardSelectedException;
 import model.*;
 import model.cards.Card;
 import model.cards.monster.Monster;
@@ -163,16 +166,16 @@ public class MonsterController {
             }
 
             @Override
-            public String attack(MonsterController attacker) {
+            public AttackResult attack(MonsterController attacker) {
                 if (isEffectActive) {
                     int theAttackerPower = attacker.monster.getAttackPower();
                     attacker.monster.setAttackPower(0);
-                    String toReturn = defaultAttack(attacker);
+                    AttackResult toReturn = new AttackResult(attacker, this);
                     attacker.monster.setAttackPower(theAttackerPower);
                     isEffectActive = false;
                     return toReturn;
                 }
-                return defaultAttack(attacker);
+                return null;
             }
 
         };
@@ -560,8 +563,8 @@ public class MonsterController {
         this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 
-    public String attack(MonsterController attacker) {
-        return defaultAttack(attacker);
+    public AttackResult attack(MonsterController attacker) {
+        return null;
     }
 
     public String defaultAttack(MonsterController attacker) {
