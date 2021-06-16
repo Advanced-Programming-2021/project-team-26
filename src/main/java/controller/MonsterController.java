@@ -175,7 +175,6 @@ public class MonsterController {
                 }
                 return defaultAttack(attacker);
             }
-
         };
     }
 
@@ -335,7 +334,7 @@ public class MonsterController {
              MonsterPosition position, CardAddress monsterAddress) {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
-            public void runMonsterEffect() throws InvalidSelection {
+            public void runMonsterEffectAtTheBeginning() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
