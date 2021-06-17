@@ -42,6 +42,8 @@ public class MonsterController {
     private Monster monster;
     private MonsterPosition position;
     private CardAddress monsterAddress;
+    protected Board thisBoard;
+    protected Board otherBoard;
     private boolean hasPositionChanged;
     private boolean isMonsterNew;
     private boolean hasAttackedThisTurn;
@@ -59,6 +61,8 @@ public class MonsterController {
                               MonsterPosition position, CardAddress monsterAddress) {
         this.gameController = gameController;
         this.monster = new Monster(monster);
+        this.thisBoard = gameController.getGame().getThisBoard();
+        this.otherBoard = gameController.getGame().getOtherBoard();
         setMonsterAddress(monsterAddress);
         setPosition(position);
         setMonsterNew(true);
@@ -105,7 +109,7 @@ public class MonsterController {
             private boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
 
             @Override
-            public void runMonsterEffect() {
+            public void runMonsterEffectAtSummon() {
                 if (isEffectActive) {
                     //increase other monsters attackPower for 400
                     MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
@@ -143,8 +147,8 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void remove(MonsterController attacker) {
-                gameController.getGame().getThisBoard().removeMonster(this);
-                gameController.getGame().getOtherBoard().removeMonster(attacker);
+                this.thisBoard.removeMonster(this);
+                this.otherBoard.removeMonster(attacker);
             }
         };
     }
@@ -238,7 +242,7 @@ public class MonsterController {
              MonsterPosition position, CardAddress monsterAddress) {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
-            public void runMonsterEffectAtBeginning() throws InvalidSelection {
+            public void runMonsterEffect() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
@@ -257,7 +261,6 @@ public class MonsterController {
                             Monster selectedMonster = (Monster) getSelectedCard();
                             setMonster(new Monster(selectedMonster));
                         }
-                        setRivalGraveyardAccessible(false);
                     }
                 }
                 setHasActivateEffectThisTurn(true);
@@ -485,7 +488,7 @@ public class MonsterController {
 
     }
 
-    public void runMonsterEffectAtBeginning() {
+    public void runMonsterEffectAtSummon() {
 
     }
 
@@ -514,7 +517,8 @@ public class MonsterController {
     }
 
     public void remove(MonsterController attacker) {
-        gameController.getGame().getThisBoard().removeMonster(this);
+        endMonsterEffect();
+        thisBoard.removeMonster(this);
     }
 
     public String getName() {

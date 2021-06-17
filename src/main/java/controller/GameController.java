@@ -230,6 +230,8 @@ public class GameController {
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
         game.setSummonOrSetThisTurn(true);
         monster.summon();
+        for (MonsterController monsterEffect : game.getThisBoard().getMonstersZone())
+            monsterEffect.runMonsterEffectAtSummon();
         deselect();
         return "summoned successfully";
     }
@@ -425,9 +427,20 @@ public class GameController {
         if (toBeAttacked == null || !toBeAttacked.canBeAttacked(selectedMonster))
             throw new NoCardToAttackException();
 
-        String message = toBeAttacked.attack(selectedMonster).getMessage();
+        AttackResult attackResult = toBeAttacked.attack(selectedMonster);
+        if (attackResult == null)
+            attackResult = new AttackResult(selectedMonster, toBeAttacked);
+
+        if (attackResult.isRemoveOpCard())
+            toBeAttacked.remove(selectedMonster);
+        if (attackResult.isRemoveMyCard())
+            selectedMonster.remove(toBeAttacked);
+
+        game.decreaseThisLifePoint(attackResult.getMyLPDecrease());
+        game.decreaseOtherLifePoint(attackResult.getOpLPDecrease());
         deselect();
-        return message;
+
+        return attackResult.getMessage();
     }
 
 

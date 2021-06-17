@@ -38,6 +38,7 @@ public class AttackResult {
                     myLPDecrease = -damage;
                     removeMyCard = true;
                 }
+                break;
             case DEFENCE_DOWN:
                 flippedCard = defender.getCard();
             case DEFENCE_UP:
