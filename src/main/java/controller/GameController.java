@@ -230,6 +230,8 @@ public class GameController {
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
         game.setSummonOrSetThisTurn(true);
         monster.summon();
+        for (MonsterController monsterEffect : game.getThisBoard().getMonstersZone())
+            monsterEffect.runMonsterEffectAtSummon();
         deselect();
         return "summoned successfully";
     }

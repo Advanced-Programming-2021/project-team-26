@@ -109,7 +109,7 @@ public class MonsterController {
             private boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
 
             @Override
-            public void runMonsterEffect() {
+            public void runMonsterEffectAtSummon() {
                 if (isEffectActive) {
                     //increase other monsters attackPower for 400
                     MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
@@ -488,6 +488,10 @@ public class MonsterController {
 
     }
 
+    public void runMonsterEffectAtSummon() {
+
+    }
+
     public void endMonsterEffect() {
 
     }
@@ -513,6 +517,7 @@ public class MonsterController {
     }
 
     public void remove(MonsterController attacker) {
+        endMonsterEffect();
         thisBoard.removeMonster(this);
     }
 
