@@ -238,7 +238,7 @@ public class MonsterController {
              MonsterPosition position, CardAddress monsterAddress) {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
-            public void runMonsterEffect() throws InvalidSelection {
+            public void runMonsterEffectAtBeginning() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
@@ -257,6 +257,7 @@ public class MonsterController {
                             Monster selectedMonster = (Monster) getSelectedCard();
                             setMonster(new Monster(selectedMonster));
                         }
+                        setRivalGraveyardAccessible(false);
                     }
                 }
                 setHasActivateEffectThisTurn(true);
@@ -481,6 +482,10 @@ public class MonsterController {
     }
 
     public void runMonsterEffect() {
+
+    }
+
+    public void runMonsterEffectAtBeginning() {
 
     }
 
