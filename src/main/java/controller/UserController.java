@@ -2,6 +2,7 @@ package controller;
 
 import exceptions.*;
 import model.User;
+import view.Menu;
 import view.Scan;
 import view.menus.MainMenu;
 
@@ -162,6 +163,7 @@ public class UserController {
 
     public String logout(Matcher matcher) {
         Database.getInstance().setCurrentUser(null);
+        Menu.exitMenu(null);
         return "user logged out successfully!";
     }
 }

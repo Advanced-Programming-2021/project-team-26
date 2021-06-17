@@ -42,6 +42,8 @@ public class MonsterController {
     private Monster monster;
     private MonsterPosition position;
     private CardAddress monsterAddress;
+    protected Board thisBoard;
+    protected Board otherBoard;
     private boolean hasPositionChanged;
     private boolean isMonsterNew;
     private boolean hasAttackedThisTurn;
@@ -59,6 +61,8 @@ public class MonsterController {
                               MonsterPosition position, CardAddress monsterAddress) {
         this.gameController = gameController;
         this.monster = new Monster(monster);
+        this.thisBoard = gameController.getGame().getThisBoard();
+        this.otherBoard = gameController.getGame().getOtherBoard();
         setMonsterAddress(monsterAddress);
         setPosition(position);
         setMonsterNew(true);
@@ -143,8 +147,8 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void remove(MonsterController attacker) {
-                gameController.getGame().getThisBoard().removeMonster(this);
-                gameController.getGame().getOtherBoard().removeMonster(attacker);
+                this.thisBoard.removeMonster(this);
+                this.otherBoard.removeMonster(attacker);
             }
         };
     }
@@ -509,7 +513,7 @@ public class MonsterController {
     }
 
     public void remove(MonsterController attacker) {
-        gameController.getGame().getThisBoard().removeMonster(this);
+        thisBoard.removeMonster(this);
     }
 
     public String getName() {

@@ -15,6 +15,10 @@ public class LoginMenu extends Menu {
     static {
         MAP.put(Pattern.compile("^\\s*user create (.+)\\s*$"), userController::addNewUser);
         MAP.put(Pattern.compile("^\\s*user login (.+)\\s*$"), userController::loginUser);
+        MAP.put(Pattern.compile("^\\s*exit\\s*$"), i -> {
+            Menu.exitMenu(null);
+            return null;
+        });
         MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "login menu";
         });
