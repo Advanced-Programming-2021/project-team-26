@@ -38,7 +38,6 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Magnum Shield", SpellController::makeMagnumShield);
     }
 
-
     private final Spell spell;
 
     private SpellController(GameController gameController, Spell spell, SpellTrapPosition position) {

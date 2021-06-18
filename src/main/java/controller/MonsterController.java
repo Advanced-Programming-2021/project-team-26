@@ -24,10 +24,7 @@ public class MonsterController {
         MONSTER_MAKERS.put("Command knight", MonsterController::makeCommandKnight);
         MONSTER_MAKERS.put("Yomi Ship", MonsterController::makeYomiShip);
         MONSTER_MAKERS.put("Suijin", MonsterController::makeSuijin);
-        MONSTER_MAKERS.put("Crab Turtle", MonsterController::makeCrabTurtle);
-        MONSTER_MAKERS.put("Skull Gaurdian", MonsterController::makeSkullGaurdian);
         MONSTER_MAKERS.put("Man-Eater Bug", MonsterController::makeManEaterBug);
-        MONSTER_MAKERS.put("Gate Guardian", MonsterController::makeGateGuardian);
         MONSTER_MAKERS.put("Scanner", MonsterController::makeScanner);
         MONSTER_MAKERS.put("Marshmallon", MonsterController::makeMarshmallon);
         MONSTER_MAKERS.put("Beast King Barbaros", MonsterController::makeBeastKingBarbaros);
@@ -183,22 +180,6 @@ public class MonsterController {
         };
     }
 
-    private static MonsterController makeCrabTurtle
-            (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
-        return new MonsterController(gameController, monster, position, monsterAddress) {
-
-        };
-    }
-
-    private static MonsterController makeSkullGaurdian
-            (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
-        return new MonsterController(gameController, monster, position, monsterAddress) {
-
-        };
-    }
-
     private static MonsterController makeManEaterBug
             (GameController gameController, Monster monster,
              MonsterPosition position, CardAddress monsterAddress) {
@@ -227,13 +208,6 @@ public class MonsterController {
 
                 this.setPosition(MonsterPosition.ATTACK);
             }
-        };
-    }
-
-    private static MonsterController makeGateGuardian
-            (GameController gameController, Monster monster,
-             MonsterPosition position, CardAddress monsterAddress) {
-        return new MonsterController(gameController, monster, position, monsterAddress) {
         };
     }
 
@@ -394,9 +368,9 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void summon() {
-                Print.getInstance().printMessage("Do you want to summon this card specially with remove a card from your HAND?" +
-                        "1. yes" +
-                        "2. no");
+                Print.getInstance().printMessage("Do you want to summon this card specially with remove a card from your HAND?\n" +
+                        "1. yes\n" +
+                        "2. no\n");
 
                 Scanner scanner = Scan.getScanner();
                 String input = scanner.nextLine();

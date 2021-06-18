@@ -201,21 +201,26 @@ public class GameController {
         if (selectedMonster.getLevel() > 4 && selectedMonster.getLevel() <= 6) {
             if (game.getThisBoard().getMonsterZoneNumber() < 1)
                 throw new NotEnoughCardForTribute();
+            Print.getInstance().printMessage("Enter the address of the monster you want to tribute:");
 
             Integer monsterAddress = Scan.getInstance().getInteger();
             if (monsterAddress == null)
                 return null;
             if (monsterAddress >= Board.CARD_NUMBER_IN_ROW ||
                     game.getThisBoard().getMonsterByIndex(monsterAddress - 1) == null)
-                throw new CardNotFoundInPositionException("there no monsters one this address");
+                throw new CardNotFoundInPositionException("There no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress - 1);
         } else if (selectedMonster.getLevel() > 6) {
             if (game.getThisBoard().getMonsterZoneNumber() < 2)
                 throw new NotEnoughCardForTribute();
 
+            Print.getInstance().printMessage("Enter the address of the first monster you want to tribute:");
             Integer monsterAddress1 = Scan.getInstance().getInteger();
+
+            Print.getInstance().printMessage("Enter the address of the second monster you want to tribute:");
             Integer monsterAddress2 = Scan.getInstance().getInteger();
+
             if (monsterAddress1 == null || monsterAddress2 == null)
                 return null;
             if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||
@@ -459,7 +464,8 @@ public class GameController {
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
 
-        if (selectedCardAddress.getPlace() == Place.SpellTrapZone)
+        if (selectedCardAddress.getPlace() == Place.SpellTrapZone &&
+        selectedSpellTrap.getPosition() == SpellTrapPosition.UP)
             throw new AlreadyActivatedException();
 
         Spell spell = (Spell) selectedCard;
