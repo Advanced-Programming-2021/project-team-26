@@ -139,7 +139,8 @@ public class Board {
         }
         hand.remove(monster);
         CardAddress monsterAddress = new CardAddress(Place.MonsterZone, Owner.Me, lastEmpty);
-        return monstersZone.put(lastEmpty, MonsterController.getInstance(gameController, monster, position, monsterAddress));
+        monstersZone.put(lastEmpty, MonsterController.getInstance(gameController, monster, position, monsterAddress));
+        return monstersZone.get(lastEmpty);
     }
 
     public void shuffleDeck() {
