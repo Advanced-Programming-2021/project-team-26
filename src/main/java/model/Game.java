@@ -73,6 +73,10 @@ public class Game {
             standByPhase();
             nextPhase();
         } else if (this.phase == Phase.MAIN1 || this.phase == Phase.MAIN2 || this.phase == Phase.BATTLE) {
+            if (this.phase == Phase.MAIN1) {
+                for (MonsterController monster : getThisBoard().getMonstersZone())
+                    monster.runMonsterEffectOnEachTurn();
+            }
             if (getThisUser() instanceof Ai) {
                 switch (this.phase) {
                     case MAIN1:

@@ -39,11 +39,11 @@ public class MonsterController {
     }
 
     private final GameController gameController;
+    protected Board thisBoard;
+    protected Board otherBoard;
     private Monster monster;
     private MonsterPosition position;
     private CardAddress monsterAddress;
-    protected Board thisBoard;
-    protected Board otherBoard;
     private boolean hasPositionChanged;
     private boolean isMonsterNew;
     private boolean hasAttackedThisTurn;
@@ -242,7 +242,7 @@ public class MonsterController {
              MonsterPosition position, CardAddress monsterAddress) {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
-            public void runMonsterEffect() throws InvalidSelection {
+            public void runMonsterEffectOnEachTurn() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
@@ -298,8 +298,7 @@ public class MonsterController {
             (GameController gameController, Monster monster,
              MonsterPosition position, CardAddress monsterAddress) {
         return new MonsterController(gameController, monster, position, monsterAddress) {
-            @Override
-            public void runMonsterEffect() {
+            {
                 Collection<MonsterController> monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
                 for (MonsterController monsterController : monstersZone) {
                     if (monsterController.position.equals(MonsterPosition.ATTACK)) {
@@ -330,7 +329,7 @@ public class MonsterController {
              MonsterPosition position, CardAddress monsterAddress) {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
-            public void runMonsterEffect() throws InvalidSelection {
+            public void runMonsterEffectOnEachTurn() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("Do you want to activate the card effect?" +
                             "1. yes" +
@@ -489,6 +488,10 @@ public class MonsterController {
     }
 
     public void runMonsterEffectAtSummon() {
+
+    }
+
+    public void runMonsterEffectOnEachTurn() {
 
     }
 
