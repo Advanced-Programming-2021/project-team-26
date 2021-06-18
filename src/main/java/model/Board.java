@@ -158,7 +158,8 @@ public class Board {
             throw new FullSpellTrapZone();
         }
         hand.remove(spellTrap);
-        return spellTrapZone.put(lastEmpty, SpellTrapController.getInstance(gameController, spellTrap, position));
+        spellTrapZone.put(lastEmpty, SpellTrapController.getInstance(gameController, spellTrap, position));
+        return spellTrapZone.get(lastEmpty);
     }
 
     public void removeMonster(int index) {
