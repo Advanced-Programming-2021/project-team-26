@@ -9,6 +9,7 @@ import model.cards.trap.Trap;
 import view.Print;
 import view.Scan;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -73,7 +74,7 @@ public class TrapController extends SpellTrapController {
 
             @Override
             public AttackResult onAttacked(MonsterController attacker, MonsterController defender) {
-                MonsterController[] attackerMonsters = gameController.getGame().getThisBoard().getMonstersZone();
+                Collection<MonsterController> attackerMonsters = gameController.getGame().getThisBoard().getMonstersZone();
                 for (MonsterController monster : attackerMonsters) {
                     if (monster.getPosition() == MonsterPosition.ATTACK)
                         //TODO remove monster with effect or just remove it??

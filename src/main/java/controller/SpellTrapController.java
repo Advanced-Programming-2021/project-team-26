@@ -131,13 +131,13 @@ public abstract class SpellTrapController {
                 throw new InvalidSelection();
 
             if (input.containsKey("opponent") || input.containsKey("o") && isRivalMonsterZoneAccessible) {
-                if (game.getOtherBoard().getMonstersZone()[monsterNumber - 1] != null) {
-                    selectedCard = game.getOtherBoard().getMonstersZone()[monsterNumber - 1].getMonster();
+                if (game.getOtherBoard().getMonsterByIndex(monsterNumber - 1) != null) {
+                    selectedCard = game.getOtherBoard().getMonsterByIndex(monsterNumber - 1).getMonster();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
                 }
             } else if (isOurMonsterZoneAccessible) {
-                if (game.getThisBoard().getMonstersZone()[monsterNumber - 1] != null) {
-                    selectedCard = game.getThisBoard().getMonstersZone()[monsterNumber - 1].getMonster();
+                if (game.getThisBoard().getMonsterByIndex(monsterNumber - 1) != null) {
+                    selectedCard = game.getThisBoard().getMonsterByIndex(monsterNumber - 1).getMonster();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
                 }
             } else throw new InvalidSelection();
@@ -152,13 +152,13 @@ public abstract class SpellTrapController {
                 throw new InvalidSelection();
 
             if (input.containsKey("opponent") || input.containsKey("o") && isRivalSpellTrapAccessible) {
-                if (game.getOtherBoard().getSpellTrapZone()[spellTrap - 1] != null) {
-                    selectedCard = game.getOtherBoard().getSpellTrapZone()[spellTrap - 1].getCard();
+                if (game.getOtherBoard().getSpellTrapByIndex(spellTrap - 1) != null) {
+                    selectedCard = game.getOtherBoard().getSpellTrapByIndex(spellTrap - 1).getCard();
                     selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Opponent, spellTrap - 1);
                 }
             } else if (isOurSpellTrapAccessible) {
-                if (game.getThisBoard().getSpellTrapZone()[spellTrap - 1] != null) {
-                    selectedCard = game.getThisBoard().getSpellTrapZone()[spellTrap - 1].getCard();
+                if (game.getThisBoard().getSpellTrapByIndex(spellTrap - 1) != null) {
+                    selectedCard = game.getThisBoard().getSpellTrapByIndex(spellTrap - 1).getCard();
                     selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Me, spellTrap - 1);
                 }
             } else throw new InvalidSelection();

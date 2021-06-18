@@ -12,10 +12,7 @@ import model.cards.spell.SpellType;
 import view.Print;
 import view.Scan;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class SpellController extends SpellTrapController {
     private static final HashMap<String, SpellController.SpellMakerInterface> spellMakers = new HashMap<>();
@@ -301,7 +298,7 @@ public class SpellController extends SpellTrapController {
                 setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
             }
 
-            private void setAttackAndDefenses(MonsterController[] monsterZone) {
+            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
                 for (MonsterController monsterController : monsterZone) {
                     if (monsterController.getMonster().getType() == MonsterType.SPELL_CASTER ||
                             monsterController.getMonster().getType() == MonsterType.FIEND) {
@@ -325,7 +322,7 @@ public class SpellController extends SpellTrapController {
                 setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
             }
 
-            private void setAttackAndDefenses(MonsterController[] monsterZone) {
+            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
                 for (MonsterController monsterController : monsterZone) {
                     if (monsterController.getMonster().getType() == MonsterType.INSECT ||
                             monsterController.getMonster().getType() == MonsterType.BEAST ||
@@ -346,8 +343,8 @@ public class SpellController extends SpellTrapController {
                 setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
             }
 
-            private void setAttackAndDefenses(MonsterController[] monsterZone) {
-                int monstersINGraveyard = gameController.getGame().getThisBoard().geNumberOfMonstersINGraveyard();
+            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
+                int monstersINGraveyard = gameController.getGame().getThisBoard().getNumberOfMonstersINGraveyard();
                 for (MonsterController monsterController : monsterZone) {
                     if (monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR ||
                             monsterController.getMonster().getType() == MonsterType.BEAST) {
@@ -368,7 +365,7 @@ public class SpellController extends SpellTrapController {
                 setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
             }
 
-            private void setAttackAndDefenses(MonsterController[] monsterZone) {
+            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
                 for (MonsterController monsterController : monsterZone) {
                     if (monsterController.getMonster().getType() == MonsterType.AQUA) {
                         monsterController.getMonster().increaseAttackPower(500);

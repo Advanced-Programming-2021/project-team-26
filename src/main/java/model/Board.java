@@ -10,16 +10,14 @@ import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Board {
     public final static int CARD_NUMBER_IN_ROW = 5;
     public final static int INITIAL_CARDS = 5;
     private List<Card> deck;
-    private MonsterController[] monstersZone;
-    private SpellTrapController[] spellTrapZone;
+    private HashMap<Integer, MonsterController> monstersZone;
+    private HashMap<Integer, SpellTrapController> spellTrapZone;
     private List<Card> graveyard;
     private List<Card> hand;
     private SpellController fieldZone;
@@ -40,12 +38,24 @@ public class Board {
         return deck;
     }
 
-    public MonsterController[] getMonstersZone() {
-        return monstersZone;
+    public Collection<MonsterController> getMonstersZone() {
+        return monstersZone.values();
     }
 
-    public SpellTrapController[] getSpellTrapZone() {
-        return spellTrapZone;
+    public MonsterController getMonsterByIndex(int index) {
+        if (monstersZone.containsKey(index))
+            return monstersZone.get(index);
+        return null;
+    }
+
+    public Collection<SpellTrapController> getSpellTrapZone() {
+        return spellTrapZone.values();
+    }
+
+    public SpellTrapController getSpellTrapByIndex(int index) {
+        if (spellTrapZone.containsKey(index))
+            return spellTrapZone.get(index);
+        return null;
     }
 
     public List<Card> getGraveyard() {
@@ -76,11 +86,11 @@ public class Board {
     }
 
     private void initMonstersZone() {
-        this.monstersZone = new MonsterController[CARD_NUMBER_IN_ROW];
+        this.monstersZone = new HashMap<>();
     }
 
     private void initSpellTrapZone() {
-        this.spellTrapZone = new SpellTrapController[CARD_NUMBER_IN_ROW];
+        this.spellTrapZone = new HashMap<>();
     }
 
     private void initGraveyard() {
@@ -121,16 +131,15 @@ public class Board {
             throw new MonsterNotFoundException();
         }
         int lastEmpty = 0;
-        while (lastEmpty < monstersZone.length && monstersZone[lastEmpty] != null) {
+        while (lastEmpty < CARD_NUMBER_IN_ROW && monstersZone.containsKey(lastEmpty)) {
             lastEmpty++;
         }
-        if (lastEmpty >= monstersZone.length) {
+        if (lastEmpty >= CARD_NUMBER_IN_ROW) {
             throw new FullMonsterZone();
         }
         hand.remove(monster);
         CardAddress monsterAddress = new CardAddress(Place.MonsterZone, Owner.Me, lastEmpty);
-        monstersZone[lastEmpty] = MonsterController.getInstance(gameController, monster, position, monsterAddress);
-        return monstersZone[lastEmpty];
+        return monstersZone.put(lastEmpty, MonsterController.getInstance(gameController, monster, position, monsterAddress));
     }
 
     public void shuffleDeck() {
@@ -142,42 +151,42 @@ public class Board {
             throw new SpellTrapNotFoundException();
         }
         int lastEmpty = 0;
-        while (lastEmpty < spellTrapZone.length && spellTrapZone[lastEmpty] != null) {
+        while (lastEmpty < CARD_NUMBER_IN_ROW && spellTrapZone.containsKey(lastEmpty)) {
             lastEmpty++;
         }
-        if (lastEmpty >= spellTrapZone.length) {
+        if (lastEmpty >= CARD_NUMBER_IN_ROW) {
             throw new FullSpellTrapZone();
         }
         hand.remove(spellTrap);
-        spellTrapZone[lastEmpty] = SpellTrapController.getInstance(gameController, spellTrap, position);
-        return spellTrapZone[lastEmpty];
+        return spellTrapZone.put(lastEmpty, SpellTrapController.getInstance(gameController, spellTrap, position));
     }
 
     public void removeMonster(int index) {
-        if (monstersZone[index] == null)
+        if (!monstersZone.containsKey(index))
             return;
-        graveyard.add(monstersZone[index].getCard());
-        monstersZone[index] = null;
+        graveyard.add(monstersZone.get(index).getCard());
+        monstersZone.remove(index);
     }
 
     public void removeMonsterWithoutAddingToGraveyard(Monster monster) {
-        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
-            if (monstersZone[i].getMonster() == monster) {
-                monstersZone[i] = null;
-            }
-        }
-    }
-
-    public void removeMonster(MonsterController monster) {
-        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
-            if (monstersZone[i] == monster) {
-                removeMonster(i);
+        for (Integer index : monstersZone.keySet()) {
+            if (monstersZone.get(index).getMonster().equals(monster)) {
+                monstersZone.remove(index);
                 return;
             }
         }
     }
 
-    public int geNumberOfMonstersINGraveyard() {
+    public void removeMonster(MonsterController monster) {
+        for (Integer index : monstersZone.keySet()) {
+            if (monstersZone.get(index) == monster) {
+                removeMonster(index);
+                return;
+            }
+        }
+    }
+
+    public int getNumberOfMonstersINGraveyard() {
         int count = 0;
         for (Card card : graveyard) {
             if (card instanceof Monster)
@@ -188,47 +197,37 @@ public class Board {
     }
 
     public void removeAllMonsters() {
-        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
-            removeMonster(i);
-        }
+        monstersZone.clear();
     }
 
     public void removeSpellTrap(int index) {
-        if (spellTrapZone[index] == null)
+        if (!spellTrapZone.containsKey(index))
             return;
-        graveyard.add(spellTrapZone[index].getCard());
-        spellTrapZone[index] = null;
+        graveyard.add(spellTrapZone.get(index).getCard());
+        spellTrapZone.remove(index);
     }
 
     public void removeSpellTrap(SpellTrapController spellTrap) {
-        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
-            if (spellTrapZone[i] == spellTrap) {
-                removeSpellTrap(i);
+        for (Integer index : spellTrapZone.keySet()) {
+            if (spellTrapZone.get(index) == spellTrap) {
+                removeSpellTrap(index);
                 return;
             }
         }
     }
 
     public void removeAllSpellTraps() {
-        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++) {
-            removeSpellTrap(i);
-        }
+        spellTrapZone.clear();
     }
 
     public void standByPhase() {
-        for (SpellTrapController spellTrap : this.spellTrapZone) {
-            if (spellTrap != null)
-                spellTrap.standBy();
+        for (SpellTrapController spellTrap : this.spellTrapZone.values()) {
+            spellTrap.standBy();
         }
     }
 
     public int getMonsterZoneNumber() {
-        int number = 0;
-        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++)
-            if (monstersZone[i] != null)
-                number++;
-
-        return number;
+        return monstersZone.size();
     }
 
     public boolean canDirectAttack() {
@@ -236,12 +235,7 @@ public class Board {
     }
 
     public int getSpellTrapZoneNumber() {
-        int number = 0;
-        for (int i = 0; i < CARD_NUMBER_IN_ROW; i++)
-            if (spellTrapZone[i] != null)
-                number++;
-
-        return number;
+        return spellTrapZone.size();
     }
 
     public void putFiled(Spell spell) {

@@ -74,14 +74,14 @@ public class GameController {
                 throw new InvalidSelection();
 
             if (input.containsKey("opponent") || input.containsKey("o")) {
-                if (game.getOtherBoard().getMonstersZone()[monsterNumber - 1] != null) {
-                    selectedMonster = game.getOtherBoard().getMonstersZone()[monsterNumber - 1];
-                    selectedCard = game.getOtherBoard().getMonstersZone()[monsterNumber - 1].getCard();
+                if (game.getOtherBoard().getMonsterByIndex(monsterNumber - 1) != null) {
+                    selectedMonster = game.getOtherBoard().getMonsterByIndex(monsterNumber - 1);
+                    selectedCard = game.getOtherBoard().getMonsterByIndex(monsterNumber - 1).getCard();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
                 }
             } else {
-                if (game.getThisBoard().getMonstersZone()[monsterNumber - 1] != null) {
-                    selectedMonster = game.getThisBoard().getMonstersZone()[monsterNumber - 1];
+                if (game.getThisBoard().getMonsterByIndex(monsterNumber - 1) != null) {
+                    selectedMonster = game.getThisBoard().getMonsterByIndex(monsterNumber - 1);
                     selectedCard = selectedMonster.getCard();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
                 }
@@ -96,14 +96,14 @@ public class GameController {
                 throw new InvalidSelection();
 
             if (input.containsKey("opponent") || input.containsKey("o")) {
-                if (game.getOtherBoard().getSpellTrapZone()[spellNumber - 1] != null) {
-                    selectedSpellTrap = game.getOtherBoard().getSpellTrapZone()[spellNumber - 1];
-                    selectedCard = game.getOtherBoard().getSpellTrapZone()[spellNumber - 1].getCard();
+                if (game.getOtherBoard().getSpellTrapByIndex(spellNumber - 1) != null) {
+                    selectedSpellTrap = game.getOtherBoard().getSpellTrapByIndex(spellNumber - 1);
+                    selectedCard = game.getOtherBoard().getSpellTrapByIndex(spellNumber - 1).getCard();
                     selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Opponent, spellNumber - 1);
                 }
             } else {
-                if (game.getThisBoard().getSpellTrapZone()[spellNumber - 1] != null) {
-                    selectedSpellTrap = game.getThisBoard().getSpellTrapZone()[spellNumber - 1];
+                if (game.getThisBoard().getSpellTrapByIndex(spellNumber - 1) != null) {
+                    selectedSpellTrap = game.getThisBoard().getSpellTrapByIndex(spellNumber - 1);
                     selectedCard = selectedSpellTrap.getCard();
                     selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Me, spellNumber - 1);
                 }
@@ -206,7 +206,7 @@ public class GameController {
             if (monsterAddress == null)
                 return null;
             if (monsterAddress >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
+                    game.getThisBoard().getMonsterByIndex(monsterAddress - 1) == null)
                 throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress - 1);
@@ -220,8 +220,8 @@ public class GameController {
                 return null;
             if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||
                     monsterAddress2 >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
-                    game.getThisBoard().getMonstersZone()[monsterAddress2 - 1] == null)
+                    game.getThisBoard().getMonsterByIndex(monsterAddress1 - 1) == null ||
+                    game.getThisBoard().getMonsterByIndex(monsterAddress2 - 1) == null)
                 throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress1 - 1);
@@ -293,7 +293,7 @@ public class GameController {
             if (monsterAddress == null)
                 return;
             if (monsterAddress >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonstersZone()[monsterAddress - 1] == null)
+                    game.getThisBoard().getMonsterByIndex(monsterAddress - 1) == null)
                 throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress - 1);
@@ -307,8 +307,8 @@ public class GameController {
                 return;
             if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||
                     monsterAddress2 >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonstersZone()[monsterAddress1 - 1] == null ||
-                    game.getThisBoard().getMonstersZone()[monsterAddress2 - 1] == null)
+                    game.getThisBoard().getMonsterByIndex(monsterAddress1 - 1) == null ||
+                    game.getThisBoard().getMonsterByIndex(monsterAddress2 - 1) == null)
                 throw new CardNotFoundInPositionException("there no monsters one this address");
 
             game.getThisBoard().removeMonster(monsterAddress1 - 1);
@@ -423,7 +423,7 @@ public class GameController {
 
         int number = Integer.parseInt(matcher.group(1));
         number--;
-        MonsterController toBeAttacked = game.getOtherBoard().getMonstersZone()[number];
+        MonsterController toBeAttacked = game.getOtherBoard().getMonsterByIndex(number);
         if (toBeAttacked == null || !toBeAttacked.canBeAttacked(selectedMonster))
             throw new NoCardToAttackException();
 

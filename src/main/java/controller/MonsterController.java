@@ -112,7 +112,7 @@ public class MonsterController {
             public void runMonsterEffectAtSummon() {
                 if (isEffectActive) {
                     //increase other monsters attackPower for 400
-                    MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                    Collection<MonsterController> monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
                     for (MonsterController monsterController : monstersZone) {
                         if (!underEffectMonsters.contains(monsterController)) {
                             monsterController.monster.increaseAttackPower(400);
@@ -126,7 +126,7 @@ public class MonsterController {
             @Override
             public boolean canBeAttacked(MonsterController attacker) {
                 if (isEffectActive) {
-                    return gameController.getGame().getThisBoard().getMonstersZone().length < 2;
+                    return gameController.getGame().getThisBoard().getMonsterZoneNumber() < 2;
                 }
                 return true;
             }
@@ -216,7 +216,7 @@ public class MonsterController {
                     Print.getInstance().printMessage("Select one of rival Monsters to remove from his Monster Zone");
                     input = scanner.nextLine();
                     select(input);
-                    MonsterController[] monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
+                    Collection<MonsterController> monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
                     for (MonsterController monster : monstersZone) {
                         if (monster.getMonster().getName().equals(getSelectedCard().getName())) {
                             MonsterController selectedMonsterController = MonsterController.getMonsterControllerByMonster((Monster) getSelectedCard());
@@ -300,7 +300,7 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void runMonsterEffect() {
-                MonsterController[] monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                Collection<MonsterController> monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
                 for (MonsterController monsterController : monstersZone) {
                     if (monsterController.position.equals(MonsterPosition.ATTACK)) {
                         monster.increaseAttackPower(monsterController.monster.getLevel() * 300);
@@ -629,13 +629,13 @@ public class MonsterController {
                 throw new InvalidSelection();
 
             if (input.containsKey("opponent") || input.containsKey("o") && isRivalMonsterZoneAccessible) {
-                if (game.getOtherBoard().getMonstersZone()[monsterNumber - 1] != null) {
-                    selectedCard = game.getOtherBoard().getMonstersZone()[monsterNumber - 1].getMonster();
+                if (game.getOtherBoard().getMonsterByIndex(monsterNumber - 1) != null) {
+                    selectedCard = game.getOtherBoard().getMonsterByIndex(monsterNumber - 1).getMonster();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
                 }
             } else if (isOurMonsterZoneAccessible) {
-                if (game.getThisBoard().getMonstersZone()[monsterNumber - 1] != null) {
-                    selectedCard = game.getThisBoard().getMonstersZone()[monsterNumber - 1].getMonster();
+                if (game.getThisBoard().getMonsterByIndex(monsterNumber - 1) != null) {
+                    selectedCard = game.getThisBoard().getMonsterByIndex(monsterNumber - 1).getMonster();
                     selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
                 }
             } else throw new InvalidSelection();

@@ -86,4 +86,10 @@ public class Monster extends Card {
     public CardType getCardType() {
         return cardType;
     }
+
+    public boolean equals(Object o) {
+        if (o instanceof Monster)
+            return name.equals(((Monster) o).name);
+        return false;
+    }
 }
