@@ -34,6 +34,7 @@ public class MainMenuController {
         } catch (NoPlayerAvailable ignored) {
 
         }
+        DuelMenu.setGameController(gameController);
         new DuelMenu(gameController).execute();
         return null;
     }

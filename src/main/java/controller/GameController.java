@@ -46,10 +46,11 @@ public class GameController {
 
     public GameController(User player, int round) throws NoPlayerAvailable {
         players[0] = player;
-        players[1] = new Ai(this);
+        players[1] = new Ai(this, 1);
         decks[0] = (Deck) players[0].getActiveDeck().clone();
         decks[1] = (Deck) players[1].getActiveDeck().clone();
         this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
+        ((Ai) players[1]).init();
         this.roundNumber = round;
         game.nextPhase();
     }

@@ -11,27 +11,27 @@ import java.util.Random;
 
 public class Ai extends User {
     private final GameController gameController;
-    private final Board myBoard;
     private final int myTurn;
     private final int cardNumberInDeck = 45;
-    private final Board opponentBoard;
+    private Board myBoard;
+    private Board opponentBoard;
 
-    public Ai(GameController gameController) {
+    public Ai(GameController gameController, int myTurn) {
         this.username = "AI";
         this.nickname = "AI";
         this.money = Integer.MAX_VALUE;
         this.gameController = gameController;
-        if (gameController.getGame().getUser(0) == this)
-            myTurn = 0;
-        else
-            myTurn = 1;
-        this.myBoard = gameController.getGame().getBoard(myTurn);
-        this.opponentBoard = gameController.getGame().getBoard(1 - myTurn);
+        this.myTurn = myTurn;
         createDeck();
     }
 
+    public void init() {
+        this.myBoard = gameController.getGame().getBoard(myTurn);
+        this.opponentBoard = gameController.getGame().getBoard(1 - myTurn);
+    }
+
     private void createDeck() {
-        Deck deck = new Deck("aiDeck", "ai");
+        Deck deck = new Deck("aiDeck", null);
         for (Card card : getMainCards()) {
             deck.addCardToMainDeck(card);
         }
