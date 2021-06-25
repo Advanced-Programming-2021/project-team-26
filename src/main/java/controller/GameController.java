@@ -244,6 +244,9 @@ public class GameController {
         for (MonsterController monsterEffect : game.getThisBoard().getMonstersZone())
             monsterEffect.runMonsterEffectAtSummon();
         deselect();
+        if (activeOpponentTrapOnSummon(monster, "normal")) {
+            return null;
+        }
         return "summoned successfully";
     }
 
@@ -713,6 +716,33 @@ public class GameController {
                     String answer = Scan.getInstance().getString();
                     if (answer.equals("yes")) {
                         result = trap.onAttacked(attacker, defender);
+                        trap.remove();
+                    }
+                }
+            }
+        }
+        if (found) {
+            game.temporaryChangeTurn();
+        }
+        return result;
+    }
+
+    public boolean activeOpponentTrapOnSummon(MonsterController summoned, String type) {
+        boolean result = false;
+        boolean found = false;
+        for (SpellTrapController controller : game.getOtherBoard().getSpellTrapZone()) {
+            if (controller instanceof TrapController) {
+                TrapController trap = (TrapController) controller;
+                if (trap.canActiveOnSummon(summoned, type)) {
+                    if (!found) {
+                        found = true;
+                        game.temporaryChangeTurn();
+                    }
+                    Print.getInstance().printMessage("do you want to activate " + trap.getCard().getName());
+                    String answer = Scan.getInstance().getString();
+                    if (answer.equals("yes")) {
+                        result |= trap.onSummon(summoned, type);
+                        trap.remove();
                     }
                 }
             }

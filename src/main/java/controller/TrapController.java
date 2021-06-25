@@ -4,7 +4,6 @@ import exceptions.TrapNotFoundException;
 import model.AttackResult;
 import model.cards.Card;
 import model.cards.SpellTrap;
-import model.cards.monster.Monster;
 import model.cards.trap.Trap;
 import view.Print;
 import view.Scan;
@@ -117,15 +116,37 @@ public class TrapController extends SpellTrapController {
     private static TrapController makeTrapHole(GameController gameController, Trap trap, SpellTrapPosition position) {
         return new TrapController(gameController, trap, position) {
             @Override
-            public void onActive() {
+            public boolean canActiveOnSummon(MonsterController summonMonster, String type) {
+                return (type.equals("normal") || type.equals("flip")) &&
+                        (summonMonster.getMonster().getAttackPower() >= 1000);
+            }
 
+            @Override
+            public boolean onSummon(MonsterController summonMonster, String type) {
+                summonMonster.remove(null);
+                return true;
             }
         };
     }
 
     private static TrapController makeTorrentialTribute(GameController gameController, Trap trap, SpellTrapPosition position) {
         return new TrapController(gameController, trap, position) {
+            @Override
+            public boolean canActiveOnSummon(MonsterController summonMonster, String type) {
+                return true;
+            }
 
+            @Override
+            public boolean onSummon(MonsterController summonMonster, String type) {
+                for (MonsterController monster : gameController.getGame().getThisBoard().getMonstersZone()) {
+                    monster.remove(null);
+                }
+                for (MonsterController monster : gameController.getGame().getOtherBoard().getMonstersZone()) {
+                    monster.remove(null);
+                }
+                Print.getInstance().printMessage("all monsters removed");
+                return true;
+            }
         };
     }
 
@@ -137,7 +158,17 @@ public class TrapController extends SpellTrapController {
 
     private static TrapController makeNegateAttack(GameController gameController, Trap trap, SpellTrapPosition position) {
         return new TrapController(gameController, trap, position) {
+            @Override
+            public boolean canActiveOnAttacked(MonsterController attacker, MonsterController defender) {
+                return true;
+            }
 
+            @Override
+            public AttackResult onAttacked(MonsterController attacker, MonsterController defender) {
+                AttackResult result = new AttackResult(0, 0, false, false);
+                gameController.getGame().nextPhase();
+                return result;
+            }
         };
     }
 
@@ -169,12 +200,12 @@ public class TrapController extends SpellTrapController {
 
     }
 
-    public boolean canActiveOnSummon(Monster summonMonster) {
+    public boolean canActiveOnSummon(MonsterController summonMonster, String type) {
         return false;
     }
 
-    public void onSummon(Monster summonMonster) {
-
+    public boolean onSummon(MonsterController summonMonster, String type) {
+        return false;
     }
 
     public boolean canActiveOnAttacked(MonsterController attacker, MonsterController defender) {
@@ -187,6 +218,10 @@ public class TrapController extends SpellTrapController {
 
     public void onActive() {
 
+    }
+
+    public void remove() {
+        thisBoard.removeSpellTrap(this);
     }
 
     public interface TrapMakerInterface {
