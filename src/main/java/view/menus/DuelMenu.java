@@ -26,8 +26,8 @@ public class DuelMenu extends Menu {
         MAP.put(Pattern.compile("^\\s*next phase\\s*$"), gameController::nextPhase);
         MAP.put(Pattern.compile("^\\s*surrender\\s*$"), gameController::surrender);
         MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
-        MAP.put(Pattern.compile("^\\s*increaseLP\\s*$"), gameController::increaseLP);
-        MAP.put(Pattern.compile("^\\s*setWinner\\s*$"), gameController::setWinner);
+        MAP.put(Pattern.compile("^\\s*increase --LP([0-9]+)\\s*$"), gameController::increaseLP);
+        MAP.put(Pattern.compile("^\\s*duel set-winner(.+)\\s*$"), gameController::setWinner);
         MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "game menu";
         });
