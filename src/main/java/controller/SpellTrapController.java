@@ -29,6 +29,8 @@ public abstract class SpellTrapController {
     protected boolean isRivalSpellTrapAccessible = false;
     protected Card selectedCard = null;
     protected CardAddress selectedCardAddress = null;
+    protected Board thisBoard;
+    protected Board otherBoard;
 
     public static SpellTrapController getSpellTrapControllerBySpellTrap(SpellTrap spellTrap) {
         for (SpellTrapController spellTrapController : allSpellTrapControllers) {
@@ -39,12 +41,15 @@ public abstract class SpellTrapController {
         return null;
     }
 
-    public static SpellTrapController getInstance(GameController gameController, SpellTrap spellTrap, SpellTrapPosition position) {
+    public static SpellTrapController getInstance(GameController gameController, SpellTrap spellTrap, SpellTrapPosition position, Board thisBoard, Board otherBoard) {
+        SpellTrapController instance = null;
         if (spellTrap instanceof Spell)
-            return SpellController.getInstance(gameController, (Spell) spellTrap, position);
+            instance = SpellController.getInstance(gameController, (Spell) spellTrap, position);
         else if (spellTrap instanceof Trap)
-            return TrapController.getInstance(gameController, (Trap) spellTrap, position);
-        return null;
+            instance = TrapController.getInstance(gameController, (Trap) spellTrap, position);
+        instance.thisBoard = thisBoard;
+        instance.otherBoard = otherBoard;
+        return instance;
     }
 
     public void setCanSpellTrapsBeActive(boolean canSpellTrapsBeActive) {

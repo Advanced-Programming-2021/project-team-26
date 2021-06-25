@@ -74,7 +74,7 @@ public class TrapController extends SpellTrapController {
 
             @Override
             public AttackResult onAttacked(MonsterController attacker, MonsterController defender) {
-                Collection<MonsterController> attackerMonsters = gameController.getGame().getThisBoard().getMonstersZone();
+                Collection<MonsterController> attackerMonsters = otherBoard.getMonstersZone();
                 for (MonsterController monster : attackerMonsters) {
                     if (monster.getPosition() == MonsterPosition.ATTACK)
                         //TODO remove monster with effect or just remove it??
@@ -92,7 +92,7 @@ public class TrapController extends SpellTrapController {
                 Print.getInstance().printMessage("enter card name to remove:");
                 String cardName = Scan.getInstance().getString();
                 boolean found = false;
-                List<Card> hand = gameController.getGame().getOtherBoard().getHand();
+                List<Card> hand = otherBoard.getDeck();
                 for (Card card : hand) {
                     if (card.getName().equals(cardName)) {
                         found = true;
@@ -101,12 +101,14 @@ public class TrapController extends SpellTrapController {
                 }
 
                 if (found) {
-                    List<Card> opDeck = gameController.getGame().getOtherBoard().getDeck();
+                    List<Card> opDeck = otherBoard.getDeck();
                     opDeck.removeIf(card -> card.getName().equals(cardName));
+                    Print.getInstance().printMessage("all " + cardName + " are removed from opponent deck");
                 } else {
-                    List<Card> myDeck = gameController.getGame().getThisBoard().getDeck();
+                    List<Card> myDeck = thisBoard.getDeck();
                     int rnd = new Random().nextInt(myDeck.size());
-                    myDeck.remove(rnd);
+                    Card removed = myDeck.remove(rnd);
+                    Print.getInstance().printMessage(removed.getName() + " is removed from your deck");
                 }
             }
         };

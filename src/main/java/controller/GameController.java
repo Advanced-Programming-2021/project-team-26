@@ -17,11 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
+    private final Deck[] decks = new Deck[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
     private final int roundNumber;
     private Game game;
@@ -35,7 +37,9 @@ public class GameController {
     public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
         players[0] = firstPlayer;
         players[1] = secondPayer;
-        this.game = new Game(this, firstPlayer, secondPayer);
+        decks[0] = (Deck) players[0].getActiveDeck().clone();
+        decks[1] = (Deck) players[1].getActiveDeck().clone();
+        this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
         this.roundNumber = round;
         game.nextPhase();
     }
@@ -43,7 +47,9 @@ public class GameController {
     public GameController(User player, int round) throws NoPlayerAvailable {
         players[0] = player;
         players[1] = new Ai(this);
-        this.game = new Game(this, players[0], players[1]);
+        decks[0] = (Deck) players[0].getActiveDeck().clone();
+        decks[1] = (Deck) players[1].getActiveDeck().clone();
+        this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
         this.roundNumber = round;
         game.nextPhase();
     }
@@ -590,10 +596,61 @@ public class GameController {
             endMatch();
         } else {
             currentRound++;
+            changeDeck(0);
+            changeDeck(1);
             try {
-                game = new Game(this, players[0], players[1]);
+                game = new Game(this, players[0], players[1], decks[0], decks[1]);
             } catch (NoPlayerAvailable ignored) {
 
+            }
+        }
+    }
+
+    private void changeDeck(int turn) {
+        if (players[turn] instanceof Ai)
+            return;
+        Print print = Print.getInstance();
+        print.printMessage(decks[turn].showDeck("main"));
+        print.printMessage(decks[turn].showDeck("side"));
+
+        print.printMessage("\"<card name> side\" : put <card name> from main to side");
+        print.printMessage("\"<card name> main\" : put <card name> from side to main");
+        print.printMessage("\"show\" : show deck");
+        print.printMessage("\"end\" : finish arranging deck");
+
+        int mainDeckChange = 0;
+        String command;
+        Pattern sidePattern = Pattern.compile("[\\w ]* side");
+        Pattern mainPattern = Pattern.compile("[\\w ]* main");
+        while (true) {
+            command = Scan.getInstance().getString();
+            Matcher matcher;
+            if ((matcher = sidePattern.matcher(command)).find()) {
+                String name = matcher.group(1);
+                if (!decks[turn].getMainDeck().contains(name)) {
+                    print.printMessage("no such card");
+                    continue;
+                }
+                decks[turn].getMainDeck().remove(name);
+                decks[turn].getSideDeck().add(name);
+                mainDeckChange--;
+            } else if ((matcher = mainPattern.matcher(command)).find()) {
+                String name = matcher.group(1);
+                if (!decks[turn].getSideDeck().contains(name)) {
+                    print.printMessage("no such card");
+                    continue;
+                }
+                decks[turn].getSideDeck().remove(name);
+                decks[turn].getMainDeck().add(name);
+                mainDeckChange++;
+            } else if (command.equals("show")) {
+                print.printMessage(decks[turn].showDeck("main"));
+                print.printMessage(decks[turn].showDeck("side"));
+            } else if (command.equals("end")) {
+                if (mainDeckChange != 0) {
+                    print.printMessage("main deck card number shouldn't change");
+                } else
+                    break;
             }
         }
     }

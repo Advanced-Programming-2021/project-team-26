@@ -20,14 +20,14 @@ public class Game {
     private int surrenderPlayer = -1;
     private int winner = -1;
 
-    public Game(GameController gameController, User first, User second) throws NoPlayerAvailable {
+    public Game(GameController gameController, User first, User second, Deck firstDeck, Deck secondDeck) throws NoPlayerAvailable {
         if (first == null || second == null)
             throw new NoPlayerAvailable();
         this.gameController = gameController;
         users[0] = first;
         users[1] = second;
-        boards[0] = new Board(gameController, users[0].getActiveDeck());
-        boards[1] = new Board(gameController, users[1].getActiveDeck());
+        boards[0] = new Board(gameController, firstDeck);
+        boards[1] = new Board(gameController, secondDeck);
         lifePoints[0] = 8000;
         lifePoints[1] = 8000;
     }

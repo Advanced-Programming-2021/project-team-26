@@ -159,7 +159,7 @@ public class Board {
             throw new FullSpellTrapZone();
         }
         hand.remove(spellTrap);
-        spellTrapZone.put(lastEmpty, SpellTrapController.getInstance(gameController, spellTrap, position));
+        spellTrapZone.put(lastEmpty, SpellTrapController.getInstance(gameController, spellTrap, position, this, getOtherBoard()));
         return spellTrapZone.get(lastEmpty);
     }
 
