@@ -77,7 +77,7 @@ public class TrapController extends SpellTrapController {
                 for (MonsterController monster : attackerMonsters) {
                     if (monster.getPosition() == MonsterPosition.ATTACK)
                         //TODO remove monster with effect or just remove it??
-                        monster.remove(null);
+                        otherBoard.removeMonster(monster);
                 }
                 return new AttackResult(0, 0, false, false);
             }
@@ -123,7 +123,7 @@ public class TrapController extends SpellTrapController {
 
             @Override
             public boolean onSummon(MonsterController summonMonster, String type) {
-                summonMonster.remove(null);
+                otherBoard.removeMonster(summonMonster);
                 return true;
             }
         };
@@ -138,11 +138,11 @@ public class TrapController extends SpellTrapController {
 
             @Override
             public boolean onSummon(MonsterController summonMonster, String type) {
-                for (MonsterController monster : gameController.getGame().getThisBoard().getMonstersZone()) {
-                    monster.remove(null);
+                for (MonsterController monster : thisBoard.getMonstersZone()) {
+                    thisBoard.removeMonster(monster);
                 }
-                for (MonsterController monster : gameController.getGame().getOtherBoard().getMonstersZone()) {
-                    monster.remove(null);
+                for (MonsterController monster : otherBoard.getMonstersZone()) {
+                    otherBoard.removeMonster(monster);
                 }
                 Print.getInstance().printMessage("all monsters removed");
                 return true;
@@ -166,6 +166,7 @@ public class TrapController extends SpellTrapController {
             @Override
             public AttackResult onAttacked(MonsterController attacker, MonsterController defender) {
                 AttackResult result = new AttackResult(0, 0, false, false);
+                result.setMessage("attack is negated");
                 gameController.getGame().nextPhase();
                 return result;
             }
@@ -181,7 +182,9 @@ public class TrapController extends SpellTrapController {
 
             @Override
             public boolean onSummon(MonsterController summonMonster, String type) {
-                gameController.getGame().decreaseLifePoint(1 - myTurn, 2000);
+                gameController.getGame().decreaseLifePoint(myTurn, 2000);
+                otherBoard.removeMonster(summonMonster);
+                Print.getInstance().printMessage("your monster removed");
                 return true;
             }
         };
