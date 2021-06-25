@@ -398,6 +398,7 @@ public class GameController {
         if (selectedMonster.getPosition() != MonsterPosition.DEFENCE_DOWN || selectedMonster.isMonsterNew())
             throw new CannotFlipSummon();
 
+        activeOpponentTrapOnSummon(selectedMonster, "flip");
         selectedMonster.flip();
         deselect();
         return "flip summoned successfully";
@@ -423,10 +424,19 @@ public class GameController {
         if (!game.getOtherBoard().canDirectAttack())
             throw new CannotAttackDirectlyException();
 
-        int damage = selectedMonster.getCard().getAttackPower();
-        game.decreaseOtherLifePoint(damage);
+        AttackResult result = activeOpponentTrapOnAttack(selectedMonster, null);
+
+        if (result == null) {
+            result = new AttackResult(0, selectedMonster.getCard().getAttackPower(), false, false);
+        }
+
+        if (result.isRemoveMyCard())
+            selectedMonster.remove(null);
+
+        game.decreaseThisLifePoint(result.getMyLPDecrease());
+        game.decreaseOtherLifePoint(result.getOpLPDecrease());
         deselect();
-        return "you opponent receives " + damage + " battle damage";
+        return result.getMessage();
     }
 
     public String attack(Matcher matcher) {
