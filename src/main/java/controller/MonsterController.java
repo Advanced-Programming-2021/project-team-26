@@ -449,11 +449,6 @@ public class MonsterController {
         this.hasPositionChanged = hasPositionChanged;
     }
 
-    public void finishTurn() {
-        hasPositionChanged = false;
-        isMonsterNew = false;
-    }
-
     public void runMonsterEffect() {
 
     }

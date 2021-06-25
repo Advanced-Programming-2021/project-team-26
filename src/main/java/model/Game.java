@@ -123,6 +123,10 @@ public class Game {
             monsterController.setHasActivateEffectThisTurn(false);
         }
 
+        for (SpellTrapController spellTrapController : SpellController.getAllSpellControllers()) {
+            spellTrapController.nextTurn();
+        }
+
         ArrayList<SpellTrapController> spellTrapControllers = SpellController.getAllSpellControllers();
         for (SpellTrapController spellTrapController : spellTrapControllers) {
             if (spellTrapController instanceof SpellController) {

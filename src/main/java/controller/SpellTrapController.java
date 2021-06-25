@@ -32,6 +32,7 @@ public abstract class SpellTrapController {
     protected Board thisBoard;
     protected Board otherBoard;
     protected int myTurn;
+    protected boolean isSpellTrapNew = true;
 
     public static SpellTrapController getSpellTrapControllerBySpellTrap(SpellTrap spellTrap) {
         for (SpellTrapController spellTrapController : allSpellTrapControllers) {
@@ -52,6 +53,10 @@ public abstract class SpellTrapController {
         instance.thisBoard = gameController.getGame().getBoard(myTurn);
         instance.otherBoard = gameController.getGame().getBoard(1 - myTurn);
         return instance;
+    }
+
+    public boolean isSpellTrapNew() {
+        return isSpellTrapNew;
     }
 
     public void setCanSpellTrapsBeActive(boolean canSpellTrapsBeActive) {
@@ -221,5 +226,9 @@ public abstract class SpellTrapController {
     public void deselect() {
         selectedCardAddress = null;
         selectedCard = null;
+    }
+
+    public void nextTurn() {
+        isSpellTrapNew = false;
     }
 }

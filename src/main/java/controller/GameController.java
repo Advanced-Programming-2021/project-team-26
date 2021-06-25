@@ -12,7 +12,10 @@ import view.Menu;
 import view.Print;
 import view.Scan;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -486,19 +489,26 @@ public class GameController {
             throw new ActionNotAllowed();
 
         if (selectedCardAddress.getPlace() == Place.SpellTrapZone &&
-        selectedSpellTrap.getPosition() == SpellTrapPosition.UP)
+                selectedSpellTrap.getPosition() == SpellTrapPosition.UP)
             throw new AlreadyActivatedException();
 
         Spell spell = (Spell) selectedCard;
-        if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW &&
-                spell.getType() != SpellType.FIELD)
-            throw new FullSpellTrapZone();
 
         if (spell.getType() == SpellType.FIELD) {
             SpellController spellController = game.getThisBoard().putFiled(spell);
             spellController.runFieldEffectAtSummon();
         } else {
-            SpellController controller = (SpellController) game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.UP);
+            SpellTrapController controller;
+            if (selectedCardAddress.getPlace() == Place.Hand) {
+                if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
+                    throw new FullSpellTrapZone();
+                controller = game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.UP);
+            } else {
+                controller = selectedSpellTrap;
+                if (controller.isSpellTrapNew())
+                    throw new CannotActivateException();
+            }
+
             chain.push(controller);
             if (conditionsForChangingTurn()) {
                 changeTurn();
