@@ -31,6 +31,7 @@ public abstract class SpellTrapController {
     protected CardAddress selectedCardAddress = null;
     protected Board thisBoard;
     protected Board otherBoard;
+    protected int myTurn;
 
     public static SpellTrapController getSpellTrapControllerBySpellTrap(SpellTrap spellTrap) {
         for (SpellTrapController spellTrapController : allSpellTrapControllers) {
@@ -41,14 +42,15 @@ public abstract class SpellTrapController {
         return null;
     }
 
-    public static SpellTrapController getInstance(GameController gameController, SpellTrap spellTrap, SpellTrapPosition position, Board thisBoard, Board otherBoard) {
+    public static SpellTrapController getInstance(GameController gameController, SpellTrap spellTrap, SpellTrapPosition position, int myTurn) {
         SpellTrapController instance = null;
         if (spellTrap instanceof Spell)
             instance = SpellController.getInstance(gameController, (Spell) spellTrap, position);
         else if (spellTrap instanceof Trap)
             instance = TrapController.getInstance(gameController, (Trap) spellTrap, position);
-        instance.thisBoard = thisBoard;
-        instance.otherBoard = otherBoard;
+        instance.myTurn = myTurn;
+        instance.thisBoard = gameController.getGame().getBoard(myTurn);
+        instance.otherBoard = gameController.getGame().getBoard(1 - myTurn);
         return instance;
     }
 

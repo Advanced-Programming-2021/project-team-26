@@ -182,6 +182,15 @@ public class Game {
         return lifePoints[1 - turn];
     }
 
+    public void decreaseLifePoint(int turn, int amount) {
+        lifePoints[turn] -= amount;
+        if (lifePoints[turn] < 0) {
+            finished = true;
+            winner = 1 - turn;
+            gameController.endGame();
+        }
+    }
+
     public void decreaseThisLifePoint(int amount) {
         lifePoints[turn] -= amount;
         if (lifePoints[turn] < 0) {

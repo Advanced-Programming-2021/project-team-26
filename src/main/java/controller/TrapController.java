@@ -174,7 +174,16 @@ public class TrapController extends SpellTrapController {
 
     private static TrapController makeSolemnWarning(GameController gameController, Trap trap, SpellTrapPosition position) {
         return new TrapController(gameController, trap, position) {
+            @Override
+            public boolean canActiveOnSummon(MonsterController summonMonster, String type) {
+                return type.equals("normal") || type.equals("special");
+            }
 
+            @Override
+            public boolean onSummon(MonsterController summonMonster, String type) {
+                gameController.getGame().decreaseLifePoint(1 - myTurn, 2000);
+                return true;
+            }
         };
     }
 

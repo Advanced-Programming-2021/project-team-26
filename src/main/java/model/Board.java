@@ -22,6 +22,7 @@ public class Board {
     private List<Card> hand;
     private SpellController fieldZone;
     private GameController gameController;
+    private int myTurn = -1;
 
     public Board(GameController gameController, Deck deck) {
         initDeck(deck);
@@ -114,6 +115,16 @@ public class Board {
             return gameController.getGame().getThisBoard();
     }
 
+    private int getMyTurn() {
+        if (myTurn != -1)
+            return myTurn;
+        if (gameController.getGame().getBoard(0) == this)
+            myTurn = 0;
+        else
+            myTurn = 1;
+        return myTurn;
+    }
+
     public Card addCardToHand() {
         if (this.deck.size() == 0)
             return null;
@@ -159,7 +170,7 @@ public class Board {
             throw new FullSpellTrapZone();
         }
         hand.remove(spellTrap);
-        spellTrapZone.put(lastEmpty, SpellTrapController.getInstance(gameController, spellTrap, position, this, getOtherBoard()));
+        spellTrapZone.put(lastEmpty, SpellTrapController.getInstance(gameController, spellTrap, position, getMyTurn()));
         return spellTrapZone.get(lastEmpty);
     }
 
