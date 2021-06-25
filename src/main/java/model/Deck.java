@@ -101,13 +101,15 @@ public class Deck {
     public void addCardToMainDeck(Card card) {
         mainDeck.add(card.getName());
         allCards.add(card.getName());
-        Database.getInstance().writeUser(Objects.requireNonNull(User.getUserByUsername(deckOwnerUsername)));
+        if (deckOwnerUsername != null)
+            Database.getInstance().writeUser(Objects.requireNonNull(User.getUserByUsername(deckOwnerUsername)));
     }
 
     public void addCardToSideDeck(Card card) {
         sideDeck.add(card.getName());
         allCards.add(card.getName());
-        Database.getInstance().writeUser(User.getUserByUsername(deckOwnerUsername));
+        if (deckOwnerUsername != null)
+            Database.getInstance().writeUser(User.getUserByUsername(deckOwnerUsername));
     }
 
     public boolean IsNumberOfTheCardInDeckValid(String cardName) {
