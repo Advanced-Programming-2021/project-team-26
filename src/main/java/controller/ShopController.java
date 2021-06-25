@@ -55,7 +55,7 @@ public class ShopController {
         return false;
     }
 
-    public void increaseMoney(Matcher matcher) {
+    public String increaseMoney(Matcher matcher) {
         HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
         String moneyString = Scan.getInstance().getValue(input, "money", "m");
         if (moneyString == null)
@@ -70,6 +70,7 @@ public class ShopController {
         } catch (NumberFormatException e) {
             throw new InvalidInput();
         }
+        return "successfully increased";
     }
 
     private String allCardsToString() {
