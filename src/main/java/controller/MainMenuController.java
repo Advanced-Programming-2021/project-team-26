@@ -67,9 +67,9 @@ public class MainMenuController {
             throw new PlayWithYourself();
         }
 
-        if (firstUser.getActiveDeck().isDeckValid())
+        if (!firstUser.getActiveDeck().isDeckValid())
             throw new InvalidDeckException(firstUser.getUsername());
-        if (secondUser.getActiveDeck().isDeckValid())
+        if (!secondUser.getActiveDeck().isDeckValid())
             throw new InvalidDeckException(secondUser.getUsername());
 
         if (round != 1 && round != 3)

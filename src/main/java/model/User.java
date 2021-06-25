@@ -18,7 +18,7 @@ public class User {
     protected int score;
     protected HashMap<String, Deck> allDecks;
     protected HashMap<String, Integer> allCards;
-    protected Deck activeDeck;
+    protected String activeDeckName;
     protected int money;
     protected String password;
     protected String nickname;
@@ -30,7 +30,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.money = 10000000;
-        this.activeDeck = null;
+        this.activeDeckName = null;
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
     }
@@ -117,11 +117,11 @@ public class User {
     }
 
     public Deck getActiveDeck() {
-        return activeDeck;
+        return allDecks.get(activeDeckName);
     }
 
     public void setActiveDeck(Deck activeDeckName) {
-        this.activeDeck = activeDeckName;
+        this.activeDeckName = activeDeckName.getName();
         Database.getInstance().writeUser(this);
     }
 
@@ -216,8 +216,8 @@ public class User {
         stringToReturn.append("Decks").append("\n");
         stringToReturn.append("Active deck:").append("\n");
 
-        if (activeDeck != null)
-            stringToReturn.append(deckToString(activeDeck.getName()));
+        if (activeDeckName != null)
+            stringToReturn.append(deckToString(activeDeckName));
 
         stringToReturn.append("\nOther decks:").append("\n");
 

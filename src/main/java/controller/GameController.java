@@ -294,6 +294,7 @@ public class GameController {
             if (game.getThisBoard().getMonsterZoneNumber() < 1)
                 throw new NotEnoughCardForTribute();
 
+            Print.getInstance().printMessage("Enter the address of the monster you want to tribute:");
             Integer monsterAddress = Scan.getInstance().getInteger();
             if (monsterAddress == null)
                 return;
@@ -306,8 +307,12 @@ public class GameController {
             if (game.getThisBoard().getMonsterZoneNumber() < 2)
                 throw new NotEnoughCardForTribute();
 
+            Print.getInstance().printMessage("Enter the address of the first monster you want to tribute:");
             Integer monsterAddress1 = Scan.getInstance().getInteger();
+
+            Print.getInstance().printMessage("Enter the address of the second monster you want to tribute:");
             Integer monsterAddress2 = Scan.getInstance().getInteger();
+
             if (monsterAddress1 == null || monsterAddress2 == null)
                 return;
             if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||

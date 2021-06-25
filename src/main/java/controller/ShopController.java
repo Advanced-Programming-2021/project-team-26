@@ -20,22 +20,8 @@ public class ShopController {
         allCards = Card.getAllCards();
     }
 
-    private User userInShop;
-
-    public ShopController() {
-        setUserInShop(Database.getInstance().getCurrentUser());
-    }
-
     public static Map<String, Card> getAllCards() {
         return allCards;
-    }
-
-    public User getUserInShop() {
-        return userInShop;
-    }
-
-    public void setUserInShop(User userInShop) {
-        this.userInShop = userInShop;
     }
 
     public String buyCard(Matcher matcher) throws CardNotFoundException, NotEnoughMoneyException {
@@ -45,11 +31,11 @@ public class ShopController {
             throw new CardNotFoundException();
         else {
             int cardPrice = thisCard.getPrice();
-            if (cardPrice > userInShop.getMoney())
+            if (cardPrice > Database.getInstance().getCurrentUser().getMoney())
                 throw new NotEnoughMoneyException();
             else {
-                userInShop.setMoney(userInShop.getMoney() - cardPrice);
-                userInShop.addCardToUserCards(thisCard);
+                Database.getInstance().getCurrentUser().setMoney(Database.getInstance().getCurrentUser().getMoney() - cardPrice);
+                Database.getInstance().getCurrentUser().addCardToUserCards(thisCard);
             }
         }
 

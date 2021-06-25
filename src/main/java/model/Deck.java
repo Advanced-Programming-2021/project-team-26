@@ -8,6 +8,7 @@ import model.cards.monster.Monster;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Deck {
 
@@ -65,7 +66,6 @@ public class Deck {
         this.name = name;
     }
 
-
     public String getDeckOwnerUsername() {
         return deckOwnerUsername;
     }
@@ -101,7 +101,7 @@ public class Deck {
     public void addCardToMainDeck(Card card) {
         mainDeck.add(card.getName());
         allCards.add(card.getName());
-        Database.getInstance().writeUser(User.getUserByUsername(deckOwnerUsername));
+        Database.getInstance().writeUser(Objects.requireNonNull(User.getUserByUsername(deckOwnerUsername)));
     }
 
     public void addCardToSideDeck(Card card) {
@@ -155,7 +155,6 @@ public class Deck {
     public boolean isDeckValid() {
         return mainDeck.size() >= 40;
     }
-
 
     public String showDeck(String deckType) {
         StringBuilder stringToReturn = new StringBuilder();
