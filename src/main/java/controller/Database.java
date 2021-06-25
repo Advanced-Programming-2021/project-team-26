@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.opencsv.CSVReader;
+import model.Ai;
 import model.User;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -283,16 +284,19 @@ public class Database {
     }
 
     public boolean writeUser(User user) {
-        try {
-            String path = userDirectoryPath + File.separator + user.getUsername() + ".json";
-            FileWriter fileWriter = new FileWriter(path);
-            gson.toJson(user, fileWriter);
-            fileWriter.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        if (!(user instanceof Ai)) {
+            try {
+                String path = userDirectoryPath + File.separator + user.getUsername() + ".json";
+                FileWriter fileWriter = new FileWriter(path);
+                gson.toJson(user, fileWriter);
+                fileWriter.close();
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
+        return false;
     }
 
     public HashMap<String, User> getAllUsers() {

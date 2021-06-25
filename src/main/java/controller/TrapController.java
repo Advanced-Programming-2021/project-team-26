@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-
 public class TrapController extends SpellTrapController {
     private static final HashMap<String, TrapController.TrapMakerInterface> trapMakers = new HashMap<>();
 
@@ -75,7 +74,6 @@ public class TrapController extends SpellTrapController {
                 Collection<MonsterController> attackerMonsters = otherBoard.getMonstersZone();
                 for (MonsterController monster : attackerMonsters) {
                     if (monster.getPosition() == MonsterPosition.ATTACK)
-                        //TODO remove monster with effect or just remove it??
                         otherBoard.removeMonster(monster);
                 }
                 return new AttackResult(0, 0, false, false);

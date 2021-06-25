@@ -25,7 +25,6 @@ public class SpellController extends SpellTrapController {
         spellMakers.put("Change of Heart", SpellController::makeChangeOfHeart);
         spellMakers.put("Harpie’s Feather Duster", SpellController::makeHarpiesFeatherDuster);
         spellMakers.put("Dark Hole", SpellController::makeDarkHole);
-        spellMakers.put("Supply Squad", SpellController::makeSupplySquad);
         spellMakers.put("Twin Twisters", SpellController::makeTwinTwisters);
         spellMakers.put("Mystical space typhoon", SpellController::makeMysticalSpaceTyphoon);
         spellMakers.put("Yami", SpellController::makeYami);
@@ -209,12 +208,6 @@ public class SpellController extends SpellTrapController {
                 gameController.getGame().getOtherBoard().removeAllMonsters();
                 gameController.getGame().getThisBoard().removeAllMonsters();
             }
-        };
-    }
-
-    private static SpellController makeSupplySquad(GameController gameController, Spell spell, SpellTrapPosition position) {
-        return new SpellController(gameController, spell, position) {
-
         };
     }
 

@@ -54,7 +54,8 @@ public class Ai extends User {
         ArrayList<Card> selectedCard = new ArrayList<>();
         while (selectedCard.size() < monsterNumberInDeck) {
             int random = new Random().nextInt(allMonster.size());
-            Card randomCard = allMonster.get(random);
+            Monster randomCard = (Monster) allMonster.get(random);
+            if (randomCard.getLevel() > 4) continue;
             if (countCards(selectedCard, randomCard) < 3) {
                 selectedCard.add(randomCard);
             }
