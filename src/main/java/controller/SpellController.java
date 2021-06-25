@@ -103,7 +103,7 @@ public class SpellController extends SpellTrapController {
                 for (Card card : deck) {
                     if (card instanceof Spell) {
                         Spell spell = (Spell) card;
-                        if (spell.getType().equals(SpellType.FIELD)) {
+                        if (spell.getType().equals(SpellType.FIELD) && !fieldSpells.contains(spell)) {
                             fieldSpells.add(spell);
                         }
                     }
