@@ -103,7 +103,7 @@ public class MonsterController {
                                                        MonsterPosition position, CardAddress monsterAddress) {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             private final Set<MonsterController> underEffectMonsters = new HashSet<>();
-            private boolean isEffectActive = position.equals(MonsterPosition.ATTACK);
+            private boolean isEffectActive = position == MonsterPosition.ATTACK;
 
             @Override
             public void runMonsterEffectAtSummon() {
@@ -123,7 +123,7 @@ public class MonsterController {
             @Override
             public boolean canBeAttacked(MonsterController attacker) {
                 if (isEffectActive) {
-                    return gameController.getGame().getThisBoard().getMonsterZoneNumber() < 2;
+                    return gameController.getGame().getOtherBoard().getMonsterZoneNumber() < 2;
                 }
                 return true;
             }
@@ -146,6 +146,7 @@ public class MonsterController {
             public void remove(MonsterController attacker) {
                 this.thisBoard.removeMonster(this);
                 this.otherBoard.removeMonster(attacker);
+                Print.getInstance().printMessage("You and your opponent cards are destroyed according to Yomi Ship's effect");
             }
         };
     }

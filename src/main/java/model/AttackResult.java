@@ -111,7 +111,7 @@ public class AttackResult {
         if (myLPDecrease > 0)
             damagePart = "you received " + myLPDecrease + " battle damage";
         if (opLPDecrease > 0)
-            damagePart = "your opponent received " + myLPDecrease + " battle damage";
+            damagePart = "your opponent received " + opLPDecrease + " battle damage";
 
         String result = "";
         if (opCardNamePart != null)
