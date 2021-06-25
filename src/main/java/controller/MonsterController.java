@@ -219,23 +219,19 @@ public class MonsterController {
             @Override
             public void runMonsterEffectOnEachTurn() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
-                    Print.getInstance().printMessage("Do you want to activate the card effect?" +
-                            "1. yes" +
-                            "2. no");
+                    Print.getInstance().printMessage("You have Scanner in your Monster" +
+                            " Zone and you should select a card to clone it");
                     Scanner scanner = Scan.getScanner();
-                    String input = scanner.nextLine();
 
-                    if (Integer.parseInt(input) == 1) {
-                        Print.getInstance().printMessage("Select a monster from rival GRAVEYARD");
-                        input = scanner.nextLine();
-                        setRivalGraveyardAccessible(true);
-                        select(input);
-                        if (!(getSelectedCard() instanceof Monster)) {
-                            throw new InvalidSelection();
-                        } else {
-                            Monster selectedMonster = (Monster) getSelectedCard();
-                            setMonster(new Monster(selectedMonster));
-                        }
+                    Print.getInstance().printMessage("Select a monster from rival GRAVEYARD");
+                    String input = scanner.nextLine();
+                    setRivalGraveyardAccessible(true);
+                    select(input);
+                    if (!(getSelectedCard() instanceof Monster)) {
+                        throw new InvalidSelection();
+                    } else {
+                        Monster selectedMonster = (Monster) getSelectedCard();
+                        setMonster(new Monster(selectedMonster));
                     }
                 }
                 setHasActivateEffectThisTurn(true);
@@ -306,8 +302,8 @@ public class MonsterController {
             @Override
             public void runMonsterEffectOnEachTurn() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
-                    Print.getInstance().printMessage("Do you want to activate the card effect?" +
-                            "1. yes" +
+                    Print.getInstance().printMessage("Do you want to activate the card effect?\n" +
+                            "1. yes\n" +
                             "2. no");
                     Scanner scanner = Scan.getScanner();
                     String input = scanner.nextLine();

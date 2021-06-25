@@ -240,9 +240,10 @@ public class Board {
         return spellTrapZone.size();
     }
 
-    public void putFiled(Spell spell) {
+    public SpellController putFiled(Spell spell) {
         Board otherBoard = getOtherBoard();
         otherBoard.fieldZone = null;
         this.fieldZone = SpellController.getInstance(gameController, spell, SpellTrapPosition.UP);
+        return this.fieldZone;
     }
 }

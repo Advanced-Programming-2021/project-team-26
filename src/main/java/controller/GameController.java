@@ -12,10 +12,7 @@ import view.Menu;
 import view.Print;
 import view.Scan;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -243,6 +240,13 @@ public class GameController {
         monster.summon();
         for (MonsterController monsterEffect : game.getThisBoard().getMonstersZone())
             monsterEffect.runMonsterEffectAtSummon();
+
+        if (game.getThisBoard().getFieldZone() != null)
+            game.getThisBoard().getFieldZone().runFieldEffectAtSummon();
+
+        if (game.getOtherBoard().getFieldZone() != null)
+            game.getOtherBoard().getFieldZone().runFieldEffectAtSummon();
+
         deselect();
         if (activeOpponentTrapOnSummon(monster, "normal")) {
             return null;
@@ -491,7 +495,8 @@ public class GameController {
             throw new FullSpellTrapZone();
 
         if (spell.getType() == SpellType.FIELD) {
-            game.getThisBoard().putFiled(spell);
+            SpellController spellController = game.getThisBoard().putFiled(spell);
+            spellController.runFieldEffectAtSummon();
         } else {
             SpellController controller = (SpellController) game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.UP);
             chain.push(controller);

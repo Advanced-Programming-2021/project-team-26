@@ -230,8 +230,8 @@ public class SpellController extends SpellTrapController {
                 select(input);
                 Card theSelectedCardFromHand = selectedCard;
 
-                Print.getInstance().printMessage("Do you want to destroy one SpellTrap or two ones?" +
-                        "1. one" +
+                Print.getInstance().printMessage("Do you want to destroy one SpellTrap or two ones?\n" +
+                        "1. one\n" +
                         "2. two");
                 input = scanner.nextLine();
 
@@ -291,21 +291,36 @@ public class SpellController extends SpellTrapController {
 
     private static SpellController makeYami(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
-            @Override
-            public void activate() {
-                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
-                setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
-            }
 
-            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
-                for (MonsterController monsterController : monsterZone) {
-                    if (monsterController.getMonster().getType() == MonsterType.SPELL_CASTER ||
-                            monsterController.getMonster().getType() == MonsterType.FIEND) {
-                        monsterController.getMonster().increaseAttackPower(200);
-                        monsterController.getMonster().increaseDefencePower(200);
-                    } else if (monsterController.getMonster().getType() == MonsterType.FAIRY) {
-                        monsterController.getMonster().decreaseDefencePower(200);
-                        monsterController.getMonster().decreaseDefencePower(200);
+            private final Set<MonsterController> underEffectMonsters = new HashSet<>();
+
+            @Override
+            public void runFieldEffectAtSummon() {
+                Collection<MonsterController> monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.SPELL_CASTER ||
+                                monsterController.getMonster().getType() == MonsterType.FIEND) {
+                            monsterController.getMonster().increaseAttackPower(200);
+                            monsterController.getMonster().increaseDefencePower(200);
+                        } else if (monsterController.getMonster().getType() == MonsterType.FAIRY) {
+                            monsterController.getMonster().decreaseDefencePower(200);
+                            monsterController.getMonster().decreaseDefencePower(200);
+                        }
+                    }
+                }
+
+                monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.SPELL_CASTER ||
+                                monsterController.getMonster().getType() == MonsterType.FIEND) {
+                            monsterController.getMonster().increaseAttackPower(200);
+                            monsterController.getMonster().increaseDefencePower(200);
+                        } else if (monsterController.getMonster().getType() == MonsterType.FAIRY) {
+                            monsterController.getMonster().decreaseDefencePower(200);
+                            monsterController.getMonster().decreaseDefencePower(200);
+                        }
                     }
                 }
             }
@@ -418,8 +433,8 @@ public class SpellController extends SpellTrapController {
                 if (equippedMonster.getPosition() == MonsterPosition.ATTACK) {
                     int defencePower = equippedMonster.getMonster().getDefencePower();
                     equippedMonster.getMonster().increaseAttackPower(defencePower);
-                }else if (equippedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN ||
-                        equippedMonster.getPosition() == MonsterPosition.DEFENCE_UP  ) {
+                } else if (equippedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN ||
+                        equippedMonster.getPosition() == MonsterPosition.DEFENCE_UP) {
                     int attackPower = equippedMonster.getMonster().getAttackPower();
                     equippedMonster.getMonster().increaseDefencePower(attackPower);
                 }
@@ -454,6 +469,10 @@ public class SpellController extends SpellTrapController {
 
     @Override
     public void standBy() {
+
+    }
+
+    public void runFieldEffectAtSummon() {
 
     }
 

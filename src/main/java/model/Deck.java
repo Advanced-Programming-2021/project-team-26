@@ -208,16 +208,12 @@ public class Deck {
     }
 
     public Object clone() {
-        try {
-            Deck cloned = (Deck) super.clone();
-            cloned.name = this.name;
-            cloned.deckOwnerUsername = this.deckOwnerUsername;
-            cloned.mainDeck = (ArrayList<String>) this.mainDeck.clone();
-            cloned.sideDeck = (ArrayList<String>) this.sideDeck.clone();
-            cloned.allCards = (ArrayList<String>) this.allCards.clone();
-            return cloned;
-        } catch (CloneNotSupportedException ignored) {
-        }
-        return null;
+        Deck cloned = new Deck(this.name, this.deckOwnerUsername);
+        cloned.name = this.name;
+        cloned.deckOwnerUsername = this.deckOwnerUsername;
+        cloned.mainDeck = (ArrayList<String>) this.mainDeck.clone();
+        cloned.sideDeck = (ArrayList<String>) this.sideDeck.clone();
+        cloned.allCards = (ArrayList<String>) this.allCards.clone();
+        return cloned;
     }
 }
