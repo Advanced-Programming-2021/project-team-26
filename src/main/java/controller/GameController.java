@@ -444,6 +444,9 @@ public class GameController {
             throw new NoCardToAttackException();
 
         AttackResult attackResult = toBeAttacked.attack(selectedMonster);
+        AttackResult trapEffect = activeOpponentTrapOnAttack(selectedMonster, toBeAttacked);
+        if (trapEffect != null)
+            attackResult = trapEffect;
         if (attackResult == null)
             attackResult = new AttackResult(selectedMonster, toBeAttacked);
 
@@ -695,12 +698,37 @@ public class GameController {
             game.temporaryChangeTurn();
     }
 
+    public AttackResult activeOpponentTrapOnAttack(MonsterController attacker, MonsterController defender) {
+        AttackResult result = null;
+        boolean found = false;
+        for (SpellTrapController controller : game.getOtherBoard().getSpellTrapZone()) {
+            if (controller instanceof TrapController) {
+                TrapController trap = (TrapController) controller;
+                if (trap.canActiveOnAttacked(attacker, defender)) {
+                    if (!found) {
+                        found = true;
+                        game.temporaryChangeTurn();
+                    }
+                    Print.getInstance().printMessage("do you want to activate " + trap.getCard().getName());
+                    String answer = Scan.getInstance().getString();
+                    if (answer.equals("yes")) {
+                        result = trap.onAttacked(attacker, defender);
+                    }
+                }
+            }
+        }
+        if (found) {
+            game.temporaryChangeTurn();
+        }
+        return result;
+    }
+
     public void changeTurn() {
         if (!temporaryTurnChange && conditionsForChangingTurn()) {
             game.temporaryChangeTurn();
             Print.getInstance().printMessage("do you want to activate your trap and spell?");
             String answer = Scan.getInstance().getString();
-            if (!answer.equals("yse")) {
+            if (!answer.equals("yes")) {
                 game.temporaryChangeTurn();
             }
         }
