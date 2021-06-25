@@ -12,13 +12,12 @@ public class Monster extends Card {
         allMonsters = Database.getInstance().getAllMonsters();
     }
 
-    private int attackPower;
-    private int defencePower;
     private final int level;
     private final MonsterType type;
     private final CardType cardType;
     private final String attribute;
-
+    private int attackPower;
+    private int defencePower;
 
     //copy constructor
     public Monster(Monster o) {
@@ -31,6 +30,7 @@ public class Monster extends Card {
         this.attribute = o.attribute;
     }
 
+
     public Monster(String[] fields) {
         super(fields[0], fields[7], Integer.parseInt(fields[8]));
         this.level = Integer.parseInt(fields[1]);
@@ -39,6 +39,10 @@ public class Monster extends Card {
         this.cardType = CardType.stringToCardType(fields[4]);
         this.attackPower = Integer.parseInt(fields[5]);
         this.defencePower = Integer.parseInt(fields[6]);
+    }
+
+    public static Map<String, Monster> getAllMonsters() {
+        return allMonsters;
     }
 
     public static Monster getMonster(String name) {

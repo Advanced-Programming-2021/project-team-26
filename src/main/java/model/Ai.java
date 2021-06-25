@@ -12,9 +12,12 @@ import java.util.Random;
 public class Ai extends User {
     private final GameController gameController;
     private final int myTurn;
-    private final int cardNumberInDeck = 45;
+    private final int monsterNumberInDeck = 35;
+    private final int spellNumberInDeck = 10;
     private Board myBoard;
     private Board opponentBoard;
+    private final String[] selectedSpells = {"Pot of Greed", "Raigeki", "Harpie's Feather Duster",
+            "Dark Hole", "Yami", "Forest", "Closed Forest", "UMIIRUKA", "Sword of Dark Destruction"};
 
     public Ai(GameController gameController, int myTurn) {
         this.username = "AI";
@@ -47,11 +50,20 @@ public class Ai extends User {
     }
 
     private ArrayList<Card> getMainCards() {
-        ArrayList<Card> allCards = new ArrayList<>(Card.getAllCards().values());
+        ArrayList<Card> allMonster = new ArrayList<>(Monster.getAllMonsters().values());
         ArrayList<Card> selectedCard = new ArrayList<>();
-        while (selectedCard.size() < cardNumberInDeck) {
-            int random = new Random().nextInt(allCards.size());
-            Card randomCard = allCards.get(random);
+        while (selectedCard.size() < monsterNumberInDeck) {
+            int random = new Random().nextInt(allMonster.size());
+            Card randomCard = allMonster.get(random);
+            if (countCards(selectedCard, randomCard) < 3) {
+                selectedCard.add(randomCard);
+            }
+        }
+        while (selectedCard.size() < monsterNumberInDeck + spellNumberInDeck) {
+            int random = new Random().nextInt(selectedSpells.length);
+            Card randomCard = Card.getCard(selectedSpells[random]);
+            if (randomCard == null)
+                continue;
             if (countCards(selectedCard, randomCard) < 3) {
                 selectedCard.add(randomCard);
             }
