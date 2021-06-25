@@ -14,10 +14,10 @@ public class Ai extends User {
     private final int myTurn;
     private final int monsterNumberInDeck = 35;
     private final int spellNumberInDeck = 10;
-    private Board myBoard;
-    private Board opponentBoard;
     private final String[] selectedSpells = {"Pot of Greed", "Raigeki", "Harpie's Feather Duster",
             "Dark Hole", "Yami", "Forest", "Closed Forest", "UMIIRUKA", "Sword of Dark Destruction"};
+    private Board myBoard;
+    private Board opponentBoard;
 
     public Ai(GameController gameController, int myTurn) {
         this.username = "AI";
@@ -80,7 +80,6 @@ public class Ai extends User {
         }
         return count;
     }
-
 
     public void mainPhase1() {
         ArrayList<Monster> monsters = new ArrayList<>();
