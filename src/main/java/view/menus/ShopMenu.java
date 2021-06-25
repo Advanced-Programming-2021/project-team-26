@@ -19,7 +19,7 @@ public class ShopMenu extends Menu {
         shopController = new ShopController();
         MAP.put(Pattern.compile("^\\s*shop buy (.+)\\s*$"), shopController::buyCard);
         MAP.put(Pattern.compile("^\\s*shop show --all\\s*$"), shopController::showAll);
-        MAP.put(Pattern.compile("^\\s*increase --money[0-9]+\\s*$"), shopController::increaseMoney);
+        MAP.put(Pattern.compile("^\\s*increase --money ([0-9]+)\\s*$"), shopController::increaseMoney);
         MAP.put(Pattern.compile("^\\s*menu exit\\s*$"), Menu::exitMenu);
         MAP.put(Pattern.compile("^\\s*menu show-current\\s*$"), i -> {
             return "shop menu";
