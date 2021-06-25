@@ -330,40 +330,66 @@ public class SpellController extends SpellTrapController {
 
     private static SpellController makeForest(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
-            @Override
-            public void activate() {
-                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
-                setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
-            }
 
-            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
-                for (MonsterController monsterController : monsterZone) {
-                    if (monsterController.getMonster().getType() == MonsterType.INSECT ||
-                            monsterController.getMonster().getType() == MonsterType.BEAST ||
-                            monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR) {
-                        monsterController.getMonster().increaseAttackPower(200);
-                        monsterController.getMonster().increaseDefencePower(200);
+            private final Set<MonsterController> underEffectMonsters = new HashSet<>();
+
+            @Override
+            public void runFieldEffectAtSummon() {
+                Collection<MonsterController> monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.INSECT ||
+                                monsterController.getMonster().getType() == MonsterType.BEAST ||
+                                monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR) {
+                            monsterController.getMonster().increaseAttackPower(200);
+                            monsterController.getMonster().increaseDefencePower(200);
+                        }
+                    }
+                }
+
+                monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.INSECT ||
+                                monsterController.getMonster().getType() == MonsterType.BEAST ||
+                                monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR) {
+                            monsterController.getMonster().increaseAttackPower(200);
+                            monsterController.getMonster().increaseDefencePower(200);
+                        }
                     }
                 }
             }
         };
-
     }
 
     private static SpellController makeClosedForest(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
-            @Override
-            public void activate() {
-                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
-            }
 
-            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
+            private final Set<MonsterController> underEffectMonsters = new HashSet<>();
+
+            @Override
+            public void runFieldEffectAtSummon() {
                 int monstersINGraveyard = gameController.getGame().getThisBoard().getNumberOfMonstersINGraveyard();
-                for (MonsterController monsterController : monsterZone) {
-                    if (monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR ||
-                            monsterController.getMonster().getType() == MonsterType.BEAST) {
-                        monsterController.getMonster().increaseAttackPower(100 * monstersINGraveyard);
-                        monsterController.getMonster().increaseDefencePower(200 * monstersINGraveyard);
+
+                Collection<MonsterController> monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR ||
+                                monsterController.getMonster().getType() == MonsterType.BEAST) {
+                            monsterController.getMonster().increaseAttackPower(100 * monstersINGraveyard);
+                            monsterController.getMonster().increaseDefencePower(200 * monstersINGraveyard);
+                        }
+                    }
+                }
+
+                monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.BEAST_WARRIOR ||
+                                monsterController.getMonster().getType() == MonsterType.BEAST) {
+                            monsterController.getMonster().increaseAttackPower(100 * monstersINGraveyard);
+                            monsterController.getMonster().increaseDefencePower(200 * monstersINGraveyard);
+                        }
                     }
                 }
             }
@@ -373,17 +399,28 @@ public class SpellController extends SpellTrapController {
 
     private static SpellController makeUMIIRUKA(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
-            @Override
-            public void activate() {
-                setAttackAndDefenses(gameController.getGame().getThisBoard().getMonstersZone());
-                setAttackAndDefenses(gameController.getGame().getOtherBoard().getMonstersZone());
-            }
 
-            private void setAttackAndDefenses(Collection<MonsterController> monsterZone) {
-                for (MonsterController monsterController : monsterZone) {
-                    if (monsterController.getMonster().getType() == MonsterType.AQUA) {
-                        monsterController.getMonster().increaseAttackPower(500);
-                        monsterController.getMonster().decreaseDefencePower(400);
+            private final Set<MonsterController> underEffectMonsters = new HashSet<>();
+
+            @Override
+            public void runFieldEffectAtSummon() {
+                Collection<MonsterController> monstersZone = gameController.getGame().getThisBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.AQUA) {
+                            monsterController.getMonster().increaseAttackPower(500);
+                            monsterController.getMonster().decreaseDefencePower(400);
+                        }
+                    }
+                }
+
+                monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
+                for (MonsterController monsterController : monstersZone) {
+                    if (!underEffectMonsters.contains(monsterController)) {
+                        if (monsterController.getMonster().getType() == MonsterType.AQUA) {
+                            monsterController.getMonster().increaseAttackPower(500);
+                            monsterController.getMonster().decreaseDefencePower(400);
+                        }
                     }
                 }
             }
