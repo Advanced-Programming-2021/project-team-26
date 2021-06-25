@@ -544,6 +544,11 @@ public class MonsterController {
         return null;
     }
 
+    public void nextTurn() {
+        setHasActivateEffectThisTurn(false);
+        isMonsterNew = false;
+    }
+
     public String defaultAttack(MonsterController attacker) {
         int damage;
         MonsterController defender = this;

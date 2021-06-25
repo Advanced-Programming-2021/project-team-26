@@ -119,6 +119,7 @@ public class Game {
         gameController.deselect();
         ArrayList<MonsterController> monsterControllers = MonsterController.getAllMonsterControllers();
         for (MonsterController monsterController : monsterControllers) {
+            monsterController.nextTurn();
             monsterController.setHasActivateEffectThisTurn(false);
         }
 

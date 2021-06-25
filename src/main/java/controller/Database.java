@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.opencsv.CSVReader;
 import model.User;
 import model.cards.Card;
@@ -24,6 +25,7 @@ public class Database {
     private final String databasePath;
     private boolean debuggingMode = true;
     private User currentUser;
+    private final Gson gson;
 
     {
         currentUser = null;
@@ -38,6 +40,9 @@ public class Database {
         trapsJsonPath = cardsJsonPath + File.separator + "Traps";
         databasePath = System.getProperty("user.dir") + File.separator + "database";
         userDirectoryPath = System.getProperty("user.dir") + File.separator + "database" + File.separator + "Users";
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setPrettyPrinting();
+        gson = gsonBuilder.create();
     }
 
     private Database() {
@@ -190,7 +195,6 @@ public class Database {
 
     public void writeMonster(Monster monster) {
         try {
-            Gson gson = new Gson();
             String path = monstersJsonPath + File.separator + monster.getName() + ".json";
             FileWriter file = new FileWriter(path);
             gson.toJson(monster, file);
@@ -202,7 +206,6 @@ public class Database {
 
     public void writeSpell(Spell spell) {
         try {
-            Gson gson = new Gson();
             String path = spellsJsonPath + File.separator + spell.getName() + ".json";
             FileWriter file = new FileWriter(path);
             gson.toJson(spell, file);
@@ -214,7 +217,6 @@ public class Database {
 
     public void writeTrap(Trap trap) {
         try {
-            Gson gson = new Gson();
             String path = trapsJsonPath + File.separator + trap.getName() + ".json";
             FileWriter file = new FileWriter(path);
             gson.toJson(trap, file);
@@ -239,7 +241,6 @@ public class Database {
         try {
             String path = monstersJsonPath + File.separator + name + ".json";
             FileReader file = new FileReader(path);
-            Gson gson = new Gson();
             return gson.fromJson(file, Monster.class);
         } catch (Exception e) {
             return null;
@@ -250,7 +251,6 @@ public class Database {
         try {
             String path = spellsJsonPath + File.separator + name + ".json";
             FileReader file = new FileReader(path);
-            Gson gson = new Gson();
             return gson.fromJson(file, Spell.class);
         } catch (Exception e) {
             return null;
@@ -261,7 +261,6 @@ public class Database {
         try {
             String path = trapsJsonPath + File.separator + name + ".json";
             FileReader file = new FileReader(path);
-            Gson gson = new Gson();
             return gson.fromJson(file, Trap.class);
         } catch (Exception e) {
             return null;
@@ -277,7 +276,7 @@ public class Database {
             } catch (IOException e){
                 return null;
             }
-            return new Gson().fromJson(userFile, User.class);
+            return gson.fromJson(userFile, User.class);
         } catch (FileNotFoundException e) {
             return null;
         }
@@ -287,7 +286,7 @@ public class Database {
         try {
             String path = userDirectoryPath + File.separator + user.getUsername() + ".json";
             FileWriter fileWriter = new FileWriter(path);
-            new Gson().toJson(user, fileWriter);
+            gson.toJson(user, fileWriter);
             fileWriter.close();
             return true;
         } catch (IOException e) {
@@ -307,7 +306,7 @@ public class Database {
                     continue;
                 try {
                     FileReader fileReader = new FileReader(userFile);
-                    User user = new Gson().fromJson(fileReader, User.class);
+                    User user = gson.fromJson(fileReader, User.class);
                     allUsers.put(user.getUsername(), user);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
