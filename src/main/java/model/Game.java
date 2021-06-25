@@ -89,6 +89,7 @@ public class Game {
                         ((Ai) getThisUser()).battlePhase();
                         break;
                 }
+                nextPhase();
             } else
                 Print.getInstance().printGame(this);
         } else if (this.phase == Phase.END) {

@@ -54,7 +54,7 @@ public class SpellController extends SpellTrapController {
                 return spellMakers.get(spellName).make(gameController, spell, position);
             }
         }
-        throw new SpellNotFoundException();
+        return new SpellController(gameController, spell, position);
     }
 
     public static ArrayList<SpellTrapController> getAllSpellControllers() {

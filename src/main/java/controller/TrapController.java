@@ -37,7 +37,6 @@ public class TrapController extends SpellTrapController {
         this.gameController = gameController;
         this.trap = new Trap(trap);
         this.position = position;
-
     }
 
     public static TrapController getInstance(GameController gameController, Trap trap, SpellTrapPosition position) throws TrapNotFoundException {
@@ -46,7 +45,7 @@ public class TrapController extends SpellTrapController {
                 return trapMakers.get(trapName).make(gameController, trap, position);
             }
         }
-        throw new TrapNotFoundException();
+        return new TrapController(gameController, trap, position);
     }
 
     private static TrapController makeMagicCylinder(GameController gameController, Trap trap, SpellTrapPosition position) {
