@@ -39,7 +39,8 @@ public class Welcome extends Application {
     }
 
     @FXML
-    void openLoginPage(ActionEvent event) {
+    void openLoginPage(ActionEvent event) throws IOException {
+        new Login().run();
     }
 
     @FXML

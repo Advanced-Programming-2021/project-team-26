@@ -111,31 +111,15 @@ public class UserController {
         return "nickname changed successfully!";
     }
 
-    public String loginUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String username = null;
-        if (input.containsKey("username"))
-            username = input.get("username");
-        else if (input.containsKey("u"))
-            username = input.get("u");
-        if (username == null)
-            throw new InvalidInput();
-
-        String password = null;
-        if (input.containsKey("password"))
-            password = input.get("password");
-        else if (input.containsKey("p"))
-            password = input.get("p");
-        if (password == null)
+    public boolean loginUser(String username, String password) throws InvalidInput, WrongUsernamePassword {
+        if (username.equals("") || password.equals(""))
             throw new InvalidInput();
 
         User user = User.getUserByUsername(username);
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
         Database.getInstance().setCurrentUser(user);
-//        new MainMenu().execute();
-        return "______LOGIN MENU______";
+        return true;
     }
 
     public String logout(Matcher matcher) {
