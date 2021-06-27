@@ -4,7 +4,7 @@ import exceptions.*;
 import model.User;
 import view.Menu;
 import view.Scan;
-import view.menus.MainMenu;
+
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -21,40 +21,17 @@ public class UserController {
         return userController;
     }
 
-    public String addNewUser(Matcher matcher) throws InvalidInput, DuplicateUsername, DuplicateNickname {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String username = null;
-        if (input.containsKey("username"))
-            username = input.get("username");
-        else if (input.containsKey("u"))
-            username = input.get("u");
-        if (username == null)
-            throw new InvalidInput();
-
-        String nickname = null;
-        if (input.containsKey("nickname"))
-            nickname = input.get("nickname");
-        else if (input.containsKey("n"))
-            nickname = input.get("n");
-        if (nickname == null)
-            throw new InvalidInput();
-
-        String password = null;
-        if (input.containsKey("password"))
-            password = input.get("password");
-        else if (input.containsKey("p"))
-            password = input.get("p");
-        if (password == null)
+    public boolean addNewUser(String username, String password, String nickname) throws InvalidInput, DuplicateUsername, DuplicateNickname {
+        if (username.equals("") || password.equals("") || nickname.equals(""))
             throw new InvalidInput();
 
         if (User.checkUsernameExistence(username))
-            throw new DuplicateUsername();
+            throw new DuplicateUsername(username);
         if (User.checkNicknameExistence(nickname))
             throw new DuplicateNickname(nickname);
 
         new User(username, password, nickname);
-        return "user created successfully!";
+        return true;
     }
 
     public String removeUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
@@ -157,7 +134,7 @@ public class UserController {
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
         Database.getInstance().setCurrentUser(user);
-        new MainMenu().execute();
+//        new MainMenu().execute();
         return "______LOGIN MENU______";
     }
 
