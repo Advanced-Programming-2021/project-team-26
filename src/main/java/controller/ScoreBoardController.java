@@ -14,7 +14,7 @@ public class ScoreBoardController {
         HashMap<String, User> usersWithNames = User.getAllUsers();
         ArrayList<User> users = new ArrayList<>(usersWithNames.values());
 
-        sortUsersBasedScore(users);
+        sortUsersBasedScore();
         int rank = 1;
         Print print = Print.getInstance();
 
@@ -27,8 +27,10 @@ public class ScoreBoardController {
         return  null;
     }
 
-    private void sortUsersBasedScore(ArrayList<User> users) {
+    public ArrayList<User> sortUsersBasedScore() {
+        ArrayList<User> users = new ArrayList<>(User.getAllUsers().values());
         users.sort(Comparator.comparing(User::getScore).reversed().thenComparing(User::getNickname));
+        return users;
     }
 }
 
