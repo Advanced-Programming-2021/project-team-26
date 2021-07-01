@@ -56,7 +56,11 @@ public class Profile {
         File file = fileChooser.showOpenDialog(Welcome.getStage());
         if (file != null) {
             try {
-                profileImage.setImage(new Image(file.toURL().toExternalForm()));
+                if (Database.getInstance().getCurrentUser().setProfileImage(file)) {
+                    profileImage.setImage(new Image(file.toURL().toExternalForm()));
+                } else {
+                    Printt.getInstance().errorPrint("loading image failed");
+                }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 Printt.getInstance().errorPrint("loading image failed");

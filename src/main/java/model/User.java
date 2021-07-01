@@ -240,4 +240,13 @@ public class User {
     public String getProfileImagePath() {
         return "file:" + System.getProperty("user.dir") + File.separator + profileImagePath;
     }
+
+    public boolean setProfileImage(File file) {
+        String path = Database.getInstance().writeProfile(file, username);
+        if (path == null)
+            return false;
+        profileImagePath = path;
+        Database.getInstance().writeUser(this);
+        return true;
+    }
 }

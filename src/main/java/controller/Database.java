@@ -12,6 +12,8 @@ import model.cards.spell.Spell;
 import model.cards.trap.Trap;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 
 public class Database {
@@ -23,10 +25,11 @@ public class Database {
     private final String spellsJsonPath;
     private final String trapsJsonPath;
     private final String userDirectoryPath;
+    private final String profileDirectoryPath;
     private final String databasePath;
+    private final Gson gson;
     private boolean debuggingMode = true;
     private User currentUser;
-    private final Gson gson;
 
     {
         currentUser = null;
@@ -41,6 +44,7 @@ public class Database {
         trapsJsonPath = cardsJsonPath + File.separator + "Traps";
         databasePath = System.getProperty("user.dir") + File.separator + "database";
         userDirectoryPath = System.getProperty("user.dir") + File.separator + "database" + File.separator + "Users";
+        profileDirectoryPath = System.getProperty("user.dir") + File.separator + "database" + File.separator + "Profile";
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setPrettyPrinting();
         gson = gsonBuilder.create();
@@ -49,6 +53,7 @@ public class Database {
     private Database() {
         createFolder(databasePath);
         createFolder(userDirectoryPath);
+        createFolder(profileDirectoryPath);
         createFolder(cardsJsonPath);
         createFolder(monstersJsonPath);
         createFolder(spellsJsonPath);
@@ -274,7 +279,7 @@ public class Database {
             FileReader userFile = new FileReader(path);
             try {
                 userFile.close();
-            } catch (IOException e){
+            } catch (IOException e) {
                 return null;
             }
             return gson.fromJson(userFile, User.class);
@@ -326,5 +331,15 @@ public class Database {
         String path = userDirectoryPath + File.separator + username + ".json";
         File file = new File(path);
         file.delete();
+    }
+
+    public String writeProfile(File file, String name) {
+        File dest = new File(profileDirectoryPath + File.separator + name);
+        try {
+            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return "database" + File.separator + "Profile" + File.separator + name;
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
