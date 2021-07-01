@@ -5,7 +5,6 @@ import model.User;
 import view.Menu;
 import view.Scan;
 
-
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
@@ -122,8 +121,9 @@ public class UserController {
         return true;
     }
 
-    public String logout(Matcher matcher) {
+    public String logout() {
         Database.getInstance().setCurrentUser(null);
+        //TODO edit here
         Menu.exitMenu(null);
         return "user logged out successfully!";
     }

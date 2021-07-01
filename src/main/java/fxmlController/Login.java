@@ -33,7 +33,7 @@ public class Login {
         try {
             boolean result = UserController.getInstance().loginUser(username.getText(), password.getText());
             if (result) Printt.getInstance().successfulPrint("User logged successfully");
-            //TODO load main menu page
+            new MainMenu().run();
         }catch (Exception e){
             Printt.getInstance().errorPrint(e.getMessage());
         }
