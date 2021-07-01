@@ -3,6 +3,7 @@ package model;
 import controller.Database;
 import model.cards.Card;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class User {
     protected int money;
     protected String password;
     protected String nickname;
+    private String profileImagePath;
 
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
@@ -45,15 +47,6 @@ public class User {
 
     public static HashMap<String, User> getAllUsers() {
         return allUsers;
-    }
-
-    public boolean checkDeckNameExistence(String name) {
-        return allDecks.containsKey(name);
-    }
-
-    public Deck getDeckByDeckName(String name) {
-        if (allDecks.containsKey(name)) return allDecks.get(name);
-        else return null;
     }
 
     public static String getPasswordByUsername(String username) {
@@ -95,6 +88,15 @@ public class User {
         return false;
     }
 
+    public boolean checkDeckNameExistence(String name) {
+        return allDecks.containsKey(name);
+    }
+
+    public Deck getDeckByDeckName(String name) {
+        if (allDecks.containsKey(name)) return allDecks.get(name);
+        else return null;
+    }
+
     public boolean doesUserHaveThisCard(String cardName) {
         return allCards.containsKey(cardName);
     }
@@ -107,11 +109,11 @@ public class User {
         this.allDecks = allDecks;
     }
 
-    public HashMap<String, Integer>  getAllCards() {
+    public HashMap<String, Integer> getAllCards() {
         return allCards;
     }
 
-    public void setAllCards(HashMap<String, Integer>  allCards) {
+    public void setAllCards(HashMap<String, Integer> allCards) {
         this.allCards = allCards;
         Database.getInstance().writeUser(this);
     }
@@ -179,9 +181,9 @@ public class User {
     }
 
     public void addCardToUserCards(Card card) {
-        if (allCards.containsKey(card.getName())){
-           int numberOfCards = allCards.get(card.getName());
-           allCards.put(card.getName(), ++numberOfCards);
+        if (allCards.containsKey(card.getName())) {
+            int numberOfCards = allCards.get(card.getName());
+            allCards.put(card.getName(), ++numberOfCards);
         } else {
             this.allCards.put(card.getName(), 1);
         }
@@ -199,7 +201,7 @@ public class User {
 
     public String showAllCards() {
         StringBuilder stringToReturn = new StringBuilder();
-        HashMap<String, Integer>  allCards = getAllCards();
+        HashMap<String, Integer> allCards = getAllCards();
         ArrayList<String> sortedCardNames = new ArrayList<>(allCards.keySet());
         Collections.sort(sortedCardNames);
 
@@ -232,6 +234,10 @@ public class User {
         return name + ": " + "main deck " +
                 allDecks.get(name).getMainDeck().size() + ", " + "side deck " +
                 allDecks.get(name).getSideDeck().size() + ", " +
-                ( allDecks.get(name).isDeckValid() ? "valid" : "invalid");
+                (allDecks.get(name).isDeckValid() ? "valid" : "invalid");
+    }
+
+    public String getProfileImagePath() {
+        return "file:" + System.getProperty("user.dir") + File.separator + profileImagePath;
     }
 }

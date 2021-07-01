@@ -118,8 +118,8 @@ public class MainMenu {
         //TODO load shop
     }
 
-    public void openProfile() {
-        //TODO load profile
+    public void openProfile() throws IOException {
+        new Profile().run();
     }
 
     public void openScoreBoard() throws IOException {

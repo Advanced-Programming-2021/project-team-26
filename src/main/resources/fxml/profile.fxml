@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/11.0.1" fx:controller="fxmlController.Profile">
+    <ImageView fx:id="profileImage" fitHeight="130.0" fitWidth="130.0" layoutX="41.0" layoutY="29.0"
+               pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="230.0" AnchorPane.leftAnchor="40.0"
+               AnchorPane.topAnchor="40.0" onMouseClicked="#changeProfile"/>
+    <GridPane alignment="CENTER" layoutX="300.0" layoutY="60.0" AnchorPane.rightAnchor="100.0"
+              AnchorPane.topAnchor="100.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
+        <Label alignment="CENTER" contentDisplay="CENTER" text="Username:">
+            <GridPane.margin>
+                <Insets/>
+            </GridPane.margin>
+        </Label>
+        <TextField fx:id="usernameText" editable="false" GridPane.columnIndex="1"/>
+        <Label text="Nickname:" GridPane.rowIndex="1"/>
+        <TextField fx:id="nicknameText" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Label text="Password:" GridPane.rowIndex="2"/>
+        <PasswordField editable="false" text="aaaa" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                       onMouseClicked="#changePassword"/>
+    </GridPane>
+</AnchorPane>

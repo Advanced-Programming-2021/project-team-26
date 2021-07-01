@@ -60,28 +60,9 @@ public class UserController {
         return "user removed successfully!";
     }
 
-    public String changePassword(Matcher matcher) throws InvalidInput, WrongPassword, SamePassword {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        if (!input.containsKey("password") || !input.containsKey("p"))
-            throw new InvalidInput();
-
-        String currentPassword = null;
-        if (input.containsKey("current"))
-            currentPassword = input.get("current");
-        else if (input.containsKey("c"))
-            currentPassword = input.get("c");
-        if (currentPassword == null)
-            throw new InvalidInput();
-
-        String newPassword = null;
-        if (input.containsKey("new"))
-            newPassword = input.get("new");
-        else if (input.containsKey("n"))
-            newPassword = input.get("n");
-        if (newPassword == null)
-            throw new InvalidInput();
-
+    public void changePassword(String currentPassword, String newPassword, String repeatPassword) throws InvalidInput, WrongPassword, SamePassword {
+        if (!newPassword.equals(repeatPassword))
+            throw new RuntimeException("repeat password not matched");
         if (!Database.getInstance().getCurrentUser().getPassword().equals(currentPassword))
             throw new WrongPassword();
 
@@ -89,25 +70,15 @@ public class UserController {
             throw new SamePassword();
 
         Database.getInstance().getCurrentUser().setPassword(newPassword);
-        return "password changed successfully!";
     }
 
-    public String changeNickname(Matcher matcher) throws InvalidInput, DuplicateNickname {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String nickname = null;
-        if (input.containsKey("nickname"))
-            nickname = input.get("nickname");
-        else if (input.containsKey("n"))
-            nickname = input.get("n");
-        if (nickname == null)
-            throw new InvalidInput();
-
+    public void changeNickname(String nickname) throws InvalidInput, DuplicateNickname {
+        if (Database.getInstance().getCurrentUser().getNickname().equals(nickname))
+            return;
         if (User.checkNicknameExistence(nickname))
             throw new DuplicateNickname(nickname);
 
         Database.getInstance().getCurrentUser().setNickname(nickname);
-        return "nickname changed successfully!";
     }
 
     public boolean loginUser(String username, String password) throws InvalidInput, WrongUsernamePassword {
