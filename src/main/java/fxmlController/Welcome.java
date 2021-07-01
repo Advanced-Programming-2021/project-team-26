@@ -47,4 +47,9 @@ public class Welcome extends Application {
     void openSignUpPage(ActionEvent event) throws IOException {
         new SignUp().run();
     }
+
+    @FXML
+    void scoreboard(ActionEvent event) throws IOException {
+        new Scoreboard().run();
+    }
 }

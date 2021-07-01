@@ -9,28 +9,64 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 
 public class ScoreBoardController {
+    private static final ArrayList<ScoreBoardController> scoreBoardControllers;
 
-    public String showScoreBoard(Matcher matcher) {
-        HashMap<String, User> usersWithNames = User.getAllUsers();
-        ArrayList<User> users = new ArrayList<>(usersWithNames.values());
-
-        sortUsersBasedScore();
-        int rank = 1;
-        Print print = Print.getInstance();
-
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            if (i > 0 && users.get(i - 1).getScore() > user.getScore())
-                rank = i + 1;
-            print.printMessage(rank + "- " + user.getNickname() + ": " + user.getScore());
-        }
-        return  null;
+    static {
+        scoreBoardControllers = new ArrayList<>();
     }
 
-    public ArrayList<User> sortUsersBasedScore() {
+    private int rank;
+    private String name;
+    private int score;
+
+    public ScoreBoardController(int rank, String name, int score) {
+        setRank(rank);
+        setName(name);
+        setScore(score);
+    }
+
+    public static ArrayList<ScoreBoardController> getScoreBoardControllers() {
+        return scoreBoardControllers;
+    }
+
+    public static void getAndSetDataFromUser() {
+        scoreBoardControllers.clear();
+        ArrayList<User> users = sortUsersBasedScore();
+        int counter = 1;
+        for (User user : users) {
+            scoreBoardControllers.add(new ScoreBoardController(counter, user.getUsername(), user.getScore()));
+            counter++;
+        }
+    }
+
+    public static ArrayList<User> sortUsersBasedScore() {
         ArrayList<User> users = new ArrayList<>(User.getAllUsers().values());
         users.sort(Comparator.comparing(User::getScore).reversed().thenComparing(User::getNickname));
         return users;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }
 
