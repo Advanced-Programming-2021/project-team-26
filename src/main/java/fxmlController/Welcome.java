@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Welcome extends Application {
-    public final static int WIDTH = 1280;
-    public final static int HEIGHT = 720;
     private static Stage stage;
 
     public static Stage getStage() {
@@ -33,7 +31,7 @@ public class Welcome extends Application {
         stage = primaryStage;
         Parent root = getFXML("welcome");
         primaryStage.setTitle("Welcome to Yu Gi Oh!");
-        primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
+        primaryStage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
         primaryStage.setResizable(false);
         primaryStage.show();
     }
@@ -49,7 +47,7 @@ public class Welcome extends Application {
     }
 
     @FXML
-    void scoreboard(ActionEvent event) throws IOException {
-        new Scoreboard().run();
+    void openDeck(ActionEvent event) throws IOException {
+        new DeckMenu().run();
     }
 }

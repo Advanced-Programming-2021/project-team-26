@@ -18,7 +18,7 @@ public class Login {
         Stage primaryStage = Welcome.getStage();
         Parent root = getFXML("login");
         primaryStage.setTitle("Login page");
-        primaryStage.setScene(new Scene(root, Welcome.WIDTH, Welcome.HEIGHT));
+        primaryStage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
         primaryStage.show();
     }
 

@@ -110,8 +110,8 @@ public class MainMenu {
         return roundsTmp[0];
     }
 
-    public void openDeck() {
-        //TODO load deck menu
+    public void openDeck() throws IOException {
+        new DeckMenu().run();
     }
 
     public void openShop() {

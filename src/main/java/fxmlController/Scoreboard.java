@@ -33,7 +33,7 @@ public class Scoreboard implements Initializable {
         Stage primaryStage = Welcome.getStage();
         Parent root = getFXML("scoreboard");
         primaryStage.setTitle("Score Board");
-        primaryStage.setScene(new Scene(root, Welcome.WIDTH, Welcome.HEIGHT));
+        primaryStage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
         primaryStage.show();
     }
 
