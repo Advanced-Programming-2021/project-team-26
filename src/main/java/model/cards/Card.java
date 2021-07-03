@@ -1,11 +1,14 @@
 package model.cards;
 
 import controller.Database;
+import javafx.scene.image.Image;
+import model.cards.monster.Monster;
 
 import java.util.Map;
 
 public class Card {
     private static final Map<String, Card> allCards;
+
 
     static {
         allCards = Database.getInstance().getAllCards();
@@ -64,5 +67,15 @@ public class Card {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Image getImage() {
+        String cardName = "Forest";
+//        cardName = this.name.replaceAll("\\s*", "");
+        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Cards/";
+//        if (this instanceof Monster) path += "Monsters/" + cardName + ".jpg";
+         path += "SpellTrap/" + cardName + ".jpg";
+        Image image = new Image(path);
+        return image;
     }
 }

@@ -1,7 +1,7 @@
 package fxmlController;
 
 public enum Size {
-    MAIN_WIDTH (1280),
+    MAIN_WIDTH(1280),
     MAIN_HEIGHT(720),
     CARD_HEIGHT(100),
     CARD_WIDTH(30),
@@ -13,6 +13,8 @@ public enum Size {
         value = newValue;
     }
 
-    public int getValue() { return value; }
-
+    public int getValue() {
+        return value;
+    }
 }
+

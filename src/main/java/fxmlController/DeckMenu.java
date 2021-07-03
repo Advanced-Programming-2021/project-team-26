@@ -1,26 +1,32 @@
 package fxmlController;
 
+import controller.Database;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import model.Deck;
+import model.cards.Card;
 
+import javax.swing.text.Element;
+import javax.swing.text.html.ImageView;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static fxmlController.Welcome.getFXML;
 
 public class DeckMenu implements Initializable {
-    @FXML
-    private Pane mainDeck;
+    private final HashMap<String, Deck> allDecks = Database.getInstance().getCurrentUser().getAllDecks();
 
+    @FXML
+    private GridPane mainDeck;
     @FXML
     private GridPane sideDeck;
 
@@ -33,22 +39,20 @@ public class DeckMenu implements Initializable {
     }
 
     private void setMainDeck() {
-//        for (int i = 0; i < 60; i++) {
-//            Rectangle rectangle = new Rectangle();
-//            rectangle.setHeight(Size.CARD_HEIGHT.getValue());
-//            rectangle.setWidth(Size.CARD_WIDTH.getValue());
-//            rectangle.setFill(Color.RED);
-//            mainDeck.getChildren().add(rectangle);
-//        }
+        Deck defaultDeck = allDecks.get("defaultDeck");
 
-        for (int i = 0; i < Size.MAIN_DECK_WIDTH.getValue(); i += Size.CARD_WIDTH.getValue()) {
-            for (int j = 0; j < Size.MAIN_DECK_HEIGHT.getValue(); j += Size.CARD_HEIGHT.getValue()) {
-                Rectangle rectangle = new Rectangle(i, j, Size.CARD_WIDTH.getValue(), Size.CARD_HEIGHT.getValue());
-                rectangle.setFill(Color.ORANGE);
-                mainDeck.getChildren().add(rectangle);
-            }
+        for (int i = 0; i < defaultDeck.getMainDeck().size(); i++) {
+            Rectangle rectangle = new Rectangle(Size.CARD_WIDTH.getValue(), Size.CARD_HEIGHT.getValue());
+            mainDeck.add(rectangle, i / 15, i % 15);
         }
 
+//        for (int i = 0; i < Size.MAIN_DECK_WIDTH.getValue(); i += Size.CARD_WIDTH.getValue()) {
+//            for (int j = 0; j < Size.MAIN_DECK_HEIGHT.getValue(); j += Size.CARD_HEIGHT.getValue()) {
+//                Rectangle rectangle = new Rectangle(i, j, Size.CARD_WIDTH.getValue(), Size.CARD_HEIGHT.getValue());
+//                rectangle.setFill();
+//                mainDeck.add(rectangle, i / Size.CARD_WIDTH.getValue(), j / Size.CARD_HEIGHT.getValue());
+//            }
+//        }
     }
 
     @Override

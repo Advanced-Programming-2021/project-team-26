@@ -12,12 +12,17 @@ public class UserController {
     private static UserController userController;
 
     private UserController() {
+
     }
 
     public static UserController getInstance() {
         if (userController == null)
             userController = new UserController();
         return userController;
+    }
+
+    private void initializeUserDecks(){
+
     }
 
     public boolean addNewUser(String username, String password, String nickname) throws InvalidInput, DuplicateUsername, DuplicateNickname {

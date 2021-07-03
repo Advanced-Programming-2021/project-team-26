@@ -28,6 +28,7 @@ public class User {
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
         allCards = new HashMap<>();
+        addDeckToUserDecks(Database.getInstance().readDefaultDeck());
         this.username = username;
         this.password = password;
         this.nickname = nickname;

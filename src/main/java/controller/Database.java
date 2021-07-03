@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.opencsv.CSVReader;
 import model.Ai;
+import model.Deck;
 import model.User;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -27,8 +28,10 @@ public class Database {
     private final String userDirectoryPath;
     private final String profileDirectoryPath;
     private final String databasePath;
+    private final String defaultDeckPath;
     private final Gson gson;
     private boolean debuggingMode = true;
+    private Deck defaultDeck = null;
     private User currentUser;
 
     {
@@ -42,6 +45,7 @@ public class Database {
         monstersJsonPath = cardsJsonPath + File.separator + "Monsters";
         spellsJsonPath = cardsJsonPath + File.separator + "Spells";
         trapsJsonPath = cardsJsonPath + File.separator + "Traps";
+        defaultDeckPath = getClass().getClassLoader().getResource("prerequisite/defaultDeck.json").getPath();
         databasePath = System.getProperty("user.dir") + File.separator + "database";
         userDirectoryPath = System.getProperty("user.dir") + File.separator + "database" + File.separator + "Users";
         profileDirectoryPath = System.getProperty("user.dir") + File.separator + "database" + File.separator + "Profile";
@@ -340,6 +344,20 @@ public class Database {
             return "database" + File.separator + "Profile" + File.separator + name;
         } catch (IOException e) {
             return null;
+        }
+    }
+
+    public Deck readDefaultDeck() {
+        if (defaultDeck != null)
+            return defaultDeck;
+        else {
+            try {
+                FileReader file = new FileReader(defaultDeckPath);
+                defaultDeck = gson.fromJson(file, Deck.class);
+                return defaultDeck;
+            } catch (Exception e) {
+                return null;
+            }
         }
     }
 }
