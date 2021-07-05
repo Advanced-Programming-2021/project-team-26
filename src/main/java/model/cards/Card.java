@@ -70,12 +70,11 @@ public class Card {
     }
 
     public Image getImage() {
-        String cardName = "Forest";
-//        cardName = this.name.replaceAll("\\s*", "");
+        String cardName;
+        cardName = this.name.replaceAll("\\s*", "");
         String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Cards/";
-//        if (this instanceof Monster) path += "Monsters/" + cardName + ".jpg";
-         path += "SpellTrap/" + cardName + ".jpg";
-        Image image = new Image(path);
-        return image;
+        if (this instanceof Monster) path += "Monsters/" + cardName + ".jpg";
+        else path += "SpellTrap/" + cardName + ".jpg";
+        return new Image(path);
     }
 }

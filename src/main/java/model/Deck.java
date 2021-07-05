@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Deck {
-
     private String name;
     private String deckOwnerUsername;
     private ArrayList<String> mainDeck;

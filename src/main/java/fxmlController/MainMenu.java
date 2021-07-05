@@ -114,8 +114,8 @@ public class MainMenu {
         new DeckMenu().run();
     }
 
-    public void openShop() {
-        //TODO load shop
+    public void openShop() throws IOException {
+       new Shop().run();
     }
 
     public void openProfile() throws IOException {
