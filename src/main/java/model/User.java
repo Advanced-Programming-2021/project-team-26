@@ -29,12 +29,14 @@ public class User {
     public User(String username, String password, String nickname) {
         allDecks = new HashMap<>();
         allCards = new HashMap<>();
-        addDeckToUserDecks(Database.getInstance().readDefaultDeck());
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.money = 10000000;
-        this.activeDeckName = null;
+        Deck defaultDeck = Database.getInstance().readDefaultDeck();
+        this.allDecks.put(defaultDeck.getName(), defaultDeck);
+        this.activeDeckName = defaultDeck.getName();
+        this.profileImagePath = defaultProfile;
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
     }
