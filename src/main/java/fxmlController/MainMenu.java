@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import controller.MainMenuController;
 import controller.UserController;
 import javafx.geometry.Insets;
@@ -12,7 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import view.Printt;
+import Utitlties.Alert;
 
 import java.io.IOException;
 
@@ -22,7 +23,7 @@ public class MainMenu extends MenuParent {
     }
 
     public void run() throws IOException {
-        Parent root = App.getFXML("mainMenu");
+        Parent root = GetFXML.getFXML("mainMenu");
         this.scene = new Scene(root);
         App.pushMenu(this, false);
     }
@@ -34,7 +35,7 @@ public class MainMenu extends MenuParent {
         try {
             MainMenuController.getInstance().createNewGameWithRealPlayer(secondPlayer, round);
         } catch (Exception e) {
-            Printt.getInstance().errorPrint(e.getMessage());
+            Alert.getInstance().errorPrint(e.getMessage());
         }
     }
 
@@ -80,7 +81,7 @@ public class MainMenu extends MenuParent {
         try {
             MainMenuController.getInstance().creatNewGameWithAI(rounds);
         } catch (Exception e) {
-            Printt.getInstance().errorPrint(e.getMessage());
+            Alert.getInstance().errorPrint(e.getMessage());
         }
     }
 
@@ -135,6 +136,6 @@ public class MainMenu extends MenuParent {
     }
 
     public void logout() {
-        Printt.getInstance().successfulPrint(UserController.getInstance().logout());
+        Alert.getInstance().successfulPrint(UserController.getInstance().logout());
     }
 }

@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -16,8 +17,8 @@ public class Welcome extends MenuParent {
 
     @Override
     public void run() throws IOException {
-        Parent root = App.getFXML("welcome");
-        this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
+        Parent root = GetFXML.getFXML("welcome");
+        scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }
 

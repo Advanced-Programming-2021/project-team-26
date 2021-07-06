@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import controller.Database;
 import controller.UserController;
 import javafx.geometry.Pos;
@@ -14,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.User;
-import view.Printt;
+import Utitlties.Alert;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class Profile extends MenuParent {
     }
 
     public void run() throws IOException {
-        Parent root = App.getFXML("profile");
+        Parent root = GetFXML.getFXML("profile");
         this.scene = new Scene(root);
         App.pushMenu(this);
     }
@@ -63,14 +64,14 @@ public class Profile extends MenuParent {
                 if (Database.getInstance().getCurrentUser().setProfileImage(file)) {
                     profileImage.setImage(new Image(file.toURL().toExternalForm()));
                 } else {
-                    Printt.getInstance().errorPrint("loading image failed");
+                    Alert.getInstance().errorPrint("loading image failed");
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                Printt.getInstance().errorPrint("loading image failed");
+                Alert.getInstance().errorPrint("loading image failed");
             }
         } else {
-            Printt.getInstance().errorPrint("loading image failed");
+            Alert.getInstance().errorPrint("loading image failed");
         }
     }
 
@@ -87,10 +88,10 @@ public class Profile extends MenuParent {
         change.setOnAction(event -> {
             try {
                 UserController.getInstance().changePassword(oldPassword.getText(), newPassword.getText(), repeatPassword.getText());
-                Printt.getInstance().successfulPrint("password changed successfully!");
+                Alert.getInstance().successfulPrint("password changed successfully!");
                 stage.close();
             } catch (Exception e) {
-                Printt.getInstance().errorPrint(e.getMessage());
+                Alert.getInstance().errorPrint(e.getMessage());
             }
         });
 

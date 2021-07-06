@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,7 +15,6 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static fxmlController.App.getFXML;
 
 public class CardInfoInShop extends MenuParent implements Initializable {
 
@@ -27,7 +27,7 @@ public class CardInfoInShop extends MenuParent implements Initializable {
     }
 
     public void run() throws IOException {
-        Parent root = getFXML("cardInfoInShop");
+        Parent root = GetFXML.getFXML("cardInfoInShop");
         this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }
