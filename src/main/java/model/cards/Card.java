@@ -18,12 +18,14 @@ public class Card {
     protected String name;
     protected String Description;
     protected int price;
+    protected Image image;
 
     //copy constructor
     public Card(Card o) {
         setName(o.name);
         setDescription(o.Description);
         setPrice(o.price);
+        setImage(o.image);
     }
 
     public Card(String name, String description, int price) {
@@ -44,6 +46,14 @@ public class Card {
         if (allCards.containsKey(name))
             return allCards.get(name);
         return null;
+    }
+
+    public static Image getUnknownImage() {
+        if (unknownImage != null)
+            return unknownImage;
+        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Cards/Monsters/Unknown.jpg";
+        unknownImage = new Image(path);
+        return unknownImage;
     }
 
     public String getDescription() {
@@ -71,19 +81,17 @@ public class Card {
     }
 
     public Image getImage() {
+        if (this.image != null)
+            return this.image;
         String cardName;
         cardName = this.name.replaceAll("\\s*", "");
         String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Cards/";
         if (this instanceof Monster) path += "Monsters/" + cardName + ".jpg";
         else path += "SpellTrap/" + cardName + ".jpg";
-        return new Image(path);
+        return this.image = new Image(path);
     }
 
-    public static Image getUnknownImage() {
-        if (unknownImage != null)
-            return unknownImage;
-        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Cards/Monsters/Unknown.jpg";
-        unknownImage = new Image(path);
-        return unknownImage;
+    public void setImage(Image image) {
+        this.image = image;
     }
 }
