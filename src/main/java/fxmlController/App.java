@@ -55,7 +55,7 @@ public class App extends Application {
     }
 
     public static Parent getFXML(String name) throws IOException {
-        return FXMLLoader.load(Objects.requireNonNull(Welcome.class.getResource("/fxml/" + name + ".fxml")));
+        return FXMLLoader.load(Objects.requireNonNull(App.class.getResource("/fxml/" + name + ".fxml")));
     }
 
     @Override

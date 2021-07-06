@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import model.cards.Card;
 
 import java.io.IOException;
 
@@ -29,10 +30,5 @@ public class Welcome extends MenuParent {
     @FXML
     void openSignUpPage(ActionEvent event) throws IOException {
         new SignUp().run();
-    }
-
-    @FXML
-    void openDeck(ActionEvent event) throws IOException {
-        new DeckMenu().run();
     }
 }

@@ -7,7 +7,6 @@ abstract public class MenuParent {
     protected Scene scene;
     protected String title;
 
-
     public MenuParent(String title) {
         this.title = title;
     }

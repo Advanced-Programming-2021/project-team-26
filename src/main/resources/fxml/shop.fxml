@@ -8,7 +8,7 @@
    <children>
       <SplitPane layoutX="76.0" layoutY="31.0" prefHeight="658.0" prefWidth="1135.0">
          <items>
-            <GridPane fx:id="cards">
+            <GridPane fx:id="cards" hgap="5.0" vgap="5.0">
 
             </GridPane>
          </items>
