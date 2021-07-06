@@ -45,32 +45,14 @@ public class DeckController {
         } else throw new DeckNameDoesntExistException(deckName);
     }
 
-    public String addCard(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException, CardNotFoundException,
+    public String addCard(String cardName, String deckName, boolean side) throws InvalidInput, DeckNameDoesntExistException, CardNotFoundException,
             InvalidNumberOfACardException, FullMainDeckException, FullSideDeckException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String cardName = null;
-        if (input.containsKey("card"))
-            cardName = input.get("card");
-        else if (input.containsKey("c"))
-            cardName = input.get("c");
-        if (cardName == null)
-            throw new InvalidInput();
-
-        String deckName = null;
-        if (input.containsKey("deck"))
-            deckName = input.get("deck");
-        else if (input.containsKey("d"))
-            deckName = input.get("d");
-        if (deckName == null)
-            throw new InvalidInput();
-
         if (!Database.getInstance().getCurrentUser().doesUserHaveThisCard(cardName))
             throw new CardNotFoundException();
         if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
             throw new DeckNameDoesntExistException(deckName);
 
-        if (input.containsKey("side")) {
+        if (side) {
             if (Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).getSideDeck().size() == 15)
                 throw new FullSideDeckException();
         } else {
@@ -88,37 +70,19 @@ public class DeckController {
         if (numberOfTheCardInDeckCards >= numberOfTheCardInUserCards)
             throw new CardNotFoundException();
 
-        if (input.containsKey("side"))
+        if (side)
             Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToSideDeck(Card.getCard(cardName));
         else
             Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToMainDeck(Card.getCard(cardName));
         return "card added to deck successfully!";
     }
 
-    public String removeCard(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException,
+    public String removeCard(String cardName, String deckName, boolean side) throws InvalidInput, DeckNameDoesntExistException,
             CardNotFoundInSideDeck, CardNotFoundInMainDeck {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String cardName = null;
-        if (input.containsKey("card"))
-            cardName = input.get("card");
-        else if (input.containsKey("c"))
-            cardName = input.get("c");
-        if (cardName == null)
-            throw new InvalidInput();
-
-        String deckName = null;
-        if (input.containsKey("deck"))
-            deckName = input.get("deck");
-        else if (input.containsKey("d"))
-            deckName = input.get("d");
-        if (deckName == null)
-            throw new InvalidInput();
-
         if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
             throw new DeckNameDoesntExistException(deckName);
 
-        if (input.containsKey("side")) {
+        if (side) {
             if (!Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).doesCardExistInSideDeck(cardName))
                 throw new CardNotFoundInSideDeck(cardName);
         } else {
@@ -127,7 +91,7 @@ public class DeckController {
         }
 
 
-        if (input.containsKey("side"))
+        if (side)
             Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).deleteCardFromSideDeck(Card.getCard(cardName));
         else
             Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).deleteCardFromMainDeck(Card.getCard(cardName));

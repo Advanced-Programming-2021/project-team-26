@@ -10,6 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -22,13 +25,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static fxmlController.App.getFXML;
 
 
 public class DeckMenu extends MenuParent implements Initializable {
     public TableView<Deck> deckNameTable;
+    public GridPane allCards;
+    public ImageView cardInfo;
 
     @FXML
     private GridPane mainDeck;
@@ -45,24 +53,67 @@ public class DeckMenu extends MenuParent implements Initializable {
         App.pushMenu(this);
     }
 
-    private void updateMainDeck(Deck deck) {
+    private void updateMainDeck() {
+        mainDeck.getChildren().clear();
+        Deck deck = deckNameTable.getSelectionModel().getSelectedItem();
+        if (deck == null)
+            return;
         ArrayList<String> mainDeckArray = deck.getMainDeck();
         for (int i = 0; i < mainDeckArray.size(); i++) {
-            mainDeck.add(getCardImage(Card.getCard(mainDeckArray.get(i))), i % 10, i / 10);
+            mainDeck.add(getCardImage(Card.getCard(mainDeckArray.get(i)), "mainDeck"), i % 10, i / 10);
         }
     }
 
-    private void updateSideDeck(Deck deck) {
+    private void updateSideDeck() {
+        sideDeck.getChildren().clear();
+        Deck deck = deckNameTable.getSelectionModel().getSelectedItem();
+        if (deck == null)
+            return;
         ArrayList<String> sideDeckArray = deck.getSideDeck();
         for (int i = 0; i < sideDeckArray.size(); i++) {
-            sideDeck.add(getCardImage(Card.getCard(sideDeckArray.get(i))), i % 10, i / 10);
+            sideDeck.add(getCardImage(Card.getCard(sideDeckArray.get(i)), "sideDeck"), i % 10, i / 10);
         }
     }
 
-    public ImageView getCardImage(Card card) {
+    private void updateAllCards() {
+        allCards.getChildren().clear();
+        Deck deck = deckNameTable.getSelectionModel().getSelectedItem();
+        if (deck == null)
+            return;
+        HashMap<String, Integer> cards = Database.getInstance().getCurrentUser().getAllCards();
+
+        int i = 0;
+        for (String cardName : cards.keySet()) {
+            int number = cards.get(cardName) - deck.getNumberOfCardINDeck(cardName);
+            while (number > 0) {
+                number--;
+                allCards.add(getCardImage(Card.getCard(cardName), "allCards"), i % 8, i / 8);
+                i++;
+            }
+        }
+    }
+
+    public ImageView getCardImage(Card card, String source) {
         ImageView imageView = new ImageView(card.getImage());
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_DECK.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_DECK.getValue());
+
+        imageView.setOnDragDetected(e -> {
+            Dragboard dragboard = imageView.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent clipboardContent = new ClipboardContent();
+            //clipboardContent.putImage(imageView.getImage());
+            clipboardContent.putString(source + " " + card.getName());
+
+            dragboard.setContent(clipboardContent);
+            e.consume();
+        });
+
+        imageView.setOnMouseEntered(e -> {
+            cardInfo.setImage(imageView.getImage());
+        });
+        imageView.setOnMouseExited(e -> {
+            cardInfo.setImage(Card.getUnknownImage());
+        });
         return imageView;
     }
 
@@ -72,6 +123,162 @@ public class DeckMenu extends MenuParent implements Initializable {
         deckNameTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         initDeckNameTable();
         updateDecksName();
+        addDropOptionAllCards();
+        addDropOptionMainDeck();
+        addDropOptionSideDeck();
+    }
+
+    private void addDropOptionAllCards() {
+        allCards.setOnDragOver(e -> {
+            if (e.getDragboard().hasString()) {
+                String input = e.getDragboard().getString();
+                Matcher matcher = Pattern.compile("(\\w+?) (.+)").matcher(input);
+                if (!matcher.find())
+                    return;
+                String source = matcher.group(1);
+                String cardName = matcher.group(2);
+                switch (source) {
+                    case "allCards":
+                        return;
+                    case "mainDeck":
+                    case "sideDeck":
+                        e.acceptTransferModes(TransferMode.ANY);
+                        break;
+                }
+            }
+        });
+        allCards.setOnDragDropped(e -> {
+            if (e.getDragboard().hasString()) {
+                String input = e.getDragboard().getString();
+                Matcher matcher = Pattern.compile("(\\w+?) (.+)").matcher(input);
+                if (!matcher.find())
+                    return;
+                String source = matcher.group(1);
+                String cardName = matcher.group(2);
+                try {
+                    switch (source) {
+                        case "allCards":
+                            return;
+                        case "mainDeck":
+                            DeckController.getInstance().removeCard(cardName, getDeckName(), false);
+                            updateMainDeck();
+                            break;
+                        case "sideDeck":
+                            DeckController.getInstance().removeCard(cardName, getDeckName(), true);
+                            updateSideDeck();
+                            break;
+                    }
+                    updateAllCards();
+                } catch (Exception exception) {
+                    Printt.getInstance().errorPrint(exception.getMessage());
+                }
+            }
+        });
+    }
+
+    private void addDropOptionMainDeck() {
+        mainDeck.setOnDragOver(e -> {
+            if (e.getDragboard().hasString()) {
+                String input = e.getDragboard().getString();
+                Matcher matcher = Pattern.compile("(\\w+?) (.+)").matcher(input);
+                if (!matcher.find())
+                    return;
+                String source = matcher.group(1);
+                String cardName = matcher.group(2);
+                switch (source) {
+                    case "mainDeck":
+                        return;
+                    case "allCards":
+                    case "sideDeck":
+                        e.acceptTransferModes(TransferMode.ANY);
+                        break;
+                }
+            }
+        });
+        mainDeck.setOnDragDropped(e -> {
+            if (e.getDragboard().hasString()) {
+                String input = e.getDragboard().getString();
+                Matcher matcher = Pattern.compile("(\\w+?) (.+)").matcher(input);
+                if (!matcher.find())
+                    return;
+                String source = matcher.group(1);
+                String cardName = matcher.group(2);
+                try {
+                    switch (source) {
+                        case "mainDeck":
+                            return;
+                        case "allCards":
+                            DeckController.getInstance().addCard(cardName, getDeckName(), false);
+                            updateAllCards();
+                            break;
+                        case "sideDeck":
+                            DeckController.getInstance().removeCard(cardName, getDeckName(), true);
+                            DeckController.getInstance().addCard(cardName, getDeckName(), false);
+                            updateSideDeck();
+                            break;
+                    }
+                    updateMainDeck();
+                } catch (Exception exception) {
+                    Printt.getInstance().errorPrint(exception.getMessage());
+                }
+            }
+        });
+    }
+
+    private void addDropOptionSideDeck() {
+        sideDeck.setOnDragOver(e -> {
+            if (e.getDragboard().hasString()) {
+                String input = e.getDragboard().getString();
+                Matcher matcher = Pattern.compile("(\\w+?) (.+)").matcher(input);
+                if (!matcher.find())
+                    return;
+                String source = matcher.group(1);
+                String cardName = matcher.group(2);
+                switch (source) {
+                    case "sideDeck":
+                        return;
+                    case "allCards":
+                    case "mainDeck":
+                        e.acceptTransferModes(TransferMode.ANY);
+                        break;
+                }
+            }
+        });
+        sideDeck.setOnDragDropped(e -> {
+            if (e.getDragboard().hasString()) {
+                String input = e.getDragboard().getString();
+                Matcher matcher = Pattern.compile("(\\w+?) (.+)").matcher(input);
+                if (!matcher.find())
+                    return;
+                String source = matcher.group(1);
+                String cardName = matcher.group(2);
+                try {
+                    switch (source) {
+                        case "sideDeck":
+                            return;
+                        case "allCards":
+                            DeckController.getInstance().addCard(cardName, getDeckName(), true);
+                            updateAllCards();
+                            break;
+                        case "mainDeck":
+                            DeckController.getInstance().removeCard(cardName, getDeckName(), false);
+                            DeckController.getInstance().addCard(cardName, getDeckName(), true);
+                            updateMainDeck();
+                            break;
+                    }
+                    updateSideDeck();
+                } catch (Exception exception) {
+                    Printt.getInstance().errorPrint(exception.getMessage());
+                }
+            }
+        });
+    }
+
+    private String getDeckName() {
+        Deck deck = deckNameTable.getSelectionModel().getSelectedItem();
+        if (deck == null)
+            return null;
+        return deck.getName();
     }
 
     private void initDeckNameTable() {
@@ -89,6 +296,13 @@ public class DeckMenu extends MenuParent implements Initializable {
                     setStyle("");
             }
         });
+        deckNameTable.getSelectionModel().selectedItemProperty().addListener(
+                (observableValue, deck, t1) -> {
+                    updateAllCards();
+                    updateMainDeck();
+                    updateSideDeck();
+                }
+        );
     }
 
     private void updateDecksName() {
