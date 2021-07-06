@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.Alert;
 import Utitlties.GetFXML;
 import controller.Database;
 import controller.DeckController;
@@ -20,7 +21,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Deck;
 import model.cards.Card;
-import Utitlties.Alert;
 
 import java.io.IOException;
 import java.net.URL;
@@ -107,12 +107,8 @@ public class DeckMenu extends MenuParent implements Initializable {
             e.consume();
         });
 
-        imageView.setOnMouseEntered(e -> {
-            cardInfo.setImage(imageView.getImage());
-        });
-        imageView.setOnMouseExited(e -> {
-            cardInfo.setImage(Card.getUnknownImage());
-        });
+        imageView.setOnMouseEntered(e -> cardInfo.setImage(imageView.getImage()));
+        imageView.setOnMouseExited(e -> cardInfo.setImage(Card.getUnknownImage()));
         return imageView;
     }
 
@@ -135,7 +131,6 @@ public class DeckMenu extends MenuParent implements Initializable {
                 if (!matcher.find())
                     return;
                 String source = matcher.group(1);
-                String cardName = matcher.group(2);
                 switch (source) {
                     case "allCards":
                         return;
@@ -169,7 +164,7 @@ public class DeckMenu extends MenuParent implements Initializable {
                     }
                     updateAllCards();
                 } catch (Exception exception) {
-                    Printt.getInstance().errorPrint(exception.getMessage());
+                    Alert.getInstance().errorPrint(exception.getMessage());
                 }
             }
         });
@@ -183,7 +178,6 @@ public class DeckMenu extends MenuParent implements Initializable {
                 if (!matcher.find())
                     return;
                 String source = matcher.group(1);
-                String cardName = matcher.group(2);
                 switch (source) {
                     case "mainDeck":
                         return;
@@ -218,7 +212,7 @@ public class DeckMenu extends MenuParent implements Initializable {
                     }
                     updateMainDeck();
                 } catch (Exception exception) {
-                    Printt.getInstance().errorPrint(exception.getMessage());
+                    Alert.getInstance().errorPrint(exception.getMessage());
                 }
             }
         });
@@ -232,7 +226,6 @@ public class DeckMenu extends MenuParent implements Initializable {
                 if (!matcher.find())
                     return;
                 String source = matcher.group(1);
-                String cardName = matcher.group(2);
                 switch (source) {
                     case "sideDeck":
                         return;
@@ -267,7 +260,7 @@ public class DeckMenu extends MenuParent implements Initializable {
                     }
                     updateSideDeck();
                 } catch (Exception exception) {
-                    Printt.getInstance().errorPrint(exception.getMessage());
+                    Alert.getInstance().errorPrint(exception.getMessage());
                 }
             }
         });
@@ -307,7 +300,6 @@ public class DeckMenu extends MenuParent implements Initializable {
     private void updateDecksName() {
         deckNameTable.getItems().clear();
         Collection<Deck> allDecks = Database.getInstance().getCurrentUser().getAllDecks().values();
-        Deck activeDeck = Database.getInstance().getCurrentUser().getActiveDeck();
         TableColumn<Deck, String> deckNameColumn = (TableColumn<Deck, String>) deckNameTable.getColumns().get(0);
         deckNameColumn.setCellValueFactory(
                 new PropertyValueFactory<>("name")
