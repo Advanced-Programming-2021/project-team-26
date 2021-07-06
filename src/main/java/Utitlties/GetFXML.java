@@ -10,10 +10,10 @@ public class GetFXML {
     public static Parent getFXML(String fxmlName) throws IOException {
         return FXMLLoader.load(Objects.requireNonNull(GetFXML.class.getResource("/fxml/" + fxmlName + ".fxml")));
     }
-    public static Parent getFXML(String fxmlName, String ... packageNames) throws IOException {
-        StringBuilder pckgNames = new StringBuilder("");
-        for (int i = 0 ; i < packageNames.length; i++)
-            pckgNames.append(packageNames[i] + "/");
+
+    public static Parent getFXML(String fxmlName, String... packageNames) throws IOException {
+        StringBuilder pckgNames = new StringBuilder();
+        for (String packageName : packageNames) pckgNames.append(packageName).append("/");
         return FXMLLoader.load(Objects.requireNonNull(GetFXML.class.getResource("/fxml/" + pckgNames + fxmlName + ".fxml")));
     }
 }

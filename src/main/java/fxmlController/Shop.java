@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 
 
 public class Shop extends MenuParent implements Initializable {
-    private static Card cardToShow;
+    private static Card currentCard;
 
     @FXML
     private GridPane cards;
@@ -29,8 +29,8 @@ public class Shop extends MenuParent implements Initializable {
         super("Shop Menu");
     }
 
-    public static Card getCardToShow() {
-        return cardToShow;
+    public static Card getCurrentCard() {
+        return currentCard;
     }
 
     public void run() throws IOException {
@@ -65,7 +65,7 @@ public class Shop extends MenuParent implements Initializable {
                 public void handle(MouseEvent event) {
                     int index = GridPane.getRowIndex(element) * 14 + GridPane.getColumnIndex(element);
                     try {
-                        cardToShow = allCards.get(index);
+                        currentCard = allCards.get(index);
                         new CardInfoInShop().run();
                     } catch (IOException e) {
                         e.printStackTrace();

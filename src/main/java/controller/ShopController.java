@@ -1,9 +1,6 @@
 package controller;
 
-import exceptions.CardNotFoundException;
 import exceptions.InvalidInput;
-import exceptions.NotEnoughMoneyException;
-import model.User;
 import model.cards.Card;
 import view.Scan;
 
@@ -24,22 +21,17 @@ public class ShopController {
         return allCards;
     }
 
-    public String buyCard(Matcher matcher) throws CardNotFoundException, NotEnoughMoneyException {
-        String cardName = matcher.group(1);
-        Card thisCard = Card.getCard(cardName);
-        if (thisCard == null)
-            throw new CardNotFoundException();
-        else {
-            int cardPrice = thisCard.getPrice();
-            if (cardPrice > Database.getInstance().getCurrentUser().getMoney())
-                throw new NotEnoughMoneyException();
-            else {
-                Database.getInstance().getCurrentUser().setMoney(Database.getInstance().getCurrentUser().getMoney() - cardPrice);
-                Database.getInstance().getCurrentUser().addCardToUserCards(thisCard);
-            }
-        }
+    public boolean buyCard(Card card) {
+        int cardPrice = card.getPrice();
+        Database.getInstance().getCurrentUser().setMoney(Database.getInstance().getCurrentUser().getMoney() - cardPrice);
+        Database.getInstance().getCurrentUser().addCardToUserCards(card);
+        return true;
+    }
 
-        return "You bought card " + cardName + " successfully";
+    public int getNumberOfThisCardInUserCards(String cardName) {
+        if (Database.getInstance().getCurrentUser().getAllCards().containsKey(cardName))
+        return Database.getInstance().getCurrentUser().getAllCards().get(cardName);
+        return 0;
     }
 
     public String showAll(Matcher matcher) {
@@ -53,6 +45,14 @@ public class ShopController {
             }
         }
         return false;
+    }
+
+    public int getPrice(Card card) {
+        return card.getPrice();
+    }
+
+    public int getUserBalance() {
+        return Database.getInstance().getCurrentUser().getMoney();
     }
 
     public String increaseMoney(Matcher matcher) {

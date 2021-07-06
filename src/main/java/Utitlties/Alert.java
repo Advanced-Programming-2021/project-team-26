@@ -6,6 +6,7 @@ import javafx.scene.control.ButtonType;
 public class Alert {
 
     private static Alert print;
+
     private Alert() {
     }
 

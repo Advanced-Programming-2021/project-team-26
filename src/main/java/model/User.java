@@ -32,7 +32,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
-        this.money = 10000000;
+        this.money = 100000;
         addDefaultDeck();
         this.profileImagePath = defaultProfile;
         allUsers.put(username, this);
@@ -118,8 +118,7 @@ public class User {
     }
 
     public Deck getDeckByDeckName(String name) {
-        if (allDecks.containsKey(name)) return allDecks.get(name);
-        else return null;
+        return allDecks.getOrDefault(name, null);
     }
 
     public boolean doesUserHaveThisCard(String cardName) {

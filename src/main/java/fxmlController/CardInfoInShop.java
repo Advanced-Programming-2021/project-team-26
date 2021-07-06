@@ -1,26 +1,50 @@
 package fxmlController;
 
 import Utitlties.GetFXML;
+import controller.Database;
+import controller.ShopController;
+import controller.UserController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import model.cards.Card;
+import javafx.scene.text.Text;
+import model.User;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 
 public class CardInfoInShop extends MenuParent implements Initializable {
+    ShopController shopController = new ShopController();
 
+    @FXML
+    private Button buyCard;
 
     @FXML
     private Pane toShowCard;
+
+    @FXML
+    private Text numberOfThisCardInAllCards;
+
+    @FXML
+    private Text cardPrice;
+
+    @FXML
+    private Text balance;
+
+    @FXML
+    void buyCard(ActionEvent event) {
+        shopController.buyCard(Shop.getCurrentCard());
+        setBalance(shopController.getUserBalance());
+        setCardPrice(shopController.getPrice(Shop.getCurrentCard()));
+        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInUserCards(Shop.getCurrentCard().getName()));
+    }
 
     public CardInfoInShop() {
         super("Card Information");
@@ -35,13 +59,31 @@ public class CardInfoInShop extends MenuParent implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
         setCard();
+        User currentUser = Database.getInstance().getCurrentUser();
+        if (Shop.getCurrentCard().getPrice() > currentUser.getMoney()) buyCard.setDisable(true);
+
+        setBalance(shopController.getUserBalance());
+        setCardPrice(shopController.getPrice(Shop.getCurrentCard()));
+        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInUserCards(Shop.getCurrentCard().getName()));
     }
 
     private void setCard() {
        ImageView imageView = new ImageView();
        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP_INFO.getValue());
        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP_INFO.getValue());
-       imageView.setImage(Shop.getCardToShow().getImage());
+       imageView.setImage(Shop.getCurrentCard().getImage());
        toShowCard.getChildren().add(imageView);
+    }
+
+    private void setBalance(int amount){
+        balance.setText(String.valueOf(amount));
+    }
+
+    private void setNumberOfThisCardInAllCards(int amount){
+        numberOfThisCardInAllCards.setText(String.valueOf(amount));
+    }
+
+    private void setCardPrice(int price){
+        cardPrice.setText(String.valueOf(price));
     }
 }
