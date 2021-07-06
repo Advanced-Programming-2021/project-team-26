@@ -55,6 +55,7 @@ public class Shop extends MenuParent implements Initializable {
             imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
             imageView.setImage(card.getImage());
             cards.add(imageView, i % 14, i / 14);
+
             i++;
         }
 
