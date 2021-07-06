@@ -32,8 +32,11 @@ public class Login extends MenuParent {
     void login(ActionEvent event) {
         try {
             boolean result = UserController.getInstance().loginUser(username.getText(), password.getText());
-            if (result) Printt.getInstance().successfulPrint("User logged successfully");
-            new MainMenu().run();
+            if (result) {
+                Printt.getInstance().successfulPrint("User logged successfully");
+                App.popMenu();
+                new MainMenu().run();
+            }
         } catch (Exception e) {
             Printt.getInstance().errorPrint(e.getMessage());
         }

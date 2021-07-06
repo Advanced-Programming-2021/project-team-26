@@ -33,10 +33,13 @@ public class SignUp extends MenuParent {
     @FXML
     void signup(ActionEvent event) {
         try {
-           boolean result = UserController.getInstance().addNewUser(username.getText(), password.getText(), nickname.getText());
-           if (result) Printt.getInstance().successfulPrint("User created successfully");
-            //TODO load login page
-
+            boolean result = UserController.getInstance().addNewUser(username.getText(), password.getText(), nickname.getText());
+            if (result) {
+                Printt.getInstance().successfulPrint("User created successfully");
+                //TODO load login page
+                App.popMenu();
+                new Login().run();
+            }
         }catch (Exception e){
             Printt.getInstance().errorPrint(e.getMessage());
         }
