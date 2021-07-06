@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import controller.Database;
 import controller.DeckController;
 import javafx.fxml.FXML;
@@ -19,7 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Deck;
 import model.cards.Card;
-import view.Printt;
+import Utitlties.Alert;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,8 +30,6 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static fxmlController.App.getFXML;
 
 
 public class DeckMenu extends MenuParent implements Initializable {
@@ -48,7 +47,7 @@ public class DeckMenu extends MenuParent implements Initializable {
     }
 
     public void run() throws IOException {
-        AnchorPane root = (AnchorPane) getFXML("deckMenu");
+        AnchorPane root = (AnchorPane) GetFXML.getFXML("deckMenu");
         this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }
@@ -329,9 +328,9 @@ public class DeckMenu extends MenuParent implements Initializable {
         add.setOnAction(event -> {
             try {
                 DeckController.getInstance().createDeck(deckName.getText());
-                Printt.getInstance().successfulPrint("deck added");
+                Alert.getInstance().successfulPrint("deck added");
             } catch (Exception e) {
-                Printt.getInstance().errorPrint(e.getMessage());
+                Alert.getInstance().errorPrint(e.getMessage());
             }
             stage.close();
         });
@@ -349,30 +348,30 @@ public class DeckMenu extends MenuParent implements Initializable {
     public void removeDeck() {
         Deck selectedDeck = deckNameTable.getSelectionModel().getSelectedItem();
         if (selectedDeck == null) {
-            Printt.getInstance().errorPrint("No deck is selected");
+            Alert.getInstance().errorPrint("No deck is selected");
             return;
         }
         try {
             DeckController.getInstance().removeDeck(selectedDeck.getName());
-            Printt.getInstance().successfulPrint("Deck removed");
+            Alert.getInstance().successfulPrint("Deck removed");
             updateDecksName();
         } catch (Exception e) {
-            Printt.getInstance().errorPrint(e.getMessage());
+            Alert.getInstance().errorPrint(e.getMessage());
         }
     }
 
     public void setActive() {
         Deck selectedDeck = deckNameTable.getSelectionModel().getSelectedItem();
         if (selectedDeck == null) {
-            Printt.getInstance().errorPrint("No deck is selected");
+            Alert.getInstance().errorPrint("No deck is selected");
             return;
         }
         try {
             DeckController.getInstance().setActive(selectedDeck.getName());
-            Printt.getInstance().successfulPrint("done");
+            Alert.getInstance().successfulPrint("done");
             updateDecksName();
         } catch (Exception e) {
-            Printt.getInstance().errorPrint(e.getMessage());
+            Alert.getInstance().errorPrint(e.getMessage());
         }
     }
 }

@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Stack;
 
+import static java.lang.Thread.sleep;
+
 public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
     private static Stage stage;
@@ -31,6 +33,7 @@ public class App extends Application {
         });
         stage.setTitle(menu.title);
         stage.setScene(menu.scene);
+        stage.show();
     }
 
     public static void pushMenu(MenuParent menu, boolean escape) {
@@ -54,15 +57,10 @@ public class App extends Application {
         System.gc();
     }
 
-    public static Parent getFXML(String name) throws IOException {
-        return FXMLLoader.load(Objects.requireNonNull(App.class.getResource("/fxml/" + name + ".fxml")));
-    }
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         stage.setResizable(false);
-        stage.show();
         new Welcome().run();
     }
 }

@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import controller.ScoreBoardController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fxmlController.App.getFXML;
 
 public class Scoreboard extends MenuParent implements Initializable {
 
@@ -33,7 +33,7 @@ public class Scoreboard extends MenuParent implements Initializable {
     }
 
     public void run() throws IOException {
-        Parent root = getFXML("scoreboard");
+        Parent root = GetFXML.getFXML("scoreboard");
         this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }

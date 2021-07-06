@@ -1,16 +1,16 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import controller.UserController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import view.Printt;
+import Utitlties.Alert;
 
 import java.io.IOException;
 
-import static fxmlController.App.getFXML;
 
 public class SignUp extends MenuParent {
     @FXML
@@ -25,7 +25,7 @@ public class SignUp extends MenuParent {
     }
 
     public void run() throws IOException {
-        Parent root = getFXML("signUp");
+        Parent root = GetFXML.getFXML("signUp");
         this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }
@@ -35,13 +35,13 @@ public class SignUp extends MenuParent {
         try {
             boolean result = UserController.getInstance().addNewUser(username.getText(), password.getText(), nickname.getText());
             if (result) {
-                Printt.getInstance().successfulPrint("User created successfully");
+                Alert.getInstance().successfulPrint("User created successfully");
                 //TODO load login page
                 App.popMenu();
                 new Login().run();
             }
         }catch (Exception e){
-            Printt.getInstance().errorPrint(e.getMessage());
+            Alert.getInstance().errorPrint(e.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utitlties.GetFXML;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static fxmlController.App.getFXML;
 
 public class Shop extends MenuParent implements Initializable {
     private static Card cardToShow;
@@ -34,7 +34,7 @@ public class Shop extends MenuParent implements Initializable {
     }
 
     public void run() throws IOException {
-        AnchorPane root = (AnchorPane) getFXML("shop");
+        AnchorPane root = (AnchorPane) GetFXML.getFXML("shop");
         this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }
