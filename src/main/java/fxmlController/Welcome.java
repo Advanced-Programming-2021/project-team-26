@@ -1,40 +1,25 @@
 package fxmlController;
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Objects;
 
-public class Welcome extends Application {
-    private static Stage stage;
+public class Welcome extends MenuParent {
 
-    public static Stage getStage() {
-        return stage;
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    public static Parent getFXML(String name) throws IOException {
-        return FXMLLoader.load(Objects.requireNonNull(Welcome.class.getResource("/fxml/" + name + ".fxml")));
+    public Welcome() {
+        super("Welcome to Yu Gi Oh!");
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        stage = primaryStage;
-        Parent root = getFXML("welcome");
-        primaryStage.setTitle("Welcome to Yu Gi Oh!");
-        primaryStage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
-        primaryStage.setResizable(false);
-        primaryStage.show();
+    public void run() throws IOException {
+        Parent root = App.getFXML("welcome");
+        this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
+        App.pushMenu(this);
     }
+
 
     @FXML
     void openLoginPage(ActionEvent event) throws IOException {

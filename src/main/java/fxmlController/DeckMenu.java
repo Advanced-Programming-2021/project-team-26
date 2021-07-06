@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import model.Deck;
 import model.cards.Card;
 
@@ -16,9 +15,10 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-import static fxmlController.Welcome.getFXML;
+import static fxmlController.App.getFXML;
 
-public class DeckMenu implements Initializable {
+
+public class DeckMenu extends MenuParent implements Initializable {
     private final HashMap<String, Deck> allDecks = Database.getInstance().getCurrentUser().getAllDecks();
 
     @FXML
@@ -26,12 +26,14 @@ public class DeckMenu implements Initializable {
     @FXML
     private GridPane sideDeck;
 
+    public DeckMenu() {
+        super("Deck Menu");
+    }
+
     public void run() throws IOException {
-        Stage primaryStage = Welcome.getStage();
         AnchorPane root = (AnchorPane) getFXML("deckMenu");
-        primaryStage.setTitle("Deck Menu");
-        primaryStage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
-        primaryStage.show();
+        this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
+        App.pushMenu(this);
     }
 
     private void setMainDeck() {

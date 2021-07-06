@@ -1,6 +1,7 @@
 package controller;
 
 import exceptions.*;
+import fxmlController.App;
 import model.User;
 import view.Menu;
 import view.Scan;
@@ -99,7 +100,7 @@ public class UserController {
 
     public String logout() {
         Database.getInstance().setCurrentUser(null);
-        //TODO edit here
+        App.popMenu();
         Menu.exitMenu(null);
         return "user logged out successfully!";
     }

@@ -20,15 +20,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-public class Profile {
+public class Profile extends MenuParent {
     public TextField usernameText;
     public TextField nicknameText;
     public ImageView profileImage;
 
+    public Profile() {
+        super("Profile");
+    }
+
     public void run() throws IOException {
-        Parent root = Welcome.getFXML("profile");
-        Scene scene = new Scene(root);
-        Welcome.getStage().setScene(scene);
+        Parent root = App.getFXML("profile");
+        this.scene = new Scene(root);
+        App.pushMenu(this);
     }
 
     public void initialize() {
@@ -53,7 +57,7 @@ public class Profile {
         fileChooser.setTitle("choose character");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("image", "*.png", "*.jpg"));
-        File file = fileChooser.showOpenDialog(Welcome.getStage());
+        File file = fileChooser.showOpenDialog(App.getStage());
         if (file != null) {
             try {
                 if (Database.getInstance().getCurrentUser().setProfileImage(file)) {

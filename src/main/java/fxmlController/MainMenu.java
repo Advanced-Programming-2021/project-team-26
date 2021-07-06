@@ -16,11 +16,15 @@ import view.Printt;
 
 import java.io.IOException;
 
-public class MainMenu {
+public class MainMenu extends MenuParent {
+    public MainMenu() {
+        super("Yu Gi Oh!");
+    }
+
     public void run() throws IOException {
-        Parent root = Welcome.getFXML("mainMenu");
-        Scene scene = new Scene(root);
-        Welcome.getStage().setScene(scene);
+        Parent root = App.getFXML("mainMenu");
+        this.scene = new Scene(root);
+        App.pushMenu(this, false);
     }
 
     public void newTwoPlayerGame() {

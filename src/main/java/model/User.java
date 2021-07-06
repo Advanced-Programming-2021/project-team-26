@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 public class User {
     private static final HashMap<String, User> allUsers;
+    private static final String defaultProfile = "src/main/resources/characters/Chara001.dds.png";
 
     static {
         allUsers = Database.getInstance().getAllUsers();

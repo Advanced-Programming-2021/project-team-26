@@ -6,15 +6,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import model.User;
 import view.Printt;
 
 import java.io.IOException;
 
-import static fxmlController.Welcome.getFXML;
+import static fxmlController.App.getFXML;
 
-public class SignUp {
+public class SignUp extends MenuParent {
     @FXML
     private TextField username;
     @FXML
@@ -22,12 +20,14 @@ public class SignUp {
     @FXML
     private TextField nickname;
 
+    public SignUp() {
+        super("Sign up page");
+    }
+
     public void run() throws IOException {
-        Stage primaryStage = Welcome.getStage();
         Parent root = getFXML("signUp");
-        primaryStage.setTitle("Sign up page");
-        primaryStage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
-        primaryStage.show();
+        this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
+        App.pushMenu(this);
     }
 
     @FXML

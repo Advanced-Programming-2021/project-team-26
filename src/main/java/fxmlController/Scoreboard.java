@@ -10,15 +10,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static fxmlController.Welcome.getFXML;
+import static fxmlController.App.getFXML;
 
-public class Scoreboard implements Initializable {
+public class Scoreboard extends MenuParent implements Initializable {
 
     @FXML
     private TableView<ScoreBoardController> table;
@@ -29,12 +28,14 @@ public class Scoreboard implements Initializable {
     @FXML
     private TableColumn<ScoreBoardController, Integer> score;
 
+    public Scoreboard() {
+        super("Score Board");
+    }
+
     public void run() throws IOException {
-        Stage primaryStage = Welcome.getStage();
         Parent root = getFXML("scoreboard");
-        primaryStage.setTitle("Score Board");
-        primaryStage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
-        primaryStage.show();
+        this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
+        App.pushMenu(this);
     }
 
     @Override
