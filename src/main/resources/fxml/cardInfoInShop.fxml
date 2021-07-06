@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.CardInfoInShop">
+   <children>
+      <SplitPane layoutX="460.0" layoutY="14.0" prefHeight="540.0" prefWidth="360.0">
+         <items>
+            <Pane fx:id="toShowCard" prefHeight="540.0" prefWidth="360.0" />
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

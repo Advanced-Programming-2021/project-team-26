@@ -7,6 +7,5 @@
    <children>
       <Button layoutX="542.0" layoutY="137.0" mnemonicParsing="false" onAction="#openSignUpPage" prefHeight="126.0" prefWidth="152.0" text="Sign up" />
       <Button layoutX="542.0" layoutY="467.0" mnemonicParsing="false" onAction="#openLoginPage" prefHeight="126.0" prefWidth="152.0" text="Login" />
-      <Button layoutX="153.0" layoutY="157.0" mnemonicParsing="false" onAction="#openDeck" text="deck test" />
    </children>
 </AnchorPane>
