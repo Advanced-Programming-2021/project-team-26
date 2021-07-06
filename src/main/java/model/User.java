@@ -33,9 +33,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.money = 10000000;
-        Deck defaultDeck = Database.getInstance().readDefaultDeck();
-        this.allDecks.put(defaultDeck.getName(), defaultDeck);
-        this.activeDeckName = defaultDeck.getName();
+        addDefaultDeck();
         this.profileImagePath = defaultProfile;
         allUsers.put(username, this);
         Database.getInstance().writeUser(this);
@@ -90,6 +88,29 @@ public class User {
                 return true;
         }
         return false;
+    }
+
+    private void addDefaultDeck() {
+        Deck defaultDeck = (Deck) Database.getInstance().readDefaultDeck().clone();
+        defaultDeck.setDeckOwner(this.username);
+        this.allDecks.put(defaultDeck.getName(), defaultDeck);
+        this.activeDeckName = defaultDeck.getName();
+        for (String cardName : defaultDeck.getMainDeck()) {
+            if (allCards.containsKey(cardName)) {
+                int numberOfCards = allCards.get(cardName);
+                allCards.put(cardName, ++numberOfCards);
+            } else {
+                allCards.put(cardName, 1);
+            }
+        }
+        for (String cardName : defaultDeck.getSideDeck()) {
+            if (allCards.containsKey(cardName)) {
+                int numberOfCards = allCards.get(cardName);
+                allCards.put(cardName, ++numberOfCards);
+            } else {
+                allCards.put(cardName, 1);
+            }
+        }
     }
 
     public boolean checkDeckNameExistence(String name) {

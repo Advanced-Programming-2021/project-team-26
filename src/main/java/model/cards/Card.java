@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Card {
     private static final Map<String, Card> allCards;
+    private static Image unknownImage;
 
 
     static {
@@ -76,5 +77,13 @@ public class Card {
         if (this instanceof Monster) path += "Monsters/" + cardName + ".jpg";
         else path += "SpellTrap/" + cardName + ".jpg";
         return new Image(path);
+    }
+
+    public static Image getUnknownImage() {
+        if (unknownImage != null)
+            return unknownImage;
+        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Cards/Monsters/Unknown.jpg";
+        unknownImage = new Image(path);
+        return unknownImage;
     }
 }

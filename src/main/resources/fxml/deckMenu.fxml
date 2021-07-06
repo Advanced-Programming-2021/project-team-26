@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="720.0" prefWidth="1280.0"
             xmlns="http://javafx.com/javafx/11.0.1" fx:controller="fxmlController.DeckMenu">
    <children>
       <SplitPane layoutX="671.0" layoutY="547.0" prefHeight="136.0" prefWidth="539.0">
          <items>
-            <GridPane fx:id="sideDeck" prefHeight="98.0" prefWidth="570.0">
+            <GridPane fx:id="sideDeck" hgap="7.0" prefHeight="98.0" prefWidth="570.0" vgap="7.0">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+               </padding>
             </GridPane>
          </items>
       </SplitPane>
       <SplitPane layoutX="674.0" layoutY="16.0" prefHeight="503.0" prefWidth="539.0">
          <items>
             <GridPane fx:id="mainDeck" hgap="7.0" prefHeight="484.0" prefWidth="537.0" vgap="7.0">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+               </padding>
             </GridPane>
          </items>
       </SplitPane>
-      <SplitPane layoutX="192.0" layoutY="14.0" prefHeight="671.0" prefWidth="462.0">
+      <SplitPane layoutX="192.0" layoutY="14.0" prefHeight="375.0" prefWidth="462.0">
          <items>
-            <GridPane prefHeight="580.0" prefWidth="405.0">
+            <GridPane fx:id="allCards" hgap="7.0" prefHeight="580.0" prefWidth="460.0" vgap="7.0">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+               </padding>
             </GridPane>
-         </items></SplitPane>
+         </items>
+      </SplitPane>
       <SplitPane layoutX="14.0" layoutY="16.0" prefHeight="671.0" prefWidth="138.0">
          <items>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
@@ -38,5 +50,7 @@
             </VBox>
          </items>
       </SplitPane>
+      <ImageView fx:id="cardInfo" fitHeight="275.0" fitWidth="243.0" layoutX="302.0" layoutY="410.0" pickOnBounds="true"
+                 preserveRatio="true"/>
    </children>
 </AnchorPane>
