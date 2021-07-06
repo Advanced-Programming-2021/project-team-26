@@ -7,7 +7,6 @@ import model.cards.Card;
 import view.Scan;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 
@@ -23,8 +22,7 @@ public class DeckController {
         return deckController;
     }
 
-    public String createDeck(Matcher matcher) throws RepeatedDeckNameException {
-        String deckName = matcher.group(1);
+    public String createDeck(String deckName) throws RepeatedDeckNameException {
         if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
             Database.getInstance().getCurrentUser().addDeckToUserDecks(deck);
@@ -32,8 +30,7 @@ public class DeckController {
         } else throw new RepeatedDeckNameException(deckName);
     }
 
-    public String removeDeck(Matcher matcher) throws DeckNameDoesntExistException {
-        String deckName = matcher.group(1);
+    public String removeDeck(String deckName) throws DeckNameDoesntExistException {
         if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Objects.requireNonNull(User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername())).getAllDecks().remove(deckName);
             Database.getInstance().getCurrentUser().getAllDecks().remove(deckName);
@@ -41,8 +38,7 @@ public class DeckController {
         } else throw new DeckNameDoesntExistException(deckName);
     }
 
-    public String setActive(Matcher matcher) throws DeckNameDoesntExistException {
-        String deckName = matcher.group(1);
+    public String setActive(String deckName) throws DeckNameDoesntExistException {
         if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Database.getInstance().getCurrentUser().setActiveDeck(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName));
             return "deck activated successfully!";
