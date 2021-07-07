@@ -30,7 +30,7 @@ public class ShopController {
 
     public int getNumberOfThisCardInUserCards(String cardName) {
         if (Database.getInstance().getCurrentUser().getAllCards().containsKey(cardName))
-        return Database.getInstance().getCurrentUser().getAllCards().get(cardName);
+            return Database.getInstance().getCurrentUser().getAllCards().get(cardName);
         return 0;
     }
 

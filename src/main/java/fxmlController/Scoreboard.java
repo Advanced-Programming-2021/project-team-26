@@ -1,14 +1,18 @@
 package fxmlController;
 
 import Utitlties.GetFXML;
+import controller.Database;
 import controller.ScoreBoardController;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -45,6 +49,29 @@ public class Scoreboard extends MenuParent implements Initializable {
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
         ScoreBoardController.getAndSetDataFromUser();
         ObservableList<ScoreBoardController> list = FXCollections.observableArrayList(ScoreBoardController.getScoreBoardControllers());
+        customiseFactory(name);
         table.setItems(list);
+    }
+
+
+    private void customiseFactory(TableColumn<ScoreBoardController, String> cell) {
+        cell.setCellFactory(column -> {
+            return new TableCell<ScoreBoardController, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    setText(empty ? "" : getItem().toString());
+                    setGraphic(null);
+
+                    TableRow<ScoreBoardController> currentRow = getTableRow();
+
+                    if (!isEmpty()) {
+                        if(item.equals(Database.getInstance().getCurrentUser().getUsername()))
+                            currentRow.setStyle("-fx-background-color:lightgreen");
+                    }
+                }
+            };
+        });
     }
 }

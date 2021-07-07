@@ -3,7 +3,6 @@ package fxmlController;
 import Utitlties.GetFXML;
 import controller.Database;
 import controller.ShopController;
-import controller.UserController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,16 +37,16 @@ public class CardInfoInShop extends MenuParent implements Initializable {
     @FXML
     private Text balance;
 
+    public CardInfoInShop() {
+        super("Card Information");
+    }
+
     @FXML
     void buyCard(ActionEvent event) {
         shopController.buyCard(Shop.getCurrentCard());
         setBalance(shopController.getUserBalance());
         setCardPrice(shopController.getPrice(Shop.getCurrentCard()));
         setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInUserCards(Shop.getCurrentCard().getName()));
-    }
-
-    public CardInfoInShop() {
-        super("Card Information");
     }
 
     public void run() throws IOException {
@@ -68,22 +67,22 @@ public class CardInfoInShop extends MenuParent implements Initializable {
     }
 
     private void setCard() {
-       ImageView imageView = new ImageView();
-       imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP_INFO.getValue());
-       imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP_INFO.getValue());
-       imageView.setImage(Shop.getCurrentCard().getImage());
-       toShowCard.getChildren().add(imageView);
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP_INFO.getValue());
+        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP_INFO.getValue());
+        imageView.setImage(Shop.getCurrentCard().getImage());
+        toShowCard.getChildren().add(imageView);
     }
 
-    private void setBalance(int amount){
+    private void setBalance(int amount) {
         balance.setText(String.valueOf(amount));
     }
 
-    private void setNumberOfThisCardInAllCards(int amount){
+    private void setNumberOfThisCardInAllCards(int amount) {
         numberOfThisCardInAllCards.setText(String.valueOf(amount));
     }
 
-    private void setCardPrice(int price){
+    private void setCardPrice(int price) {
         cardPrice.setText(String.valueOf(price));
     }
 }
