@@ -4,7 +4,6 @@ import Utitlties.GetFXML;
 import controller.Database;
 import controller.ScoreBoardController;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -61,13 +60,13 @@ public class Scoreboard extends MenuParent implements Initializable {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
 
-                    setText(empty ? "" : getItem().toString());
+                    setText(empty ? "" : getItem());
                     setGraphic(null);
 
                     TableRow<ScoreBoardController> currentRow = getTableRow();
 
                     if (!isEmpty()) {
-                        if(item.equals(Database.getInstance().getCurrentUser().getUsername()))
+                        if (item.equals(Database.getInstance().getCurrentUser().getUsername()))
                             currentRow.setStyle("-fx-background-color:lightgreen");
                     }
                 }

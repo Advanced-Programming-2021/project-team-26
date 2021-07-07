@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="1070.0"
             xmlns="http://javafx.com/javafx/11.0.1" fx:controller="fxmlController.Profile">
     <ImageView fx:id="profileImage" fitHeight="130.0" fitWidth="130.0" layoutX="41.0" layoutY="29.0"
                pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="230.0" AnchorPane.leftAnchor="40.0"
