@@ -1,8 +1,11 @@
-package fxmlController;
+package fxmlController.Children;
 
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
 import controller.MainMenuController;
 import controller.UserController;
+import fxmlController.*;
+import fxmlController.Children.*;
+import fxmlController.Children.ImportExport.ImpExpMain;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -13,7 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import Utitlties.Alert;
+import Utilities.Alert;
 
 import java.io.IOException;
 
@@ -131,8 +134,8 @@ public class MainMenu extends MenuParent {
         new Scoreboard().run();
     }
 
-    public void openImportExport() {
-        //TODO load import export menu
+    public void openImportExport() throws IOException {
+        new ImpExpMain().run();
     }
 
     public void logout() {

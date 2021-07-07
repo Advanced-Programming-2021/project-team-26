@@ -1,7 +1,7 @@
 package fxmlController;
 
-import Utitlties.Alert;
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
+import Utilities.Alert;
 import controller.Database;
 import controller.DeckController;
 import javafx.fxml.FXML;

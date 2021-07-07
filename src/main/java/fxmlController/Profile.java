@@ -1,6 +1,7 @@
 package fxmlController;
 
-import Utitlties.GetFXML;
+import Utilities.Alert;
+import Utilities.GetFXML;
 import controller.Database;
 import controller.UserController;
 import javafx.geometry.Pos;
@@ -15,7 +16,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.User;
-import Utitlties.Alert;
 
 import java.io.File;
 import java.io.IOException;

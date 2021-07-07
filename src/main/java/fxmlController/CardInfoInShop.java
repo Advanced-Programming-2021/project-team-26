@@ -1,8 +1,9 @@
 package fxmlController;
 
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
 import controller.Database;
 import controller.ShopController;
+import fxmlController.Children.Shop;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

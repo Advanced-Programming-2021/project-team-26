@@ -1,6 +1,10 @@
-package fxmlController;
+package fxmlController.Children;
 
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
+import fxmlController.App;
+import fxmlController.CardInfoInShop;
+import fxmlController.MenuParent;
+import fxmlController.Size;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

@@ -1,13 +1,16 @@
-package fxmlController;
+package fxmlController.Children;
 
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
 import controller.UserController;
+import fxmlController.App;
+import fxmlController.MenuParent;
+import fxmlController.Size;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import Utitlties.Alert;
+import Utilities.Alert;
 
 import java.io.IOException;
 

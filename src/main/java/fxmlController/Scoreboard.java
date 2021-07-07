@@ -1,6 +1,6 @@
 package fxmlController;
 
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
 import controller.Database;
 import controller.ScoreBoardController;
 import javafx.collections.FXCollections;

@@ -1,13 +1,16 @@
-package fxmlController;
+package fxmlController.Children;
 
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
 import controller.UserController;
+import fxmlController.App;
+import fxmlController.MenuParent;
+import fxmlController.Size;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import Utitlties.Alert;
+import Utilities.Alert;
 
 import java.io.IOException;
 
@@ -26,7 +29,7 @@ public class SignUp extends MenuParent {
 
     public void run() throws IOException {
         Parent root = GetFXML.getFXML("signUp");
-        this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
+        scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }
 

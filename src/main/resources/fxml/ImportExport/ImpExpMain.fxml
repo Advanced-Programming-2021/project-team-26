@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox layoutX="157.0" layoutY="86.0" prefHeight="201.0" prefWidth="286.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="124.0" prefWidth="306.0" text="Import Card" />
+            <Button mnemonicParsing="false" prefHeight="130.0" prefWidth="286.0" text="Export Card" textAlignment="CENTER" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

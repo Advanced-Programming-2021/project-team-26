@@ -1,5 +1,6 @@
 package fxmlController;
 
+import fxmlController.Children.Welcome;
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -54,7 +55,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         stage.setResizable(false);
-        stage.show();
         new Welcome().run();
+        stage.show();
     }
 }

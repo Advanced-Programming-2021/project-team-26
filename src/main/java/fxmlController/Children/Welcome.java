@@ -1,11 +1,13 @@
-package fxmlController;
+package fxmlController.Children;
 
-import Utitlties.GetFXML;
+import Utilities.GetFXML;
+import fxmlController.App;
+import fxmlController.MenuParent;
+import fxmlController.Size;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import model.cards.Card;
 
 import java.io.IOException;
 
