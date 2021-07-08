@@ -1,17 +1,23 @@
 package controller;
 
+import Utilities.GetFXML;
 import fxmlController.App;
 import fxmlController.HeadOrTail;
+import fxmlController.Size;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import model.User;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HeadOrTailController {
+    int winner = -1;
     User[] players = new User[2];
     HeadOrTail[] graphics = new HeadOrTail[2];
     Stage[] stages = new Stage[2];
@@ -48,15 +54,16 @@ public class HeadOrTailController {
         FXMLLoader secondLoader = new FXMLLoader();
         secondLoader.setControllerFactory(type -> {
             try {
-                if (type == HeadOrTail.class) {
+                if (type == HeadOrTail.class)
                     return graphics[1];
-                }
+
                 return type.newInstance();
             } catch (Exception exc) {
                 throw new RuntimeException(exc);
             }
         });
         secondLoader.setLocation(HeadOrTailController.class.getResource("/fxml/" + "headOrTail" + ".fxml"));
+
         try {
             Parent firstRoot = firstLoader.load();
             Parent secondRoot = secondLoader.load();
@@ -66,6 +73,7 @@ public class HeadOrTailController {
             App.getStage().close();
             stages[0].show();
             stages[1].show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,9 +92,8 @@ public class HeadOrTailController {
             result = "B";
         }
 
-        if (isSignSet[0] && isSignSet[1]) {
+        if (isSignSet[0] && isSignSet[1])
             startThrowCoin();
-        }
 
         return result;
     }
@@ -95,21 +102,36 @@ public class HeadOrTailController {
         graphics[0].playGif();
         graphics[1].playGif();
 
-        System.out.println("im here");
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                int result = new Random().nextInt(2);
+                winner = result;
+                System.out.println(result);
+                graphics[0].setResult(result);
+                graphics[1].setResult(result);
 
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("im there");
-
-        int result = new Random().nextInt(2);
-
-        graphics[0].setResult(result);
-        graphics[1].setResult(result);
-
-        System.out.println("im over there");
+                FXMLLoader firstLoader = new FXMLLoader();
+                firstLoader.setControllerFactory(type -> {
+                    try {
+                        if (type == HeadOrTail.class) {
+                            return graphics[0];
+                        }
+                        return type.newInstance();
+                    } catch (Exception exc) {
+                        throw new RuntimeException(exc);
+                    }
+                });
+                firstLoader.setLocation(HeadOrTailController.class.getResource("/fxml/" + "headOrTail" + ".fxml"));
+                AnchorPane root = null;
+                try {
+                    root = (AnchorPane) GetFXML.getFXML("whoStartsGame");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                stages[winner].setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
+            }
+        }, 2000);
     }
 }

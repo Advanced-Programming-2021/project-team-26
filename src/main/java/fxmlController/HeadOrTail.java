@@ -29,10 +29,19 @@ public class HeadOrTail {
     }
 
     @FXML
+    void IStartGame(ActionEvent event) {
+//        TODO winner starts\
+    }
+
+    @FXML
+    void OpponentStartsGame(ActionEvent event) {
+//        TODO loser starts
+    }
+
+    @FXML
     void throwCoin(ActionEvent event) {
         sign.setText(controller.getSign(turn));
     }
-
 
     public void initialize() {
         B = new Image("file:" + System.getProperty("user.dir") + "/src/main/resources/images/B.jpg");
