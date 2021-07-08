@@ -1,18 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.MainMenu">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.MainMenu">
    <children>
-      <Button layoutX="472.0" layoutY="119.0" mnemonicParsing="false" onAction="#newTwoPlayerGame" text="Two Player Duel" />
-      <Button layoutX="465.0" layoutY="54.0" mnemonicParsing="false" onAction="#newOnePlayerGame" text="Single Player Duel" />
-      <Button layoutX="509.0" layoutY="365.0" mnemonicParsing="false" onAction="#openDeck" text="Deck" />
-      <Button layoutX="509.0" layoutY="306.0" mnemonicParsing="false" onAction="#openShop" text="Shop" />
-      <Button layoutX="504.0" layoutY="179.0" mnemonicParsing="false" onAction="#openProfile" text="Profile" />
-      <Button layoutX="488.0" layoutY="241.0" mnemonicParsing="false" onAction="#openScoreBoard" text="ScoreBoard" />
-      <Button layoutX="478.0" layoutY="431.0" mnemonicParsing="false" onAction="#openImportExport" text="Import/Export" />
-      <Button layoutX="503.0" layoutY="524.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+      <Button layoutX="858.0" layoutY="46.0" mnemonicParsing="false" onAction="#newTwoPlayerGame" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Two Player Duel">
+         <effect>
+            <Reflection fraction="0.6" topOpacity="0.4" />
+         </effect></Button>
+      <Button layoutX="63.0" layoutY="46.0" mnemonicParsing="false" onAction="#newOnePlayerGame" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Single Player Duel">
+         <effect>
+            <Reflection fraction="0.6" topOpacity="0.4" />
+         </effect></Button>
+      <Button layoutX="895.0" layoutY="306.0" mnemonicParsing="false" onAction="#openDeck" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Deck">
+         <effect>
+            <Reflection fraction="0.6" topOpacity="0.4" />
+         </effect></Button>
+      <Button layoutX="894.0" layoutY="195.0" mnemonicParsing="false" onAction="#openShop" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Shop">
+         <effect>
+            <Reflection fraction="0.6" topOpacity="0.4" />
+         </effect></Button>
+      <Button layoutX="101.0" layoutY="306.0" mnemonicParsing="false" onAction="#openProfile" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Profile">
+         <effect>
+            <Reflection fraction="0.6" topOpacity="0.4" />
+         </effect></Button>
+      <Button layoutX="85.0" layoutY="195.0" mnemonicParsing="false" onAction="#openScoreBoard" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="ScoreBoard">
+         <effect>
+            <Reflection fraction="0.6" topOpacity="0.4" />
+         </effect></Button>
+      <Button layoutX="480.0" layoutY="442.0" mnemonicParsing="false" onAction="#openImportExport" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Import/Export">
+         <effect>
+            <Reflection fraction="0.6" topOpacity="0.4" />
+         </effect></Button>
+      <Button layoutX="503.0" layoutY="524.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: red; -fx-background-radius: 50;" text="Logout">
+         <effect>
+            <Reflection />
+         </effect></Button>
+      <ImageView fitHeight="200.0" fitWidth="180.0" layoutX="447.0" layoutY="46.0">
+         <image>
+            <Image url="@../Assets/Arts/MBB_008638.dds.png" />
+         </image>
+         <effect>
+            <Reflection />
+         </effect>
+      </ImageView>
    </children>
 </AnchorPane>
