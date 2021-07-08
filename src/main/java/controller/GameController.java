@@ -2,7 +2,7 @@ package controller;
 
 import exceptions.*;
 import fxmlController.App;
-import fxmlController.GameٰView;
+import fxmlController.GameView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,7 +31,7 @@ public class GameController {
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
     private final Deck[] decks = new Deck[2];
-    private final GameٰView[] views = new GameٰView[2];
+    private final GameView[] views = new GameView[2];
     private final Stage[] stages = new Stage[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
     private final int roundNumber;
@@ -49,8 +49,8 @@ public class GameController {
         decks[0] = (Deck) players[0].getActiveDeck().clone();
         decks[1] = (Deck) players[1].getActiveDeck().clone();
 
-        views[0] = new GameٰView(this, 0);
-        views[1] = new GameٰView(this, 1);
+        views[0] = new GameView(this, 0);
+        views[1] = new GameView(this, 1);
 
         stages[0] = new Stage();
         stages[1] = new Stage();
@@ -73,7 +73,7 @@ public class GameController {
         FXMLLoader firstLoader = new FXMLLoader();
         firstLoader.setControllerFactory(type -> {
             try {
-                if (type == GameٰView.class) {
+                if (type == GameView.class) {
                     return views[0];
                 }
                 return type.newInstance();
@@ -86,7 +86,7 @@ public class GameController {
         FXMLLoader secondLoader = new FXMLLoader();
         secondLoader.setControllerFactory(type -> {
             try {
-                if (type == GameٰView.class)
+                if (type == GameView.class)
                     return views[1];
 
                 return type.newInstance();

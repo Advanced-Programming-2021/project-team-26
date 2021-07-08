@@ -1,6 +1,7 @@
 package model;
 
 import controller.Database;
+import javafx.scene.image.Image;
 import model.cards.Card;
 
 import java.io.File;
@@ -272,5 +273,9 @@ public class User {
         profileImagePath = path;
         Database.getInstance().writeUser(this);
         return true;
+    }
+
+    public Image getProfileImage(){
+       return new Image(getProfileImagePath());
     }
 }
