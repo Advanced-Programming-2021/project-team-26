@@ -1,6 +1,12 @@
 package controller;
 
 import exceptions.*;
+import fxmlController.App;
+import fxmlController.GameٰView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import model.*;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -12,6 +18,7 @@ import view.Menu;
 import view.Print;
 import view.Scan;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +31,8 @@ public class GameController {
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
     private final Deck[] decks = new Deck[2];
+    private final GameٰView[] views = new GameٰView[2];
+    private final Stage[] stages = new Stage[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
     private final int roundNumber;
     private Game game;
@@ -39,9 +48,14 @@ public class GameController {
         players[1] = secondPayer;
         decks[0] = (Deck) players[0].getActiveDeck().clone();
         decks[1] = (Deck) players[1].getActiveDeck().clone();
+
+        views[0] = new GameٰView(this, 0);
+        views[1] = new GameٰView(this, 1);
+
+        stages[0] = new Stage();
+        stages[1] = new Stage();
         this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
         this.roundNumber = round;
-        game.nextPhase();
     }
 
     public GameController(User player, int round) throws NoPlayerAvailable {
@@ -52,6 +66,49 @@ public class GameController {
         this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
         ((Ai) players[1]).init();
         this.roundNumber = round;
+        game.nextPhase();
+    }
+
+    public void run() {
+        FXMLLoader firstLoader = new FXMLLoader();
+        firstLoader.setControllerFactory(type -> {
+            try {
+                if (type == GameٰView.class) {
+                    return views[0];
+                }
+                return type.newInstance();
+            } catch (Exception exc) {
+                throw new RuntimeException(exc);
+            }
+        });
+        firstLoader.setLocation(GameController.class.getResource("/fxml/" + "game" + ".fxml"));
+
+        FXMLLoader secondLoader = new FXMLLoader();
+        secondLoader.setControllerFactory(type -> {
+            try {
+                if (type == GameٰView.class)
+                    return views[1];
+
+                return type.newInstance();
+            } catch (Exception exc) {
+                throw new RuntimeException(exc);
+            }
+        });
+        secondLoader.setLocation(GameController.class.getResource("/fxml/" + "game" + ".fxml"));
+
+        try {
+            Parent firstRoot = firstLoader.load();
+            Parent secondRoot = secondLoader.load();
+
+            stages[0].setScene(new Scene(firstRoot));
+            stages[1].setScene(new Scene(secondRoot));
+            App.getStage().close();
+            stages[0].show();
+            stages[1].show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         game.nextPhase();
     }
 

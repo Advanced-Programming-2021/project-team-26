@@ -1,6 +1,7 @@
 package controller;
 
 import Utilities.GetFXML;
+import exceptions.NoPlayerAvailable;
 import fxmlController.App;
 import fxmlController.HeadOrTail;
 import fxmlController.Size;
@@ -80,9 +81,6 @@ public class HeadOrTailController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        graphics[0].initialize();
-        graphics[1].initialize();
     }
 
     public String getSign(int turn) {
@@ -144,13 +142,12 @@ public class HeadOrTailController {
         stages[0].close();
         stages[1].close();
 
-        //TODO remove this part
         App.getStage().show();
 
-//        try {
-//            new GameController(players[starter],players[1-starter],round);
-//        } catch (NoPlayerAvailable noPlayerAvailable) {
-//            noPlayerAvailable.printStackTrace();
-//        }
+        try {
+            new GameController(players[starter], players[1 - starter], round).run();
+        } catch (NoPlayerAvailable noPlayerAvailable) {
+            noPlayerAvailable.printStackTrace();
+        }
     }
 }
