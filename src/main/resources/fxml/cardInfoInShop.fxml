@@ -4,21 +4,43 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.CardInfoInShop">
+<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.CardInfoInShop">
    <children>
-      <Button fx:id="buyCard" layoutX="558.0" layoutY="505.0" mnemonicParsing="false" onAction="#buyCard" text="buy card" />
+      <Button fx:id="buyCard" layoutX="558.0" layoutY="505.0" mnemonicParsing="false" onAction="#buyCard" prefHeight="49.0" prefWidth="107.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="buy card">
+         <font>
+            <Font size="17.0" />
+         </font></Button>
       <SplitPane layoutX="27.0" layoutY="10.0" prefHeight="580.0" prefWidth="400.0">
          <items>
-            <Pane fx:id="toShowCard" prefHeight="666.0" prefWidth="444.0" />
+            <Pane fx:id="toShowCard" prefHeight="666.0" prefWidth="444.0" style="-fx-background-color: yellow;" />
          </items>
       </SplitPane>
-      <Text layoutX="562.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of this card in your cards is :" wrappingWidth="253.6708984375" />
-      <Text fx:id="numberOfThisCardInAllCards" layoutX="848.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <Text layoutX="562.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Card price:" />
-      <Text layoutX="562.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your balane:" />
-      <Text fx:id="cardPrice" layoutX="848.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <Text fx:id="balance" layoutX="848.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text fill="YELLOW" layoutX="504.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of this card in your cards is :" wrappingWidth="295.6708984375">
+         <font>
+            <Font size="18.0" />
+         </font></Text>
+      <Text fx:id="numberOfThisCardInAllCards" fill="YELLOW" layoutX="848.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="98.6308547668159">
+         <font>
+            <Font size="18.0" />
+         </font></Text>
+      <Text fill="YELLOW" layoutX="504.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Card price:">
+         <font>
+            <Font size="18.0" />
+         </font></Text>
+      <Text fill="YELLOW" layoutX="509.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your balane:">
+         <font>
+            <Font size="18.0" />
+         </font></Text>
+      <Text fx:id="cardPrice" fill="YELLOW" layoutX="848.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="84.9199203401804">
+         <font>
+            <Font size="18.0" />
+         </font></Text>
+      <Text fx:id="balance" fill="YELLOW" layoutX="841.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="98.6308547668159">
+         <font>
+            <Font size="18.0" />
+         </font></Text>
    </children>
 </AnchorPane>

@@ -43,11 +43,12 @@ public class Profile extends MenuParent {
         nicknameText.textProperty().addListener((observableValue, oldValue, newValue) -> {
             try {
                 UserController.getInstance().changeNickname(newValue);
-                nicknameText.setStyle("");
+                nicknameText.setStyle("-fx-background-color: yellow; -fx-background-radius: 50;");
             } catch (Exception e) {
-                nicknameText.setStyle("-fx-text-fill: red;");
+                nicknameText.setStyle("-fx-background-color: yellow; -fx-background-radius: 50; -fx-text-fill: red;");
             }
         });
+
         String imagePath = currentUser.getProfileImagePath();
         Image image = new Image(imagePath);
         profileImage.setImage(image);
