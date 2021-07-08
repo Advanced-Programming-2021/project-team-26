@@ -107,8 +107,11 @@ public class DeckMenu extends MenuParent implements Initializable {
             e.consume();
         });
 
-        imageView.setOnMouseEntered(e -> cardInfo.setImage(imageView.getImage()));
-        imageView.setOnMouseExited(e -> cardInfo.setImage(Card.getUnknownImage()));
+        imageView.setOnMouseEntered(e -> {
+            cardInfo.setVisible(true);
+            cardInfo.setImage(imageView.getImage());
+        });
+        imageView.setOnMouseExited(e -> cardInfo.setVisible(false));
         return imageView;
     }
 

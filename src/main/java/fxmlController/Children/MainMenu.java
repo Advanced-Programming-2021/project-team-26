@@ -4,7 +4,6 @@ import Utilities.GetFXML;
 import controller.MainMenuController;
 import controller.UserController;
 import fxmlController.*;
-import fxmlController.Children.*;
 import fxmlController.Children.ImportExport.ImpExpMain;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -82,6 +81,7 @@ public class MainMenu extends MenuParent {
         Integer rounds = getRound();
 
         try {
+            new HeadOrTail().run();
             MainMenuController.getInstance().creatNewGameWithAI(rounds);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
