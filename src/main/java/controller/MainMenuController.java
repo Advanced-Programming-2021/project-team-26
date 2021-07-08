@@ -54,10 +54,7 @@ public class MainMenuController {
         if (round != 1 && round != 3)
             throw new NotSupportedRoundNumber();
 
-        //TODO open Duel menu
-//      GameController gameController = new GameController(firstUser, secondUser, round);
-//      DuelMenu.setGameController(gameController);
-//      new DuelMenu(gameController).execute();
+        new HeadOrTailController(firstUser, secondUser, round).run();
     }
 
 //    public String enterMenu(Matcher matcher) throws InvalidMenuException {

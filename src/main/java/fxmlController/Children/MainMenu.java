@@ -1,5 +1,6 @@
 package fxmlController.Children;
 
+import Utilities.Alert;
 import Utilities.GetFXML;
 import controller.MainMenuController;
 import controller.UserController;
@@ -15,7 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import Utilities.Alert;
 
 import java.io.IOException;
 
@@ -81,7 +81,6 @@ public class MainMenu extends MenuParent {
         Integer rounds = getRound();
 
         try {
-            new HeadOrTail().run();
             MainMenuController.getInstance().creatNewGameWithAI(rounds);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
