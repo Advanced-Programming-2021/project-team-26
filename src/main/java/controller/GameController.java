@@ -316,6 +316,8 @@ public class GameController {
         if (activeOpponentTrapOnSummon(monster, "normal")) {
             return null;
         }
+
+        views[1 - game.getTurn()].showOpponentMonsterZone();
         return "summoned successfully";
     }
 
@@ -348,6 +350,7 @@ public class GameController {
 
         Trap trap = (Trap) selectedCard;
         game.getThisBoard().putSpellTrap(trap, SpellTrapPosition.DOWN);
+        views[1 - game.getTurn()].showOpponentSpellTraps();
     }
 
     private void setSpell() {
@@ -356,6 +359,7 @@ public class GameController {
 
         Spell spell = (Spell) selectedCard;
         game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.DOWN);
+        views[1 - game.getTurn()].showOpponentSpellTraps();
     }
 
     private void setMonster() {
@@ -404,6 +408,7 @@ public class GameController {
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.DEFENCE_DOWN);
         game.setSummonOrSetThisTurn(true);
         monster.set();
+        views[1 - game.getTurn()].showOpponentMonsterZone();
     }
 
     public String setPosition(Matcher matcher) {
@@ -544,8 +549,9 @@ public class GameController {
     }
 
 
-    public String activateEffect(Card card) {
+    public String activateEffect(Card card, CardAddress address) {
         selectedCard = card;
+        selectedCardAddress = address;
         if (temporaryTurnChange) {
             activateEffectOnOpponentTurn();
             return null;
@@ -588,6 +594,7 @@ public class GameController {
             }
         }
         deselect();
+
         return "spell activated";
     }
 

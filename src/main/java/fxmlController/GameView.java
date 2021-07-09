@@ -1,9 +1,7 @@
 package fxmlController;
 
-import controller.GameController;
-import controller.MonsterPosition;
-import controller.Phase;
-import controller.SpellTrapPosition;
+import Utilities.Alert;
+import controller.*;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -20,12 +18,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import model.CardAddress;
+import model.Owner;
+import model.Place;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class GameView implements Initializable {
@@ -355,27 +357,86 @@ public class GameView implements Initializable {
     }
 
     private void activateSpellTrap(Card card, ImageView imageView) {
-        gameController.activateEffect(card);
-        mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(card.getImage());
-        myHand.getChildren().remove(imageView);
+        try {
+            gameController.activateEffect(card, new CardAddress(Place.Hand, Owner.Me));
+            myHand.getChildren().remove(imageView);
+        } catch (Exception e) {
+            Alert.getInstance().errorPrint(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void setSpellTrap(Card card, ImageView imageView) {
-        gameController.set(card);
-        mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
-        myHand.getChildren().remove(imageView);
+        try {
+            gameController.set(card);
+            mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
+            myHand.getChildren().remove(imageView);
+        } catch (Exception e) {
+            Alert.getInstance().errorPrint(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void summonMonster(Card card, ImageView imageView) {
-        gameController.summon(card);
-        myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(card.getImage());
-        myHand.getChildren().remove(imageView);
+        try {
+            gameController.summon(card);
+            myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(card.getImage());
+            myHand.getChildren().remove(imageView);
+        } catch (Exception e) {
+            Alert.getInstance().errorPrint(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void setMonster(Card card, ImageView imageView) {
-        gameController.set(card);
-        myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
-        myHand.getChildren().remove(imageView);
+        try {
+            gameController.set(card);
+            myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
+            myHand.getChildren().remove(imageView);
+        } catch (Exception e) {
+            Alert.getInstance().errorPrint(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void showOpponentMonsterZone() {
+        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(1 - turn).getMonsterZoneMap();
+        for (int i = 0; i < 5; i++) {
+            if (!monsterZone.containsKey(i)) {
+                ImageView imageView = oppMonsters.get(i);
+                imageView.setImage(null);
+            } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
+                ImageView imageView = oppMonsters.get(i);
+                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+                imageView.setRotate(180);
+            } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
+                ImageView imageView = oppMonsters.get(i);
+                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+                imageView.setRotate(90);
+            } else {
+                ImageView imageView = oppMonsters.get(i);
+                imageView.setImage(Card.getUnknownImage());
+                imageView.setRotate(90);
+            }
+        }
+
+    }
+
+    public void showOpponentSpellTraps() {
+        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(1 - turn).getSpellTrapZoneMap();
+        for (int i = 0; i < 5; i++) {
+            if (!spellTrapZone.containsKey(i)) {
+                ImageView imageView = oppSpellTraps.get(i);
+                imageView.setImage(null);
+            } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {
+                ImageView imageView = oppSpellTraps.get(i);
+                imageView.setImage(spellTrapZone.get(i).getCard().getImage());
+                imageView.setRotate(180);
+            } else {
+                ImageView imageView = oppSpellTraps.get(i);
+                imageView.setImage(Card.getUnknownImage());
+            }
+        }
     }
 
     class CardImageView extends ImageView {

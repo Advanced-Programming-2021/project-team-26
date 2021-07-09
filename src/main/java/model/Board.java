@@ -45,6 +45,14 @@ public class Board {
         return spellTrapZone.size();
     }
 
+    public HashMap<Integer, MonsterController> getMonsterZoneMap(){
+        return monstersZone;
+    }
+
+    public HashMap<Integer, SpellTrapController> getSpellTrapZoneMap(){
+        return spellTrapZone;
+    }
+
     public List<Card> getDeck() {
         return deck;
     }
