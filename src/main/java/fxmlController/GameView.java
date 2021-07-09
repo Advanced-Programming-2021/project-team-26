@@ -355,25 +355,25 @@ public class GameView implements Initializable {
     }
 
     private void activateSpellTrap(Card card, ImageView imageView) {
-        gameController.getGame().getThisBoard().putSpellTrap((SpellTrap) card, SpellTrapPosition.UP);
+        gameController.activateEffect(card);
         mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(card.getImage());
         myHand.getChildren().remove(imageView);
     }
 
     private void setSpellTrap(Card card, ImageView imageView) {
-        gameController.getGame().getThisBoard().putSpellTrap((SpellTrap) card, SpellTrapPosition.DOWN);
+        gameController.set(card);
         mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
         myHand.getChildren().remove(imageView);
     }
 
     private void summonMonster(Card card, ImageView imageView) {
-        gameController.getGame().getThisBoard().putMonster((Monster) card, MonsterPosition.ATTACK);
+        gameController.summon(card);
         myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(card.getImage());
         myHand.getChildren().remove(imageView);
     }
 
     private void setMonster(Card card, ImageView imageView) {
-        gameController.getGame().getThisBoard().putMonster((Monster) card, MonsterPosition.DEFENCE_DOWN);
+        gameController.set(card);
         myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
         myHand.getChildren().remove(imageView);
     }

@@ -245,18 +245,15 @@ public class GameController {
             game.nextPhase();
     }
 
-    public String summon(Matcher matcher) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+    public String summon(Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
+        selectedCard = card;
+
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
-
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.Hand ||
-                !(selectedCard instanceof Monster))
-            throw new CannotSummonException();
 
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
@@ -322,15 +319,14 @@ public class GameController {
         return "summoned successfully";
     }
 
-    public String set(Matcher matcher) throws NoCardSelectedException, CannotSetException {
+    public String set(Card card) throws NoCardSelectedException, CannotSetException {
+        selectedCard = card;
+
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.Hand)
-            throw new CannotSetException();
 
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
@@ -548,17 +544,14 @@ public class GameController {
     }
 
 
-    public String activateEffect(Matcher matcher) {
+    public String activateEffect(Card card) {
+        selectedCard = card;
         if (temporaryTurnChange) {
             activateEffectOnOpponentTurn();
             return null;
         }
         if (selectedCard == null)
             throw new NoCardSelectedException();
-
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                !(selectedCard instanceof Spell))
-            throw new CannotActivateException();
 
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
