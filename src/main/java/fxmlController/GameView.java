@@ -1,22 +1,30 @@
 package fxmlController;
 
 import controller.GameController;
+import controller.MonsterPosition;
 import controller.Phase;
+import controller.SpellTrapPosition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import model.cards.Card;
+import model.cards.SpellTrap;
+import model.cards.monster.Monster;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameView implements Initializable {
@@ -25,7 +33,11 @@ public class GameView implements Initializable {
     public static final String OPPONENT_PHASE_STYLE = "-fx-background-color: #e01313;";
     public static final String MY_CURRENT_PHASE_STYLE = "-fx-background-color: #3ba8e2;-fx-border-color: #001a82; -fx-border-width: 5";
     public static final String OPPONENT_CURRENT_PHASE_STYLE = "-fx-background-color: #e01313;-fx-border-color: #570000; -fx-border-width: 5";
-    private final GameController controller;
+    private final ArrayList<ImageView> myMonsters = new ArrayList<>();
+    private final ArrayList<ImageView> mySpellTraps = new ArrayList<>();
+    private final ArrayList<ImageView> oppMonsters = new ArrayList<>();
+    private final ArrayList<ImageView> oppSpellTraps = new ArrayList<>();
+    private final GameController gameController;
     private final int turn;
     public Button drawPhaseBut;
     public Button standbyPhaseBut;
@@ -36,6 +48,66 @@ public class GameView implements Initializable {
 
     @FXML
     private AnchorPane root;
+
+    @FXML
+    private ImageView opoSpellTrap4;
+
+    @FXML
+    private ImageView opoSpellTrap2;
+
+    @FXML
+    private ImageView opoSpellTrap1;
+
+    @FXML
+    private ImageView opoSpellTrap3;
+
+    @FXML
+    private ImageView opoSpellTrap5;
+
+    @FXML
+    private ImageView oppMonster5;
+
+    @FXML
+    private ImageView oppMonster3;
+
+    @FXML
+    private ImageView oppMonster1;
+
+    @FXML
+    private ImageView oppMonster2;
+
+    @FXML
+    private ImageView oppMonster4;
+
+    @FXML
+    private ImageView myMonster5;
+
+    @FXML
+    private ImageView myMonster3;
+
+    @FXML
+    private ImageView myMonster1;
+
+    @FXML
+    private ImageView myMonster2;
+
+    @FXML
+    private ImageView myMonster4;
+
+    @FXML
+    private ImageView mySpellTrap5;
+
+    @FXML
+    private ImageView mySpellTrap3;
+
+    @FXML
+    private ImageView mySpellTrap1;
+
+    @FXML
+    private ImageView mySpellTrap2;
+
+    @FXML
+    private ImageView mySpellTrap4;
 
     @FXML
     private ProgressBar opponentLPProgress;
@@ -77,12 +149,12 @@ public class GameView implements Initializable {
     private ImageView myDeckImage;
 
     public GameView(GameController controller, int turn) {
-        this.controller = controller;
+        this.gameController = controller;
         this.turn = turn;
     }
 
     public void updatePhase() {
-        if (controller.getGame().getTurn() != turn) {
+        if (gameController.getGame().getTurn() != turn) {
             updatePhaseOpponent();
             return;
         }
@@ -94,7 +166,7 @@ public class GameView implements Initializable {
         mainPhase2But.setStyle(MY_PHASE_STYLE);
         endPhaseBut.setStyle(MY_PHASE_STYLE);
 
-        Phase phase = controller.getGame().getPhase();
+        Phase phase = gameController.getGame().getPhase();
         boolean found = false;
         if (Phase.STANDBY.compareTo(phase) == 0) {
             found = true;
@@ -150,7 +222,7 @@ public class GameView implements Initializable {
         mainPhase2But.setOnAction(null);
         endPhaseBut.setOnAction(null);
 
-        switch (controller.getGame().getPhase()) {
+        switch (gameController.getGame().getPhase()) {
             case DRAW:
                 drawPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
                 break;
@@ -174,45 +246,73 @@ public class GameView implements Initializable {
 
     @FXML
     public void drawPhase(ActionEvent event) {
-        controller.nextPhase(Phase.DRAW);
+        gameController.nextPhase(Phase.DRAW);
     }
 
     @FXML
     void standbyPhase(ActionEvent event) {
-        controller.nextPhase(Phase.STANDBY);
+        gameController.nextPhase(Phase.STANDBY);
     }
 
     @FXML
     void mainPhase1(ActionEvent event) {
-        controller.nextPhase(Phase.MAIN1);
+        gameController.nextPhase(Phase.MAIN1);
     }
 
     @FXML
     void battlePhase(ActionEvent event) {
-        controller.nextPhase(Phase.BATTLE);
+        gameController.nextPhase(Phase.BATTLE);
     }
 
     @FXML
     void mainPhase2(ActionEvent event) {
-        controller.nextPhase(Phase.MAIN2);
+        gameController.nextPhase(Phase.MAIN2);
     }
 
     @FXML
     void endPhase(ActionEvent event) {
-        controller.nextPhase(Phase.END);
+        gameController.nextPhase(Phase.END);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        myLP.setText(String.valueOf(controller.getGame().getLifePoint(turn)));
-        myNickname.setText(controller.getGame().getUser(turn).getNickname());
-        myProfile.setImage(controller.getGame().getUser(turn).getProfileImage());
-        myUsername.setText(controller.getGame().getUser(turn).getUsername());
+        myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
+        myNickname.setText(gameController.getGame().getUser(turn).getNickname());
+        myProfile.setImage(gameController.getGame().getUser(turn).getProfileImage());
+        myUsername.setText(gameController.getGame().getUser(turn).getUsername());
 
-        opponentLP.setText(String.valueOf(controller.getGame().getLifePoint(1 - turn)));
-        opponentNickname.setText(controller.getGame().getUser(1 - turn).getNickname());
-        opponentProfile.setImage(controller.getGame().getUser(1 - turn).getProfileImage());
-        opponentUsername.setText(controller.getGame().getUser(1 - turn).getUsername());
+        opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
+        opponentNickname.setText(gameController.getGame().getUser(1 - turn).getNickname());
+        opponentProfile.setImage(gameController.getGame().getUser(1 - turn).getProfileImage());
+        opponentUsername.setText(gameController.getGame().getUser(1 - turn).getUsername());
+
+        initField();
+    }
+
+    private void initField() {
+        myMonsters.add(myMonster1);
+        myMonsters.add(myMonster2);
+        myMonsters.add(myMonster3);
+        myMonsters.add(myMonster4);
+        myMonsters.add(myMonster5);
+
+        mySpellTraps.add(mySpellTrap1);
+        mySpellTraps.add(mySpellTrap2);
+        mySpellTraps.add(mySpellTrap3);
+        mySpellTraps.add(mySpellTrap4);
+        mySpellTraps.add(mySpellTrap5);
+
+        oppMonsters.add(oppMonster1);
+        oppMonsters.add(oppMonster2);
+        oppMonsters.add(oppMonster3);
+        oppMonsters.add(oppMonster4);
+        oppMonsters.add(oppMonster5);
+
+        oppSpellTraps.add(opoSpellTrap1);
+        oppSpellTraps.add(opoSpellTrap2);
+        oppSpellTraps.add(opoSpellTrap3);
+        oppSpellTraps.add(opoSpellTrap4);
+        oppSpellTraps.add(opoSpellTrap5);
     }
 
     private void move(int currentX, int currentY, int destX, int destY, Node node) {
@@ -237,5 +337,40 @@ public class GameView implements Initializable {
         int number = myHand.getChildren().size();
 
         myHand.add(imageView, number, 0);
+
+        imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    if (card instanceof Monster) setMonster(card);
+                    else if (card instanceof SpellTrap) setSpellTrap(card);
+                } else {
+                    if (card instanceof Monster) summonMonster(card);
+                    else if (card instanceof SpellTrap) activateSpellTrap(card);
+                }
+            }
+        });
     }
+
+    private void activateSpellTrap(Card card) {
+        gameController.getGame().getThisBoard().putSpellTrap((SpellTrap) card, SpellTrapPosition.UP);
+        mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty()).setImage(card.getImage());
+    }
+
+    private void setSpellTrap(Card card) {
+        gameController.getGame().getThisBoard().putSpellTrap((SpellTrap) card, SpellTrapPosition.DOWN);
+        mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty()).setImage(Card.getUnknownImage());
+    }
+
+    private void summonMonster(Card card) {
+        gameController.getGame().getThisBoard().putMonster((Monster) card, MonsterPosition.ATTACK);
+        myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty()).setImage(card.getImage());
+    }
+
+    private void setMonster(Card card) {
+        gameController.getGame().getThisBoard().putMonster((Monster) card, MonsterPosition.DEFENCE_DOWN);
+        myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty()).setImage(Card.getUnknownImage());
+    }
+
+
 }

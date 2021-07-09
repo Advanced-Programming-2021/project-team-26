@@ -29,12 +29,20 @@ public class Board {
         setGameController(gameController);
     }
 
-    public void initBoard(){
+    public void initBoard() {
         initMonstersZone();
         initSpellTrapZone();
         initGraveyard();
         initHand();
         initFieldZone();
+    }
+
+    public int getMonsterZoneLastEmpty() {
+        return monstersZone.size();
+    }
+
+    public int getSpellTrapZoneLastEmpty() {
+        return spellTrapZone.size();
     }
 
     public List<Card> getDeck() {
