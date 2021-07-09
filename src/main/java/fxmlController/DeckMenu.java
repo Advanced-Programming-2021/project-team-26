@@ -24,10 +24,7 @@ import model.cards.Card;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,6 +116,7 @@ public class DeckMenu extends MenuParent implements Initializable {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         deckNameTable.setEditable(false);
         deckNameTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        deckNameTable.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/CSS/Scoreboard.css")).toExternalForm());
         initDeckNameTable();
         updateDecksName();
         addDropOptionAllCards();

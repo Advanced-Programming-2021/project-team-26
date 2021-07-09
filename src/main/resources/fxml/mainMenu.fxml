@@ -5,41 +5,66 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.MainMenu">
    <children>
-      <Button layoutX="858.0" layoutY="46.0" mnemonicParsing="false" onAction="#newTwoPlayerGame" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Two Player Duel">
+      <Button layoutX="861.0" layoutY="69.0" mnemonicParsing="false" onAction="#newTwoPlayerGame" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Two Player Duel">
          <effect>
             <Reflection fraction="0.6" topOpacity="0.4" />
-         </effect></Button>
-      <Button layoutX="63.0" layoutY="46.0" mnemonicParsing="false" onAction="#newOnePlayerGame" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Single Player Duel">
+         </effect>
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="63.0" layoutY="69.0" mnemonicParsing="false" onAction="#newOnePlayerGame" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Single Player Duel">
          <effect>
             <Reflection fraction="0.6" topOpacity="0.4" />
-         </effect></Button>
-      <Button layoutX="895.0" layoutY="306.0" mnemonicParsing="false" onAction="#openDeck" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Deck">
+         </effect>
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="861.0" layoutY="341.0" mnemonicParsing="false" onAction="#openDeck" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Deck">
          <effect>
             <Reflection fraction="0.6" topOpacity="0.4" />
-         </effect></Button>
-      <Button layoutX="894.0" layoutY="195.0" mnemonicParsing="false" onAction="#openShop" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Shop">
+         </effect>
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="861.0" layoutY="211.0" mnemonicParsing="false" onAction="#openShop" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Shop">
          <effect>
             <Reflection fraction="0.6" topOpacity="0.4" />
-         </effect></Button>
-      <Button layoutX="101.0" layoutY="306.0" mnemonicParsing="false" onAction="#openProfile" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Profile">
+         </effect>
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="63.0" layoutY="341.0" mnemonicParsing="false" onAction="#openProfile" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Profile">
          <effect>
             <Reflection fraction="0.6" topOpacity="0.4" />
-         </effect></Button>
-      <Button layoutX="85.0" layoutY="195.0" mnemonicParsing="false" onAction="#openScoreBoard" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="ScoreBoard">
+         </effect>
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="63.0" layoutY="211.0" mnemonicParsing="false" onAction="#openScoreBoard" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="ScoreBoard">
          <effect>
             <Reflection fraction="0.6" topOpacity="0.4" />
-         </effect></Button>
-      <Button layoutX="480.0" layoutY="442.0" mnemonicParsing="false" onAction="#openImportExport" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Import/Export">
+         </effect>
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="457.0" layoutY="406.0" mnemonicParsing="false" onAction="#openImportExport" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Import/Export">
          <effect>
             <Reflection fraction="0.6" topOpacity="0.4" />
-         </effect></Button>
-      <Button layoutX="503.0" layoutY="524.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: red; -fx-background-radius: 50;" text="Logout">
+         </effect>
+         <font>
+            <Font size="17.0" />
+         </font></Button>
+      <Button layoutX="457.0" layoutY="505.0" mnemonicParsing="false" onAction="#logout" prefHeight="70.0" prefWidth="160.0" style="-fx-background-color: red; -fx-background-radius: 50;" text="Logout" textFill="WHITE">
          <effect>
             <Reflection />
-         </effect></Button>
+         </effect>
+         <font>
+            <Font size="24.0" />
+         </font></Button>
       <ImageView fitHeight="200.0" fitWidth="180.0" layoutX="447.0" layoutY="46.0">
          <image>
             <Image url="@../Assets/Arts/MBB_008638.dds.png" />

@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Scoreboard">
    <children>
-      <TableView fx:id="table" layoutX="421.0" layoutY="68.0" prefHeight="472.0" prefWidth="228.0" style="-fx-background-color: yellow; -fx-background-radius: 20;">
+      <TableView fx:id="table" layoutX="421.0" layoutY="68.0" prefHeight="472.0" prefWidth="228.0" style="-fx-background-color: yellow;">
         <columns>
           <TableColumn fx:id="rank" editable="false" prefWidth="75.0" sortable="false" text="Rank" />
           <TableColumn fx:id="name" editable="false" prefWidth="75.0" sortable="false" text="Name" />

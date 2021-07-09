@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -49,6 +50,7 @@ public class Scoreboard extends MenuParent implements Initializable {
         ScoreBoardController.getAndSetDataFromUser();
         ObservableList<ScoreBoardController> list = FXCollections.observableArrayList(ScoreBoardController.getScoreBoardControllers());
         customiseFactory(name);
+        table.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/CSS/Scoreboard.css")).toExternalForm());
         table.setItems(list);
     }
 
