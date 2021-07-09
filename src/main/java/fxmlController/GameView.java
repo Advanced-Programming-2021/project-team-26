@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -45,6 +46,8 @@ public class GameView implements Initializable {
     public Button battlePhaseBut;
     public Button mainPhase2But;
     public Button endPhaseBut;
+    public ImageView cardInfo;
+    public TextArea cardDetails;
 
     @FXML
     private AnchorPane root;
@@ -330,8 +333,7 @@ public class GameView implements Initializable {
     }
 
     public void moveFromDeckToHand(Card card) {
-        ImageView imageView = new ImageView();
-        imageView.setImage(card.getImage());
+        ImageView imageView = new CardImageView(card);
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         int number = myHand.getChildren().size();
@@ -374,5 +376,33 @@ public class GameView implements Initializable {
         gameController.getGame().getThisBoard().putMonster((Monster) card, MonsterPosition.DEFENCE_DOWN);
         myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
         myHand.getChildren().remove(imageView);
+    }
+
+    class CardImageView extends ImageView {
+        Card card;
+        boolean isVisible;
+
+        public CardImageView(Card card) {
+            this(card, true);
+        }
+
+        public CardImageView(Card card, boolean isVisible) {
+            this.card = card;
+            this.isVisible = isVisible;
+            if (isVisible)
+                setImage(card.getImage());
+            else
+                setImage(Card.getUnknownImage());
+
+            setOnMouseEntered(e -> {
+                if (isVisible) {
+                    cardInfo.setImage(card.getImage());
+                    cardDetails.setText(card.getDescription());
+                } else {
+                    cardInfo.setImage(Card.getUnknownImage());
+                    cardDetails.setText("");
+                }
+            });
+        }
     }
 }
