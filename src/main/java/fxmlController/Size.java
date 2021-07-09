@@ -8,7 +8,9 @@ public enum Size {
     CARD_HEIGHT_IN_SHOP(90),
     CARD_WIDTH_IN_SHOP(60),
     CARD_HEIGHT_IN_SHOP_INFO(580),
-    CARD_WIDTH_IN_SHOP_INFO(400);
+    CARD_WIDTH_IN_SHOP_INFO(400),
+    CARD_SIZE_IN_GAME(92);
+
     private final int value;
 
     Size(final int newValue) {
