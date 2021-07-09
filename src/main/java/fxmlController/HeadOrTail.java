@@ -14,9 +14,6 @@ public class HeadOrTail {
     private Image sharp;
     private Image throwingCoin;
 
-    private String first;
-    private String second;
-
     @FXML
     private Text sign;
 
@@ -26,16 +23,6 @@ public class HeadOrTail {
     public HeadOrTail(HeadOrTailController controller, int turn) {
         this.controller = controller;
         this.turn = turn;
-    }
-
-    @FXML
-    void IStartGame(ActionEvent event) {
-//        TODO winner starts\
-    }
-
-    @FXML
-    void OpponentStartsGame(ActionEvent event) {
-//        TODO loser starts
     }
 
     @FXML

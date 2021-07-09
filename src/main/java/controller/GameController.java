@@ -69,6 +69,10 @@ public class GameController {
         game.nextPhase();
     }
 
+    public GameView[] getViews() {
+        return views;
+    }
+
     public void run() {
         FXMLLoader firstLoader = new FXMLLoader();
         firstLoader.setControllerFactory(type -> {
@@ -109,6 +113,8 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        getGame().getBoard(0).initBoard();
+        getGame().getBoard(1).initBoard();
         game.nextPhase();
     }
 

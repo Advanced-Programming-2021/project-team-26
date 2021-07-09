@@ -27,13 +27,15 @@ public class Board {
     public Board(GameController gameController, Deck deck) {
         initDeck(deck);
         setGameController(gameController);
+    }
+
+    public void initBoard(){
         initMonstersZone();
         initSpellTrapZone();
         initGraveyard();
         initHand();
         initFieldZone();
     }
-
 
     public List<Card> getDeck() {
         return deck;
@@ -130,6 +132,7 @@ public class Board {
             return null;
         Card addedCard = this.deck.remove(0);
         hand.add(addedCard);
+        gameController.getViews()[getMyTurn()].moveFromDeckToHand(addedCard);
         return addedCard;
     }
 

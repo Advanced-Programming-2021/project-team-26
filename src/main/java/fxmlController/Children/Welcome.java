@@ -1,6 +1,8 @@
 package fxmlController.Children;
 
 import Utilities.GetFXML;
+import controller.GameController;
+import exceptions.NoPlayerAvailable;
 import fxmlController.App;
 import fxmlController.MenuParent;
 import fxmlController.Size;
@@ -8,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import model.User;
 
 import java.io.IOException;
 
@@ -33,5 +36,10 @@ public class Welcome extends MenuParent {
     @FXML
     void openSignUpPage(ActionEvent event) throws IOException {
         new SignUp().run();
+    }
+
+    @FXML
+    void newGame(ActionEvent event) throws NoPlayerAvailable {
+        new GameController(User.getUserByUsername("c"), User.getUserByUsername("b"), 1).run();
     }
 }

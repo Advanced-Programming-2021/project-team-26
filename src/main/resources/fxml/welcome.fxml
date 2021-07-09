@@ -9,14 +9,14 @@
 
 <AnchorPane minHeight="600.0" minWidth="1070.0" style="-fx-background-color: Black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.Welcome">
    <children>
-      <Button contentDisplay="CENTER" layoutX="459.0" layoutY="77.0" mnemonicParsing="false" onAction="#openSignUpPage" prefHeight="126.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Sign up">
+      <Button contentDisplay="CENTER" layoutX="459.0" layoutY="193.0" mnemonicParsing="false" onAction="#openSignUpPage" prefHeight="107.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Sign up">
          <effect>
             <Reflection bottomOpacity="0.03" fraction="0.4" />
          </effect>
          <font>
             <Font size="26.0" />
          </font></Button>
-      <Button layoutX="459.0" layoutY="313.0" mnemonicParsing="false" onAction="#openLoginPage" prefHeight="126.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Login" textFill="#0a0000">
+      <Button layoutX="459.0" layoutY="378.0" mnemonicParsing="false" onAction="#openLoginPage" prefHeight="107.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Login" textFill="#0a0000">
          <effect>
             <Reflection bottomOpacity="0.03" fraction="0.4" />
          </effect>
@@ -39,5 +39,11 @@
             <Reflection />
          </effect>
       </ImageView>
+      <ImageView fitHeight="107.0" fitWidth="256.0" layoutX="407.0" layoutY="31.0">
+         <image>
+            <Image url="@../Assets/Logos/_images_text_yugioh.dds2.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="342.0" layoutY="506.0" mnemonicParsing="false" onAction="#newGame" text="new" />
    </children>
 </AnchorPane>

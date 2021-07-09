@@ -110,7 +110,7 @@ public class HeadOrTailController {
                 Platform.runLater(() -> {
                     int result = ThreadLocalRandom.current().nextInt(2);
                     winner = result;
-                    System.out.println(result);
+
                     graphics[0].setResult(result);
                     graphics[1].setResult(result);
 
@@ -138,7 +138,6 @@ public class HeadOrTailController {
     }
 
     private void startGame() {
-        System.out.println(starter);
         stages[0].close();
         stages[1].close();
 
