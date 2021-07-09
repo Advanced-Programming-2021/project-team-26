@@ -1,5 +1,6 @@
 package fxmlController.Children;
 
+import static fxmlController.Children.Welcome.buttonClick;
 import Utilities.Alert;
 import Utilities.GetFXML;
 import controller.MainMenuController;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainMenu extends MenuParent {
+
     public MainMenu() {
         super("Yu Gi Oh!");
     }
@@ -31,6 +33,8 @@ public class MainMenu extends MenuParent {
     }
 
     public void newTwoPlayerGame() {
+        buttonClick.play();
+
         Object[] result = getSecondPlayerAndRound();
         String secondPlayer = (String) result[0];
         Integer round = (Integer) result[1];
@@ -78,6 +82,7 @@ public class MainMenu extends MenuParent {
     }
 
     public void newOnePlayerGame() {
+
         Integer rounds = getRound();
 
         try {
@@ -118,26 +123,32 @@ public class MainMenu extends MenuParent {
     }
 
     public void openDeck() throws IOException {
+        buttonClick.play();
         new DeckMenu().run();
     }
 
     public void openShop() throws IOException {
-       new Shop().run();
+        buttonClick.play();
+        new Shop().run();
     }
 
     public void openProfile() throws IOException {
+        buttonClick.play();
         new Profile().run();
     }
 
     public void openScoreBoard() throws IOException {
+        buttonClick.play();
         new Scoreboard().run();
     }
 
     public void openImportExport() throws IOException {
+        buttonClick.play();
         new ImpExpMain().run();
     }
 
     public void logout() {
+        buttonClick.play();
         Alert.getInstance().successfulPrint(UserController.getInstance().logout());
     }
 }
