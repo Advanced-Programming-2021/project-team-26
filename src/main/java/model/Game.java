@@ -65,7 +65,8 @@ public class Game {
             nextPhase = Phase.DRAW;
         }
         this.phase = nextPhase;
-        Print.getInstance().printMessage("phase: " + this.phase.getPhaseName());
+        gameController.getViews()[0].updatePhase();
+        gameController.getViews()[1].updatePhase();
         if (this.phase == Phase.DRAW) {
             drawPhase();
             nextPhase();

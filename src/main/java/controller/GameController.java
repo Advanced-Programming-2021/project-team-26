@@ -239,9 +239,10 @@ public class GameController {
         selectedSpellTrap = null;
     }
 
-    public String nextPhase(Matcher matcher) {
-        game.nextPhase();
-        return null;
+    public void nextPhase(Phase phase) {
+        int myTurn = game.getTurn();
+        while (myTurn == game.getTurn() && game.getPhase().compareTo(phase) < 0)
+            game.nextPhase();
     }
 
     public String summon(Matcher matcher) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
