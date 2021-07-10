@@ -10,7 +10,6 @@ import model.cards.monster.MonsterType;
 import model.cards.spell.Spell;
 import model.cards.spell.SpellType;
 import view.Print;
-import view.Scan;
 
 import java.util.*;
 
@@ -64,29 +63,41 @@ public class SpellController extends SpellTrapController {
         return new SpellController(gameController, spell, position) {
             @Override
             public void activate() throws InvalidSelection {
+                Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask(
+                        "Do you want to select from your GRAVEYARD?");
+
+                if (answer == null)
+                    answer = true;
                 Print.getInstance().printMessage("Select a monster from your or the rival GRAVEYARD" +
                         "1. select from my GRAVEYARD" +
                         "2. select from rival GRAVEYARD");
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
-                int whichGraveyard = Integer.parseInt(input);
-
-                setOurGraveyardAccessible(true);
-                setRivalGraveyardAccessible(true);
-                input = scanner.nextLine();
-                select(input);
-
-                if (!(super.selectedCard instanceof Monster)) {
-                    throw new InvalidSelection();
-                } else {
-                    Monster selectedMonster = (Monster) selectedCard;
-                    if (whichGraveyard == 1) {
-                        gameController.getGame().getThisBoard().getGraveyard().remove(selectedCard);
-                    } else if (whichGraveyard == 2) {
-                        gameController.getGame().getOtherBoard().getGraveyard().remove(selectedCard);
-                    }
-                    gameController.getGame().getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
+                ArrayList<Card> options = new ArrayList<>();
+                for (Card card : gameController.getGame().getThisBoard().getGraveyard()) {
+                    if (card instanceof Monster)
+                        options.add(card);
                 }
+
+                for (Card card : gameController.getGame().getOtherBoard().getGraveyard()) {
+                    if (card instanceof Monster)
+                        options.add(card);
+                }
+
+                ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                        options,
+                        1,
+                        "Select a monster from your or the rival GRAVEYARD"
+                );
+
+                if (selected.size() != 1)
+                    return;
+                Monster selectedMonster = (Monster) selected.get(0);
+                if (answer) {
+                    gameController.getGame().getThisBoard().getGraveyard().remove(selectedCard);
+                } else {
+                    gameController.getGame().getOtherBoard().getGraveyard().remove(selectedCard);
+                }
+                gameController.getGame().getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
+
             }
         };
     }
@@ -97,7 +108,7 @@ public class SpellController extends SpellTrapController {
             @Override
             public void activate() throws InvalidSelection {
                 List<Card> deck = gameController.getGame().getThisBoard().getDeck();
-                ArrayList<Spell> fieldSpells = new ArrayList<>();
+                ArrayList<Card> fieldSpells = new ArrayList<>();
 
                 for (Card card : deck) {
                     if (card instanceof Spell) {
@@ -108,26 +119,26 @@ public class SpellController extends SpellTrapController {
                     }
                 }
 
-                Print.getInstance().printMessage(showCards(fieldSpells));
+                //Print.getInstance().printMessage(showCards(fieldSpells));
                 gameController.getGame().getThisBoard().shuffleDeck();
-                Print.getInstance().printMessage("\n");
+                //Print.getInstance().printMessage("\n");
                 Print.getInstance().printMessage("select number of the spell you want:");
 
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
+                ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                        fieldSpells,
+                        1,
+                        "Select one Field Spell"
+                );
 
-                int select = Integer.parseInt(input);
-                if (select < 0 || select > fieldSpells.size())
-                    throw new InvalidSelection();
-                else {
-                    for (Card card : deck) {
-                        if (card.getName().equals(fieldSpells.get(select - 1).getName())) {
-                            deck.remove(card);
-                            break;
-                        }
+
+                for (Card card : deck) {
+                    if (card.getName().equals(selected.get(0).getName())) {
+                        deck.remove(card);
+                        break;
                     }
-                    gameController.getGame().getThisBoard().addCardToHand(fieldSpells.get(select - 1));
                 }
+                gameController.getGame().getThisBoard().addCardToHand(selected.get(0));
+
             }
 
             private String showCards(ArrayList<Spell> fieldSpells) {
@@ -165,27 +176,32 @@ public class SpellController extends SpellTrapController {
 
     private static SpellController makeChangeOfHeart(GameController gameController, Spell spell, SpellTrapPosition position) {
         return new SpellController(gameController, spell, position) {
+            Monster selectedMonster;
+
             @Override
             public void activate() throws InvalidSelection {
                 Print.getInstance().printMessage("select a Monster from rival monsterZone:");
 
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
-                select(input);
-                setRivalMonsterZoneAccessible(true);
+                ArrayList<Card> options = new ArrayList<>();
+                for (MonsterController monsterController : gameController.getGame().getOtherBoard().getMonstersZone())
+                    options.add(monsterController.getMonster());
 
-                if (!(selectedCard instanceof Monster)) {
-                    throw new InvalidSelection();
-                } else {
-                    Monster selectedMonster = (Monster) selectedCard;
+                ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                        options,
+                        1,
+                        "select a Monster from rival monsterZone"
+                );
+
+                if (selected.size() == 1) {
+                    selectedMonster = (Monster) selected.get(0);
                     gameController.getGame().getOtherBoard().removeMonsterWithoutAddingToGraveyard(selectedMonster);
                     gameController.getGame().getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
                 }
+
             }
 
             @Override
             public void endActivation() {
-                Monster selectedMonster = (Monster) selectedCard;
                 gameController.getGame().getThisBoard().removeMonsterWithoutAddingToGraveyard(selectedMonster);
                 gameController.getGame().getOtherBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
             }
@@ -217,34 +233,55 @@ public class SpellController extends SpellTrapController {
             public void activate() throws InvalidSelection {
                 Print.getInstance().printMessage("Select a card from yor HAND to remove");
 
-                setHandAccessible(true);
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
-                select(input);
-                Card theSelectedCardFromHand = selectedCard;
+                ArrayList<Card> options = new ArrayList<>();
+                for (Card card : gameController.getGame().getThisBoard().getHand())
+                    options.add(card);
+
+                ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                        options,
+                        1,
+                        "Select a card from yor HAND to remove"
+                );
+
+                Card theSelectedCardFromHand = selected.get(0);
 
                 Print.getInstance().printMessage("Do you want to destroy one SpellTrap or two ones?\n" +
                         "1. one\n" +
                         "2. two");
-                input = scanner.nextLine();
+                Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask("Do you want to destroy one SpellTrap or two ones?(yes if one,otherwise no)");
+                if (answer == null)
+                    answer = true;
 
                 setHandAccessible(false);
                 setRivalSpellTrapAccessible(true);
 
-                if (Integer.parseInt(input) == 1) {
+                if (answer) {
                     Print.getInstance().printMessage("Select a spellTrap from rival spellTrapZone.");
-                    input = scanner.nextLine();
-                    select(input);
-                    removeSpell(selectedCard);
-                } else if (Integer.parseInt(input) == 2) {
-                    Print.getInstance().printMessage("Select two spellTraps from rival spellTrapZone.");
-                    input = scanner.nextLine();
-                    select(input);
-                    removeSpell(selectedCard);
+                    options.clear();
+                    for (SpellTrapController controller : gameController.getGame().getOtherBoard().getSpellTrapZone())
+                        options.add(controller.getCard());
 
-                    input = scanner.nextLine();
-                    select(input);
-                    removeSpell(selectedCard);
+                    selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                            options,
+                            1,
+                            "Select a spellTrap from rival spellTrapZone."
+                    );
+                    if (selected.size() == 1)
+                        removeSpell(selected.get(0));
+                } else {
+                    Print.getInstance().printMessage("Select two spellTraps from rival spellTrapZone.");
+                    options.clear();
+                    for (SpellTrapController controller : gameController.getGame().getOtherBoard().getSpellTrapZone())
+                        options.add(controller.getCard());
+
+                    selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                            options,
+                            2,
+                            "Select two spellTraps from rival spellTrapZone."
+                    );
+                    for (Card card : selected)
+                        removeSpell(card);
+
                 }
             }
 
@@ -264,20 +301,22 @@ public class SpellController extends SpellTrapController {
             @Override
             public void activate() {
                 Print.getInstance().printMessage("Select a spellTrap from field to remove");
-                setRivalSpellTrapAccessible(true);
-                setOurSpellTrapAccessible(true);
 
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
-                select(input);
+                ArrayList<Card> options = new ArrayList<>();
+                for (SpellTrapController controller : gameController.getGame().getOtherBoard().getSpellTrapZone())
+                    options.add(controller.getCard());
 
-                if (selectedCardAddress.getOwner() == Owner.Me) {
-                    gameController.getGame().getThisBoard().
-                            removeSpellTrap(getSpellTrapControllerBySpellTrap((SpellTrap) selectedCard));
-                } else {
-                    gameController.getGame().getOtherBoard().
-                            removeSpellTrap(getSpellTrapControllerBySpellTrap((SpellTrap) selectedCard));
-                }
+                ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                        options,
+                        1,
+                        "Select a spellTrap from game to remove"
+                );
+
+                if (selected.size() != 1)
+                    return;
+
+                gameController.getGame().getOtherBoard().
+                        removeSpellTrap(getSpellTrapControllerBySpellTrap((SpellTrap) selected.get(0)));
             }
         };
     }

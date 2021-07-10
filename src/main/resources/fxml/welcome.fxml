@@ -45,9 +45,9 @@
          </image>
       </ImageView>
       <Button layoutX="342.0" layoutY="506.0" mnemonicParsing="false" onAction="#newGame" text="new" />
-      <ImageView fitHeight="40.0" fitWidth="39.0" layoutX="14.0" layoutY="11.0" onMouseClicked="#muteOrPlay">
+      <ImageView fx:id="playAndPause" fitHeight="40.0" fitWidth="39.0" layoutX="14.0" layoutY="11.0" onMouseClicked="#muteOrPlay">
          <image>
-            <Image url="@../Assets/soundShape.png" />
+            <Image url="@../Assets/play.jpg" />
          </image>
       </ImageView>
    </children>
