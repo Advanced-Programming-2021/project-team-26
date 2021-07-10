@@ -4,6 +4,7 @@ import fxmlController.Children.Welcome;
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 
 import java.util.Stack;
@@ -11,6 +12,7 @@ import java.util.Stack;
 public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
     private static Stage stage;
+    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/eatBomb.wav").toString());
 
     public static Stage getStage() {
         return stage;
@@ -53,6 +55,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        buttonClick.play();
         stage = primaryStage;
         stage.setResizable(false);
         new Welcome().run();

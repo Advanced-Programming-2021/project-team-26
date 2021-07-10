@@ -14,6 +14,8 @@ import Utilities.Alert;
 
 import java.io.IOException;
 
+import static fxmlController.App.buttonClick;
+
 public class Login extends MenuParent {
     @FXML
     private TextField password;
@@ -32,7 +34,7 @@ public class Login extends MenuParent {
 
     @FXML
     void login(ActionEvent event) {
-        Welcome.buttonClick.play();
+        buttonClick.play();
         try {
             boolean result = UserController.getInstance().loginUser(username.getText(), password.getText());
             if (result) {
@@ -45,3 +47,4 @@ public class Login extends MenuParent {
         }
     }
 }
+

@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import model.User;
@@ -17,8 +18,6 @@ import model.User;
 import java.io.IOException;
 
 public class Welcome extends MenuParent {
-    public static MediaPlayer buttonClick = new MediaPlayer(new Media(MainMenu.class.getResource("/Assets/Sounds/buttonClick.mp3").toExternalForm()));
-
     public Welcome() {
         super("Welcome to Yu Gi Oh!");
     }

@@ -1,6 +1,5 @@
 package fxmlController.Children;
 
-import static fxmlController.Children.Welcome.buttonClick;
 import Utilities.Alert;
 import Utilities.GetFXML;
 import controller.MainMenuController;
@@ -19,6 +18,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+
+import static fxmlController.App.buttonClick;
 
 public class MainMenu extends MenuParent {
 
