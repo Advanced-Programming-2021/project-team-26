@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.PasswordField?>
 <AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.SignUp">
    <children>
       <Button layoutX="360.0" layoutY="342.0" mnemonicParsing="false" onAction="#signup" prefHeight="58.0" prefWidth="135.0" style="-fx-background-radius: 100; -fx-background-color: gray; -fx-background-size: red;" text="Signup" textFill="#1a3229">
@@ -21,10 +22,10 @@
          <font>
             <Font size="17.0" />
          </font></TextField>
-      <TextField fx:id="password" layoutX="306.0" layoutY="153.0" prefHeight="58.0" prefWidth="272.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+      <PasswordField fx:id="password" layoutX="306.0" layoutY="153.0" prefHeight="58.0" prefWidth="272.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
          <font>
             <Font size="17.0" />
-         </font></TextField>
+         </font></PasswordField>
       <TextField fx:id="nickname" layoutX="306.0" layoutY="234.0" prefHeight="58.0" prefWidth="272.0" promptText="Nickname" style="-fx-background-color: yellow; -fx-background-radius: 50;">
          <font>
             <Font size="17.0" />
