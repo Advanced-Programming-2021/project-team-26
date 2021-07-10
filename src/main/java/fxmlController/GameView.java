@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -33,6 +34,7 @@ import model.Place;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
+import model.cards.spell.Spell;
 
 import java.io.IOException;
 import java.net.URL;
@@ -63,6 +65,7 @@ public class GameView implements Initializable {
     public TextArea cardDetails;
     public ImageView myGraveyard;
     public ImageView oppGraveyard;
+    public ImageView field;
 
     @FXML
     private AnchorPane root;
@@ -504,6 +507,7 @@ public class GameView implements Initializable {
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         int number = myHand.getChildren().size();
 
+        move((int) imageView.getX(),(int) imageView.getY(), 0, 0, imageView);
         myHand.add(imageView, number, 0);
 
         imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -742,5 +746,10 @@ public class GameView implements Initializable {
 
     public void updateOppGraveyard(Card card) {
         oppGraveyard.setImage(card.getImage());
+    }
+
+    public void updateFieldImage(Spell spell) {
+        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Field/" + spell.getName() + ".bmp";
+        field.setImage(new Image(path));
     }
 }

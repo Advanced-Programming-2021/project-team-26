@@ -49,8 +49,8 @@ public class Scoreboard extends MenuParent implements Initializable {
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
         ScoreBoardController.getAndSetDataFromUser();
         ObservableList<ScoreBoardController> list = FXCollections.observableArrayList(ScoreBoardController.getScoreBoardControllers());
+//        table.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/CSS/Scoreboard.css")).toExternalForm());
         customiseFactory(name);
-        table.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/CSS/Scoreboard.css")).toExternalForm());
         table.setItems(list);
     }
 
@@ -69,7 +69,7 @@ public class Scoreboard extends MenuParent implements Initializable {
 
                     if (!isEmpty()) {
                         if (item.equals(Database.getInstance().getCurrentUser().getUsername()))
-                            currentRow.setStyle("-fx-background-color:lightgreen");
+                            currentRow.setStyle("-fx-background-color:green");
                     }
                 }
             };
