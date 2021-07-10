@@ -307,15 +307,68 @@ public class GameView implements Initializable {
         initField();
         intiFieldClick();
         setMyGraveyardOnClick();
+        setOppGraveyardOnClick();
+    }
+
+    private void setOppGraveyardOnClick() {
+        oppGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                showOppGraveyard();
+            }
+        });
+    }
+
+    private void showOppGraveyard() {
+        Stage stage = new Stage();
+        AnchorPane root = null;
+        GridPane showGraveyard = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/graveyard.fxml"));
+            showGraveyard = (GridPane) root.lookup("#showMyGraveyard");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Card> graveyard = gameController.getGame().getBoard(1 - turn).getGraveyard();
+        for (int i = 0; i < graveyard.size(); i++) {
+            ImageView imageView = new ImageView();
+            imageView.setImage(graveyard.get(i).getImage());
+            showGraveyard.add(imageView, i, 0);
+        }
+
+        stage.setScene(new Scene(root));
+        stage.showAndWait();
     }
 
     private void setMyGraveyardOnClick() {
         myGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
+                showMyGraveyard();
             }
         });
+    }
+
+
+    public void showMyGraveyard() {
+        Stage stage = new Stage();
+        AnchorPane root = null;
+        GridPane showMyGraveyard = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/graveyard.fxml"));
+            showMyGraveyard = (GridPane) root.lookup("#showMyGraveyard");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Card> graveyard = gameController.getGame().getBoard(turn).getGraveyard();
+        for (int i = 0; i < graveyard.size(); i++) {
+            ImageView imageView = new ImageView();
+            imageView.setImage(graveyard.get(i).getImage());
+            showMyGraveyard.add(imageView, i, 0);
+        }
+
+        stage.setScene(new Scene(root));
+        stage.showAndWait();
     }
 
     private void intiFieldClick() {
@@ -602,7 +655,7 @@ public class GameView implements Initializable {
                 imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
                 imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
                 opponentHand.add(imageView, number, 0);
-            } else if(opponentHand.getChildren().size() > hand.size()){
+            } else if (opponentHand.getChildren().size() > hand.size()) {
                 opponentHand.getChildren().remove(0);
             }
         }
@@ -639,6 +692,7 @@ public class GameView implements Initializable {
         stage.showAndWait();
     }
 
+
     public void updateLifePoint() {
         myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
         opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
@@ -649,6 +703,7 @@ public class GameView implements Initializable {
     }
 
     public void updateOppGraveyard(Card card) {
+        oppGraveyard.setImage(card.getImage());
     }
 
 
