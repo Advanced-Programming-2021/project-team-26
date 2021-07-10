@@ -6,6 +6,8 @@ import fxmlController.GameView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import model.*;
 import model.cards.Card;
@@ -14,7 +16,6 @@ import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 import model.cards.spell.SpellType;
 import model.cards.trap.Trap;
-import view.Menu;
 import view.Print;
 import view.Scan;
 
@@ -104,8 +105,12 @@ public class GameController {
             Parent firstRoot = firstLoader.load();
             Parent secondRoot = secondLoader.load();
 
-            stages[0].setScene(new Scene(firstRoot));
-            stages[1].setScene(new Scene(secondRoot));
+            Scene[] scenes = new Scene[2];
+            scenes[0] = new Scene(firstRoot);
+            scenes[1] = new Scene(secondRoot);
+            addEscape(scenes);
+            stages[0].setScene(scenes[0]);
+            stages[1].setScene(scenes[1]);
             App.getStage().close();
             stages[0].show();
             stages[1].show();
@@ -116,6 +121,17 @@ public class GameController {
         getGame().getBoard(0).initBoard();
         getGame().getBoard(1).initBoard();
         game.nextPhase();
+    }
+
+    private void addEscape(Scene[] scenes) {
+        scenes[0].addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE)
+                views[0].escape();
+        });
+        scenes[1].addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ESCAPE)
+                views[1].escape();
+        });
     }
 
     public boolean isTemporaryTurnChange() {
@@ -669,10 +685,9 @@ public class GameController {
         return null;
     }
 
-    public String surrender(Matcher matcher) {
+    public void surrender() {
         game.setSurrenderPlayer(game.getTurn());
         endGame();
-        return null;
     }
 
     public boolean isFinished() {
@@ -775,7 +790,13 @@ public class GameController {
         Print.getInstance().printMessage(players[winner].getUsername() + " won the whole match" +
                 " with score: " + scores[0] + "-" + scores[1]);
 
-        Menu.exitMenu(null);
+        closeGame();
+    }
+
+    private void closeGame() {
+        stages[0].close();
+        stages[1].close();
+        App.getStage().show();
     }
 
     public void showBoard() {
