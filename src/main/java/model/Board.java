@@ -149,7 +149,7 @@ public class Board {
         Card addedCard = this.deck.remove(0);
         hand.add(addedCard);
         gameController.getViews()[getMyTurn()].moveFromDeckToHand(addedCard);
-        gameController.getViews()[1 - getMyTurn()].moveFromOpponentDeckToHand(addedCard);
+        gameController.getViews()[1 - getMyTurn()].moveFromOpponentDeckToHand();
         return addedCard;
     }
 
@@ -198,6 +198,8 @@ public class Board {
         if (!monstersZone.containsKey(index))
             return;
         graveyard.add(monstersZone.get(index).getCard());
+        gameController.getViews()[getMyTurn()].updateMyGraveyard(monstersZone.get(index).getCard());
+        gameController.getViews()[1 - getMyTurn()].updateOppGraveyard(monstersZone.get(index).getCard());
         monstersZone.remove(index);
     }
 
@@ -237,6 +239,8 @@ public class Board {
         if (!spellTrapZone.containsKey(index))
             return;
         graveyard.add(spellTrapZone.get(index).getCard());
+        gameController.getViews()[getMyTurn()].updateMyGraveyard(spellTrapZone.get(index).getCard());
+        gameController.getViews()[1 - getMyTurn()].updateOppGraveyard(spellTrapZone.get(index).getCard());
         spellTrapZone.remove(index);
     }
 
