@@ -527,8 +527,8 @@ public class GameController {
         for (int i = 0; i < 2; i++) {
             views[i].showMyMonsterZone();
             views[i].showMySpellTraps();
-            views[i].showOpponentMonsterZone();
-            views[i].showOpponentSpellTraps();
+            views[i].updateOpponentMonsterZone();
+            views[i].updateOpponentSpellTraps();
         }
     }
 

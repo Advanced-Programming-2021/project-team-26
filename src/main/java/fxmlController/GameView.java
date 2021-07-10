@@ -429,6 +429,15 @@ public class GameView implements Initializable {
         });
     }
 
+    public void moveFromOpponentDeckToHand(Card addedCard) {
+        ImageView imageView = new ImageView(Card.getUnknownImage());
+        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
+        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
+        int number = opponentHand.getChildren().size();
+
+        opponentHand.add(imageView, number, 0);
+    }
+
     private void activateSpellTrap(Card card, ImageView imageView) {
         try {
             gameController.activateEffect(card, new CardAddress(Place.Hand, Owner.Me));
@@ -551,19 +560,19 @@ public class GameView implements Initializable {
     }
 
     public void updateOpponentHand(){
-//        List<Card> hand = gameController.getGame().getBoard(1 - turn).getHand();
-//        while (hand.size() != opponentHand.getChildren().size() ){
-//            if (opponentHand.getChildren().size() < hand.size()){
-//                int number = opponentHand.getChildren().size();
-//                ImageView imageView = new ImageView();
-//                imageView.setImage(Card.getUnknownImage());
-//                imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
-//                imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-//                opponentHand.add(imageView, number, 0);
-//            } else if(opponentHand.getChildren().size() > hand.size()){
-//                opponentHand.getChildren().remove(0);
-//            }
-//        }
+        List<Card> hand = gameController.getGame().getBoard(1 - turn).getHand();
+        while (hand.size() != opponentHand.getChildren().size() ){
+            if (opponentHand.getChildren().size() < hand.size()){
+                int number = opponentHand.getChildren().size();
+                ImageView imageView = new ImageView();
+                imageView.setImage(Card.getUnknownImage());
+                imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
+                imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
+                opponentHand.add(imageView, number, 0);
+            } else if(opponentHand.getChildren().size() > hand.size()){
+                opponentHand.getChildren().remove(0);
+            }
+        }
     }
 
     public void escape() {
