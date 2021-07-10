@@ -15,10 +15,21 @@ import java.util.Stack;
 public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
     public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
+    public static Media media;
+    private static boolean areSoundsActive = true;
     private static Stage stage;
-    private MediaView mediaView = null;
+    public static MediaView mediaView = null;
+
     public static Stage getStage() {
         return stage;
+    }
+
+    public static boolean isAreSoundsActive() {
+        return areSoundsActive;
+    }
+
+    public static void setAreSoundsActive(boolean areSoundsActive) {
+        App.areSoundsActive = areSoundsActive;
     }
 
     public static void main(String[] args) {
@@ -60,9 +71,10 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         stage.setResizable(false);
-        Media media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());
+        media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());
         mediaView = new MediaView(new MediaPlayer(media));
-        mediaView.getMediaPlayer().play();
+
+       if (areSoundsActive) mediaView.getMediaPlayer().play();
         mediaView.getMediaPlayer().autoPlayProperty().setValue(true);
         new Welcome().run();
         stage.show();
