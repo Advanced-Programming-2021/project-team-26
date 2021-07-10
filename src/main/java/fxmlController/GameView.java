@@ -25,10 +25,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -892,18 +889,19 @@ public class GameView implements Initializable {
                 ImageView imageView = new ImageView(card.getImage());
                 imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
                 imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-                imageView.setStyle("");
-                imageView.setOnMouseClicked(e -> {
+                StackPane stackPane = new StackPane(imageView);
+                stackPane.setStyle("");
+                stackPane.setOnMouseClicked(e -> {
                     if (selected.size() >= number) {
                         stage.close();
                         return;
                     }
-                    if (imageView.getStyle().equals("")) {
+                    if (stackPane.getStyle().equals("")) {
                         //TODO set border
-                        imageView.setStyle("-fx-border-color: blue; -fx-border-style: solid;-fx-border-width: 5;");
+                        stackPane.setStyle("-fx-background-color: blue; -fx-padding: 10;");
                         selected.add(card);
                     } else {
-                        imageView.setStyle("");
+                        stackPane.setStyle("");
                         selected.remove(card);
                     }
                     if (selected.size() >= number) {
@@ -911,7 +909,7 @@ public class GameView implements Initializable {
                     }
                 });
 
-                cardsHBox.getChildren().add(imageView);
+                cardsHBox.getChildren().add(stackPane);
             }
 
             stage.setScene(new Scene(root));
