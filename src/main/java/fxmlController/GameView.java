@@ -436,7 +436,6 @@ public class GameView implements Initializable {
                         if (attacker == -1)
                             return;
                         try {
-                            attackAnimation(attacker, finalI);
                             String result = gameController.attack(attacker, finalI);
                             Alert.getInstance().successfulPrint(result);
                             attacker = -1;
@@ -473,39 +472,51 @@ public class GameView implements Initializable {
         });
     }
 
-    private void attackAnimation(int attackerMonster, int defenderMonster){
+    public void attackAnimation(int attackerMonster, int defenderMonster) {
         ImageView attacker = myMonsters.get(attackerMonster);
         ImageView defender = oppMonsters.get(defenderMonster);
 
-        double attackerX = attacker.getX();
-        double attackerY = attacker.getY();
+        int attackerX = (int) attacker.getLayoutX();
+        int attackerY = (int) attacker.getLayoutY();
 
-        double defenderX = defender.getX();
-        double defenderY = defender.getY();
+        int defenderX = (int) defender.getLayoutX();
+        int defenderY = (int) defender.getLayoutY();
+
 
         ImageView attackIcon = new ImageView();
-        attackIcon.setX(attackerX);
-        attackIcon.setY(attackerY);
-        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/OlderIcons/atk_icon.bmp";
+        attackIcon.setLayoutX(attackerX);
+        attackIcon.setLayoutY(attackerY);
+        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/OlderIcons/atk_icon.png";
         attackIcon.setImage(new Image(path));
         root.getChildren().add(attackIcon);
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
-            if (attackIcon.getX() > defenderX){
-                attackIcon.setX(attackIcon.getX() - 5);
-            } else {
-                attackIcon.setX(attackIcon.getX() + 5);
-            }
-
-            if (attackIcon.getY() > defenderY){
-                attackIcon.setY(attackIcon.getY() - 5);
-            }else {
-                attackIcon.setY(attackIcon.getY() + 5);
-            }
+        Timeline timelineForX = new Timeline(new KeyFrame(Duration.millis(30), (ActionEvent event) -> {
+            if ((int)attackIcon.getLayoutX() > defenderX)
+                attackIcon.setLayoutX(attackIcon.getLayoutX() - 5);
+            else
+                attackIcon.setLayoutX(attackIcon.getLayoutX() + 5);
         }));
 
-        timeline.setCycleCount(50);
-        timeline.play();
+        Timeline timelineForY = new Timeline(new KeyFrame(Duration.millis(30), (ActionEvent event) -> {
+            if ((int)attackIcon.getLayoutY() > defenderY)
+                attackIcon.setLayoutY(attackIcon.getLayoutY() - 5);
+            else
+                attackIcon.setLayoutY(attackIcon.getLayoutY() + 5);
+        }));
+
+        timelineForX.setCycleCount(24);
+        timelineForX.play();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    timelineForY.setCycleCount(24);
+                    timelineForY.play();
+                });
+            }
+        }, 720);
     }
 
     private void initField() {
@@ -566,7 +577,7 @@ public class GameView implements Initializable {
         root.getChildren().add(imageView);
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
-            if (imageView.getY() < 550){
+            if (imageView.getY() < 550) {
                 imageView.setY(imageView.getY() + 5);
             }
         }));
@@ -608,7 +619,7 @@ public class GameView implements Initializable {
         root.getChildren().add(imageView);
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
-            if (imageView.getY() > 10){
+            if (imageView.getY() > 10) {
                 imageView.setY(imageView.getY() - 5);
             }
         }));

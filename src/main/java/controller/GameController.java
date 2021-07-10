@@ -610,14 +610,26 @@ public class GameController {
         if (attackResult == null)
             attackResult = new AttackResult(selectedMonster, toBeAttacked);
 
-        if (attackResult.isRemoveOpCard())
-            toBeAttacked.remove(selectedMonster);
-        if (attackResult.isRemoveMyCard())
-            selectedMonster.remove(toBeAttacked);
+        getViews()[game.getTurn()].attackAnimation(attacker, number);
+
+        Timer timer = new Timer();
+        AttackResult finalAttackResult = attackResult;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    if (finalAttackResult.isRemoveOpCard())
+                        toBeAttacked.remove(selectedMonster);
+                    if (finalAttackResult.isRemoveMyCard())
+                        selectedMonster.remove(toBeAttacked);
+
+                    updateViewsGameBoard();
+                });
+            }
+        }, 1440);
 
         game.decreaseThisLifePoint(attackResult.getMyLPDecrease());
         game.decreaseOtherLifePoint(attackResult.getOpLPDecrease());
-        updateViewsGameBoard();
         deselect();
 
         return attackResult.getMessage();
