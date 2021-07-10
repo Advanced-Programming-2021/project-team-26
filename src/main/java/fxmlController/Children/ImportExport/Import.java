@@ -35,9 +35,19 @@ public class Import extends MenuParent {
     public void select(ActionEvent actionEvent) throws IOException {
         FileChooser fc = new FileChooser();
         File selectedFile = fc.showOpenDialog(null);
+        String fileName = selectedFile.getCanonicalPath();
+        if (selectedFile != null){
+            Alert.getInstance().successfulPrint("file successfully selected");
+        }
+//        if (fileName.endsWith(".json")){
+//
+//        }else( fileName.endsWith(".csv")){
+//            ;
+//        }
     }
 
     public void importCard(ActionEvent event){
+        Alert.getInstance().successfulPrint("Cards/card imported");
         if(singleCard != null){
             Database.getInstance().readCard(singleCard.getName());
         }else if(csvCards != null){
@@ -47,6 +57,5 @@ public class Import extends MenuParent {
         }else{
             Alert.getInstance().errorPrint("Please select a card");
         }
-        Alert.getInstance().successfulPrint("Cards imported Successfully");
     }
 }
