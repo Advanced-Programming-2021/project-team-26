@@ -1,9 +1,10 @@
 package fxmlController;
 
 import Utilities.Alert;
+import Utilities.GetFXML;
 import controller.*;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -27,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.CardAddress;
 import model.Game;
 import model.Owner;
@@ -38,10 +40,8 @@ import model.cards.spell.Spell;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameView implements Initializable {
 
@@ -505,10 +505,30 @@ public class GameView implements Initializable {
         CardImageView imageView = new CardImageView(this, card, true);
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-        int number = myHand.getChildren().size();
+        imageView.setX(975);
+        imageView.setY(425);
+        imageView.setFitHeight(92);
+        imageView.setFitWidth(92);
+        root.getChildren().add(imageView);
 
-        move((int) imageView.getX(),(int) imageView.getY(), 0, 0, imageView);
-        myHand.add(imageView, number, 0);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (ActionEvent event) -> {
+            if (imageView.getY() < 550){
+                imageView.setY(imageView.getY() + 5);
+            }
+        }));
+
+        timeline.setCycleCount(25);
+        timeline.play();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    int number = myHand.getChildren().size();
+                    myHand.add(imageView, number, 0);
+                });
+            }
+        }, 5000);
 
         imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override

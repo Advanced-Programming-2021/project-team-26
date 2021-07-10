@@ -62,12 +62,12 @@
         </GridPane>
         <ImageView fx:id="myDeckImage" fitHeight="92.0" fitWidth="92.0" layoutX="975.0" layoutY="425.0">
             <image>
-                <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
+                <Image url="@../Assets/Cards/deckImage.jpg" />
             </image>
         </ImageView>
         <ImageView fitHeight="92.0" fitWidth="92.0" layoutX="975.0" layoutY="80.0">
             <image>
-                <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
+                <Image url="@../Assets/Cards/deckImage.jpg" />
             </image>
         </ImageView>
         <Button fx:id="drawPhaseBut" layoutX="300.0" layoutY="88.0" minWidth="26.0" mnemonicParsing="false" onAction="#drawPhase" prefHeight="53.0" prefWidth="29.0" text="DP" wrapText="true" />
@@ -81,7 +81,7 @@
                 <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
             </image>
         </ImageView>
-        <TextArea fx:id="cardDetails" layoutX="61.0" layoutY="350.0" prefHeight="150.0" prefWidth="180.0" wrapText="true" />
+        <TextArea fx:id="cardDetails" editable="false" style="-fx-background-color: #5ADDE4;" layoutX="61.0" layoutY="350.0" prefHeight="150.0" prefWidth="180.0" wrapText="true" />
         <ImageView fx:id="myGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="959.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true" />
         <ImageView fx:id="oppGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="361.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" />
     </children>
