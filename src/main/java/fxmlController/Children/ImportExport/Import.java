@@ -7,24 +7,25 @@ import fxmlController.App;
 import fxmlController.MenuParent;
 import fxmlController.Size;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import model.cards.Card;
 
-import javax.swing.text.html.ListView;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class Import extends MenuParent {
+    public TextArea description;
     Card singleCard = null;
     ArrayList<Card> csvCards = null;
-    public Import(){
+
+    public Import() {
         super("Import");
     }
+
     @Override
     public void run() throws Exception {
         Parent root = GetFXML.getFXML("Import", "ImportExport");
@@ -34,28 +35,16 @@ public class Import extends MenuParent {
 
     public void select(ActionEvent actionEvent) throws IOException {
         FileChooser fc = new FileChooser();
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("json", "*.json"));
         File selectedFile = fc.showOpenDialog(null);
         String fileName = selectedFile.getCanonicalPath();
-        if (selectedFile != null){
+        if (selectedFile != null) {
             Alert.getInstance().successfulPrint("file successfully selected");
         }
-//        if (fileName.endsWith(".json")){
-//
-//        }else( fileName.endsWith(".csv")){
-//            ;
-//        }
-    }
-
-    public void importCard(ActionEvent event){
-        Alert.getInstance().successfulPrint("Cards/card imported");
-        if(singleCard != null){
-            Database.getInstance().readCard(singleCard.getName());
-        }else if(csvCards != null){
-            for (Card csvCard : csvCards) {
-                Database.getInstance().readCard(csvCard.getName());
-            }
-        }else{
-            Alert.getInstance().errorPrint("Please select a card");
+        if (fileName.endsWith(".json")) {
+            Card card = Database.getInstance().readCard(selectedFile);
+            description.setText(card.getName() + "\n" + card.getDescription());
         }
     }
 }

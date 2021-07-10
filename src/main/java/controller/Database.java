@@ -236,41 +236,38 @@ public class Database {
         }
     }
 
-    public Card readCard(String name) {
+    public Card readCard(File file) {
         Card card;
-        if ((card = readMonster(name)) != null)
+        if ((card = readMonster(file)) != null)
             return card;
-        else if ((card = readSpell(name)) != null)
+        else if ((card = readSpell(file)) != null)
             return card;
-        else if ((card = readTrap(name)) != null)
+        else if ((card = readTrap(file)) != null)
             return card;
         return null;
     }
 
-    public Monster readMonster(String name) {
+    public Monster readMonster(File name) {
         try {
-            String path = monstersJsonPath + File.separator + name + ".json";
-            FileReader file = new FileReader(path);
-            return gson.fromJson(file, Monster.class);
+            FileReader fileReader = new FileReader(name);
+            return gson.fromJson(fileReader, Monster.class);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public Spell readSpell(String name) {
+    public Spell readSpell(File name) {
         try {
-            String path = spellsJsonPath + File.separator + name + ".json";
-            FileReader file = new FileReader(path);
+            FileReader file = new FileReader(name);
             return gson.fromJson(file, Spell.class);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public Trap readTrap(String name) {
+    public Trap readTrap(File name) {
         try {
-            String path = trapsJsonPath + File.separator + name + ".json";
-            FileReader file = new FileReader(path);
+            FileReader file = new FileReader(name);
             return gson.fromJson(file, Trap.class);
         } catch (Exception e) {
             return null;

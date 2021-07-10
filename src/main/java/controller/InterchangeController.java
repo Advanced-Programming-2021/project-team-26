@@ -18,10 +18,10 @@ public class InterchangeController {
     }
 
     public String importCommand(Matcher matcher) {
-        String name = matcher.group(1);
-        Card card = Database.getInstance().readCard(name);
-        if (card == null)
-            return "card not found";
+//        String name = matcher.group(1);
+//        Card card = Database.getInstance().readCard(name);
+//        if (card == null)
+//            return "card not found";
         return "done";
     }
 
