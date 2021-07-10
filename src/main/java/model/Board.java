@@ -281,6 +281,7 @@ public class Board {
         Board otherBoard = getOtherBoard();
         otherBoard.fieldZone = null;
         this.fieldZone = SpellController.getInstance(gameController, spell, SpellTrapPosition.UP);
+        hand.remove(spell);
         gameController.getViews()[1 - gameController.getGame().getTurn()].updateFieldImage(spell);
         gameController.getViews()[gameController.getGame().getTurn()].updateFieldImage(spell);
         return this.fieldZone;

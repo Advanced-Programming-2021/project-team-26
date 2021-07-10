@@ -1,9 +1,11 @@
 package fxmlController;
 
 import Utilities.Alert;
-import Utilities.GetFXML;
 import controller.*;
-import javafx.animation.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.SequentialTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -41,7 +43,6 @@ import model.cards.spell.Spell;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GameView implements Initializable {
 
@@ -401,8 +402,27 @@ public class GameView implements Initializable {
                         break;
                     case MAIN1:
                     case MAIN2:
+                        try {
+                            gameController.setPosition(turn, finalI);
+                        } catch (Exception exception) {
+                            Alert.getInstance().errorPrint(exception.getMessage());
+                        }
                         break;
                 }
+            });
+        }
+
+        for (int i = 0; i < 5; i++) {
+            int finalI = i;
+            mySpellTraps.get(i).setOnMouseClicked(e -> {
+                if (mySpellTraps.get(finalI).getImage() == null)
+                    return;
+                try {
+                    gameController.activateEffect(turn, mySpellTraps.get(finalI).card, new CardAddress(Place.SpellTrapZone, Owner.Me));
+                } catch (Exception exception) {
+                    Alert.getInstance().errorPrint(exception.getMessage());
+                }
+
             });
         }
 
@@ -512,7 +532,7 @@ public class GameView implements Initializable {
         root.getChildren().add(imageView);
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (ActionEvent event) -> {
-            if (imageView.getY() < 550){
+            if (imageView.getY() < 550) {
                 imageView.setY(imageView.getY() + 5);
             }
         }));
@@ -638,6 +658,7 @@ public class GameView implements Initializable {
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
                 CardImageView imageView = myMonsters.get(i);
                 imageView.addCard(monsterZone.get(i).getMonster(), true);
+                imageView.setRotate(0);
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
                 CardImageView imageView = myMonsters.get(i);
                 imageView.addCard(monsterZone.get(i).getMonster(), true);

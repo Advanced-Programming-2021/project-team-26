@@ -485,28 +485,21 @@ public class GameController {
         views[game.getTurn()].updateMyHand();
     }
 
-    public String setPosition(Matcher matcher) {
+    public String setPosition(int turn, int index) {
+        if (turn != game.getTurn())
+            return null;
+        selectedMonster = game.getThisBoard().getMonsterByIndex(index);
         if (temporaryTurnChange)
             throw new NotYourTurnException();
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
-
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.MonsterZone ||
-                !(selectedCard instanceof Monster))
-            throw new CannotChangeException();
 
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
 
         MonsterPosition wantedPosition;
-        String position = matcher.group(1);
-        if (position.equals("attack"))
-            wantedPosition = MonsterPosition.ATTACK;
-        else if (position.equals("defence"))
+        if (selectedMonster.getPosition() == MonsterPosition.ATTACK)
             wantedPosition = MonsterPosition.DEFENCE_UP;
         else
-            throw new InvalidInput();
+            wantedPosition = MonsterPosition.ATTACK;
 
         if (wantedPosition == MonsterPosition.ATTACK && selectedMonster.getPosition() != MonsterPosition.DEFENCE_UP)
             throw new CannotChangeException();
@@ -517,7 +510,10 @@ public class GameController {
             throw new AlreadyChangeException();
 
         selectedMonster.setPosition(wantedPosition);
+        selectedMonster.setHasPositionChanged(true);
         deselect();
+        views[turn].updateMyMonsterZone();
+        views[1 - turn].updateOpponentMonsterZone();
         return "monster card position changed successfully";
     }
 
