@@ -221,16 +221,22 @@ public class MonsterController {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("You have Scanner in your Monster" +
                             " Zone and you should select a card to clone it");
-                    Scanner scanner = Scan.getScanner();
 
                     Print.getInstance().printMessage("Select a monster from rival GRAVEYARD");
-                    String input = scanner.nextLine();
-                    setRivalGraveyardAccessible(true);
-                    select(input);
-                    if (!(getSelectedCard() instanceof Monster)) {
+                    ArrayList<Card> options = new ArrayList<>();
+                    for (Card card : gameController.getGame().getOtherBoard().getGraveyard()) {
+                        if (card instanceof Monster)
+                            options.add(card);
+                    }
+
+                    ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                            options, 1, "Select a monster from rival GRAVEYARD"
+                    );
+
+                    if (selected.size() != 1) {
                         throw new InvalidSelection();
                     } else {
-                        Monster selectedMonster = (Monster) getSelectedCard();
+                        Monster selectedMonster = (Monster) selected.get(0);
                         setMonster(new Monster(selectedMonster));
                     }
                 }
