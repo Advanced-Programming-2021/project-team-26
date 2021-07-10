@@ -1,58 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import fxmlController.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.text.Text?>
-
-<AnchorPane fx:id="root" prefHeight="600.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.GameView">
+<?import javafx.scene.text.*?>
+<AnchorPane fx:id="root" prefHeight="600.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.GameView">
     <children>
         <ImageView fx:id="field" fitHeight="600.0" fitWidth="770.0" layoutX="300.0">
             <image>
-                <Image url="@../Assets/Field/fie_normal.bmp" />
+                <Image url="@../Assets/Field/fie_normal.bmp"/>
             </image>
         </ImageView>
-        <CardImageView fx:id="opoSpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="opoSpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="opoSpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="opoSpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="opoSpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="oppMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="oppMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="oppMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="oppMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="oppMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="myMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="myMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="myMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="myMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="myMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="mySpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="mySpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="mySpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="mySpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
-        <CardImageView fx:id="mySpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
-        <ProgressBar fx:id="opponentLPProgress" layoutX="77.0" layoutY="35.0" prefWidth="200.0" progress="1.0" />
-        <ProgressBar fx:id="myLPProgress" layoutX="77.0" layoutY="540.0" prefWidth="200.0" progress="1.0" />
-        <ImageView fx:id="opponentProfile" fitHeight="35.0" fitWidth="44.0" layoutX="14.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" />
-        <ImageView fx:id="myProfile" fitHeight="35.0" fitWidth="44.0" layoutX="14.0" layoutY="533.0" pickOnBounds="true" preserveRatio="true" />
-        <Label layoutX="92.0" layoutY="568.0" text="Life Point:" />
-        <Label layoutX="92.0" layoutY="5.0" text="Life Point:" />
-        <Label layoutX="19.0" layoutY="73.0" text="Username:" />
-        <Label layoutX="160.0" layoutY="72.0" text="Nickname:" />
-        <Label layoutX="160.0" layoutY="515.0" text="Nickname:" />
-        <Label layoutX="26.0" layoutY="515.0" text="Username:" />
-        <Text fx:id="myUsername" layoutX="108.0" layoutY="530.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-        <Text fx:id="myNickname" layoutX="242.0" layoutY="529.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-        <Text fx:id="opponentNickname" layoutX="242.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-        <Text fx:id="opponentUsername" layoutX="108.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="25.98307228088379" />
-        <Text fx:id="opponentLP" layoutX="192.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-        <Text fx:id="myLP" layoutX="192.0" layoutY="581.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+        <CardImageView fx:id="opoSpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="94.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="opoSpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="94.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="opoSpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="94.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="opoSpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="94.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="opoSpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="94.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="oppMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="195.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="oppMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="195.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="oppMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="195.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="oppMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="195.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="oppMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="195.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="myMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="313.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="myMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="313.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="myMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="313.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="myMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="313.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="myMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="313.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="mySpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="415.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="mySpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="415.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="mySpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="415.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="mySpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="415.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <CardImageView fx:id="mySpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="415.0"
+                       pickOnBounds="true" preserveRatio="true"/>
+        <ProgressBar fx:id="opponentLPProgress" layoutX="77.0" layoutY="35.0" prefWidth="200.0" progress="1.0"/>
+        <ProgressBar fx:id="myLPProgress" layoutX="77.0" layoutY="540.0" prefWidth="200.0" progress="1.0"/>
+        <ImageView fx:id="opponentProfile" fitHeight="35.0" fitWidth="44.0" layoutX="14.0" layoutY="28.0"
+                   pickOnBounds="true" preserveRatio="true"/>
+        <ImageView fx:id="myProfile" fitHeight="35.0" fitWidth="44.0" layoutX="14.0" layoutY="533.0" pickOnBounds="true"
+                   preserveRatio="true"/>
+        <Label layoutX="92.0" layoutY="568.0" text="Life Point:"/>
+        <Label layoutX="92.0" layoutY="5.0" text="Life Point:"/>
+        <Label layoutX="19.0" layoutY="73.0" text="Username:"/>
+        <Label layoutX="160.0" layoutY="72.0" text="Nickname:"/>
+        <Label layoutX="160.0" layoutY="515.0" text="Nickname:"/>
+        <Label layoutX="26.0" layoutY="515.0" text="Username:"/>
+        <Text fx:id="myUsername" layoutX="108.0" layoutY="530.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+        <Text fx:id="myNickname" layoutX="242.0" layoutY="529.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+        <Text fx:id="opponentNickname" layoutX="242.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Text"/>
+        <Text fx:id="opponentUsername" layoutX="108.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"
+              wrappingWidth="25.98307228088379"/>
+        <Text fx:id="opponentLP" layoutX="192.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
+        <Text fx:id="myLP" layoutX="192.0" layoutY="581.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"/>
         <GridPane fx:id="opponentHand" layoutX="415.0" layoutY="1.0" prefHeight="90.0" prefWidth="544.0">
 
         </GridPane>
@@ -61,27 +82,37 @@
         </GridPane>
         <ImageView fx:id="myDeckImage" fitHeight="92.0" fitWidth="92.0" layoutX="975.0" layoutY="425.0">
             <image>
-                <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
+                <Image url="@../Assets/Cards/Monsters/Unknown.jpg"/>
             </image>
         </ImageView>
         <ImageView fitHeight="92.0" fitWidth="92.0" layoutX="975.0" layoutY="80.0">
             <image>
-                <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
+                <Image url="@../Assets/Cards/Monsters/Unknown.jpg"/>
             </image>
         </ImageView>
-        <Button fx:id="drawPhaseBut" layoutX="300.0" layoutY="88.0" minWidth="26.0" mnemonicParsing="false" onAction="#drawPhase" prefHeight="53.0" prefWidth="29.0" text="DP" wrapText="true" />
-        <Button fx:id="standbyPhaseBut" layoutX="300.0" layoutY="160.0" minWidth="26.0" mnemonicParsing="false" onAction="#standbyPhase" prefHeight="53.0" prefWidth="29.0" text="SP" wrapText="true" />
-        <Button fx:id="mainPhase1But" layoutX="300.0" layoutY="234.0" minWidth="26.0" mnemonicParsing="false" onAction="#mainPhase1" prefHeight="53.0" prefWidth="29.0" text="M1" wrapText="true" />
-        <Button fx:id="battlePhaseBut" layoutX="300.0" layoutY="313.0" minWidth="26.0" mnemonicParsing="false" onAction="#battlePhase" prefHeight="53.0" prefWidth="29.0" text="BP" wrapText="true" />
-        <Button fx:id="mainPhase2But" layoutX="300.0" layoutY="389.0" minWidth="26.0" mnemonicParsing="false" onAction="#mainPhase2" prefHeight="53.0" prefWidth="29.0" text="M2" wrapText="true" />
-        <Button fx:id="endPhaseBut" layoutX="300.0" layoutY="461.0" minWidth="26.0" mnemonicParsing="false" onAction="#endPhase" prefHeight="53.0" prefWidth="29.0" text="EP" wrapText="true" />
-        <ImageView fx:id="cardInfo" fitHeight="240.0" fitWidth="180.0" layoutX="67.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true">
+        <Button fx:id="drawPhaseBut" layoutX="300.0" layoutY="88.0" minWidth="26.0" mnemonicParsing="false"
+                onAction="#drawPhase" prefHeight="53.0" prefWidth="29.0" text="DP" wrapText="true"/>
+        <Button fx:id="standbyPhaseBut" layoutX="300.0" layoutY="160.0" minWidth="26.0" mnemonicParsing="false"
+                onAction="#standbyPhase" prefHeight="53.0" prefWidth="29.0" text="SP" wrapText="true"/>
+        <Button fx:id="mainPhase1But" layoutX="300.0" layoutY="234.0" minWidth="26.0" mnemonicParsing="false"
+                onAction="#mainPhase1" prefHeight="53.0" prefWidth="29.0" text="M1" wrapText="true"/>
+        <Button fx:id="battlePhaseBut" layoutX="300.0" layoutY="313.0" minWidth="26.0" mnemonicParsing="false"
+                onAction="#battlePhase" prefHeight="53.0" prefWidth="29.0" text="BP" wrapText="true"/>
+        <Button fx:id="mainPhase2But" layoutX="300.0" layoutY="389.0" minWidth="26.0" mnemonicParsing="false"
+                onAction="#mainPhase2" prefHeight="53.0" prefWidth="29.0" text="M2" wrapText="true"/>
+        <Button fx:id="endPhaseBut" layoutX="300.0" layoutY="461.0" minWidth="26.0" mnemonicParsing="false"
+                onAction="#endPhase" prefHeight="53.0" prefWidth="29.0" text="EP" wrapText="true"/>
+        <ImageView fx:id="cardInfo" fitHeight="240.0" fitWidth="180.0" layoutX="67.0" layoutY="104.0"
+                   pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
+                <Image url="@../Assets/Cards/Monsters/Unknown.jpg"/>
             </image>
         </ImageView>
-        <TextArea fx:id="cardDetails" layoutX="61.0" layoutY="350.0" prefHeight="150.0" prefWidth="180.0" wrapText="true" />
-      <ImageView fx:id="myGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="959.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="oppGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="361.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" />
+        <TextArea fx:id="cardDetails" layoutX="61.0" layoutY="350.0" prefHeight="150.0" prefWidth="180.0"
+                  wrapText="true"/>
+        <ImageView fx:id="myGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="959.0" layoutY="324.0"
+                   pickOnBounds="true" preserveRatio="true"/>
+        <ImageView fx:id="oppGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="361.0" layoutY="167.0"
+                   pickOnBounds="true" preserveRatio="true"/>
     </children>
 </AnchorPane>
