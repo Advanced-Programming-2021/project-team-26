@@ -189,21 +189,34 @@ public class MonsterController {
             @Override
             public void flip() {
                 setRivalMonsterZoneAccessible(true);
+                Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask(
+                        "Do you want to activate the card effect?");
                 Print.getInstance().printMessage("Do you want to activate the card effect?" +
                         "1. yes" +
                         "2. no");
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
-
-                if (Integer.parseInt(input) == 1) {
+                if (answer == null)
+                    answer = false;
+                if (answer) {
+                    ArrayList<Card> options = new ArrayList<>();
+                    for (MonsterController monsterController : gameController.getGame().getOtherBoard().getMonstersZone())
+                        options.add(monsterController.getMonster());
                     Print.getInstance().printMessage("Select one of rival Monsters to remove from his Monster Zone");
-                    input = scanner.nextLine();
-                    select(input);
+
+                    ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                            options,
+                            1,
+                            "Select one of rival Monsters to remove from his Monster Zone"
+                    );
+
+                    if (selected.size() != 1)
+                        return;
+
                     Collection<MonsterController> monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
                     for (MonsterController monster : monstersZone) {
-                        if (monster.getMonster().getName().equals(getSelectedCard().getName())) {
+                        if (monster.getMonster() == selected.get(1)) {
                             MonsterController selectedMonsterController = MonsterController.getMonsterControllerByMonster((Monster) getSelectedCard());
                             gameController.getGame().getOtherBoard().removeMonster(selectedMonsterController);
+                            return;
                         }
                     }
                 }
@@ -312,33 +325,47 @@ public class MonsterController {
                     Print.getInstance().printMessage("Do you want to activate the card effect?\n" +
                             "1. yes\n" +
                             "2. no");
-                    Scanner scanner = Scan.getScanner();
-                    String input = scanner.nextLine();
 
-                    if (Integer.parseInt(input) == 1) {
+                    Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask("Do you want to activate the card effect?");
+
+                    if (answer != null && answer) {
                         Print.getInstance().printMessage("Select a Card from your HAND to remove");
-                        input = scanner.nextLine();
-                        setHandAccessible(true);
-                        select(input);
-                        gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
+                        ArrayList<Card> options = new ArrayList<>();
+                        for (Card card : gameController.getGame().getThisBoard().getHand()) {
+                            options.add(card);
+                        }
+
+                        ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                                options,
+                                1,
+                                "Select a Card from your HAND to remove"
+                        );
+
+                        if (selected.size() == 1)
+                            gameController.getGame().getThisBoard().getHand().remove(selected.get(0));
 
                         setHandAccessible(false);
                         setOurGraveyardAccessible(true);
 
                         Print.getInstance().printMessage("Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND");
-                        input = scanner.nextLine();
-                        select(input);
-                        if (!(getSelectedCard() instanceof Monster)) {
-                            throw new InvalidSelection();
-                        } else {
-                            Monster selectedMonster = (Monster) getSelectedCard();
-                            if (selectedMonster.getLevel() < 7)
-                                throw new InvalidSelection();
-                            else {
-                                gameController.getGame().getThisBoard().getGraveyard().remove(getSelectedCard());
-                                gameController.getGame().getThisBoard().addCardToHand(getSelectedCard());
-                            }
+
+                        options.clear();
+                        for (Card card : gameController.getGame().getThisBoard().getGraveyard()) {
+                            if (card instanceof Monster && ((Monster) card).getLevel() >= 7)
+                                options.add(card);
                         }
+
+                        selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                                options,
+                                1,
+                                "Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND"
+                        );
+
+                        if (selected.size() == 1) {
+                            gameController.getGame().getThisBoard().getGraveyard().remove(selected.get(0));
+                            gameController.getGame().getThisBoard().addCardToHand(selected.get(0));
+                        }
+
                         setOurGraveyardAccessible(false);
                         setHasActivateEffectThisTurn(true);
                     }
