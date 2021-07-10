@@ -13,7 +13,6 @@ public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
     private static Stage stage;
     public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/eatBomb.wav").toString());
-
     public static Stage getStage() {
         return stage;
     }

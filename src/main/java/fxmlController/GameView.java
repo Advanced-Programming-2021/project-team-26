@@ -503,22 +503,21 @@ public class GameView implements Initializable {
 
     public void moveFromDeckToHand(Card card) {
         CardImageView imageView = new CardImageView(this, card, true);
-        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
-        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         imageView.setX(975);
         imageView.setY(425);
         imageView.setFitHeight(92);
         imageView.setFitWidth(92);
         root.getChildren().add(imageView);
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (ActionEvent event) -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
             if (imageView.getY() < 550){
                 imageView.setY(imageView.getY() + 5);
             }
         }));
 
-        timeline.setCycleCount(25);
+        timeline.setCycleCount(50);
         timeline.play();
+
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
