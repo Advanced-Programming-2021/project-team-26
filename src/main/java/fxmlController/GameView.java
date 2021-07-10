@@ -59,6 +59,8 @@ public class GameView implements Initializable {
     public Button endPhaseBut;
     public ImageView cardInfo;
     public TextArea cardDetails;
+    public ImageView myGraveyard;
+    public ImageView oppGraveyard;
 
     @FXML
     private AnchorPane root;
@@ -304,6 +306,16 @@ public class GameView implements Initializable {
 
         initField();
         intiFieldClick();
+        setMyGraveyardOnClick();
+    }
+
+    private void setMyGraveyardOnClick() {
+        myGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
     }
 
     private void intiFieldClick() {
@@ -431,7 +443,7 @@ public class GameView implements Initializable {
         });
     }
 
-    public void moveFromOpponentDeckToHand(Card addedCard) {
+    public void moveFromOpponentDeckToHand() {
         ImageView imageView = new ImageView(Card.getUnknownImage());
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
@@ -631,6 +643,14 @@ public class GameView implements Initializable {
         myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
         opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
     }
+
+    public void updateMyGraveyard(Card card) {
+        myGraveyard.setImage(card.getImage());
+    }
+
+    public void updateOppGraveyard(Card card) {
+    }
+
 
     class CardImageView extends ImageView {
         Card card;
