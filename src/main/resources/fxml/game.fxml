@@ -3,15 +3,21 @@
 <?import fxmlController.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.text.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="600.0" prefWidth="1070.0"
-            xmlns="http://javafx.com/javafx/11.0.1" fx:controller="fxmlController.GameView">
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="root" prefHeight="600.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.GameView">
     <children>
         <ImageView fitHeight="600.0" fitWidth="770.0" layoutX="300.0">
             <image>
-                <Image url="@../Assets/Field/fie_normal.bmp"/>
+                <Image url="@../Assets/Field/fie_normal.bmp" />
             </image>
         </ImageView>
         <CardImageView fx:id="opoSpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="94.0"
@@ -85,28 +91,22 @@
         </ImageView>
         <ImageView fitHeight="92.0" fitWidth="92.0" layoutX="975.0" layoutY="80.0">
             <image>
-                <Image url="@../Assets/Cards/Monsters/Unknown.jpg"/>
+                <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
             </image>
         </ImageView>
-        <Button fx:id="drawPhaseBut" layoutX="300.0" layoutY="88.0" minWidth="26.0" mnemonicParsing="false"
-                onAction="#drawPhase" prefHeight="53.0" prefWidth="29.0" text="DP" wrapText="true"/>
-        <Button fx:id="standbyPhaseBut" layoutX="300.0" layoutY="160.0" minWidth="26.0" mnemonicParsing="false"
-                onAction="#standbyPhase" prefHeight="53.0" prefWidth="29.0" text="SP" wrapText="true"/>
-        <Button fx:id="mainPhase1But" layoutX="300.0" layoutY="234.0" minWidth="26.0" mnemonicParsing="false"
-                onAction="#mainPhase1" prefHeight="53.0" prefWidth="29.0" text="M1" wrapText="true"/>
-        <Button fx:id="battlePhaseBut" layoutX="300.0" layoutY="313.0" minWidth="26.0" mnemonicParsing="false"
-                onAction="#battlePhase" prefHeight="53.0" prefWidth="29.0" text="BP" wrapText="true"/>
-        <Button fx:id="mainPhase2But" layoutX="300.0" layoutY="389.0" minWidth="26.0" mnemonicParsing="false"
-                onAction="#mainPhase2" prefHeight="53.0" prefWidth="29.0" text="M2" wrapText="true"/>
-        <Button fx:id="endPhaseBut" layoutX="300.0" layoutY="461.0" minWidth="26.0" mnemonicParsing="false"
-                onAction="#endPhase" prefHeight="53.0" prefWidth="29.0" text="EP" wrapText="true"/>
-        <ImageView fx:id="cardInfo" fitHeight="240.0" fitWidth="180.0" layoutX="67.0" layoutY="104.0"
-                   pickOnBounds="true" preserveRatio="true">
+        <Button fx:id="drawPhaseBut" layoutX="300.0" layoutY="88.0" minWidth="26.0" mnemonicParsing="false" onAction="#drawPhase" prefHeight="53.0" prefWidth="29.0" text="DP" wrapText="true" />
+        <Button fx:id="standbyPhaseBut" layoutX="300.0" layoutY="160.0" minWidth="26.0" mnemonicParsing="false" onAction="#standbyPhase" prefHeight="53.0" prefWidth="29.0" text="SP" wrapText="true" />
+        <Button fx:id="mainPhase1But" layoutX="300.0" layoutY="234.0" minWidth="26.0" mnemonicParsing="false" onAction="#mainPhase1" prefHeight="53.0" prefWidth="29.0" text="M1" wrapText="true" />
+        <Button fx:id="battlePhaseBut" layoutX="300.0" layoutY="313.0" minWidth="26.0" mnemonicParsing="false" onAction="#battlePhase" prefHeight="53.0" prefWidth="29.0" text="BP" wrapText="true" />
+        <Button fx:id="mainPhase2But" layoutX="300.0" layoutY="389.0" minWidth="26.0" mnemonicParsing="false" onAction="#mainPhase2" prefHeight="53.0" prefWidth="29.0" text="M2" wrapText="true" />
+        <Button fx:id="endPhaseBut" layoutX="300.0" layoutY="461.0" minWidth="26.0" mnemonicParsing="false" onAction="#endPhase" prefHeight="53.0" prefWidth="29.0" text="EP" wrapText="true" />
+        <ImageView fx:id="cardInfo" fitHeight="240.0" fitWidth="180.0" layoutX="67.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@../Assets/Cards/Monsters/Unknown.jpg"/>
+                <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />
             </image>
         </ImageView>
-        <TextArea fx:id="cardDetails" layoutX="61.0" layoutY="350.0" prefHeight="150.0" prefWidth="180.0"
-                  wrapText="true"/>
+        <TextArea fx:id="cardDetails" layoutX="61.0" layoutY="350.0" prefHeight="150.0" prefWidth="180.0" wrapText="true" />
+      <ImageView fx:id="myGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="959.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="oppGraveyard" fitHeight="92.0" fitWidth="92.0" layoutX="361.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true" />
     </children>
 </AnchorPane>

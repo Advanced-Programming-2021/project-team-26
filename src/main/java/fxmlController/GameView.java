@@ -59,6 +59,8 @@ public class GameView implements Initializable {
     public Button endPhaseBut;
     public ImageView cardInfo;
     public TextArea cardDetails;
+    public ImageView myGraveyard;
+    public ImageView oppGraveyard;
 
     @FXML
     private AnchorPane root;
@@ -109,7 +111,7 @@ public class GameView implements Initializable {
     private CardImageView myMonster4;
 
     @FXML
-    private CardImageView mySpellTrap5;
+    private ImageView mySpellTrap5;
 
     @FXML
     private CardImageView mySpellTrap3;
@@ -304,6 +306,69 @@ public class GameView implements Initializable {
 
         initField();
         intiFieldClick();
+        setMyGraveyardOnClick();
+        setOppGraveyardOnClick();
+    }
+
+    private void setOppGraveyardOnClick() {
+        oppGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                showOppGraveyard();
+            }
+        });
+    }
+
+    private void showOppGraveyard() {
+        Stage stage = new Stage();
+        AnchorPane root = null;
+        GridPane showGraveyard = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/graveyard.fxml"));
+            showGraveyard = (GridPane) root.lookup("#showMyGraveyard");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Card> graveyard = gameController.getGame().getBoard(1 - turn).getGraveyard();
+        for (int i = 0; i < graveyard.size(); i++) {
+            ImageView imageView = new ImageView();
+            imageView.setImage(graveyard.get(i).getImage());
+            showGraveyard.add(imageView, i, 0);
+        }
+
+        stage.setScene(new Scene(root));
+        stage.showAndWait();
+    }
+
+    private void setMyGraveyardOnClick() {
+        myGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                showMyGraveyard();
+            }
+        });
+    }
+
+
+    public void showMyGraveyard() {
+        Stage stage = new Stage();
+        AnchorPane root = null;
+        GridPane showMyGraveyard = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/graveyard.fxml"));
+            showMyGraveyard = (GridPane) root.lookup("#showMyGraveyard");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Card> graveyard = gameController.getGame().getBoard(turn).getGraveyard();
+        for (int i = 0; i < graveyard.size(); i++) {
+            ImageView imageView = new ImageView();
+            imageView.setImage(graveyard.get(i).getImage());
+            showMyGraveyard.add(imageView, i, 0);
+        }
+
+        stage.setScene(new Scene(root));
+        stage.showAndWait();
     }
 
     private void intiFieldClick() {
@@ -567,7 +632,7 @@ public class GameView implements Initializable {
         List<Card> hand = gameController.getGame().getBoard(turn).getHand();
         myHand.getChildren().clear();
         for (Card card : hand) {
-            ImageView imageView = new CardImageView(this, card, true);
+            ImageView imageView = new fxmlController.CardImageView(this, card, true);
             imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
             imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
             int number = myHand.getChildren().size();
@@ -636,9 +701,46 @@ public class GameView implements Initializable {
         stage.showAndWait();
     }
 
+
     public void updateLifePoint() {
         myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
         opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
     }
 
+    public void updateMyGraveyard(Card card) {
+        myGraveyard.setImage(card.getImage());
+    }
+
+    public void updateOppGraveyard(Card card) {
+        oppGraveyard.setImage(card.getImage());
+    }
+
+
+    class CardImageView extends ImageView {
+        Card card;
+        boolean isVisible;
+
+        public CardImageView(Card card) {
+            this(card, true);
+        }
+
+        public CardImageView(Card card, boolean isVisible) {
+            this.card = card;
+            this.isVisible = isVisible;
+            if (isVisible)
+                setImage(card.getImage());
+            else
+                setImage(Card.getUnknownImage());
+
+            setOnMouseEntered(e -> {
+                if (isVisible) {
+                    cardInfo.setImage(card.getImage());
+                    cardDetails.setText(card.getDescription());
+                } else {
+                    cardInfo.setImage(Card.getUnknownImage());
+                    cardDetails.setText("");
+                }
+            });
+        }
+    }
 }
