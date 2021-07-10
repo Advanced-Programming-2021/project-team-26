@@ -1,5 +1,6 @@
 package controller;
 
+import Utilities.Alert;
 import exceptions.CardNotFoundException;
 import exceptions.InvalidInput;
 import exceptions.InvalidSelection;
@@ -63,7 +64,7 @@ public class MonsterController {
         setMonsterAddress(monsterAddress);
         setPosition(position);
         setMonsterNew(true);
-        setHasPositionChanged(false);
+        setHasPositionChanged(true);
         setHasAttackedThisTurn(false);
         setHasActivateEffectThisTurn(false);
         setHandAccessible(false);
@@ -146,7 +147,7 @@ public class MonsterController {
             public void remove(MonsterController attacker) {
                 this.thisBoard.removeMonster(this);
                 this.otherBoard.removeMonster(attacker);
-                Print.getInstance().printMessage("You and your opponent cards are destroyed according to Yomi Ship's effect");
+                Alert.getInstance().successfulPrint("You and your opponent cards are destroyed according to Yomi Ship's effect");
             }
         };
     }
@@ -188,21 +189,34 @@ public class MonsterController {
             @Override
             public void flip() {
                 setRivalMonsterZoneAccessible(true);
+                Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask(
+                        "Do you want to activate the card effect?");
                 Print.getInstance().printMessage("Do you want to activate the card effect?" +
                         "1. yes" +
                         "2. no");
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
-
-                if (Integer.parseInt(input) == 1) {
+                if (answer == null)
+                    answer = false;
+                if (answer) {
+                    ArrayList<Card> options = new ArrayList<>();
+                    for (MonsterController monsterController : gameController.getGame().getOtherBoard().getMonstersZone())
+                        options.add(monsterController.getMonster());
                     Print.getInstance().printMessage("Select one of rival Monsters to remove from his Monster Zone");
-                    input = scanner.nextLine();
-                    select(input);
+
+                    ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                            options,
+                            1,
+                            "Select one of rival Monsters to remove from his Monster Zone"
+                    );
+
+                    if (selected.size() != 1)
+                        return;
+
                     Collection<MonsterController> monstersZone = gameController.getGame().getOtherBoard().getMonstersZone();
                     for (MonsterController monster : monstersZone) {
-                        if (monster.getMonster().getName().equals(getSelectedCard().getName())) {
+                        if (monster.getMonster() == selected.get(1)) {
                             MonsterController selectedMonsterController = MonsterController.getMonsterControllerByMonster((Monster) getSelectedCard());
                             gameController.getGame().getOtherBoard().removeMonster(selectedMonsterController);
+                            return;
                         }
                     }
                 }
@@ -221,16 +235,22 @@ public class MonsterController {
                 if (!isHasActivateEffectThisTurn()) {
                     Print.getInstance().printMessage("You have Scanner in your Monster" +
                             " Zone and you should select a card to clone it");
-                    Scanner scanner = Scan.getScanner();
 
                     Print.getInstance().printMessage("Select a monster from rival GRAVEYARD");
-                    String input = scanner.nextLine();
-                    setRivalGraveyardAccessible(true);
-                    select(input);
-                    if (!(getSelectedCard() instanceof Monster)) {
+                    ArrayList<Card> options = new ArrayList<>();
+                    for (Card card : gameController.getGame().getOtherBoard().getGraveyard()) {
+                        if (card instanceof Monster)
+                            options.add(card);
+                    }
+
+                    ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                            options, 1, "Select a monster from rival GRAVEYARD"
+                    );
+
+                    if (selected.size() != 1) {
                         throw new InvalidSelection();
                     } else {
-                        Monster selectedMonster = (Monster) getSelectedCard();
+                        Monster selectedMonster = (Monster) selected.get(0);
                         setMonster(new Monster(selectedMonster));
                     }
                 }
@@ -305,33 +325,47 @@ public class MonsterController {
                     Print.getInstance().printMessage("Do you want to activate the card effect?\n" +
                             "1. yes\n" +
                             "2. no");
-                    Scanner scanner = Scan.getScanner();
-                    String input = scanner.nextLine();
 
-                    if (Integer.parseInt(input) == 1) {
+                    Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask("Do you want to activate the card effect?");
+
+                    if (answer != null && answer) {
                         Print.getInstance().printMessage("Select a Card from your HAND to remove");
-                        input = scanner.nextLine();
-                        setHandAccessible(true);
-                        select(input);
-                        gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
+                        ArrayList<Card> options = new ArrayList<>();
+                        for (Card card : gameController.getGame().getThisBoard().getHand()) {
+                            options.add(card);
+                        }
+
+                        ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                                options,
+                                1,
+                                "Select a Card from your HAND to remove"
+                        );
+
+                        if (selected.size() == 1)
+                            gameController.getGame().getThisBoard().getHand().remove(selected.get(0));
 
                         setHandAccessible(false);
                         setOurGraveyardAccessible(true);
 
                         Print.getInstance().printMessage("Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND");
-                        input = scanner.nextLine();
-                        select(input);
-                        if (!(getSelectedCard() instanceof Monster)) {
-                            throw new InvalidSelection();
-                        } else {
-                            Monster selectedMonster = (Monster) getSelectedCard();
-                            if (selectedMonster.getLevel() < 7)
-                                throw new InvalidSelection();
-                            else {
-                                gameController.getGame().getThisBoard().getGraveyard().remove(getSelectedCard());
-                                gameController.getGame().getThisBoard().addCardToHand(getSelectedCard());
-                            }
+
+                        options.clear();
+                        for (Card card : gameController.getGame().getThisBoard().getGraveyard()) {
+                            if (card instanceof Monster && ((Monster) card).getLevel() >= 7)
+                                options.add(card);
                         }
+
+                        selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
+                                options,
+                                1,
+                                "Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND"
+                        );
+
+                        if (selected.size() == 1) {
+                            gameController.getGame().getThisBoard().getGraveyard().remove(selected.get(0));
+                            gameController.getGame().getThisBoard().addCardToHand(selected.get(0));
+                        }
+
                         setOurGraveyardAccessible(false);
                         setHasActivateEffectThisTurn(true);
                     }
@@ -365,21 +399,21 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void summon() {
-                Print.getInstance().printMessage("Do you want to summon this card specially with remove a card from your HAND?\n" +
-                        "1. yes\n" +
-                        "2. no\n");
+                Boolean ask = gameController.getViews()[gameController.getGame().getTurn()]
+                        .ask("Do you want to summon this card specially with remove a card from your HAND?");
 
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
+                if (ask == null)
+                    throw new InvalidSelection();
 
-                if (Integer.parseInt(input) == 1) {
+                if (ask) {
                     Print.getInstance().printMessage("Select a card from your HAND to remove");
+                    ArrayList<Card> options = new ArrayList<>();
+                    options.addAll(gameController.getGame().getThisBoard().getHand());
 
-                    input = scanner.nextLine();
-                    setHandAccessible(true);
-                    select(input);
+                    ArrayList<Card> selects = gameController.getViews()[gameController.getGame().getTurn()]
+                            .getCardInput(options, 1, "Select a card from your HAND to remove");
 
-                    gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
+                    gameController.getGame().getThisBoard().getHand().remove(selects.get(0));
                 }
             }
         };

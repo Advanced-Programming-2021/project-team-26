@@ -112,6 +112,8 @@ public class GameController {
             addDebugMode(scenes);
             stages[0].setScene(scenes[0]);
             stages[1].setScene(scenes[1]);
+            stages[0].setResizable(false);
+            stages[1].setResizable(false);
             App.getStage().close();
             stages[0].show();
             stages[1].show();
@@ -329,36 +331,45 @@ public class GameController {
         if (selectedMonster.getLevel() > 4 && selectedMonster.getLevel() <= 6) {
             if (game.getThisBoard().getMonsterZoneNumber() < 1)
                 throw new NotEnoughCardForTribute();
-            Print.getInstance().printMessage("Enter the address of the monster you want to tribute:");
 
-            Integer monsterAddress = Scan.getInstance().getInteger();
-            if (monsterAddress == null)
+            ArrayList<Card> options = new ArrayList<>();
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
+                options.add(monsterController.getMonster());
+            ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monster you want to tribute:");
+
+            if (selected.size() != 1)
                 return null;
-            if (monsterAddress >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonsterByIndex(monsterAddress - 1) == null)
-                throw new CardNotFoundInPositionException("There no monsters one this address");
 
-            game.getThisBoard().removeMonster(monsterAddress - 1);
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
+                if (monsterController.getMonster() == selected.get(0)) {
+                    game.getThisBoard().removeMonster(monsterController);
+                    break;
+                }
+            }
         } else if (selectedMonster.getLevel() > 6) {
             if (game.getThisBoard().getMonsterZoneNumber() < 2)
                 throw new NotEnoughCardForTribute();
 
-            Print.getInstance().printMessage("Enter the address of the first monster you want to tribute:");
-            Integer monsterAddress1 = Scan.getInstance().getInteger();
+            ArrayList<Card> options = new ArrayList<>();
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
+                options.add(monsterController.getMonster());
+            ArrayList<Card> selected = views[turn].getCardInput(options, 2, "Select the monsters you want to tribute");
 
-            Print.getInstance().printMessage("Enter the address of the second monster you want to tribute:");
-            Integer monsterAddress2 = Scan.getInstance().getInteger();
-
-            if (monsterAddress1 == null || monsterAddress2 == null)
+            if (selected.size() != 2)
                 return null;
-            if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||
-                    monsterAddress2 >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonsterByIndex(monsterAddress1 - 1) == null ||
-                    game.getThisBoard().getMonsterByIndex(monsterAddress2 - 1) == null)
-                throw new CardNotFoundInPositionException("there no monsters one this address");
 
-            game.getThisBoard().removeMonster(monsterAddress1 - 1);
-            game.getThisBoard().removeMonster(monsterAddress2 - 1);
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
+                if (monsterController.getMonster() == selected.get(0)) {
+                    game.getThisBoard().removeMonster(monsterController);
+                    break;
+                }
+            }
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
+                if (monsterController.getMonster() == selected.get(1)) {
+                    game.getThisBoard().removeMonster(monsterController);
+                    break;
+                }
+            }
         }
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
         game.setSummonOrSetThisTurn(true);
@@ -399,7 +410,7 @@ public class GameController {
             throw new ActionNotAllowed();
 
         if (selectedCard instanceof Monster) {
-            setMonster();
+            setMonster(turn);
         } else if (selectedCard instanceof Spell) {
             setSpell();
         } else if (selectedCard instanceof Trap) {
@@ -433,7 +444,7 @@ public class GameController {
         views[game.getTurn()].updateMyHand();
     }
 
-    private void setMonster() {
+    private void setMonster(int turn) {
         if (game.getThisBoard().getMonsterZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
             throw new FullMonsterZone();
 
@@ -446,35 +457,44 @@ public class GameController {
             if (game.getThisBoard().getMonsterZoneNumber() < 1)
                 throw new NotEnoughCardForTribute();
 
-            Print.getInstance().printMessage("Enter the address of the monster you want to tribute:");
-            Integer monsterAddress = Scan.getInstance().getInteger();
-            if (monsterAddress == null)
-                return;
-            if (monsterAddress >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonsterByIndex(monsterAddress - 1) == null)
-                throw new CardNotFoundInPositionException("there no monsters one this address");
+            ArrayList<Card> options = new ArrayList<>();
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
+                options.add(monsterController.getMonster());
+            ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monster you want to tribute:");
 
-            game.getThisBoard().removeMonster(monsterAddress - 1);
+            if (selected.size() != 1)
+                return;
+
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
+                if (monsterController.getMonster() == selected.get(0)) {
+                    game.getThisBoard().removeMonster(monsterController);
+                    break;
+                }
+            }
         } else if (selectedMonster.getLevel() > 6) {
             if (game.getThisBoard().getMonsterZoneNumber() < 2)
                 throw new NotEnoughCardForTribute();
 
-            Print.getInstance().printMessage("Enter the address of the first monster you want to tribute:");
-            Integer monsterAddress1 = Scan.getInstance().getInteger();
+            ArrayList<Card> options = new ArrayList<>();
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
+                options.add(monsterController.getMonster());
+            ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monsters you want to tribute");
 
-            Print.getInstance().printMessage("Enter the address of the second monster you want to tribute:");
-            Integer monsterAddress2 = Scan.getInstance().getInteger();
-
-            if (monsterAddress1 == null || monsterAddress2 == null)
+            if (selected.size() != 2)
                 return;
-            if (monsterAddress1 >= Board.CARD_NUMBER_IN_ROW ||
-                    monsterAddress2 >= Board.CARD_NUMBER_IN_ROW ||
-                    game.getThisBoard().getMonsterByIndex(monsterAddress1 - 1) == null ||
-                    game.getThisBoard().getMonsterByIndex(monsterAddress2 - 1) == null)
-                throw new CardNotFoundInPositionException("there no monsters one this address");
 
-            game.getThisBoard().removeMonster(monsterAddress1 - 1);
-            game.getThisBoard().removeMonster(monsterAddress2 - 1);
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
+                if (monsterController.getMonster() == selected.get(0)) {
+                    game.getThisBoard().removeMonster(monsterController);
+                    break;
+                }
+            }
+            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
+                if (monsterController.getMonster() == selected.get(1)) {
+                    game.getThisBoard().removeMonster(monsterController);
+                    break;
+                }
+            }
         }
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.DEFENCE_DOWN);
         game.setSummonOrSetThisTurn(true);
@@ -485,28 +505,21 @@ public class GameController {
         views[game.getTurn()].updateMyHand();
     }
 
-    public String setPosition(Matcher matcher) {
+    public String setPosition(int turn, int index) {
+        if (turn != game.getTurn())
+            return null;
+        selectedMonster = game.getThisBoard().getMonsterByIndex(index);
         if (temporaryTurnChange)
             throw new NotYourTurnException();
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
-
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.MonsterZone ||
-                !(selectedCard instanceof Monster))
-            throw new CannotChangeException();
 
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
 
         MonsterPosition wantedPosition;
-        String position = matcher.group(1);
-        if (position.equals("attack"))
-            wantedPosition = MonsterPosition.ATTACK;
-        else if (position.equals("defence"))
+        if (selectedMonster.getPosition() == MonsterPosition.ATTACK)
             wantedPosition = MonsterPosition.DEFENCE_UP;
         else
-            throw new InvalidInput();
+            wantedPosition = MonsterPosition.ATTACK;
 
         if (wantedPosition == MonsterPosition.ATTACK && selectedMonster.getPosition() != MonsterPosition.DEFENCE_UP)
             throw new CannotChangeException();
@@ -517,7 +530,10 @@ public class GameController {
             throw new AlreadyChangeException();
 
         selectedMonster.setPosition(wantedPosition);
+        selectedMonster.setHasPositionChanged(true);
         deselect();
+        views[turn].updateMyMonsterZone();
+        views[1 - turn].updateOpponentMonsterZone();
         return "monster card position changed successfully";
     }
 
@@ -614,7 +630,8 @@ public class GameController {
         if (attackResult == null)
             attackResult = new AttackResult(selectedMonster, toBeAttacked);
 
-        getViews()[game.getTurn()].attackAnimation(attacker, number);
+        getViews()[game.getTurn()].attackAnimation(attacker, number, Owner.Me);
+        getViews()[1 - game.getTurn()].attackAnimation(attacker, number, Owner.Opponent);
 
         Timer timer = new Timer();
         AttackResult finalAttackResult = attackResult;
@@ -796,6 +813,7 @@ public class GameController {
     }
 
     private void changeDeck(int turn) {
+        //TODO make it graphic
         if (players[turn] instanceof Ai)
             return;
         Print print = Print.getInstance();
@@ -901,9 +919,8 @@ public class GameController {
                         found = true;
                         game.temporaryChangeTurn();
                     }
-                    Print.getInstance().printMessage("do you want to activate " + trap.getCard().getName());
-                    String answer = Scan.getInstance().getString();
-                    if (answer.equals("yes")) {
+                    Boolean answer = views[game.getTurn()].ask("do you want to activate " + trap.getCard().getName());
+                    if (answer != null && answer) {
                         result = trap.onAttacked(attacker, defender);
                         trap.remove();
                     }
@@ -927,9 +944,8 @@ public class GameController {
                         found = true;
                         game.temporaryChangeTurn();
                     }
-                    Print.getInstance().printMessage("do you want to activate " + trap.getCard().getName());
-                    String answer = Scan.getInstance().getString();
-                    if (answer.equals("yes")) {
+                    Boolean answer = views[game.getTurn()].ask("do you want to activate " + trap.getCard().getName());
+                    if (answer != null && answer) {
                         result |= trap.onSummon(summoned, type);
                         trap.remove();
                     }
@@ -945,9 +961,8 @@ public class GameController {
     public void changeTurn() {
         if (!temporaryTurnChange && conditionsForChangingTurn()) {
             game.temporaryChangeTurn();
-            Print.getInstance().printMessage("do you want to activate your trap and spell?");
-            String answer = Scan.getInstance().getString();
-            if (!answer.equals("yes")) {
+            Boolean answer = views[game.getTurn()].ask("do you want to activate your trap and spell?");
+            if (answer != null && !answer) {
                 game.temporaryChangeTurn();
             }
         }

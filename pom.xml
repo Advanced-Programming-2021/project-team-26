@@ -45,6 +45,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>15</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>17-ea+11</version>
+        </dependency>
 
     </dependencies>
 

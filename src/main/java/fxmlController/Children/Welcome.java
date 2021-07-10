@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import model.User;
 
 import java.io.IOException;
@@ -40,5 +41,11 @@ public class Welcome extends MenuParent {
     @FXML
     void newGame(ActionEvent event) throws NoPlayerAvailable {
         new GameController(User.getUserByUsername("c"), User.getUserByUsername("b"), 1).run();
+    }
+
+    public void muteOrPlay(MouseEvent mouseEvent) {
+        if (App.isAreSoundsActive()) App.mediaView.getMediaPlayer().pause();
+        else App.mediaView.getMediaPlayer().play();
+        App.setAreSoundsActive(!App.isAreSoundsActive());
     }
 }

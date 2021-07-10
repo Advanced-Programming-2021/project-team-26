@@ -4,7 +4,7 @@ import fxmlController.Children.Welcome;
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.*;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -14,11 +14,22 @@ import java.util.Stack;
 
 public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
+    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
+    public static Media media;
+    private static boolean areSoundsActive = true;
     private static Stage stage;
-    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/eatBomb.wav").toString());
-    private MediaView mediaView = null;
+    public static MediaView mediaView = null;
+
     public static Stage getStage() {
         return stage;
+    }
+
+    public static boolean isAreSoundsActive() {
+        return areSoundsActive;
+    }
+
+    public static void setAreSoundsActive(boolean areSoundsActive) {
+        App.areSoundsActive = areSoundsActive;
     }
 
     public static void main(String[] args) {
@@ -58,12 +69,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        buttonClick.play();
         stage = primaryStage;
         stage.setResizable(false);
-        Media media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());
+        media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());
         mediaView = new MediaView(new MediaPlayer(media));
-        mediaView.getMediaPlayer().play();
+
+       if (areSoundsActive) mediaView.getMediaPlayer().play();
         mediaView.getMediaPlayer().autoPlayProperty().setValue(true);
         new Welcome().run();
         stage.show();
