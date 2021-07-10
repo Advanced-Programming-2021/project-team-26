@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,6 +30,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CardAddress;
+import model.Game;
 import model.Owner;
 import model.Place;
 import model.cards.Card;
@@ -191,40 +193,49 @@ public class GameView implements Initializable {
         boolean found = false;
         if (Phase.STANDBY.compareTo(phase) == 0) {
             found = true;
-            standbyPhaseBut.setOnAction(null);
+            setButtonActivity(standbyPhaseBut, null, false);
             standbyPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
         } else
-            standbyPhaseBut.setOnAction(null);
+            setButtonActivity(standbyPhaseBut, null, false);
         if (Phase.DRAW.compareTo(phase) == 0) {
             found = true;
-            drawPhaseBut.setOnAction(null);
+            setButtonActivity(drawPhaseBut, null, false);
             drawPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else {
-            drawPhaseBut.setOnAction(found ? this::drawPhase : null);
-        }
+        } else
+            setButtonActivity(drawPhaseBut, this::drawPhase, found);
         if (Phase.MAIN1.compareTo(phase) == 0) {
             found = true;
-            mainPhase1But.setOnAction(null);
+            setButtonActivity(mainPhase1But, null, false);
             mainPhase1But.setStyle(MY_CURRENT_PHASE_STYLE);
         } else
-            mainPhase1But.setOnAction(found ? this::mainPhase1 : null);
+            setButtonActivity(mainPhase1But, this::mainPhase1, found);
         if (Phase.BATTLE.compareTo(phase) == 0) {
             found = true;
-            battlePhaseBut.setOnAction(null);
+            setButtonActivity(battlePhaseBut, this::battlePhase, false);
             battlePhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
         } else
-            battlePhaseBut.setOnAction(found ? this::battlePhase : null);
+            setButtonActivity(battlePhaseBut, this::battlePhase, found);
         if (Phase.MAIN2.compareTo(phase) == 0) {
             found = true;
-            mainPhase2But.setOnAction(null);
+            setButtonActivity(mainPhase2But, null, false);
             mainPhase2But.setStyle(MY_CURRENT_PHASE_STYLE);
         } else
-            mainPhase2But.setOnAction(found ? this::mainPhase2 : null);
+            setButtonActivity(mainPhase2But, this::mainPhase2, found);
         if (Phase.END.compareTo(phase) == 0) {
-            endPhaseBut.setOnAction(null);
+            setButtonActivity(endPhaseBut, null, false);
             endPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
         } else
-            endPhaseBut.setOnAction(found ? this::endPhase : null);
+            setButtonActivity(endPhaseBut, this::endPhase, found);
+    }
+
+    private void setButtonActivity(Button button, EventHandler<ActionEvent> e, boolean active) {
+        if (active) {
+            button.setOnAction(e);
+            button.setCursor(Cursor.HAND);
+        } else {
+            button.setOnAction(null);
+            button.setCursor(Cursor.DEFAULT);
+        }
     }
 
 
@@ -236,12 +247,12 @@ public class GameView implements Initializable {
         mainPhase2But.setStyle(OPPONENT_PHASE_STYLE);
         endPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
 
-        standbyPhaseBut.setOnAction(null);
-        drawPhaseBut.setOnAction(null);
-        mainPhase1But.setOnAction(null);
-        battlePhaseBut.setOnAction(null);
-        mainPhase2But.setOnAction(null);
-        endPhaseBut.setOnAction(null);
+        setButtonActivity(standbyPhaseBut, null, false);
+        setButtonActivity(drawPhaseBut, null, false);
+        setButtonActivity(mainPhase1But, null, false);
+        setButtonActivity(battlePhaseBut, null, false);
+        setButtonActivity(mainPhase2But, null, false);
+        setButtonActivity(endPhaseBut, null, false);
 
         switch (gameController.getGame().getPhase()) {
             case DRAW:
@@ -731,8 +742,22 @@ public class GameView implements Initializable {
 
 
     public void updateLifePoint() {
-        myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
-        opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
+        int myLifePoint = gameController.getGame().getLifePoint(turn);
+        myLP.setText(String.valueOf(myLifePoint));
+        updateProgressBar(myLPProgress, 1.0 * myLifePoint / Game.LIFE_POINT);
+        int opponentLifePoint = gameController.getGame().getLifePoint(1 - turn);
+        opponentLP.setText(String.valueOf(opponentLifePoint));
+        updateProgressBar(opponentLPProgress, 1.0 * opponentLifePoint / Game.LIFE_POINT);
+    }
+
+    private void updateProgressBar(ProgressBar progressBar, double value) {
+        progressBar.setProgress(value);
+        if (value >= 0.8)
+            progressBar.setStyle("-fx-accent:green");
+        else if (0.4 <= value && value < 0.8)
+            progressBar.setStyle("-fx-accent:yellow");
+        else
+            progressBar.setStyle("-fx-accent:red");
     }
 
     public void updateMyGraveyard(Card card) {
