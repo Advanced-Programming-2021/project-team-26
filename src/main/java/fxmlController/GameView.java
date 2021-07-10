@@ -45,10 +45,10 @@ public class GameView implements Initializable {
     public static final String OPPONENT_PHASE_STYLE = "-fx-background-color: #e01313;";
     public static final String MY_CURRENT_PHASE_STYLE = "-fx-background-color: #3ba8e2;-fx-border-color: #001a82; -fx-border-width: 5";
     public static final String OPPONENT_CURRENT_PHASE_STYLE = "-fx-background-color: #e01313;-fx-border-color: #570000; -fx-border-width: 5";
-    private final ArrayList<ImageView> myMonsters = new ArrayList<>();
-    private final ArrayList<ImageView> mySpellTraps = new ArrayList<>();
-    private final ArrayList<ImageView> oppMonsters = new ArrayList<>();
-    private final ArrayList<ImageView> oppSpellTraps = new ArrayList<>();
+    private final ArrayList<CardImageView> myMonsters = new ArrayList<>();
+    private final ArrayList<CardImageView> mySpellTraps = new ArrayList<>();
+    private final ArrayList<CardImageView> oppMonsters = new ArrayList<>();
+    private final ArrayList<CardImageView> oppSpellTraps = new ArrayList<>();
     private final GameController gameController;
     private final int turn;
     public Button drawPhaseBut;
@@ -64,64 +64,64 @@ public class GameView implements Initializable {
     private AnchorPane root;
 
     @FXML
-    private ImageView opoSpellTrap4;
+    private CardImageView opoSpellTrap4;
 
     @FXML
-    private ImageView opoSpellTrap2;
+    private CardImageView opoSpellTrap2;
 
     @FXML
-    private ImageView opoSpellTrap1;
+    private CardImageView opoSpellTrap1;
 
     @FXML
-    private ImageView opoSpellTrap3;
+    private CardImageView opoSpellTrap3;
 
     @FXML
-    private ImageView opoSpellTrap5;
+    private CardImageView opoSpellTrap5;
 
     @FXML
-    private ImageView oppMonster5;
+    private CardImageView oppMonster5;
 
     @FXML
-    private ImageView oppMonster3;
+    private CardImageView oppMonster3;
 
     @FXML
-    private ImageView oppMonster1;
+    private CardImageView oppMonster1;
 
     @FXML
-    private ImageView oppMonster2;
+    private CardImageView oppMonster2;
 
     @FXML
-    private ImageView oppMonster4;
+    private CardImageView oppMonster4;
 
     @FXML
-    private ImageView myMonster5;
+    private CardImageView myMonster5;
 
     @FXML
-    private ImageView myMonster3;
+    private CardImageView myMonster3;
 
     @FXML
-    private ImageView myMonster1;
+    private CardImageView myMonster1;
 
     @FXML
-    private ImageView myMonster2;
+    private CardImageView myMonster2;
 
     @FXML
-    private ImageView myMonster4;
+    private CardImageView myMonster4;
 
     @FXML
-    private ImageView mySpellTrap5;
+    private CardImageView mySpellTrap5;
 
     @FXML
-    private ImageView mySpellTrap3;
+    private CardImageView mySpellTrap3;
 
     @FXML
-    private ImageView mySpellTrap1;
+    private CardImageView mySpellTrap1;
 
     @FXML
-    private ImageView mySpellTrap2;
+    private CardImageView mySpellTrap2;
 
     @FXML
-    private ImageView mySpellTrap4;
+    private CardImageView mySpellTrap4;
 
     @FXML
     private ProgressBar opponentLPProgress;
@@ -393,6 +393,15 @@ public class GameView implements Initializable {
         oppSpellTraps.add(opoSpellTrap3);
         oppSpellTraps.add(opoSpellTrap4);
         oppSpellTraps.add(opoSpellTrap5);
+
+        for (CardImageView imageView : myMonsters)
+            imageView.setGameView(this);
+        for (CardImageView imageView : mySpellTraps)
+            imageView.setGameView(this);
+        for (CardImageView imageView : oppMonsters)
+            imageView.setGameView(this);
+        for (CardImageView imageView : oppSpellTraps)
+            imageView.setGameView(this);
     }
 
     private void move(int currentX, int currentY, int destX, int destY, Node node) {
@@ -410,7 +419,7 @@ public class GameView implements Initializable {
     }
 
     public void moveFromDeckToHand(Card card) {
-        ImageView imageView = new CardImageView(card);
+        CardImageView imageView = new CardImageView(this, card, true);
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         int number = myHand.getChildren().size();
@@ -432,7 +441,7 @@ public class GameView implements Initializable {
     }
 
     public void moveFromOpponentDeckToHand(Card addedCard) {
-        ImageView imageView = new ImageView(Card.getUnknownImage());
+        CardImageView imageView = new CardImageView(this, addedCard, false);
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         int number = opponentHand.getChildren().size();
@@ -480,19 +489,19 @@ public class GameView implements Initializable {
         HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(1 - turn).getMonsterZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!monsterZone.containsKey(i)) {
-                ImageView imageView = oppMonsters.get(i);
-                imageView.setImage(null);
+                CardImageView imageView = oppMonsters.get(i);
+                imageView.removeCard();
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
-                ImageView imageView = oppMonsters.get(i);
-                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+                CardImageView imageView = oppMonsters.get(i);
+                imageView.addCard(monsterZone.get(i).getMonster(), true);
                 imageView.setRotate(180);
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
-                ImageView imageView = oppMonsters.get(i);
-                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+                CardImageView imageView = oppMonsters.get(i);
+                imageView.addCard(monsterZone.get(i).getMonster(), true);
                 imageView.setRotate(90);
             } else {
-                ImageView imageView = oppMonsters.get(i);
-                imageView.setImage(Card.getUnknownImage());
+                CardImageView imageView = oppMonsters.get(i);
+                imageView.addCard(monsterZone.get(i).getMonster(), false);
                 imageView.setRotate(90);
             }
         }
@@ -503,15 +512,15 @@ public class GameView implements Initializable {
         HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(1 - turn).getSpellTrapZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!spellTrapZone.containsKey(i)) {
-                ImageView imageView = oppSpellTraps.get(i);
-                imageView.setImage(null);
+                CardImageView imageView = oppSpellTraps.get(i);
+                imageView.removeCard();
             } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {
-                ImageView imageView = oppSpellTraps.get(i);
-                imageView.setImage(spellTrapZone.get(i).getCard().getImage());
+                CardImageView imageView = oppSpellTraps.get(i);
+                imageView.addCard(spellTrapZone.get(i).getCard(), true);
                 imageView.setRotate(180);
             } else {
-                ImageView imageView = oppSpellTraps.get(i);
-                imageView.setImage(Card.getUnknownImage());
+                CardImageView imageView = oppSpellTraps.get(i);
+                imageView.addCard(spellTrapZone.get(i).getCard(), false);
             }
         }
     }
@@ -520,18 +529,18 @@ public class GameView implements Initializable {
         HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(turn).getMonsterZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!monsterZone.containsKey(i)) {
-                ImageView imageView = myMonsters.get(i);
-                imageView.setImage(null);
+                CardImageView imageView = myMonsters.get(i);
+                imageView.removeCard();
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
-                ImageView imageView = myMonsters.get(i);
-                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+                CardImageView imageView = myMonsters.get(i);
+                imageView.addCard(monsterZone.get(i).getMonster(), true);
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
-                ImageView imageView = myMonsters.get(i);
-                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+                CardImageView imageView = myMonsters.get(i);
+                imageView.addCard(monsterZone.get(i).getMonster(), true);
                 imageView.setRotate(270);
             } else {
-                ImageView imageView = myMonsters.get(i);
-                imageView.setImage(Card.getUnknownImage());
+                CardImageView imageView = myMonsters.get(i);
+                imageView.addCard(monsterZone.get(i).getMonster(), false);
                 imageView.setRotate(270);
             }
         }
@@ -542,14 +551,14 @@ public class GameView implements Initializable {
         HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(turn).getSpellTrapZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!spellTrapZone.containsKey(i)) {
-                ImageView imageView = mySpellTraps.get(i);
-                imageView.setImage(null);
+                CardImageView imageView = mySpellTraps.get(i);
+                imageView.removeCard();
             } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {
-                ImageView imageView = mySpellTraps.get(i);
-                imageView.setImage(spellTrapZone.get(i).getCard().getImage());
+                CardImageView imageView = mySpellTraps.get(i);
+                imageView.addCard(spellTrapZone.get(i).getCard(), true);
             } else {
-                ImageView imageView = mySpellTraps.get(i);
-                imageView.setImage(Card.getUnknownImage());
+                CardImageView imageView = mySpellTraps.get(i);
+                imageView.addCard(spellTrapZone.get(i).getCard(), false);
             }
         }
     }
@@ -558,7 +567,7 @@ public class GameView implements Initializable {
         List<Card> hand = gameController.getGame().getBoard(turn).getHand();
         myHand.getChildren().clear();
         for (Card card : hand) {
-            ImageView imageView = new CardImageView(card);
+            ImageView imageView = new CardImageView(this, card, true);
             imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
             imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
             int number = myHand.getChildren().size();
@@ -590,7 +599,7 @@ public class GameView implements Initializable {
                 imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
                 imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
                 opponentHand.add(imageView, number, 0);
-            } else if(opponentHand.getChildren().size() > hand.size()){
+            } else if (opponentHand.getChildren().size() > hand.size()) {
                 opponentHand.getChildren().remove(0);
             }
         }
@@ -632,31 +641,4 @@ public class GameView implements Initializable {
         opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
     }
 
-    class CardImageView extends ImageView {
-        Card card;
-        boolean isVisible;
-
-        public CardImageView(Card card) {
-            this(card, true);
-        }
-
-        public CardImageView(Card card, boolean isVisible) {
-            this.card = card;
-            this.isVisible = isVisible;
-            if (isVisible)
-                setImage(card.getImage());
-            else
-                setImage(Card.getUnknownImage());
-
-            setOnMouseEntered(e -> {
-                if (isVisible) {
-                    cardInfo.setImage(card.getImage());
-                    cardDetails.setText(card.getDescription());
-                } else {
-                    cardInfo.setImage(Card.getUnknownImage());
-                    cardDetails.setText("");
-                }
-            });
-        }
-    }
 }
