@@ -8,6 +8,7 @@ import view.Print;
 import java.util.ArrayList;
 
 public class Game {
+    public final static int LIFE_POINT = 8000;
     private final GameController gameController;
     private final Board[] boards = new Board[2];
     private final User[] users = new User[2];
@@ -28,8 +29,8 @@ public class Game {
         users[1] = second;
         boards[0] = new Board(gameController, firstDeck);
         boards[1] = new Board(gameController, secondDeck);
-        lifePoints[0] = 8000;
-        lifePoints[1] = 8000;
+        lifePoints[0] = LIFE_POINT;
+        lifePoints[1] = LIFE_POINT;
     }
 
     public void setFinished(boolean finished) {

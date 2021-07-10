@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.CardAddress;
+import model.Game;
 import model.Owner;
 import model.Place;
 import model.cards.Card;
@@ -717,8 +718,22 @@ public class GameView implements Initializable {
 
 
     public void updateLifePoint() {
-        myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
-        opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
+        int myLifePoint = gameController.getGame().getLifePoint(turn);
+        myLP.setText(String.valueOf(myLifePoint));
+        updateProgressBar(myLPProgress, 1.0 * myLifePoint / Game.LIFE_POINT);
+        int opponentLifePoint = gameController.getGame().getLifePoint(1 - turn);
+        opponentLP.setText(String.valueOf(opponentLifePoint));
+        updateProgressBar(opponentLPProgress, 1.0 * opponentLifePoint / Game.LIFE_POINT);
+    }
+
+    private void updateProgressBar(ProgressBar progressBar, double value) {
+        progressBar.setProgress(value);
+        if (value >= 0.8)
+            progressBar.setStyle("-fx-accent:green");
+        else if (0.4 <= value && value < 0.8)
+            progressBar.setStyle("-fx-accent:yellow");
+        else
+            progressBar.setStyle("-fx-accent:red");
     }
 
     public void updateMyGraveyard(Card card) {
