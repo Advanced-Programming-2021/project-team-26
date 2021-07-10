@@ -416,6 +416,7 @@ public class GameView implements Initializable {
                         if (attacker == -1)
                             return;
                         try {
+                            attackAnimation(attacker, finalI);
                             String result = gameController.attack(attacker, finalI);
                             Alert.getInstance().successfulPrint(result);
                             attacker = -1;
@@ -450,6 +451,41 @@ public class GameView implements Initializable {
                     break;
             }
         });
+    }
+
+    private void attackAnimation(int attackerMonster, int defenderMonster){
+        ImageView attacker = myMonsters.get(attackerMonster);
+        ImageView defender = oppMonsters.get(defenderMonster);
+
+        double attackerX = attacker.getX();
+        double attackerY = attacker.getY();
+
+        double defenderX = defender.getX();
+        double defenderY = defender.getY();
+
+        ImageView attackIcon = new ImageView();
+        attackIcon.setX(attackerX);
+        attackIcon.setY(attackerY);
+        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/OlderIcons/atk_icon.bmp";
+        attackIcon.setImage(new Image(path));
+        root.getChildren().add(attackIcon);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
+            if (attackIcon.getX() > defenderX){
+                attackIcon.setX(attackIcon.getX() - 5);
+            } else {
+                attackIcon.setX(attackIcon.getX() + 5);
+            }
+
+            if (attackIcon.getY() > defenderY){
+                attackIcon.setY(attackIcon.getY() - 5);
+            }else {
+                attackIcon.setY(attackIcon.getY() + 5);
+            }
+        }));
+
+        timeline.setCycleCount(50);
+        timeline.play();
     }
 
     private void initField() {
@@ -505,8 +541,8 @@ public class GameView implements Initializable {
         CardImageView imageView = new CardImageView(this, card, true);
         imageView.setX(975);
         imageView.setY(425);
-        imageView.setFitHeight(92);
-        imageView.setFitWidth(92);
+        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
+        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         root.getChildren().add(imageView);
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
@@ -515,7 +551,7 @@ public class GameView implements Initializable {
             }
         }));
 
-        timeline.setCycleCount(50);
+        timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
         Timer timer = new Timer();
@@ -527,7 +563,7 @@ public class GameView implements Initializable {
                     myHand.add(imageView, number, 0);
                 });
             }
-        }, 5000);
+        }, 2500);
 
         imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -547,9 +583,29 @@ public class GameView implements Initializable {
         CardImageView imageView = new CardImageView(this, addedCard, false);
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-        int number = opponentHand.getChildren().size();
+        imageView.setX(975);
+        imageView.setY(80);
+        root.getChildren().add(imageView);
 
-        opponentHand.add(imageView, number, 0);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
+            if (imageView.getY() > 10){
+                imageView.setY(imageView.getY() - 5);
+            }
+        }));
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    int number = opponentHand.getChildren().size();
+                    opponentHand.add(imageView, number, 0);
+                });
+            }
+        }, 2500);
     }
 
     private void activateSpellTrap(Card card, ImageView imageView) {

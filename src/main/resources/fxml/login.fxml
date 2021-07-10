@@ -8,20 +8,20 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.Login">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.Login">
    <children>
-      <Button layoutX="471.0" layoutY="395.0" mnemonicParsing="false" onAction="#login" prefHeight="62.0" prefWidth="182.0" style="-fx-background-color: red; -fx-background-radius: 100; -fx-border-style: 30;" text="Login" textFill="#ebdfdf">
+      <Button layoutX="658.0" layoutY="330.0" mnemonicParsing="false" onAction="#login" prefHeight="39.0" prefWidth="172.0" style="-fx-background-color: red; -fx-background-radius: 100; -fx-border-style: 30;" text="Login" textFill="#ebdfdf">
          <effect>
             <Reflection bottomOpacity="0.03" fraction="0.59" topOpacity="0.36" />
          </effect>
          <font>
             <Font name="System Bold" size="28.0" />
          </font></Button>
-      <TextField fx:id="password" layoutX="471.0" layoutY="223.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="62.0" prefWidth="323.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+      <TextField fx:id="password" layoutX="507.0" layoutY="220.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="38.0" prefWidth="266.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
          <font>
             <Font name="System Bold" size="23.0" />
          </font></TextField>
-      <TextField fx:id="username" layoutX="471.0" layoutY="145.0" prefHeight="69.0" prefWidth="323.0" promptText="Username" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+      <TextField fx:id="username" layoutX="507.0" layoutY="135.0" prefHeight="45.0" prefWidth="266.0" promptText="Username" style="-fx-background-color: yellow; -fx-background-radius: 50;">
          <font>
             <Font name="System Bold" size="23.0" />
          </font></TextField>
