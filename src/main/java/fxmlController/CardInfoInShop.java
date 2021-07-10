@@ -1,6 +1,7 @@
 package fxmlController;
 
 import Utilities.GetFXML;
+import Utilities.Sounds;
 import controller.Database;
 import controller.ShopController;
 import fxmlController.Children.Shop;
@@ -68,6 +69,7 @@ public class CardInfoInShop extends MenuParent implements Initializable {
     }
 
     private void setCard() {
+        Sounds.setCard.play();
         ImageView imageView = new ImageView();
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP_INFO.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP_INFO.getValue());

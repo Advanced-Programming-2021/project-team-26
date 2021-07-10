@@ -1,5 +1,6 @@
 package fxmlController;
 
+import Utilities.Sounds;
 import controller.HeadOrTailController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +28,7 @@ public class HeadOrTail {
 
     @FXML
     void throwCoin(ActionEvent event) {
+        Sounds.buttonClick.play();
         sign.setText(controller.getSign(turn));
     }
 
