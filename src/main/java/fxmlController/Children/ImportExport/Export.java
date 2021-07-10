@@ -4,7 +4,6 @@ import Utilities.Alert;
 import Utilities.GetFXML;
 import controller.Database;
 import fxmlController.App;
-import fxmlController.CardInfoInShop;
 import fxmlController.MenuParent;
 import fxmlController.Size;
 import javafx.event.EventHandler;
@@ -20,7 +19,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import model.cards.Card;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -79,6 +77,7 @@ public class Export extends MenuParent implements Initializable {
                     try {
                         currentCard = allCards.get(index);
                         alertLabel.setText("Card Selected !!");
+                        Alert.getInstance().successfulPrint("Card selected successfully");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -90,8 +89,8 @@ public class Export extends MenuParent implements Initializable {
 
     public void exportCard(MouseEvent mouseEvent) {
         if(alertLabel.getText().startsWith("Card")) {
-            Database.getInstance().writeCard(currentCard);
             Alert.getInstance().successfulPrint("Card Exported successfully");
+            Database.getInstance().writeCard(currentCard);
         }
         else{
             Alert.getInstance().errorPrint("Please select a Card");
