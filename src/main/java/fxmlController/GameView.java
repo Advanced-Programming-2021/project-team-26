@@ -8,8 +8,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
@@ -17,7 +20,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import model.CardAddress;
 import model.Owner;
 import model.Place;
@@ -437,6 +443,28 @@ public class GameView implements Initializable {
                 imageView.setImage(Card.getUnknownImage());
             }
         }
+    }
+
+    public void escape() {
+        Stage stage = new Stage();
+        Label label = new Label("want to surrender?");
+        Button yes = new Button("yes");
+        yes.setOnAction(e -> {
+            gameController.surrender();
+            stage.close();
+        });
+        Button no = new Button("no");
+        no.setOnAction(e -> {
+            stage.close();
+        });
+        HBox hBox = new HBox(yes, no);
+        hBox.setSpacing(5);
+        hBox.setAlignment(Pos.CENTER);
+        VBox root = new VBox(label, hBox);
+        root.setSpacing(5);
+        root.setAlignment(Pos.CENTER);
+        stage.setScene(new Scene(root));
+        stage.showAndWait();
     }
 
     class CardImageView extends ImageView {
