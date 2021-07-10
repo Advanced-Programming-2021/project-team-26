@@ -261,9 +261,11 @@ public class GameController {
             game.nextPhase();
     }
 
-    public String summon(Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+    public String summon(int turn, Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
+        if (turn != game.getTurn())
+            return null;
         selectedCard = card;
 
         if (temporaryTurnChange)
@@ -335,10 +337,14 @@ public class GameController {
 
         views[1 - game.getTurn()].updateOpponentMonsterZone();
         views[1 - game.getTurn()].updateOpponentHand();
+        views[game.getTurn()].updateMyHand();
+        views[game.getTurn()].updateMyMonsterZone();
         return "summoned successfully";
     }
 
-    public String set(Card card) throws NoCardSelectedException, CannotSetException {
+    public String set(int turn, Card card) throws NoCardSelectedException, CannotSetException {
+        if (turn != game.getTurn())
+            return null;
         selectedCard = card;
 
         if (temporaryTurnChange)
@@ -369,6 +375,8 @@ public class GameController {
         game.getThisBoard().putSpellTrap(trap, SpellTrapPosition.DOWN);
         views[1 - game.getTurn()].updateOpponentSpellTraps();
         views[1 - game.getTurn()].updateOpponentHand();
+        views[game.getTurn()].updateMySpellTraps();
+        views[game.getTurn()].updateMyHand();
     }
 
     private void setSpell() {
@@ -379,6 +387,8 @@ public class GameController {
         game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.DOWN);
         views[1 - game.getTurn()].updateOpponentSpellTraps();
         views[1 - game.getTurn()].updateOpponentHand();
+        views[game.getTurn()].updateMySpellTraps();
+        views[game.getTurn()].updateMyHand();
     }
 
     private void setMonster() {
@@ -429,6 +439,8 @@ public class GameController {
         monster.set();
         views[1 - game.getTurn()].updateOpponentMonsterZone();
         views[1 - game.getTurn()].updateOpponentHand();
+        views[game.getTurn()].updateMyMonsterZone();
+        views[game.getTurn()].updateMyHand();
     }
 
     public String setPosition(Matcher matcher) {
@@ -525,8 +537,8 @@ public class GameController {
 
     private void updateViewsGameBoard() {
         for (int i = 0; i < 2; i++) {
-            views[i].showMyMonsterZone();
-            views[i].showMySpellTraps();
+            views[i].updateMyMonsterZone();
+            views[i].updateMySpellTraps();
             views[i].updateOpponentMonsterZone();
             views[i].updateOpponentSpellTraps();
         }
@@ -574,7 +586,9 @@ public class GameController {
     }
 
 
-    public String activateEffect(Card card, CardAddress address) {
+    public String activateEffect(int turn, Card card, CardAddress address) {
+        if (turn != game.getTurn())
+            return null;
         selectedCard = card;
         selectedCardAddress = address;
         if (temporaryTurnChange) {
@@ -620,6 +634,7 @@ public class GameController {
         }
         deselect();
         views[1 - game.getTurn()].updateOpponentHand();
+        views[game.getTurn()].updateMyHand();
         return "spell activated";
     }
 

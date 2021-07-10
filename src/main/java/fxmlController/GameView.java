@@ -440,8 +440,7 @@ public class GameView implements Initializable {
 
     private void activateSpellTrap(Card card, ImageView imageView) {
         try {
-            gameController.activateEffect(card, new CardAddress(Place.Hand, Owner.Me));
-            myHand.getChildren().remove(imageView);
+            gameController.activateEffect(turn, card, new CardAddress(Place.Hand, Owner.Me));
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();
@@ -450,9 +449,7 @@ public class GameView implements Initializable {
 
     private void setSpellTrap(Card card, ImageView imageView) {
         try {
-            gameController.set(card);
-            mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
-            myHand.getChildren().remove(imageView);
+            gameController.set(turn, card);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();
@@ -461,9 +458,7 @@ public class GameView implements Initializable {
 
     private void summonMonster(Card card, ImageView imageView) {
         try {
-            gameController.summon(card);
-            myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(card.getImage());
-            myHand.getChildren().remove(imageView);
+            gameController.summon(turn, card);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();
@@ -472,9 +467,7 @@ public class GameView implements Initializable {
 
     private void setMonster(Card card, ImageView imageView) {
         try {
-            gameController.set(card);
-            myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(Card.getUnknownImage());
-            myHand.getChildren().remove(imageView);
+            gameController.set(turn, card);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();
@@ -521,7 +514,7 @@ public class GameView implements Initializable {
         }
     }
 
-    public void showMyMonsterZone() {
+    public void updateMyMonsterZone() {
         HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(turn).getMonsterZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!monsterZone.containsKey(i)) {
@@ -543,7 +536,7 @@ public class GameView implements Initializable {
 
     }
 
-    public void showMySpellTraps() {
+    public void updateMySpellTraps() {
         HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(turn).getSpellTrapZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!spellTrapZone.containsKey(i)) {
@@ -559,10 +552,36 @@ public class GameView implements Initializable {
         }
     }
 
-    public void updateOpponentHand(){
+    public void updateMyHand() {
+        List<Card> hand = gameController.getGame().getBoard(turn).getHand();
+        myHand.getChildren().clear();
+        for (Card card : hand) {
+            ImageView imageView = new CardImageView(card);
+            imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
+            imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
+            int number = myHand.getChildren().size();
+
+            myHand.add(imageView, number, 0);
+
+            imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getButton().equals(MouseButton.SECONDARY)) {
+                        if (card instanceof Monster) setMonster(card, imageView);
+                        else if (card instanceof SpellTrap) setSpellTrap(card, imageView);
+                    } else {
+                        if (card instanceof Monster) summonMonster(card, imageView);
+                        else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);
+                    }
+                }
+            });
+        }
+    }
+
+    public void updateOpponentHand() {
         List<Card> hand = gameController.getGame().getBoard(1 - turn).getHand();
-        while (hand.size() != opponentHand.getChildren().size() ){
-            if (opponentHand.getChildren().size() < hand.size()){
+        while (hand.size() != opponentHand.getChildren().size()) {
+            if (opponentHand.getChildren().size() < hand.size()) {
                 int number = opponentHand.getChildren().size();
                 ImageView imageView = new ImageView();
                 imageView.setImage(Card.getUnknownImage());
