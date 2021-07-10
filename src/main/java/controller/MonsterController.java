@@ -1,5 +1,6 @@
 package controller;
 
+import Utilities.Alert;
 import exceptions.CardNotFoundException;
 import exceptions.InvalidInput;
 import exceptions.InvalidSelection;
@@ -146,7 +147,7 @@ public class MonsterController {
             public void remove(MonsterController attacker) {
                 this.thisBoard.removeMonster(this);
                 this.otherBoard.removeMonster(attacker);
-                Print.getInstance().printMessage("You and your opponent cards are destroyed according to Yomi Ship's effect");
+                Alert.getInstance().successfulPrint("You and your opponent cards are destroyed according to Yomi Ship's effect");
             }
         };
     }
@@ -398,21 +399,21 @@ public class MonsterController {
         return new MonsterController(gameController, monster, position, monsterAddress) {
             @Override
             public void summon() {
-                Print.getInstance().printMessage("Do you want to summon this card specially with remove a card from your HAND?\n" +
-                        "1. yes\n" +
-                        "2. no\n");
+                Boolean ask = gameController.getViews()[gameController.getGame().getTurn()]
+                        .ask("Do you want to summon this card specially with remove a card from your HAND?");
 
-                Scanner scanner = Scan.getScanner();
-                String input = scanner.nextLine();
+                if (ask == null)
+                    throw new InvalidSelection();
 
-                if (Integer.parseInt(input) == 1) {
+                if (ask) {
                     Print.getInstance().printMessage("Select a card from your HAND to remove");
+                    ArrayList<Card> options = new ArrayList<>();
+                    options.addAll(gameController.getGame().getThisBoard().getHand());
 
-                    input = scanner.nextLine();
-                    setHandAccessible(true);
-                    select(input);
+                    ArrayList<Card> selects = gameController.getViews()[gameController.getGame().getTurn()]
+                            .getCardInput(options, 1, "Select a card from your HAND to remove");
 
-                    gameController.getGame().getThisBoard().getHand().remove(getSelectedCard());
+                    gameController.getGame().getThisBoard().getHand().remove(selects.get(0));
                 }
             }
         };

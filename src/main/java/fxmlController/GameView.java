@@ -240,7 +240,6 @@ public class GameView implements Initializable {
         }
     }
 
-
     private void updatePhaseOpponent() {
         standbyPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
         drawPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
