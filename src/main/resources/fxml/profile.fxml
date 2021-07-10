@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Profile">
-    <GridPane alignment="CENTER" layoutX="360.0" layoutY="314.0" prefHeight="161.0" prefWidth="301.0" AnchorPane.rightAnchor="409.0" AnchorPane.topAnchor="314.0">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="1070.0"
+            style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/11.0.1"
+            fx:controller="fxmlController.Profile">
+    <GridPane alignment="CENTER" layoutX="373.0" layoutY="313.0" prefHeight="161.0" prefWidth="301.0"
+              AnchorPane.rightAnchor="396.0" AnchorPane.topAnchor="313.0">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="142.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0" prefWidth="208.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="142.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0" prefWidth="208.0"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         </rowConstraints>
         <Label alignment="CENTER" contentDisplay="CENTER" text="Username:" textFill="#dadab9">
             <GridPane.margin>
@@ -39,27 +34,36 @@
          </font></Label>
         <TextField fx:id="nicknameText" prefHeight="24.0" prefWidth="194.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <Label prefHeight="82.0" prefWidth="110.0" text="Password:" textFill="#ebebd0" GridPane.rowIndex="2">
-         <font>
-            <Font size="20.0" />
-         </font></Label>
-        <PasswordField editable="false" onMouseClicked="#changePassword" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="aaaa" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <font>
+                <Font size="20.0"/>
+            </font>
+        </Label>
+        <PasswordField editable="false" onMouseClicked="#changePassword"
+                       style="-fx-background-color: yellow; -fx-background-radius: 50;" text="aaaa"
+                       GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     </GridPane>
-   <Label layoutX="447.0" layoutY="246.0" text="Profile" textFill="#ebe9bd">
-      <font>
-         <Font name="System Bold" size="34.0" />
-      </font>
-   </Label>
-   <SplitPane layoutX="410.0" layoutY="26.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: yellow;" />
-   <ImageView fitHeight="248.0" fitWidth="324.0" layoutX="41.0" layoutY="344.0">
-      <image>
-         <Image url="@../Assets/Arts/MBB_004023.dds.png" />
-      </image>
-   </ImageView>
-   <ImageView fitHeight="248.0" fitWidth="355.0" layoutX="692.0" layoutY="338.0">
-      <image>
-         <Image url="@../Assets/Arts/MBB_004024.dds.png" />
-      </image>
-   </ImageView>
+    <Label layoutX="447.0" layoutY="246.0" text="Profile" textFill="#ebe9bd">
+        <font>
+            <Font name="System Bold" size="34.0"/>
+        </font>
+    </Label>
+    <SplitPane layoutX="410.0" layoutY="26.0" prefHeight="200.0" prefWidth="200.0"
+               style="-fx-background-color: yellow;">
+        <items>
+            <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"
+                       onMouseClicked="#changeProfile"/>
+        </items>
+    </SplitPane>
+    <ImageView fitHeight="248.0" fitWidth="324.0" layoutX="41.0" layoutY="344.0">
+        <image>
+            <Image url="@../Assets/Arts/MBB_004023.dds.png"/>
+        </image>
+    </ImageView>
+    <ImageView fitHeight="248.0" fitWidth="355.0" layoutX="692.0" layoutY="338.0">
+        <image>
+            <Image url="@../Assets/Arts/MBB_004024.dds.png"/>
+        </image>
+    </ImageView>
    <ImageView fitHeight="257.0" fitWidth="477.0" layoutX="-27.0" layoutY="-21.0">
       <image>
          <Image url="@../Assets/Arts/MBB_004025.dds.png" />

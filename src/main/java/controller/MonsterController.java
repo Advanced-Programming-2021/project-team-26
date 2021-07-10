@@ -63,7 +63,7 @@ public class MonsterController {
         setMonsterAddress(monsterAddress);
         setPosition(position);
         setMonsterNew(true);
-        setHasPositionChanged(false);
+        setHasPositionChanged(true);
         setHasAttackedThisTurn(false);
         setHasActivateEffectThisTurn(false);
         setHandAccessible(false);

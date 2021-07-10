@@ -124,6 +124,7 @@ public class Game {
         for (MonsterController monsterController : monsterControllers) {
             monsterController.nextTurn();
             monsterController.setHasActivateEffectThisTurn(false);
+            monsterController.setHasPositionChanged(false);
         }
 
         for (SpellTrapController spellTrapController : SpellController.getAllSpellControllers()) {

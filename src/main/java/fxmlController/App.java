@@ -4,7 +4,7 @@ import fxmlController.Children.Welcome;
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.*;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -14,8 +14,8 @@ import java.util.Stack;
 
 public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
+    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
     private static Stage stage;
-    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/eatBomb.wav").toString());
     private MediaView mediaView = null;
     public static Stage getStage() {
         return stage;
@@ -58,7 +58,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        buttonClick.play();
         stage = primaryStage;
         stage.setResizable(false);
         Media media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());

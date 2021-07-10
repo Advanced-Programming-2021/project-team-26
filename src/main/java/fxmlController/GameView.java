@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -402,8 +403,27 @@ public class GameView implements Initializable {
                         break;
                     case MAIN1:
                     case MAIN2:
+                        try {
+                            gameController.setPosition(turn, finalI);
+                        } catch (Exception exception) {
+                            Alert.getInstance().errorPrint(exception.getMessage());
+                        }
                         break;
                 }
+            });
+        }
+
+        for (int i = 0; i < 5; i++) {
+            int finalI = i;
+            mySpellTraps.get(i).setOnMouseClicked(e -> {
+                if (mySpellTraps.get(finalI).getImage() == null)
+                    return;
+                try {
+                    gameController.activateEffect(turn, mySpellTraps.get(finalI).card, new CardAddress(Place.SpellTrapZone, Owner.Me));
+                } catch (Exception exception) {
+                    Alert.getInstance().errorPrint(exception.getMessage());
+                }
+
             });
         }
 
@@ -723,6 +743,7 @@ public class GameView implements Initializable {
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
                 CardImageView imageView = myMonsters.get(i);
                 imageView.addCard(monsterZone.get(i).getMonster(), true);
+                imageView.setRotate(0);
             } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
                 CardImageView imageView = myMonsters.get(i);
                 imageView.addCard(monsterZone.get(i).getMonster(), true);
@@ -856,5 +877,77 @@ public class GameView implements Initializable {
     public void updateFieldImage(Spell spell) {
         String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Field/" + spell.getName() + ".bmp";
         field.setImage(new Image(path));
+    }
+
+    public ArrayList<Card> getCardInput(ArrayList<Card> cards, int number, String message) {
+        ArrayList<Card> selected = new ArrayList<>();
+        try {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/getCard.fxml"));
+            Label question = (Label) root.lookup("#question");
+            HBox cardsHBox = (HBox) root.lookup("#cards");
+
+            question.setText(message);
+
+            for (Card card : cards) {
+                ImageView imageView = new ImageView(card.getImage());
+                imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
+                imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
+                imageView.setStyle("");
+                imageView.setOnMouseClicked(e -> {
+                    if (selected.size() >= number) {
+                        stage.close();
+                        return;
+                    }
+                    if (imageView.getStyle().equals("")) {
+                        //TODO set border
+                        imageView.setStyle("-fx-border-color: blue; -fx-border-style: solid;-fx-border-width: 5;");
+                        selected.add(card);
+                    } else {
+                        imageView.setStyle("");
+                        selected.remove(card);
+                    }
+                    if (selected.size() >= number) {
+                        stage.close();
+                    }
+                });
+
+                cardsHBox.getChildren().add(imageView);
+            }
+
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        } catch (Exception ignored) {
+
+        }
+        return selected;
+    }
+
+    public Boolean ask(String message) {
+        final Boolean[] result = {null};
+        try {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/askSurrender.fxml"));
+            Label question = (Label) root.lookup("#question");
+            Button yes = (Button) root.lookup("#yes");
+            Button no = (Button) root.lookup("#no");
+
+            question.setText(message);
+            yes.setOnAction(ev -> {
+                result[0] = true;
+                stage.close();
+            });
+
+            no.setOnAction(ev -> {
+                result[0] = false;
+                stage.close();
+            });
+
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        } catch (Exception ignored) {
+
+        }
+        return result[0];
     }
 }
