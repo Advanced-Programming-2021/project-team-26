@@ -34,7 +34,7 @@ public class MainMenu extends MenuParent {
     }
 
     public void newTwoPlayerGame() {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
 
         Object[] result = getSecondPlayerAndRound();
         String secondPlayer = (String) result[0];
@@ -124,32 +124,32 @@ public class MainMenu extends MenuParent {
     }
 
     public void openDeck() throws IOException {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
         new DeckMenu().run();
     }
 
     public void openShop() throws IOException {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
         new Shop().run();
     }
 
     public void openProfile() throws IOException {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
         new Profile().run();
     }
 
     public void openScoreBoard() throws IOException {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
         new Scoreboard().run();
     }
 
     public void openImportExport() throws IOException {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
         new ImpExpMain().run();
     }
 
     public void logout() {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
         Alert.getInstance().successfulPrint(UserController.getInstance().logout());
     }
 }

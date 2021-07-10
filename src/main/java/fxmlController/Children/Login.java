@@ -34,7 +34,7 @@ public class Login extends MenuParent {
 
     @FXML
     void login(ActionEvent event) {
-        buttonClick.play();
+        if (App.isAreSoundsActive()) buttonClick.play();
         try {
             boolean result = UserController.getInstance().loginUser(username.getText(), password.getText());
             if (result) {
