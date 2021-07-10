@@ -16,9 +16,9 @@ public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
     public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
     public static Media media;
+    public static MediaView mediaView = null;
     private static boolean areSoundsActive = true;
     private static Stage stage;
-    public static MediaView mediaView = null;
 
     public static Stage getStage() {
         return stage;
@@ -74,7 +74,7 @@ public class App extends Application {
         media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());
         mediaView = new MediaView(new MediaPlayer(media));
 
-       if (areSoundsActive) mediaView.getMediaPlayer().play();
+        if (areSoundsActive) mediaView.getMediaPlayer().play();
         mediaView.getMediaPlayer().autoPlayProperty().setValue(true);
         new Welcome().run();
         stage.show();

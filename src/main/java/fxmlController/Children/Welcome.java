@@ -1,8 +1,6 @@
 package fxmlController.Children;
 
 import Utilities.GetFXML;
-import controller.GameController;
-import exceptions.NoPlayerAvailable;
 import fxmlController.App;
 import fxmlController.MenuParent;
 import fxmlController.Size;
@@ -13,13 +11,12 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import model.User;
 
 import java.io.IOException;
 
 public class Welcome extends MenuParent {
-    private static final Image play =new Image("file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/play.jpg");
-    private static final Image pause =new Image("file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/pause.jpg");
+    private static final Image play = new Image("file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/play.jpg");
+    private static final Image pause = new Image("file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/pause.jpg");
 
     @FXML
     private ImageView playAndPause;
@@ -43,11 +40,6 @@ public class Welcome extends MenuParent {
     @FXML
     void openSignUpPage(ActionEvent event) throws IOException {
         new SignUp().run();
-    }
-
-    @FXML
-    void newGame(ActionEvent event) throws NoPlayerAvailable {
-        new GameController(User.getUserByUsername("c"), User.getUserByUsername("b"), 1).run();
     }
 
     public void muteOrPlay(MouseEvent mouseEvent) {

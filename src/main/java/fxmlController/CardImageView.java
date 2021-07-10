@@ -11,7 +11,6 @@ public class CardImageView extends ImageView {
     public CardImageView() {
     }
 
-
     public CardImageView(GameView gameView, Card card, boolean isShown) {
         this.gameView = gameView;
         this.card = card;
