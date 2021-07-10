@@ -7,6 +7,7 @@ import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -31,6 +32,7 @@ import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -596,22 +598,31 @@ public class GameView implements Initializable {
 
     public void escape() {
         Stage stage = new Stage();
-        Label label = new Label("want to surrender?");
-        Button yes = new Button("yes");
+        VBox root;
+        Button yes;
+        Button no;
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/askSurrender.fxml"));
+            yes = (Button) root.lookup("#yes");
+            no = (Button) root.lookup("#no");
+        } catch (IOException e) {
+            Label label = new Label("want to surrender?");
+            yes = new Button("yes");
+            no = new Button("no");
+            HBox hBox = new HBox(yes, no);
+            hBox.setSpacing(5);
+            hBox.setAlignment(Pos.CENTER);
+            root = new VBox(label, hBox);
+            root.setSpacing(5);
+            root.setAlignment(Pos.CENTER);
+        }
         yes.setOnAction(e -> {
             gameController.surrender();
             stage.close();
         });
-        Button no = new Button("no");
         no.setOnAction(e -> {
             stage.close();
         });
-        HBox hBox = new HBox(yes, no);
-        hBox.setSpacing(5);
-        hBox.setAlignment(Pos.CENTER);
-        VBox root = new VBox(label, hBox);
-        root.setSpacing(5);
-        root.setAlignment(Pos.CENTER);
         stage.setScene(new Scene(root));
         stage.showAndWait();
     }
