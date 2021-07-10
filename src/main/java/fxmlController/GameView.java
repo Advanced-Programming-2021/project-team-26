@@ -34,6 +34,7 @@ import model.cards.monster.Monster;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class GameView implements Initializable {
@@ -471,7 +472,7 @@ public class GameView implements Initializable {
         }
     }
 
-    public void showOpponentMonsterZone() {
+    public void updateOpponentMonsterZone() {
         HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(1 - turn).getMonsterZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!monsterZone.containsKey(i)) {
@@ -494,7 +495,7 @@ public class GameView implements Initializable {
 
     }
 
-    public void showOpponentSpellTraps() {
+    public void updateOpponentSpellTraps() {
         HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(1 - turn).getSpellTrapZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!spellTrapZone.containsKey(i)) {
@@ -547,6 +548,22 @@ public class GameView implements Initializable {
                 imageView.setImage(Card.getUnknownImage());
             }
         }
+    }
+
+    public void updateOpponentHand(){
+//        List<Card> hand = gameController.getGame().getBoard(1 - turn).getHand();
+//        while (hand.size() != opponentHand.getChildren().size() ){
+//            if (opponentHand.getChildren().size() < hand.size()){
+//                int number = opponentHand.getChildren().size();
+//                ImageView imageView = new ImageView();
+//                imageView.setImage(Card.getUnknownImage());
+//                imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
+//                imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
+//                opponentHand.add(imageView, number, 0);
+//            } else if(opponentHand.getChildren().size() > hand.size()){
+//                opponentHand.getChildren().remove(0);
+//            }
+//        }
     }
 
     public void escape() {

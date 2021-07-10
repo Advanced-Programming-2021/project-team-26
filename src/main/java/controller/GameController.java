@@ -333,7 +333,8 @@ public class GameController {
             return null;
         }
 
-        views[1 - game.getTurn()].showOpponentMonsterZone();
+        views[1 - game.getTurn()].updateOpponentMonsterZone();
+        views[1 - game.getTurn()].updateOpponentHand();
         return "summoned successfully";
     }
 
@@ -366,7 +367,8 @@ public class GameController {
 
         Trap trap = (Trap) selectedCard;
         game.getThisBoard().putSpellTrap(trap, SpellTrapPosition.DOWN);
-        views[1 - game.getTurn()].showOpponentSpellTraps();
+        views[1 - game.getTurn()].updateOpponentSpellTraps();
+        views[1 - game.getTurn()].updateOpponentHand();
     }
 
     private void setSpell() {
@@ -375,7 +377,8 @@ public class GameController {
 
         Spell spell = (Spell) selectedCard;
         game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.DOWN);
-        views[1 - game.getTurn()].showOpponentSpellTraps();
+        views[1 - game.getTurn()].updateOpponentSpellTraps();
+        views[1 - game.getTurn()].updateOpponentHand();
     }
 
     private void setMonster() {
@@ -424,7 +427,8 @@ public class GameController {
         MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.DEFENCE_DOWN);
         game.setSummonOrSetThisTurn(true);
         monster.set();
-        views[1 - game.getTurn()].showOpponentMonsterZone();
+        views[1 - game.getTurn()].updateOpponentMonsterZone();
+        views[1 - game.getTurn()].updateOpponentHand();
     }
 
     public String setPosition(Matcher matcher) {
@@ -615,7 +619,7 @@ public class GameController {
             }
         }
         deselect();
-
+        views[1 - game.getTurn()].updateOpponentHand();
         return "spell activated";
     }
 
