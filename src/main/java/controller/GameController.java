@@ -486,16 +486,13 @@ public class GameController {
         return "flip summoned successfully";
     }
 
-    public String attackDirect(Matcher matcher) {
+    public String attackDirect(int attacker) {
+        selectedCard = game.getThisBoard().getMonsterByIndex(attacker).getCard();
+        selectedMonster = game.getThisBoard().getMonsterByIndex(attacker);
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
-
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.MonsterZone ||
-                !(selectedCard instanceof Monster))
-            throw new CannotAttackException();
 
         if (game.getPhase() != Phase.BATTLE)
             throw new ActionNotAllowed();
@@ -517,20 +514,29 @@ public class GameController {
 
         game.decreaseThisLifePoint(result.getMyLPDecrease());
         game.decreaseOtherLifePoint(result.getOpLPDecrease());
+        updateViewsGameBoard();
         deselect();
         return result.getMessage();
     }
 
-    public String attack(Matcher matcher) {
+    private void updateViewsGameBoard() {
+        for (int i = 0; i < 2; i++) {
+            views[i].showMyMonsterZone();
+            views[i].showMySpellTraps();
+            views[i].showOpponentMonsterZone();
+            views[i].showOpponentSpellTraps();
+        }
+    }
+
+    public String attack(int attacker, int number) {
+        selectedCard = game.getThisBoard().getMonsterByIndex(attacker).getCard();
+        selectedMonster = game.getThisBoard().getMonsterByIndex(attacker);
         if (temporaryTurnChange)
             throw new NotYourTurnException();
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.MonsterZone ||
-                !(selectedCard instanceof Monster) ||
-                selectedMonster.getPosition() != MonsterPosition.ATTACK)
+        if (selectedMonster.getPosition() != MonsterPosition.ATTACK)
             throw new CannotAttackException();
 
         if (game.getPhase() != Phase.BATTLE)
@@ -539,8 +545,6 @@ public class GameController {
         if (selectedMonster.isHasAttackedThisTurn())
             throw new AlreadyAttackedException();
 
-        int number = Integer.parseInt(matcher.group(1));
-        number--;
         MonsterController toBeAttacked = game.getOtherBoard().getMonsterByIndex(number);
         if (toBeAttacked == null || !toBeAttacked.canBeAttacked(selectedMonster))
             throw new NoCardToAttackException();
@@ -559,6 +563,7 @@ public class GameController {
 
         game.decreaseThisLifePoint(attackResult.getMyLPDecrease());
         game.decreaseOtherLifePoint(attackResult.getOpLPDecrease());
+        updateViewsGameBoard();
         deselect();
 
         return attackResult.getMessage();

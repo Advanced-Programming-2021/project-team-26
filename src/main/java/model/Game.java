@@ -190,6 +190,8 @@ public class Game {
 
     public void decreaseLifePoint(int turn, int amount) {
         lifePoints[turn] -= amount;
+        gameController.getViews()[0].updateLifePoint();
+        gameController.getViews()[1].updateLifePoint();
         if (lifePoints[turn] <= 0) {
             finished = true;
             winner = 1 - turn;
@@ -198,21 +200,11 @@ public class Game {
     }
 
     public void decreaseThisLifePoint(int amount) {
-        lifePoints[turn] -= amount;
-        if (lifePoints[turn] <= 0) {
-            finished = true;
-            winner = 1 - turn;
-            gameController.endGame();
-        }
+        decreaseLifePoint(turn, amount);
     }
 
     public void decreaseOtherLifePoint(int amount) {
-        lifePoints[1 - turn] -= amount;
-        if (lifePoints[1 - turn] <= 0) {
-            finished = true;
-            winner = turn;
-            gameController.endGame();
-        }
+        decreaseLifePoint(1 - turn, amount);
     }
 
     public Phase getPhase() {

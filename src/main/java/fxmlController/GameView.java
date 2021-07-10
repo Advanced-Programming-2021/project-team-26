@@ -159,6 +159,8 @@ public class GameView implements Initializable {
     @FXML
     private ImageView myDeckImage;
 
+    private int attacker = -1;
+
     public GameView(GameController controller, int turn) {
         this.gameController = controller;
         this.turn = turn;
@@ -298,6 +300,70 @@ public class GameView implements Initializable {
         opponentUsername.setText(gameController.getGame().getUser(1 - turn).getUsername());
 
         initField();
+        intiFieldClick();
+    }
+
+    private void intiFieldClick() {
+        for (int i = 0; i < 5; i++) {
+            int finalI = i;
+            myMonsters.get(i).setOnMouseClicked(e -> {
+                if (myMonsters.get(finalI).getImage() == null)
+                    return;
+                switch (gameController.getGame().getPhase()) {
+                    case BATTLE:
+                        attacker = finalI;
+                        break;
+                    case MAIN1:
+                    case MAIN2:
+                        break;
+                }
+            });
+        }
+
+        for (int i = 0; i < 5; i++) {
+            int finalI = i;
+            oppMonsters.get(i).setOnMouseClicked(e -> {
+                if (oppMonsters.get(finalI).getImage() == null)
+                    return;
+                switch (gameController.getGame().getPhase()) {
+                    case BATTLE:
+                        if (attacker == -1)
+                            return;
+                        try {
+                            String result = gameController.attack(attacker, finalI);
+                            Alert.getInstance().successfulPrint(result);
+                            attacker = -1;
+                        } catch (Exception exception) {
+                            Alert.getInstance().errorPrint(exception.getMessage());
+                        }
+
+                        break;
+                    case MAIN1:
+                    case MAIN2:
+                        break;
+                }
+            });
+        }
+
+        opponentHand.setOnMouseClicked(e -> {
+            switch (gameController.getGame().getPhase()) {
+                case BATTLE:
+                    if (attacker == -1)
+                        return;
+                    try {
+                        String result = gameController.attackDirect(attacker);
+                        attacker = -1;
+                        Alert.getInstance().successfulPrint(result);
+                    } catch (Exception exception) {
+                        Alert.getInstance().errorPrint(exception.getMessage());
+                    }
+
+                    break;
+                case MAIN1:
+                case MAIN2:
+                    break;
+            }
+        });
     }
 
     private void initField() {
@@ -445,6 +511,44 @@ public class GameView implements Initializable {
         }
     }
 
+    public void showMyMonsterZone() {
+        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(turn).getMonsterZoneMap();
+        for (int i = 0; i < 5; i++) {
+            if (!monsterZone.containsKey(i)) {
+                ImageView imageView = myMonsters.get(i);
+                imageView.setImage(null);
+            } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
+                ImageView imageView = myMonsters.get(i);
+                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+            } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
+                ImageView imageView = myMonsters.get(i);
+                imageView.setImage(monsterZone.get(i).getMonster().getImage());
+                imageView.setRotate(270);
+            } else {
+                ImageView imageView = myMonsters.get(i);
+                imageView.setImage(Card.getUnknownImage());
+                imageView.setRotate(270);
+            }
+        }
+
+    }
+
+    public void showMySpellTraps() {
+        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(turn).getSpellTrapZoneMap();
+        for (int i = 0; i < 5; i++) {
+            if (!spellTrapZone.containsKey(i)) {
+                ImageView imageView = mySpellTraps.get(i);
+                imageView.setImage(null);
+            } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {
+                ImageView imageView = mySpellTraps.get(i);
+                imageView.setImage(spellTrapZone.get(i).getCard().getImage());
+            } else {
+                ImageView imageView = mySpellTraps.get(i);
+                imageView.setImage(Card.getUnknownImage());
+            }
+        }
+    }
+
     public void escape() {
         Stage stage = new Stage();
         Label label = new Label("want to surrender?");
@@ -465,6 +569,11 @@ public class GameView implements Initializable {
         root.setAlignment(Pos.CENTER);
         stage.setScene(new Scene(root));
         stage.showAndWait();
+    }
+
+    public void updateLifePoint() {
+        myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
+        opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
     }
 
     class CardImageView extends ImageView {
