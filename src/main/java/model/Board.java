@@ -155,6 +155,8 @@ public class Board {
 
     public void addCardToHand(Card card) {
         hand.add(card);
+        gameController.getViews()[getMyTurn()].moveFromDeckToHand(card);
+        gameController.getViews()[1 - getMyTurn()].moveFromOpponentDeckToHand(card);
     }
 
     public MonsterController putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {

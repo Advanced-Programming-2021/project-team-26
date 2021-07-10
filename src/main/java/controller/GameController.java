@@ -3,10 +3,13 @@ package controller;
 import exceptions.*;
 import fxmlController.App;
 import fxmlController.GameView;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import model.*;
@@ -20,10 +23,7 @@ import view.Print;
 import view.Scan;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,6 +109,7 @@ public class GameController {
             scenes[0] = new Scene(firstRoot);
             scenes[1] = new Scene(secondRoot);
             addEscape(scenes);
+            addDebugMode(scenes);
             stages[0].setScene(scenes[0]);
             stages[1].setScene(scenes[1]);
             App.getStage().close();
@@ -121,6 +122,47 @@ public class GameController {
         getGame().getBoard(0).initBoard();
         getGame().getBoard(1).initBoard();
         game.nextPhase();
+    }
+
+    private void addDebugMode(Scene[] scenes) {
+        KeyCombination key = new KeyCodeCombination(KeyCode.C,
+                KeyCombination.CONTROL_DOWN,
+                KeyCodeCombination.SHIFT_DOWN);
+
+        scenes[0].getAccelerators().put(key, () -> {
+            new Thread(() -> {
+                System.out.println("debugging mode 0");
+                String input = new Scanner(System.in).nextLine();
+                handleDebug(input, 0);
+            }).start();
+        });
+
+        scenes[1].getAccelerators().put(key, () -> {
+            new Thread(() -> {
+                System.out.println("debugging mode 1");
+                String input = new Scanner(System.in).nextLine();
+                handleDebug(input, 1);
+            }).start();
+        });
+    }
+
+    private void handleDebug(String input, int turn) {
+        if (!Database.getInstance().isDebuggingMode())
+            return;
+        Matcher matcher;
+        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
+            String cardName = matcher.group(1);
+            Card card = Card.getCard(cardName);
+            if (card == null)
+                return;
+            Platform.runLater(() -> game.getBoard(turn).addCardToHand(card));
+        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
+            Matcher finalMatcher = matcher;
+            Platform.runLater(() -> increaseLP(finalMatcher));
+        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
+            Matcher finalMatcher1 = matcher;
+            Platform.runLater(() -> setWinner(finalMatcher1));
+        }
     }
 
     private void addEscape(Scene[] scenes) {
@@ -902,8 +944,8 @@ public class GameController {
     public String increaseLP(Matcher matcher) {
         if (!Database.getInstance().isDebuggingMode())
             throw new InvalidInput();
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-        String lpString = Scan.getInstance().getValue(input, "LP", "LP");
+
+        String lpString = matcher.group(1);
         if (lpString == null)
             throw new InvalidInput();
         int lp = Integer.parseInt(lpString);
