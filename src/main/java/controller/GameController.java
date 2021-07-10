@@ -112,6 +112,8 @@ public class GameController {
             addDebugMode(scenes);
             stages[0].setScene(scenes[0]);
             stages[1].setScene(scenes[1]);
+            stages[0].setResizable(false);
+            stages[1].setResizable(false);
             App.getStage().close();
             stages[0].show();
             stages[1].show();
@@ -614,7 +616,8 @@ public class GameController {
         if (attackResult == null)
             attackResult = new AttackResult(selectedMonster, toBeAttacked);
 
-        getViews()[game.getTurn()].attackAnimation(attacker, number);
+        getViews()[game.getTurn()].attackAnimation(attacker, number, Owner.Me);
+        getViews()[1 - game.getTurn()].attackAnimation(attacker, number, Owner.Opponent);
 
         Timer timer = new Timer();
         AttackResult finalAttackResult = attackResult;

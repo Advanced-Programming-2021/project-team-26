@@ -453,9 +453,16 @@ public class GameView implements Initializable {
         });
     }
 
-    public void attackAnimation(int attackerMonster, int defenderMonster) {
-        ImageView attacker = myMonsters.get(attackerMonster);
-        ImageView defender = oppMonsters.get(defenderMonster);
+    public void attackAnimation(int attackerMonster, int defenderMonster, Owner owner) {
+        ImageView attacker;
+        ImageView defender;
+        if (owner == Owner.Me) {
+            attacker = myMonsters.get(attackerMonster);
+            defender = oppMonsters.get(defenderMonster);
+        } else {
+            attacker = oppMonsters.get(attackerMonster);
+            defender = myMonsters.get(defenderMonster);
+        }
 
         int attackerX = (int) attacker.getLayoutX();
         int attackerY = (int) attacker.getLayoutY();
@@ -463,23 +470,23 @@ public class GameView implements Initializable {
         int defenderX = (int) defender.getLayoutX();
         int defenderY = (int) defender.getLayoutY();
 
-
         ImageView attackIcon = new ImageView();
         attackIcon.setLayoutX(attackerX);
         attackIcon.setLayoutY(attackerY);
+        if(owner == Owner.Opponent) attackIcon.setRotate(180);
         String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/OlderIcons/atk_icon.png";
         attackIcon.setImage(new Image(path));
         root.getChildren().add(attackIcon);
 
         Timeline timelineForX = new Timeline(new KeyFrame(Duration.millis(30), (ActionEvent event) -> {
-            if ((int)attackIcon.getLayoutX() > defenderX)
+            if ((int) attackIcon.getLayoutX() > defenderX)
                 attackIcon.setLayoutX(attackIcon.getLayoutX() - 5);
             else
                 attackIcon.setLayoutX(attackIcon.getLayoutX() + 5);
         }));
 
         Timeline timelineForY = new Timeline(new KeyFrame(Duration.millis(30), (ActionEvent event) -> {
-            if ((int)attackIcon.getLayoutY() > defenderY)
+            if ((int) attackIcon.getLayoutY() > defenderY)
                 attackIcon.setLayoutY(attackIcon.getLayoutY() - 5);
             else
                 attackIcon.setLayoutY(attackIcon.getLayoutY() + 5);
@@ -498,6 +505,16 @@ public class GameView implements Initializable {
                 });
             }
         }, 720);
+
+        Timer timer1 = new Timer();
+        timer1.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    root.getChildren().remove(attackIcon);
+                });
+            }
+        }, 1440);
     }
 
     private void initField() {
@@ -534,6 +551,7 @@ public class GameView implements Initializable {
         for (CardImageView imageView : oppSpellTraps)
             imageView.setGameView(this);
     }
+
 
     private void move(int currentX, int currentY, int destX, int destY, Node node) {
         SequentialTransition sequentialTransition = new SequentialTransition();
