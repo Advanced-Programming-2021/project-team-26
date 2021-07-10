@@ -45,11 +45,11 @@ public class Board {
         return spellTrapZone.size();
     }
 
-    public HashMap<Integer, MonsterController> getMonsterZoneMap(){
+    public HashMap<Integer, MonsterController> getMonsterZoneMap() {
         return monstersZone;
     }
 
-    public HashMap<Integer, SpellTrapController> getSpellTrapZoneMap(){
+    public HashMap<Integer, SpellTrapController> getSpellTrapZoneMap() {
         return spellTrapZone;
     }
 
@@ -149,6 +149,7 @@ public class Board {
         Card addedCard = this.deck.remove(0);
         hand.add(addedCard);
         gameController.getViews()[getMyTurn()].moveFromDeckToHand(addedCard);
+        gameController.getViews()[1 - getMyTurn()].moveFromOpponentDeckToHand(addedCard);
         return addedCard;
     }
 
