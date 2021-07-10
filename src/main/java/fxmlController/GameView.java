@@ -496,6 +496,7 @@ public class GameView implements Initializable {
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         int number = myHand.getChildren().size();
 
+        move((int) imageView.getX(),(int) imageView.getY(), 0, 0, imageView);
         myHand.add(imageView, number, 0);
 
         imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
