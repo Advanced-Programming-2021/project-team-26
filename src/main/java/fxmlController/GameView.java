@@ -111,7 +111,7 @@ public class GameView implements Initializable {
     private CardImageView myMonster4;
 
     @FXML
-    private ImageView mySpellTrap5;
+    private CardImageView mySpellTrap5;
 
     @FXML
     private CardImageView mySpellTrap3;
@@ -717,34 +717,5 @@ public class GameView implements Initializable {
 
     public void updateOppGraveyard(Card card) {
         oppGraveyard.setImage(card.getImage());
-    }
-
-
-    class CardImageView extends ImageView {
-        Card card;
-        boolean isVisible;
-
-        public CardImageView(Card card) {
-            this(card, true);
-        }
-
-        public CardImageView(Card card, boolean isVisible) {
-            this.card = card;
-            this.isVisible = isVisible;
-            if (isVisible)
-                setImage(card.getImage());
-            else
-                setImage(Card.getUnknownImage());
-
-            setOnMouseEntered(e -> {
-                if (isVisible) {
-                    cardInfo.setImage(card.getImage());
-                    cardDetails.setText(card.getDescription());
-                } else {
-                    cardInfo.setImage(Card.getUnknownImage());
-                    cardDetails.setText("");
-                }
-            });
-        }
     }
 }

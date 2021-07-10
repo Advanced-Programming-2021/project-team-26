@@ -149,7 +149,7 @@ public class Board {
         Card addedCard = this.deck.remove(0);
         hand.add(addedCard);
         gameController.getViews()[getMyTurn()].moveFromDeckToHand(addedCard);
-        gameController.getViews()[1 - getMyTurn()].moveFromOpponentDeckToHand();
+        gameController.getViews()[1 - getMyTurn()].moveFromOpponentDeckToHand(addedCard);
         return addedCard;
     }
 
