@@ -303,7 +303,7 @@ public class GameView implements Initializable {
         opponentNickname.setText(gameController.getGame().getUser(1 - turn).getNickname());
         opponentProfile.setImage(gameController.getGame().getUser(1 - turn).getProfileImage());
         opponentUsername.setText(gameController.getGame().getUser(1 - turn).getUsername());
-
+        oppGraveyard.setRotate(180);
         initField();
         intiFieldClick();
         setMyGraveyardOnClick();
@@ -333,6 +333,8 @@ public class GameView implements Initializable {
         for (int i = 0; i < graveyard.size(); i++) {
             ImageView imageView = new ImageView();
             imageView.setImage(graveyard.get(i).getImage());
+            imageView.setFitWidth(Size.CARD_WIDTH_IN_GRAVEYARD.getValue());
+            imageView.setFitHeight(Size.CARD_HEIGHT_IN_GRAVEYARD.getValue());
             showGraveyard.add(imageView, i, 0);
         }
 
@@ -363,6 +365,8 @@ public class GameView implements Initializable {
         List<Card> graveyard = gameController.getGame().getBoard(turn).getGraveyard();
         for (int i = 0; i < graveyard.size(); i++) {
             ImageView imageView = new ImageView();
+            imageView.setFitWidth(Size.CARD_WIDTH_IN_GRAVEYARD.getValue());
+            imageView.setFitHeight(Size.CARD_HEIGHT_IN_GRAVEYARD.getValue());
             imageView.setImage(graveyard.get(i).getImage());
             showMyGraveyard.add(imageView, i, 0);
         }
