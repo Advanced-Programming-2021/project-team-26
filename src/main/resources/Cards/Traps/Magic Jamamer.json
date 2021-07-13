@@ -1,7 +1,0 @@
-{
-  "type": "COUNTER",
-  "status": "UNLIMITED",
-  "name": "Magic Jamamer",
-  "Description": "When a Spell Card is activated: Discard 1 card; negate the activation, and if you do, destroy it.",
-  "price": 3000
-}
