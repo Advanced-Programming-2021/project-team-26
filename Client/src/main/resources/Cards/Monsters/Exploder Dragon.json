@@ -1,0 +1,11 @@
+{
+  "attackPower": 1000,
+  "defencePower": 0,
+  "level": 3,
+  "type": "DRAGON",
+  "cardType": "EFFECT",
+  "attribute": "EARTH",
+  "name": "Exploder Dragon",
+  "Description": "If this card is destroyed by battle and sent to the Graveyard: Destroy the monster that destroyed it. Neither player takes any battle damage from attacks involving this attacking card.",
+  "price": 1000
+}

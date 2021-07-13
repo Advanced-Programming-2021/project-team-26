@@ -1,0 +1,11 @@
+{
+  "attackPower": 100,
+  "defencePower": 100,
+  "level": 1,
+  "type": "CYBERSE",
+  "cardType": "EFFECT",
+  "attribute": "DARK",
+  "name": "Texchanger",
+  "Description": "Once per turn, when your monster is targeted for an attack: You can negate that attack, then Special Summon 1 Cyberse Normal Monster from your hand, Deck, or GY.",
+  "price": 200
+}

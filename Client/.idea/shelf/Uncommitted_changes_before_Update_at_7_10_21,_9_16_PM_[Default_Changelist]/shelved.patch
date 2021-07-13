@@ -1,0 +1,411 @@
+Index: src/main/java/fxmlController/GameView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package fxmlController;\n\nimport Utilities.Alert;\nimport controller.*;\nimport javafx.animation.KeyFrame;\nimport javafx.animation.SequentialTransition;\nimport javafx.animation.Timeline;\nimport javafx.animation.TranslateTransition;\nimport javafx.application.Platform;\nimport javafx.event.ActionEvent;\nimport javafx.event.EventHandler;\nimport javafx.fxml.FXML;\nimport javafx.fxml.FXMLLoader;\nimport javafx.fxml.Initializable;\nimport javafx.geometry.Pos;\nimport javafx.scene.Cursor;\nimport javafx.scene.Node;\nimport javafx.scene.Scene;\nimport javafx.scene.control.Button;\nimport javafx.scene.control.Label;\nimport javafx.scene.control.ProgressBar;\nimport javafx.scene.control.TextArea;\nimport javafx.scene.image.Image;\nimport javafx.scene.image.ImageView;\nimport javafx.scene.input.MouseButton;\nimport javafx.scene.input.MouseEvent;\nimport javafx.scene.layout.AnchorPane;\nimport javafx.scene.layout.GridPane;\nimport javafx.scene.layout.HBox;\nimport javafx.scene.layout.VBox;\nimport javafx.scene.text.Text;\nimport javafx.stage.Stage;\nimport javafx.util.Duration;\nimport model.CardAddress;\nimport model.Game;\nimport model.Owner;\nimport model.Place;\nimport model.cards.Card;\nimport model.cards.SpellTrap;\nimport model.cards.monster.Monster;\nimport model.cards.spell.Spell;\n\nimport java.io.IOException;\nimport java.net.URL;\nimport java.util.*;\n\npublic class GameView implements Initializable {\n\n    public static final String MY_PHASE_STYLE = \"-fx-background-color: #3ba8e2;\";\n    public static final String OPPONENT_PHASE_STYLE = \"-fx-background-color: #e01313;\";\n    public static final String MY_CURRENT_PHASE_STYLE = \"-fx-background-color: #3ba8e2;-fx-border-color: #001a82; -fx-border-width: 5\";\n    public static final String OPPONENT_CURRENT_PHASE_STYLE = \"-fx-background-color: #e01313;-fx-border-color: #570000; -fx-border-width: 5\";\n    private final ArrayList<CardImageView> myMonsters = new ArrayList<>();\n    private final ArrayList<CardImageView> mySpellTraps = new ArrayList<>();\n    private final ArrayList<CardImageView> oppMonsters = new ArrayList<>();\n    private final ArrayList<CardImageView> oppSpellTraps = new ArrayList<>();\n    private final GameController gameController;\n    private final int turn;\n    public Button drawPhaseBut;\n    public Button standbyPhaseBut;\n    public Button mainPhase1But;\n    public Button battlePhaseBut;\n    public Button mainPhase2But;\n    public Button endPhaseBut;\n    public ImageView cardInfo;\n    public TextArea cardDetails;\n    public ImageView myGraveyard;\n    public ImageView oppGraveyard;\n    public ImageView field;\n\n    @FXML\n    private AnchorPane root;\n\n    @FXML\n    private CardImageView opoSpellTrap4;\n\n    @FXML\n    private CardImageView opoSpellTrap2;\n\n    @FXML\n    private CardImageView opoSpellTrap1;\n\n    @FXML\n    private CardImageView opoSpellTrap3;\n\n    @FXML\n    private CardImageView opoSpellTrap5;\n\n    @FXML\n    private CardImageView oppMonster5;\n\n    @FXML\n    private CardImageView oppMonster3;\n\n    @FXML\n    private CardImageView oppMonster1;\n\n    @FXML\n    private CardImageView oppMonster2;\n\n    @FXML\n    private CardImageView oppMonster4;\n\n    @FXML\n    private CardImageView myMonster5;\n\n    @FXML\n    private CardImageView myMonster3;\n\n    @FXML\n    private CardImageView myMonster1;\n\n    @FXML\n    private CardImageView myMonster2;\n\n    @FXML\n    private CardImageView myMonster4;\n\n    @FXML\n    private CardImageView mySpellTrap5;\n\n    @FXML\n    private CardImageView mySpellTrap3;\n\n    @FXML\n    private CardImageView mySpellTrap1;\n\n    @FXML\n    private CardImageView mySpellTrap2;\n\n    @FXML\n    private CardImageView mySpellTrap4;\n\n    @FXML\n    private ProgressBar opponentLPProgress;\n\n    @FXML\n    private ProgressBar myLPProgress;\n\n    @FXML\n    private ImageView opponentProfile;\n\n    @FXML\n    private ImageView myProfile;\n\n    @FXML\n    private Text myUsername;\n\n    @FXML\n    private Text myNickname;\n\n    @FXML\n    private Text opponentNickname;\n\n    @FXML\n    private Text opponentUsername;\n\n    @FXML\n    private Text opponentLP;\n\n    @FXML\n    private Text myLP;\n\n    @FXML\n    private GridPane opponentHand;\n\n    @FXML\n    private GridPane myHand;\n\n    @FXML\n    private ImageView myDeckImage;\n\n    private int attacker = -1;\n\n    public GameView(GameController controller, int turn) {\n        this.gameController = controller;\n        this.turn = turn;\n    }\n\n    public void updatePhase() {\n        if (gameController.getGame().getTurn() != turn) {\n            updatePhaseOpponent();\n            return;\n        }\n\n        standbyPhaseBut.setStyle(MY_PHASE_STYLE);\n        drawPhaseBut.setStyle(MY_PHASE_STYLE);\n        mainPhase1But.setStyle(MY_PHASE_STYLE);\n        battlePhaseBut.setStyle(MY_PHASE_STYLE);\n        mainPhase2But.setStyle(MY_PHASE_STYLE);\n        endPhaseBut.setStyle(MY_PHASE_STYLE);\n\n        Phase phase = gameController.getGame().getPhase();\n        boolean found = false;\n        if (Phase.STANDBY.compareTo(phase) == 0) {\n            found = true;\n            setButtonActivity(standbyPhaseBut, null, false);\n            standbyPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            setButtonActivity(standbyPhaseBut, null, false);\n        if (Phase.DRAW.compareTo(phase) == 0) {\n            found = true;\n            setButtonActivity(drawPhaseBut, null, false);\n            drawPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            setButtonActivity(drawPhaseBut, this::drawPhase, found);\n        if (Phase.MAIN1.compareTo(phase) == 0) {\n            found = true;\n            setButtonActivity(mainPhase1But, null, false);\n            mainPhase1But.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            setButtonActivity(mainPhase1But, this::mainPhase1, found);\n        if (Phase.BATTLE.compareTo(phase) == 0) {\n            found = true;\n            setButtonActivity(battlePhaseBut, this::battlePhase, false);\n            battlePhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            setButtonActivity(battlePhaseBut, this::battlePhase, found);\n        if (Phase.MAIN2.compareTo(phase) == 0) {\n            found = true;\n            setButtonActivity(mainPhase2But, null, false);\n            mainPhase2But.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            setButtonActivity(mainPhase2But, this::mainPhase2, found);\n        if (Phase.END.compareTo(phase) == 0) {\n            setButtonActivity(endPhaseBut, null, false);\n            endPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            setButtonActivity(endPhaseBut, this::endPhase, found);\n    }\n\n    private void setButtonActivity(Button button, EventHandler<ActionEvent> e, boolean active) {\n        if (active) {\n            button.setOnAction(e);\n            button.setCursor(Cursor.HAND);\n        } else {\n            button.setOnAction(null);\n            button.setCursor(Cursor.DEFAULT);\n        }\n    }\n\n\n    private void updatePhaseOpponent() {\n        standbyPhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n        drawPhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n        mainPhase1But.setStyle(OPPONENT_PHASE_STYLE);\n        battlePhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n        mainPhase2But.setStyle(OPPONENT_PHASE_STYLE);\n        endPhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n\n        setButtonActivity(standbyPhaseBut, null, false);\n        setButtonActivity(drawPhaseBut, null, false);\n        setButtonActivity(mainPhase1But, null, false);\n        setButtonActivity(battlePhaseBut, null, false);\n        setButtonActivity(mainPhase2But, null, false);\n        setButtonActivity(endPhaseBut, null, false);\n\n        switch (gameController.getGame().getPhase()) {\n            case DRAW:\n                drawPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case STANDBY:\n                standbyPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case MAIN1:\n                mainPhase1But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case BATTLE:\n                battlePhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case MAIN2:\n                mainPhase2But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case END:\n                endPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n        }\n    }\n\n    @FXML\n    public void drawPhase(ActionEvent event) {\n        gameController.nextPhase(Phase.DRAW);\n    }\n\n    @FXML\n    void standbyPhase(ActionEvent event) {\n        gameController.nextPhase(Phase.STANDBY);\n    }\n\n    @FXML\n    void mainPhase1(ActionEvent event) {\n        gameController.nextPhase(Phase.MAIN1);\n    }\n\n    @FXML\n    void battlePhase(ActionEvent event) {\n        gameController.nextPhase(Phase.BATTLE);\n    }\n\n    @FXML\n    void mainPhase2(ActionEvent event) {\n        gameController.nextPhase(Phase.MAIN2);\n    }\n\n    @FXML\n    void endPhase(ActionEvent event) {\n        gameController.nextPhase(Phase.END);\n    }\n\n    @Override\n    public void initialize(URL location, ResourceBundle resources) {\n        myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));\n        myNickname.setText(gameController.getGame().getUser(turn).getNickname());\n        myProfile.setImage(gameController.getGame().getUser(turn).getProfileImage());\n        myUsername.setText(gameController.getGame().getUser(turn).getUsername());\n\n        opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));\n        opponentNickname.setText(gameController.getGame().getUser(1 - turn).getNickname());\n        opponentProfile.setImage(gameController.getGame().getUser(1 - turn).getProfileImage());\n        opponentUsername.setText(gameController.getGame().getUser(1 - turn).getUsername());\n        oppGraveyard.setRotate(180);\n        initField();\n        intiFieldClick();\n        setMyGraveyardOnClick();\n        setOppGraveyardOnClick();\n    }\n\n    private void setOppGraveyardOnClick() {\n        oppGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {\n            @Override\n            public void handle(MouseEvent event) {\n                showOppGraveyard();\n            }\n        });\n    }\n\n    private void showOppGraveyard() {\n        Stage stage = new Stage();\n        AnchorPane root = null;\n        GridPane showGraveyard = null;\n        try {\n            root = FXMLLoader.load(getClass().getResource(\"/fxml/graveyard.fxml\"));\n            showGraveyard = (GridPane) root.lookup(\"#showMyGraveyard\");\n        } catch (IOException e) {\n            e.printStackTrace();\n        }\n        List<Card> graveyard = gameController.getGame().getBoard(1 - turn).getGraveyard();\n        for (int i = 0; i < graveyard.size(); i++) {\n            ImageView imageView = new ImageView();\n            imageView.setImage(graveyard.get(i).getImage());\n            imageView.setFitWidth(Size.CARD_WIDTH_IN_GRAVEYARD.getValue());\n            imageView.setFitHeight(Size.CARD_HEIGHT_IN_GRAVEYARD.getValue());\n            showGraveyard.add(imageView, i, 0);\n        }\n\n        stage.setScene(new Scene(root));\n        stage.showAndWait();\n    }\n\n    private void setMyGraveyardOnClick() {\n        myGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {\n            @Override\n            public void handle(MouseEvent event) {\n                showMyGraveyard();\n            }\n        });\n    }\n\n\n    public void showMyGraveyard() {\n        Stage stage = new Stage();\n        AnchorPane root = null;\n        GridPane showMyGraveyard = null;\n        try {\n            root = FXMLLoader.load(getClass().getResource(\"/fxml/graveyard.fxml\"));\n            showMyGraveyard = (GridPane) root.lookup(\"#showMyGraveyard\");\n        } catch (IOException e) {\n            e.printStackTrace();\n        }\n        List<Card> graveyard = gameController.getGame().getBoard(turn).getGraveyard();\n        for (int i = 0; i < graveyard.size(); i++) {\n            ImageView imageView = new ImageView();\n            imageView.setFitWidth(Size.CARD_WIDTH_IN_GRAVEYARD.getValue());\n            imageView.setFitHeight(Size.CARD_HEIGHT_IN_GRAVEYARD.getValue());\n            imageView.setImage(graveyard.get(i).getImage());\n            showMyGraveyard.add(imageView, i, 0);\n        }\n\n        stage.setScene(new Scene(root));\n        stage.showAndWait();\n    }\n\n    private void intiFieldClick() {\n        for (int i = 0; i < 5; i++) {\n            int finalI = i;\n            myMonsters.get(i).setOnMouseClicked(e -> {\n                if (myMonsters.get(finalI).getImage() == null)\n                    return;\n                switch (gameController.getGame().getPhase()) {\n                    case BATTLE:\n                        attacker = finalI;\n                        break;\n                    case MAIN1:\n                    case MAIN2:\n                        try {\n                            gameController.setPosition(turn, finalI);\n                        } catch (Exception exception) {\n                            Alert.getInstance().errorPrint(exception.getMessage());\n                        }\n                        break;\n                }\n            });\n        }\n\n        for (int i = 0; i < 5; i++) {\n            int finalI = i;\n            mySpellTraps.get(i).setOnMouseClicked(e -> {\n                if (mySpellTraps.get(finalI).getImage() == null)\n                    return;\n                try {\n                    gameController.activateEffect(turn, mySpellTraps.get(finalI).card, new CardAddress(Place.SpellTrapZone, Owner.Me));\n                } catch (Exception exception) {\n                    Alert.getInstance().errorPrint(exception.getMessage());\n                }\n\n            });\n        }\n\n        for (int i = 0; i < 5; i++) {\n            int finalI = i;\n            oppMonsters.get(i).setOnMouseClicked(e -> {\n                if (oppMonsters.get(finalI).getImage() == null)\n                    return;\n                switch (gameController.getGame().getPhase()) {\n                    case BATTLE:\n                        if (attacker == -1)\n                            return;\n                        try {\n                            String result = gameController.attack(attacker, finalI);\n                            Alert.getInstance().successfulPrint(result);\n                            attacker = -1;\n                        } catch (Exception exception) {\n                            Alert.getInstance().errorPrint(exception.getMessage());\n                        }\n\n                        break;\n                    case MAIN1:\n                    case MAIN2:\n                        break;\n                }\n            });\n        }\n\n        opponentHand.setOnMouseClicked(e -> {\n            switch (gameController.getGame().getPhase()) {\n                case BATTLE:\n                    if (attacker == -1)\n                        return;\n                    try {\n                        String result = gameController.attackDirect(attacker);\n                        attacker = -1;\n                        Alert.getInstance().successfulPrint(result);\n                    } catch (Exception exception) {\n                        Alert.getInstance().errorPrint(exception.getMessage());\n                    }\n\n                    break;\n                case MAIN1:\n                case MAIN2:\n                    break;\n            }\n        });\n    }\n\n    private void initField() {\n        myMonsters.add(myMonster1);\n        myMonsters.add(myMonster2);\n        myMonsters.add(myMonster3);\n        myMonsters.add(myMonster4);\n        myMonsters.add(myMonster5);\n\n        mySpellTraps.add(mySpellTrap1);\n        mySpellTraps.add(mySpellTrap2);\n        mySpellTraps.add(mySpellTrap3);\n        mySpellTraps.add(mySpellTrap4);\n        mySpellTraps.add(mySpellTrap5);\n\n        oppMonsters.add(oppMonster1);\n        oppMonsters.add(oppMonster2);\n        oppMonsters.add(oppMonster3);\n        oppMonsters.add(oppMonster4);\n        oppMonsters.add(oppMonster5);\n\n        oppSpellTraps.add(opoSpellTrap1);\n        oppSpellTraps.add(opoSpellTrap2);\n        oppSpellTraps.add(opoSpellTrap3);\n        oppSpellTraps.add(opoSpellTrap4);\n        oppSpellTraps.add(opoSpellTrap5);\n\n        for (CardImageView imageView : myMonsters)\n            imageView.setGameView(this);\n        for (CardImageView imageView : mySpellTraps)\n            imageView.setGameView(this);\n        for (CardImageView imageView : oppMonsters)\n            imageView.setGameView(this);\n        for (CardImageView imageView : oppSpellTraps)\n            imageView.setGameView(this);\n    }\n\n    private void move(int currentX, int currentY, int destX, int destY, Node node) {\n        SequentialTransition sequentialTransition = new SequentialTransition();\n        sequentialTransition.setNode(node);\n        TranslateTransition translateTransition = new TranslateTransition();\n\n        translateTransition.setFromX(currentX);\n        translateTransition.setToX(destX);\n        translateTransition.setFromY(currentY);\n        translateTransition.setToY(destY);\n\n        sequentialTransition.getChildren().add(translateTransition);\n        sequentialTransition.play();\n    }\n\n    public void moveFromDeckToHand(Card card) {\n        CardImageView imageView = new CardImageView(this, card, true);\n        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());\n        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());\n        imageView.setX(975);\n        imageView.setY(425);\n        imageView.setFitHeight(92);\n        imageView.setFitWidth(92);\n        root.getChildren().add(imageView);\n\n        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (ActionEvent event) -> {\n            if (imageView.getY() < 550) {\n                imageView.setY(imageView.getY() + 5);\n            }\n        }));\n\n        timeline.setCycleCount(25);\n        timeline.play();\n        Timer timer = new Timer();\n        timer.schedule(new TimerTask() {\n            @Override\n            public void run() {\n                Platform.runLater(() -> {\n                    int number = myHand.getChildren().size();\n                    myHand.add(imageView, number, 0);\n                });\n            }\n        }, 5000);\n\n        imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {\n            @Override\n            public void handle(MouseEvent event) {\n                if (event.getButton().equals(MouseButton.SECONDARY)) {\n                    if (card instanceof Monster) setMonster(card, imageView);\n                    else if (card instanceof SpellTrap) setSpellTrap(card, imageView);\n                } else {\n                    if (card instanceof Monster) summonMonster(card, imageView);\n                    else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);\n                }\n            }\n        });\n    }\n\n    public void moveFromOpponentDeckToHand(Card addedCard) {\n        CardImageView imageView = new CardImageView(this, addedCard, false);\n        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());\n        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());\n        int number = opponentHand.getChildren().size();\n\n        opponentHand.add(imageView, number, 0);\n    }\n\n    private void activateSpellTrap(Card card, ImageView imageView) {\n        try {\n            gameController.activateEffect(turn, card, new CardAddress(Place.Hand, Owner.Me));\n        } catch (Exception e) {\n            Alert.getInstance().errorPrint(e.getMessage());\n            e.printStackTrace();\n        }\n    }\n\n    private void setSpellTrap(Card card, ImageView imageView) {\n        try {\n            gameController.set(turn, card);\n        } catch (Exception e) {\n            Alert.getInstance().errorPrint(e.getMessage());\n            e.printStackTrace();\n        }\n    }\n\n    private void summonMonster(Card card, ImageView imageView) {\n        try {\n            gameController.summon(turn, card);\n        } catch (Exception e) {\n            Alert.getInstance().errorPrint(e.getMessage());\n            e.printStackTrace();\n        }\n    }\n\n    private void setMonster(Card card, ImageView imageView) {\n        try {\n            gameController.set(turn, card);\n        } catch (Exception e) {\n            Alert.getInstance().errorPrint(e.getMessage());\n            e.printStackTrace();\n        }\n    }\n\n    public void updateOpponentMonsterZone() {\n        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(1 - turn).getMonsterZoneMap();\n        for (int i = 0; i < 5; i++) {\n            if (!monsterZone.containsKey(i)) {\n                CardImageView imageView = oppMonsters.get(i);\n                imageView.removeCard();\n            } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {\n                CardImageView imageView = oppMonsters.get(i);\n                imageView.addCard(monsterZone.get(i).getMonster(), true);\n                imageView.setRotate(180);\n            } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {\n                CardImageView imageView = oppMonsters.get(i);\n                imageView.addCard(monsterZone.get(i).getMonster(), true);\n                imageView.setRotate(90);\n            } else {\n                CardImageView imageView = oppMonsters.get(i);\n                imageView.addCard(monsterZone.get(i).getMonster(), false);\n                imageView.setRotate(90);\n            }\n        }\n\n    }\n\n    public void updateOpponentSpellTraps() {\n        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(1 - turn).getSpellTrapZoneMap();\n        for (int i = 0; i < 5; i++) {\n            if (!spellTrapZone.containsKey(i)) {\n                CardImageView imageView = oppSpellTraps.get(i);\n                imageView.removeCard();\n            } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {\n                CardImageView imageView = oppSpellTraps.get(i);\n                imageView.addCard(spellTrapZone.get(i).getCard(), true);\n                imageView.setRotate(180);\n            } else {\n                CardImageView imageView = oppSpellTraps.get(i);\n                imageView.addCard(spellTrapZone.get(i).getCard(), false);\n            }\n        }\n    }\n\n    public void updateMyMonsterZone() {\n        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(turn).getMonsterZoneMap();\n        for (int i = 0; i < 5; i++) {\n            if (!monsterZone.containsKey(i)) {\n                CardImageView imageView = myMonsters.get(i);\n                imageView.removeCard();\n            } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {\n                CardImageView imageView = myMonsters.get(i);\n                imageView.addCard(monsterZone.get(i).getMonster(), true);\n                imageView.setRotate(0);\n            } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {\n                CardImageView imageView = myMonsters.get(i);\n                imageView.addCard(monsterZone.get(i).getMonster(), true);\n                imageView.setRotate(270);\n            } else {\n                CardImageView imageView = myMonsters.get(i);\n                imageView.addCard(monsterZone.get(i).getMonster(), false);\n                imageView.setRotate(270);\n            }\n        }\n\n    }\n\n    public void updateMySpellTraps() {\n        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(turn).getSpellTrapZoneMap();\n        for (int i = 0; i < 5; i++) {\n            if (!spellTrapZone.containsKey(i)) {\n                CardImageView imageView = mySpellTraps.get(i);\n                imageView.removeCard();\n            } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {\n                CardImageView imageView = mySpellTraps.get(i);\n                imageView.addCard(spellTrapZone.get(i).getCard(), true);\n            } else {\n                CardImageView imageView = mySpellTraps.get(i);\n                imageView.addCard(spellTrapZone.get(i).getCard(), false);\n            }\n        }\n    }\n\n    public void updateMyHand() {\n        List<Card> hand = gameController.getGame().getBoard(turn).getHand();\n        myHand.getChildren().clear();\n        for (Card card : hand) {\n            ImageView imageView = new fxmlController.CardImageView(this, card, true);\n            imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());\n            imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());\n            int number = myHand.getChildren().size();\n\n            myHand.add(imageView, number, 0);\n\n            imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {\n                @Override\n                public void handle(MouseEvent event) {\n                    if (event.getButton().equals(MouseButton.SECONDARY)) {\n                        if (card instanceof Monster) setMonster(card, imageView);\n                        else if (card instanceof SpellTrap) setSpellTrap(card, imageView);\n                    } else {\n                        if (card instanceof Monster) summonMonster(card, imageView);\n                        else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);\n                    }\n                }\n            });\n        }\n    }\n\n    public void updateOpponentHand() {\n        List<Card> hand = gameController.getGame().getBoard(1 - turn).getHand();\n        while (hand.size() != opponentHand.getChildren().size()) {\n            if (opponentHand.getChildren().size() < hand.size()) {\n                int number = opponentHand.getChildren().size();\n                ImageView imageView = new ImageView();\n                imageView.setImage(Card.getUnknownImage());\n                imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());\n                imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());\n                opponentHand.add(imageView, number, 0);\n            } else if (opponentHand.getChildren().size() > hand.size()) {\n                opponentHand.getChildren().remove(0);\n            }\n        }\n    }\n\n    public void escape() {\n        Stage stage = new Stage();\n        VBox root;\n        Button yes;\n        Button no;\n        try {\n            root = FXMLLoader.load(getClass().getResource(\"/fxml/askSurrender.fxml\"));\n            yes = (Button) root.lookup(\"#yes\");\n            no = (Button) root.lookup(\"#no\");\n        } catch (IOException e) {\n            Label label = new Label(\"want to surrender?\");\n            yes = new Button(\"yes\");\n            no = new Button(\"no\");\n            HBox hBox = new HBox(yes, no);\n            hBox.setSpacing(5);\n            hBox.setAlignment(Pos.CENTER);\n            root = new VBox(label, hBox);\n            root.setSpacing(5);\n            root.setAlignment(Pos.CENTER);\n        }\n        yes.setOnAction(e -> {\n            gameController.surrender();\n            stage.close();\n        });\n        no.setOnAction(e -> {\n            stage.close();\n        });\n        stage.setScene(new Scene(root));\n        stage.showAndWait();\n    }\n\n\n    public void updateLifePoint() {\n        int myLifePoint = gameController.getGame().getLifePoint(turn);\n        myLP.setText(String.valueOf(myLifePoint));\n        updateProgressBar(myLPProgress, 1.0 * myLifePoint / Game.LIFE_POINT);\n        int opponentLifePoint = gameController.getGame().getLifePoint(1 - turn);\n        opponentLP.setText(String.valueOf(opponentLifePoint));\n        updateProgressBar(opponentLPProgress, 1.0 * opponentLifePoint / Game.LIFE_POINT);\n    }\n\n    private void updateProgressBar(ProgressBar progressBar, double value) {\n        progressBar.setProgress(value);\n        if (value >= 0.8)\n            progressBar.setStyle(\"-fx-accent:green\");\n        else if (0.4 <= value && value < 0.8)\n            progressBar.setStyle(\"-fx-accent:yellow\");\n        else\n            progressBar.setStyle(\"-fx-accent:red\");\n    }\n\n    public void updateMyGraveyard(Card card) {\n        myGraveyard.setImage(card.getImage());\n    }\n\n    public void updateOppGraveyard(Card card) {\n        oppGraveyard.setImage(card.getImage());\n    }\n\n    public void updateFieldImage(Spell spell) {\n        String path = \"file:\" + System.getProperty(\"user.dir\") + \"/src/main/resources/Assets/Field/\" + spell.getName() + \".bmp\";\n        field.setImage(new Image(path));\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/fxmlController/GameView.java b/src/main/java/fxmlController/GameView.java
+--- a/src/main/java/fxmlController/GameView.java	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/java/fxmlController/GameView.java	(date 1625935548474)
+@@ -1,6 +1,7 @@
+ package fxmlController;
+ 
+ import Utilities.Alert;
++import Utilities.GetFXML;
+ import controller.*;
+ import javafx.animation.KeyFrame;
+ import javafx.animation.SequentialTransition;
+@@ -523,22 +524,21 @@
+ 
+     public void moveFromDeckToHand(Card card) {
+         CardImageView imageView = new CardImageView(this, card, true);
+-        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
+-        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
+         imageView.setX(975);
+         imageView.setY(425);
+         imageView.setFitHeight(92);
+         imageView.setFitWidth(92);
+         root.getChildren().add(imageView);
+ 
+-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), (ActionEvent event) -> {
+-            if (imageView.getY() < 550) {
++        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
++            if (imageView.getY() < 550){
+                 imageView.setY(imageView.getY() + 5);
+             }
+         }));
+ 
+-        timeline.setCycleCount(25);
++        timeline.setCycleCount(50);
+         timeline.play();
++
+         Timer timer = new Timer();
+         timer.schedule(new TimerTask() {
+             @Override
+Index: src/main/java/fxmlController/App.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package fxmlController;\n\nimport fxmlController.Children.Welcome;\nimport javafx.application.Application;\nimport javafx.scene.input.KeyCode;\nimport javafx.scene.input.KeyEvent;\nimport javafx.scene.media.AudioClip;\nimport javafx.stage.Stage;\n\nimport java.util.Stack;\n\npublic class App extends Application {\n    private static final Stack<MenuParent> menus = new Stack<>();\n    public static AudioClip buttonClick = new AudioClip(App.class.getResource(\"/Assets/Sounds/buttonClick.wav\").toString());\n    private static Stage stage;\n\n    public static Stage getStage() {\n        return stage;\n    }\n\n    public static void main(String[] args) {\n        launch(args);\n    }\n\n    public static void pushMenu(MenuParent menu) {\n        menus.push(menu);\n        menu.scene.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {\n            if (keyEvent.getCode() == KeyCode.ESCAPE)\n                popMenu();\n        });\n        stage.setTitle(menu.title);\n        stage.setScene(menu.scene);\n    }\n\n    public static void pushMenu(MenuParent menu, boolean escape) {\n        if (escape)\n            pushMenu(menu);\n        else {\n            menus.push(menu);\n            stage.setTitle(menu.title);\n            stage.setScene(menu.scene);\n        }\n    }\n\n    public static void popMenu() {\n        menus.pop();\n        if (menus.empty())\n            System.exit(0);\n        else {\n            stage.setTitle(menus.lastElement().title);\n            stage.setScene(menus.lastElement().scene);\n        }\n        System.gc();\n    }\n\n    @Override\n    public void start(Stage primaryStage) throws Exception {\n//\n//        Media media = new Media(getClass().getResource(\"/Assets/YuGiOh_entry.mp4\").toExternalForm());\n//        MediaView mediaView = new MediaView(new MediaPlayer(media));\n//        mediaView.getMediaPlayer().play();\n//        mediaView.getMediaPlayer().autoPlayProperty().setValue(true);\n\n        stage = primaryStage;\n        stage.setResizable(false);\n        new Welcome().run();\n        stage.show();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/fxmlController/App.java b/src/main/java/fxmlController/App.java
+--- a/src/main/java/fxmlController/App.java	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/java/fxmlController/App.java	(date 1625935548321)
+@@ -5,15 +5,17 @@
+ import javafx.scene.input.KeyCode;
+ import javafx.scene.input.KeyEvent;
+ import javafx.scene.media.AudioClip;
++import javafx.scene.media.Media;
++import javafx.scene.media.MediaPlayer;
++import javafx.scene.media.MediaView;
+ import javafx.stage.Stage;
+ 
+ import java.util.Stack;
+ 
+ public class App extends Application {
+     private static final Stack<MenuParent> menus = new Stack<>();
+-    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
+     private static Stage stage;
+-
++    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/eatBomb.wav").toString());
+     public static Stage getStage() {
+         return stage;
+     }
+Index: src/main/resources/fxml/mainMenu.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<?import javafx.scene.control.Button?>\n<?import javafx.scene.effect.Reflection?>\n<?import javafx.scene.image.Image?>\n<?import javafx.scene.image.ImageView?>\n<?import javafx.scene.layout.AnchorPane?>\n<?import javafx.scene.text.Font?>\n\n<AnchorPane maxHeight=\"-Infinity\" maxWidth=\"-Infinity\" minHeight=\"-Infinity\" minWidth=\"-Infinity\" prefHeight=\"600.0\" prefWidth=\"1070.0\" style=\"-fx-background-color: black;\" xmlns=\"http://javafx.com/javafx/16\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"fxmlController.Children.MainMenu\">\n   <children>\n      <Button layoutX=\"813.0\" layoutY=\"182.0\" mnemonicParsing=\"false\" onAction=\"#newTwoPlayerGame\" prefHeight=\"86.0\" prefWidth=\"208.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\" text=\"Two Player Duel\">\n         <effect>\n            <Reflection fraction=\"0.6\" topOpacity=\"0.4\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold\" size=\"17.0\" />\n         </font></Button>\n      <Button layoutX=\"813.0\" layoutY=\"46.0\" mnemonicParsing=\"false\" onAction=\"#newOnePlayerGame\" prefHeight=\"86.0\" prefWidth=\"208.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\" text=\"Single Player Duel\">\n         <effect>\n            <Reflection fraction=\"0.6\" topOpacity=\"0.4\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold\" size=\"17.0\" />\n         </font></Button>\n      <Button layoutX=\"805.0\" layoutY=\"325.0\" mnemonicParsing=\"false\" onAction=\"#openDeck\" prefHeight=\"86.0\" prefWidth=\"216.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\" text=\"Deck\">\n         <effect>\n            <Reflection fraction=\"0.6\" topOpacity=\"0.4\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold\" size=\"17.0\" />\n         </font></Button>\n      <Button layoutX=\"63.0\" layoutY=\"71.0\" mnemonicParsing=\"false\" onAction=\"#openShop\" prefHeight=\"86.0\" prefWidth=\"195.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\" text=\"Shop\">\n         <effect>\n            <Reflection fraction=\"0.6\" topOpacity=\"0.4\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold\" size=\"19.0\" />\n         </font></Button>\n      <Button layoutX=\"63.0\" layoutY=\"176.0\" mnemonicParsing=\"false\" onAction=\"#openProfile\" prefHeight=\"76.0\" prefWidth=\"195.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\" text=\"Profile\">\n         <effect>\n            <Reflection fraction=\"0.6\" topOpacity=\"0.4\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold\" size=\"20.0\" />\n         </font></Button>\n      <Button layoutX=\"63.0\" layoutY=\"276.0\" mnemonicParsing=\"false\" onAction=\"#openScoreBoard\" prefHeight=\"86.0\" prefWidth=\"195.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\" text=\"ScoreBoard\">\n         <effect>\n            <Reflection fraction=\"0.6\" topOpacity=\"0.4\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold\" size=\"20.0\" />\n         </font></Button>\n      <Button layoutX=\"424.0\" layoutY=\"418.0\" mnemonicParsing=\"false\" onAction=\"#openImportExport\" prefHeight=\"76.0\" prefWidth=\"231.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 20;\" text=\"Import/Export\">\n         <effect>\n            <Reflection fraction=\"0.6\" topOpacity=\"0.4\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold\" size=\"21.0\" />\n         </font></Button>\n      <Button layoutX=\"455.0\" layoutY=\"506.0\" mnemonicParsing=\"false\" onAction=\"#logout\" prefHeight=\"45.0\" prefWidth=\"160.0\" style=\"-fx-background-color: red; -fx-background-radius: 50;\" text=\"Logout\" textFill=\"WHITE\">\n         <effect>\n            <Reflection />\n         </effect>\n         <font>\n            <Font size=\"24.0\" />\n         </font></Button>\n      <ImageView fitHeight=\"261.0\" fitWidth=\"435.0\" layoutX=\"322.0\" layoutY=\"27.0\">\n         <image>\n            <Image url=\"@../Assets/Arts/MBB_008638.dds.png\" />\n         </image>\n         <effect>\n            <Reflection />\n         </effect>\n      </ImageView>\n      <Button mnemonicParsing=\"false\" />\n      <Button layoutX=\"447.0\" layoutY=\"330.0\" mnemonicParsing=\"false\" prefHeight=\"76.0\" prefWidth=\"185.0\" style=\"-fx-background-color: yellow; -fx-background-radius: 20;\" text=\"Card Creator\" textFill=\"#40403a\">\n         <font>\n            <Font name=\"System Bold\" size=\"20.0\" />\n         </font>\n      </Button>\n   </children>\n</AnchorPane>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/fxml/mainMenu.fxml b/src/main/resources/fxml/mainMenu.fxml
+--- a/src/main/resources/fxml/mainMenu.fxml	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/resources/fxml/mainMenu.fxml	(date 1625935548751)
+@@ -7,65 +7,65 @@
+ <?import javafx.scene.layout.AnchorPane?>
+ <?import javafx.scene.text.Font?>
+ 
+-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.MainMenu">
++<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.MainMenu">
+    <children>
+-      <Button layoutX="813.0" layoutY="182.0" mnemonicParsing="false" onAction="#newTwoPlayerGame" prefHeight="86.0" prefWidth="208.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Two Player Duel">
++      <Button layoutX="813.0" layoutY="190.0" mnemonicParsing="false" onAction="#newTwoPlayerGame" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Two Player Duel">
+          <effect>
+             <Reflection fraction="0.6" topOpacity="0.4" />
+          </effect>
+          <font>
+             <Font name="System Bold" size="17.0" />
+          </font></Button>
+-      <Button layoutX="813.0" layoutY="46.0" mnemonicParsing="false" onAction="#newOnePlayerGame" prefHeight="86.0" prefWidth="208.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Single Player Duel">
++      <Button layoutX="809.0" layoutY="54.0" mnemonicParsing="false" onAction="#newOnePlayerGame" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Single Player Duel">
+          <effect>
+             <Reflection fraction="0.6" topOpacity="0.4" />
+          </effect>
+          <font>
+             <Font name="System Bold" size="17.0" />
+          </font></Button>
+-      <Button layoutX="805.0" layoutY="325.0" mnemonicParsing="false" onAction="#openDeck" prefHeight="86.0" prefWidth="216.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Deck">
++      <Button layoutX="809.0" layoutY="325.0" mnemonicParsing="false" onAction="#openDeck" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Deck">
+          <effect>
+             <Reflection fraction="0.6" topOpacity="0.4" />
+          </effect>
+          <font>
+             <Font name="System Bold" size="17.0" />
+          </font></Button>
+-      <Button layoutX="63.0" layoutY="71.0" mnemonicParsing="false" onAction="#openShop" prefHeight="86.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Shop">
++      <Button layoutX="52.0" layoutY="54.0" mnemonicParsing="false" onAction="#openShop" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Shop">
+          <effect>
+             <Reflection fraction="0.6" topOpacity="0.4" />
+          </effect>
+          <font>
+             <Font name="System Bold" size="19.0" />
+          </font></Button>
+-      <Button layoutX="63.0" layoutY="176.0" mnemonicParsing="false" onAction="#openProfile" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Profile">
++      <Button layoutX="52.0" layoutY="195.0" mnemonicParsing="false" onAction="#openProfile" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Profile">
+          <effect>
+             <Reflection fraction="0.6" topOpacity="0.4" />
+          </effect>
+          <font>
+             <Font name="System Bold" size="20.0" />
+          </font></Button>
+-      <Button layoutX="63.0" layoutY="276.0" mnemonicParsing="false" onAction="#openScoreBoard" prefHeight="86.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="ScoreBoard">
++      <Button layoutX="52.0" layoutY="325.0" mnemonicParsing="false" onAction="#openScoreBoard" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="ScoreBoard">
+          <effect>
+             <Reflection fraction="0.6" topOpacity="0.4" />
+          </effect>
+          <font>
+             <Font name="System Bold" size="20.0" />
+          </font></Button>
+-      <Button layoutX="424.0" layoutY="418.0" mnemonicParsing="false" onAction="#openImportExport" prefHeight="76.0" prefWidth="231.0" style="-fx-background-color: yellow; -fx-background-radius: 20;" text="Import/Export">
++      <Button layoutX="817.0" layoutY="457.0" mnemonicParsing="false" onAction="#openImportExport" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Import/Export">
+          <effect>
+             <Reflection fraction="0.6" topOpacity="0.4" />
+          </effect>
+          <font>
+             <Font name="System Bold" size="21.0" />
+          </font></Button>
+-      <Button layoutX="455.0" layoutY="506.0" mnemonicParsing="false" onAction="#logout" prefHeight="45.0" prefWidth="160.0" style="-fx-background-color: red; -fx-background-radius: 50;" text="Logout" textFill="WHITE">
++      <Button layoutX="426.0" layoutY="477.0" mnemonicParsing="false" onAction="#logout" prefHeight="80.0" prefWidth="190.0" style="-fx-background-color: red; -fx-background-radius: 50;" text="Logout" textFill="WHITE">
+          <effect>
+             <Reflection />
+          </effect>
+          <font>
+             <Font size="24.0" />
+          </font></Button>
+-      <ImageView fitHeight="261.0" fitWidth="435.0" layoutX="322.0" layoutY="27.0">
++      <ImageView fitHeight="180.0" fitWidth="272.0" layoutX="385.0" layoutY="24.0">
+          <image>
+             <Image url="@../Assets/Arts/MBB_008638.dds.png" />
+          </image>
+@@ -73,11 +73,13 @@
+             <Reflection />
+          </effect>
+       </ImageView>
+-      <Button mnemonicParsing="false" />
+-      <Button layoutX="447.0" layoutY="330.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="185.0" style="-fx-background-color: yellow; -fx-background-radius: 20;" text="Card Creator" textFill="#40403a">
++      <Button layoutX="52.0" layoutY="457.0" mnemonicParsing="false" prefHeight="76.0" prefWidth="195.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Card Creator" textFill="#40403a">
+          <font>
+             <Font name="System Bold" size="20.0" />
+          </font>
++         <effect>
++            <Reflection fraction="0.6" topOpacity="0.4" />
++         </effect>
+       </Button>
+    </children>
+ </AnchorPane>
+Index: src/main/resources/fxml/welcome.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<?import javafx.scene.control.Button?>\n<?import javafx.scene.effect.Reflection?>\n<?import javafx.scene.image.Image?>\n<?import javafx.scene.image.ImageView?>\n<?import javafx.scene.layout.AnchorPane?>\n<?import javafx.scene.text.Font?>\n\n<AnchorPane minHeight=\"600.0\" minWidth=\"1070.0\" style=\"-fx-background-color: Black;\" xmlns=\"http://javafx.com/javafx/16\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"fxmlController.Children.Welcome\">\n   <children>\n      <Button contentDisplay=\"CENTER\" layoutX=\"459.0\" layoutY=\"193.0\" mnemonicParsing=\"false\" onAction=\"#openSignUpPage\" prefHeight=\"107.0\" prefWidth=\"152.0\" style=\"-fx-background-radius: 100; -fx-background-color: yellow;\" text=\"Sign up\">\n         <effect>\n            <Reflection bottomOpacity=\"0.03\" fraction=\"0.4\" />\n         </effect>\n         <font>\n            <Font size=\"26.0\" />\n         </font></Button>\n      <Button layoutX=\"459.0\" layoutY=\"378.0\" mnemonicParsing=\"false\" onAction=\"#openLoginPage\" prefHeight=\"107.0\" prefWidth=\"152.0\" style=\"-fx-background-radius: 100; -fx-background-color: yellow;\" text=\"Login\" textFill=\"#0a0000\">\n         <effect>\n            <Reflection bottomOpacity=\"0.03\" fraction=\"0.4\" />\n         </effect>\n         <font>\n            <Font size=\"26.0\" />\n         </font></Button>\n      <ImageView fitHeight=\"342.0\" fitWidth=\"366.0\" layoutX=\"34.0\" layoutY=\"58.0\">\n         <image>\n            <Image url=\"@../Assets/Arts/MBB_005003.dds.png\" />\n         </image>\n         <effect>\n            <Reflection />\n         </effect>\n      </ImageView>\n      <ImageView fitHeight=\"313.0\" fitWidth=\"373.0\" layoutX=\"663.0\" layoutY=\"108.0\">\n         <image>\n            <Image url=\"@../Assets/Arts/MBB_007958.dds.png\" />\n         </image>\n         <effect>\n            <Reflection />\n         </effect>\n      </ImageView>\n      <ImageView fitHeight=\"107.0\" fitWidth=\"256.0\" layoutX=\"407.0\" layoutY=\"31.0\">\n         <image>\n            <Image url=\"@../Assets/Logos/_images_text_yugioh.dds2.png\" />\n         </image>\n      </ImageView>\n      <Button layoutX=\"342.0\" layoutY=\"506.0\" mnemonicParsing=\"false\" onAction=\"#newGame\" text=\"new\" />\n   </children>\n</AnchorPane>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/fxml/welcome.fxml b/src/main/resources/fxml/welcome.fxml
+--- a/src/main/resources/fxml/welcome.fxml	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/resources/fxml/welcome.fxml	(date 1625935549194)
+@@ -7,23 +7,23 @@
+ <?import javafx.scene.layout.AnchorPane?>
+ <?import javafx.scene.text.Font?>
+ 
+-<AnchorPane minHeight="600.0" minWidth="1070.0" style="-fx-background-color: Black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.Welcome">
++<AnchorPane minHeight="600.0" minWidth="1070.0" style="-fx-background-color: Black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.Welcome">
+    <children>
+-      <Button contentDisplay="CENTER" layoutX="459.0" layoutY="193.0" mnemonicParsing="false" onAction="#openSignUpPage" prefHeight="107.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Sign up">
++      <Button contentDisplay="CENTER" layoutX="459.0" layoutY="193.0" mnemonicParsing="false" onAction="#openSignUpPage" prefHeight="99.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Sign up">
+          <effect>
+             <Reflection bottomOpacity="0.03" fraction="0.4" />
+          </effect>
+          <font>
+             <Font size="26.0" />
+          </font></Button>
+-      <Button layoutX="459.0" layoutY="378.0" mnemonicParsing="false" onAction="#openLoginPage" prefHeight="107.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Login" textFill="#0a0000">
++      <Button layoutX="459.0" layoutY="378.0" mnemonicParsing="false" onAction="#openLoginPage" prefHeight="99.0" prefWidth="152.0" style="-fx-background-radius: 100; -fx-background-color: yellow;" text="Login" textFill="#0a0000">
+          <effect>
+             <Reflection bottomOpacity="0.03" fraction="0.4" />
+          </effect>
+          <font>
+             <Font size="26.0" />
+          </font></Button>
+-      <ImageView fitHeight="342.0" fitWidth="366.0" layoutX="34.0" layoutY="58.0">
++      <ImageView fitHeight="224.0" fitWidth="241.0" layoutX="53.0" layoutY="81.0">
+          <image>
+             <Image url="@../Assets/Arts/MBB_005003.dds.png" />
+          </image>
+@@ -31,7 +31,7 @@
+             <Reflection />
+          </effect>
+       </ImageView>
+-      <ImageView fitHeight="313.0" fitWidth="373.0" layoutX="663.0" layoutY="108.0">
++      <ImageView fitHeight="224.0" fitWidth="241.0" layoutX="786.0" layoutY="81.0">
+          <image>
+             <Image url="@../Assets/Arts/MBB_007958.dds.png" />
+          </image>
+Index: src/main/java/fxmlController/Children/ImportExport/Import.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package fxmlController.Children.ImportExport;\n\nimport Utilities.GetFXML;\nimport fxmlController.App;\nimport fxmlController.MenuParent;\nimport fxmlController.Size;\nimport javafx.scene.Parent;\nimport javafx.scene.Scene;\n\npublic class Import extends MenuParent {\n\n    public Import(){\n        super(\"Import\");\n    }\n    @Override\n    public void run() throws Exception {\n        Parent root = GetFXML.getFXML(\"Import\", \"ImportExport\");\n        scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());\n        App.pushMenu(this);\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/fxmlController/Children/ImportExport/Import.java b/src/main/java/fxmlController/Children/ImportExport/Import.java
+--- a/src/main/java/fxmlController/Children/ImportExport/Import.java	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/java/fxmlController/Children/ImportExport/Import.java	(date 1625935548226)
+@@ -4,8 +4,16 @@
+ import fxmlController.App;
+ import fxmlController.MenuParent;
+ import fxmlController.Size;
++import javafx.event.ActionEvent;
++import javafx.fxml.FXML;
+ import javafx.scene.Parent;
+ import javafx.scene.Scene;
++import javafx.stage.FileChooser;
++
++import javax.swing.text.html.ListView;
++import java.awt.*;
++import java.io.File;
++import java.io.IOException;
+ 
+ public class Import extends MenuParent {
+ 
+@@ -18,4 +26,12 @@
+         scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
+         App.pushMenu(this);
+     }
++
++    public void select(ActionEvent actionEvent) throws IOException {
++        FileChooser fc = new FileChooser();
++        File selectedFile = fc.showOpenDialog(null);
++    }
++
++    public void importCard(ActionEvent event){
++    }
+ }
+\ No newline at end of file
+Index: src/main/resources/fxml/signUp.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<?import javafx.scene.control.Button?>\n<?import javafx.scene.control.TextField?>\n<?import javafx.scene.effect.Reflection?>\n<?import javafx.scene.image.Image?>\n<?import javafx.scene.image.ImageView?>\n<?import javafx.scene.layout.AnchorPane?>\n<?import javafx.scene.text.Font?>\n\n<AnchorPane prefHeight=\"600.0\" prefWidth=\"1070.0\" style=\"-fx-background-color: black;\" xmlns=\"http://javafx.com/javafx/16\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"fxmlController.Children.SignUp\">\n   <children>\n      <Button layoutX=\"360.0\" layoutY=\"342.0\" mnemonicParsing=\"false\" onAction=\"#signup\" prefHeight=\"58.0\" prefWidth=\"135.0\" style=\"-fx-background-radius: 100; -fx-background-color: gray; -fx-background-size: red;\" text=\"Signup\" textFill=\"#1a3229\">\n         <effect>\n            <Reflection bottomOpacity=\"0.04\" fraction=\"0.43\" topOpacity=\"0.79\" />\n         </effect>\n         <font>\n            <Font name=\"System Bold Italic\" size=\"23.0\" />\n         </font></Button>\n      <TextField fx:id=\"username\" layoutX=\"306.0\" layoutY=\"77.0\" prefHeight=\"58.0\" prefWidth=\"272.0\" promptText=\"Username\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\">\n         <font>\n            <Font size=\"17.0\" />\n         </font></TextField>\n      <TextField fx:id=\"password\" layoutX=\"306.0\" layoutY=\"153.0\" prefHeight=\"58.0\" prefWidth=\"272.0\" promptText=\"Password\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\">\n         <font>\n            <Font size=\"17.0\" />\n         </font></TextField>\n      <TextField fx:id=\"nickname\" layoutX=\"306.0\" layoutY=\"234.0\" prefHeight=\"58.0\" prefWidth=\"272.0\" promptText=\"Nickname\" style=\"-fx-background-color: yellow; -fx-background-radius: 50;\">\n         <font>\n            <Font size=\"17.0\" />\n         </font></TextField>\n      <ImageView fitHeight=\"260.0\" fitWidth=\"305.0\" layoutX=\"42.0\" layoutY=\"40.0\">\n         <image>\n            <Image url=\"@../Assets/Arts/MBB_004574.dds.png\" />\n         </image>\n         <effect>\n            <Reflection bottomOpacity=\"0.18\" fraction=\"0.64\" topOpacity=\"0.69\" />\n         </effect>\n      </ImageView>\n   </children>\n</AnchorPane>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/fxml/signUp.fxml b/src/main/resources/fxml/signUp.fxml
+--- a/src/main/resources/fxml/signUp.fxml	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/resources/fxml/signUp.fxml	(date 1625935549032)
+@@ -8,28 +8,28 @@
+ <?import javafx.scene.layout.AnchorPane?>
+ <?import javafx.scene.text.Font?>
+ 
+-<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.SignUp">
++<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.SignUp">
+    <children>
+-      <Button layoutX="360.0" layoutY="342.0" mnemonicParsing="false" onAction="#signup" prefHeight="58.0" prefWidth="135.0" style="-fx-background-radius: 100; -fx-background-color: gray; -fx-background-size: red;" text="Signup" textFill="#1a3229">
++      <Button layoutX="631.0" layoutY="392.0" mnemonicParsing="false" onAction="#signup" prefHeight="58.0" prefWidth="135.0" style="-fx-background-radius: 100; -fx-background-color: gray; -fx-background-size: red;" text="Signup" textFill="#1a3229">
+          <effect>
+             <Reflection bottomOpacity="0.04" fraction="0.43" topOpacity="0.79" />
+          </effect>
+          <font>
+             <Font name="System Bold Italic" size="23.0" />
+          </font></Button>
+-      <TextField fx:id="username" layoutX="306.0" layoutY="77.0" prefHeight="58.0" prefWidth="272.0" promptText="Username" style="-fx-background-color: yellow; -fx-background-radius: 50;">
++      <TextField fx:id="username" layoutX="495.0" layoutY="73.0" prefHeight="58.0" prefWidth="272.0" promptText="Username" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+          <font>
+             <Font size="17.0" />
+          </font></TextField>
+-      <TextField fx:id="password" layoutX="306.0" layoutY="153.0" prefHeight="58.0" prefWidth="272.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
++      <TextField fx:id="password" layoutX="495.0" layoutY="161.0" prefHeight="58.0" prefWidth="272.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+          <font>
+             <Font size="17.0" />
+          </font></TextField>
+-      <TextField fx:id="nickname" layoutX="306.0" layoutY="234.0" prefHeight="58.0" prefWidth="272.0" promptText="Nickname" style="-fx-background-color: yellow; -fx-background-radius: 50;">
++      <TextField fx:id="nickname" layoutX="495.0" layoutY="271.0" prefHeight="58.0" prefWidth="272.0" promptText="Nickname" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+          <font>
+             <Font size="17.0" />
+          </font></TextField>
+-      <ImageView fitHeight="260.0" fitWidth="305.0" layoutX="42.0" layoutY="40.0">
++      <ImageView fitHeight="260.0" fitWidth="272.0" layoutX="42.0" layoutY="40.0">
+          <image>
+             <Image url="@../Assets/Arts/MBB_004574.dds.png" />
+          </image>
+Index: src/main/resources/fxml/ImportExport/Import.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/fxml/ImportExport/Import.fxml b/src/main/resources/fxml/ImportExport/Import.fxml
+--- a/src/main/resources/fxml/ImportExport/Import.fxml	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/resources/fxml/ImportExport/Import.fxml	(date 1625935548607)
+@@ -1,0 +1,21 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<?import javafx.scene.control.Button?>
++<?import javafx.scene.control.ListView?>
++<?import javafx.scene.layout.AnchorPane?>
++<?import javafx.scene.text.Font?>
++
++<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.ImportExport.Import">
++   <children>
++      <Button fx:id="selectBtn" layoutX="311.0" layoutY="113.0" mnemonicParsing="false" onAction="#select" onMouseClicked="#select" prefHeight="58.0" prefWidth="201.0" style="-fx-background-color: yellow; -fx-background-radius: 20;" text="Select card" textAlignment="CENTER">
++         <font>
++            <Font name="System Bold" size="19.0" />
++         </font></Button>
++      <Button fx:id="importButton" layoutX="603.0" layoutY="519.0" mnemonicParsing="false" onAction="#importCard" prefHeight="58.0" prefWidth="201.0" style="-fx-background-color: red; -fx-background-radius: 40;" text="Import" textAlignment="CENTER" textFill="#d3bfbf">
++         <font>
++            <Font name="System Bold" size="24.0" />
++         </font>
++      </Button>
++      <ListView fx:id="listview" layoutX="603.0" layoutY="31.0" prefHeight="460.0" prefWidth="405.0" />
++   </children>
++</AnchorPane>
+Index: src/main/java/fxmlController/Children/ImportExport/ImpExpMain.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package fxmlController.Children.ImportExport;\n\nimport Utilities.GetFXML;\nimport fxmlController.App;\nimport fxmlController.MenuParent;\nimport fxmlController.Size;\nimport javafx.scene.Parent;\nimport javafx.scene.Scene;\nimport javafx.scene.layout.AnchorPane;\nimport javafx.scene.layout.VBox;\n\nimport java.awt.*;\nimport java.io.IOException;\n\npublic class ImpExpMain extends MenuParent{\n\n    public ImpExpMain(){\n        super(\"Import | Export\");\n    }\n    @Override\n    public void run() throws IOException {\n        Parent root = GetFXML.getFXML(\"ImpExpMain\", \"ImportExport\");\n        scene = new Scene(root);\n        App.pushMenu(this);\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/fxmlController/Children/ImportExport/ImpExpMain.java b/src/main/java/fxmlController/Children/ImportExport/ImpExpMain.java
+--- a/src/main/java/fxmlController/Children/ImportExport/ImpExpMain.java	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/java/fxmlController/Children/ImportExport/ImpExpMain.java	(date 1625935565319)
+@@ -4,6 +4,7 @@
+ import fxmlController.App;
+ import fxmlController.MenuParent;
+ import fxmlController.Size;
++import javafx.event.ActionEvent;
+ import javafx.scene.Parent;
+ import javafx.scene.Scene;
+ import javafx.scene.layout.AnchorPane;
+@@ -23,4 +24,12 @@
+         scene = new Scene(root);
+         App.pushMenu(this);
+     }
++
++    public void importCard(ActionEvent actionEvent) throws Exception {
++        new Import().run();
++    }
++
++    public void exportCard(ActionEvent actionEvent) throws Exception {
++        new Export().run();
++    }
+ }
+\ No newline at end of file
+Index: src/main/resources/fxml/scoreboard.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<?import javafx.scene.control.TableColumn?>\n<?import javafx.scene.control.TableView?>\n<?import javafx.scene.effect.Reflection?>\n<?import javafx.scene.image.Image?>\n<?import javafx.scene.image.ImageView?>\n<?import javafx.scene.layout.AnchorPane?>\n\n<AnchorPane prefHeight=\"600.0\" prefWidth=\"1070.0\" style=\"-fx-background-color: black;\" xmlns=\"http://javafx.com/javafx/16\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"fxmlController.Scoreboard\">\n   <children>\n      <TableView fx:id=\"table\" layoutX=\"344.0\" layoutY=\"29.0\" prefHeight=\"380.0\" prefWidth=\"312.0\" style=\"-fx-background-color: yellow;\">\n        <columns>\n          <TableColumn fx:id=\"rank\" editable=\"false\" prefWidth=\"75.0\" sortable=\"false\" text=\"Rank\" />\n          <TableColumn fx:id=\"name\" editable=\"false\" prefWidth=\"75.0\" sortable=\"false\" text=\"Name\" />\n            <TableColumn fx:id=\"score\" editable=\"false\" prefWidth=\"75.0\" sortable=\"false\" text=\"Score\" />\n        </columns>\n      </TableView>\n      <ImageView fitHeight=\"140.0\" fitWidth=\"200.0\" layoutX=\"794.0\" layoutY=\"182.0\">\n         <image>\n            <Image url=\"@../Assets/Arts/MBB_007038.dds.png\" />\n         </image>\n         <effect>\n            <Reflection />\n         </effect>\n      </ImageView>\n      <ImageView fitHeight=\"299.0\" fitWidth=\"523.0\" layoutX=\"-18.0\" layoutY=\"99.0\">\n         <image>\n            <Image url=\"@../Assets/Arts/MBB_006990.dds.png\" />\n         </image>\n         <effect>\n            <Reflection />\n         </effect>\n      </ImageView>\n   </children>\n</AnchorPane>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/fxml/scoreboard.fxml b/src/main/resources/fxml/scoreboard.fxml
+--- a/src/main/resources/fxml/scoreboard.fxml	(revision 54d988725e560e28c4779c000434a0c3541a6265)
++++ b/src/main/resources/fxml/scoreboard.fxml	(date 1625935548877)
+@@ -7,16 +7,16 @@
+ <?import javafx.scene.image.ImageView?>
+ <?import javafx.scene.layout.AnchorPane?>
+ 
+-<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Scoreboard">
++<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Scoreboard">
+    <children>
+-      <TableView fx:id="table" layoutX="344.0" layoutY="29.0" prefHeight="380.0" prefWidth="312.0" style="-fx-background-color: yellow;">
++      <TableView fx:id="table" layoutX="379.0" layoutY="62.0" prefHeight="380.0" prefWidth="312.0" style="-fx-background-color: yellow;">
+         <columns>
+           <TableColumn fx:id="rank" editable="false" prefWidth="75.0" sortable="false" text="Rank" />
+           <TableColumn fx:id="name" editable="false" prefWidth="75.0" sortable="false" text="Name" />
+             <TableColumn fx:id="score" editable="false" prefWidth="75.0" sortable="false" text="Score" />
+         </columns>
+       </TableView>
+-      <ImageView fitHeight="140.0" fitWidth="200.0" layoutX="794.0" layoutY="182.0">
++      <ImageView fitHeight="234.0" fitWidth="275.0" layoutX="770.0" layoutY="135.0">
+          <image>
+             <Image url="@../Assets/Arts/MBB_007038.dds.png" />
+          </image>
+@@ -24,7 +24,7 @@
+             <Reflection />
+          </effect>
+       </ImageView>
+-      <ImageView fitHeight="299.0" fitWidth="523.0" layoutX="-18.0" layoutY="99.0">
++      <ImageView fitHeight="234.0" fitWidth="312.0" layoutX="32.0" layoutY="135.0">
+          <image>
+             <Image url="@../Assets/Arts/MBB_006990.dds.png" />
+          </image>

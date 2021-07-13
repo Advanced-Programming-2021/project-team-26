@@ -1,0 +1,11 @@
+{
+  "attackPower": 300,
+  "defencePower": 500,
+  "level": 3,
+  "type": "FAIRY",
+  "cardType": "EFFECT",
+  "attribute": "LIGHT",
+  "name": "Marshmallon",
+  "Description": "Cannot be destroyed by battle. After damage calculation, if this card was attacked, and was face-down at the start of the Damage Step: The attacking player takes 1000 damage.",
+  "price": 700
+}

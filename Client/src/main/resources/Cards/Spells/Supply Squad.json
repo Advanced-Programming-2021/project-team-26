@@ -1,0 +1,7 @@
+{
+  "type": "CONTINUOUS",
+  "status": "UNLIMITED",
+  "name": "Supply Squad",
+  "Description": "Once per turn, if a monster(s) you control is destroyed by battle or card effect: Draw 1 card.",
+  "price": 4000
+}

@@ -1,0 +1,11 @@
+{
+  "attackPower": 500,
+  "defencePower": 500,
+  "level": 2,
+  "type": "ROCK",
+  "cardType": "NORMAL",
+  "attribute": "EARTH",
+  "name": "Haniwa",
+  "Description": "An earthen figure that protects the tomb of an ancient ruler.",
+  "price": 600
+}

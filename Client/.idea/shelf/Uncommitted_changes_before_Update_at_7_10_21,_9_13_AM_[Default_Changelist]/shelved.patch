@@ -1,0 +1,201 @@
+Index: src/main/java/fxmlController/GameView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package fxmlController;\n\nimport controller.GameController;\nimport controller.MonsterPosition;\nimport controller.Phase;\nimport controller.SpellTrapPosition;\nimport javafx.animation.SequentialTransition;\nimport javafx.animation.TranslateTransition;\nimport javafx.event.ActionEvent;\nimport javafx.event.EventHandler;\nimport javafx.fxml.FXML;\nimport javafx.fxml.Initializable;\nimport javafx.scene.Node;\nimport javafx.scene.control.Button;\nimport javafx.scene.control.ProgressBar;\nimport javafx.scene.control.TextArea;\nimport javafx.scene.image.ImageView;\nimport javafx.scene.input.MouseButton;\nimport javafx.scene.input.MouseEvent;\nimport javafx.scene.layout.AnchorPane;\nimport javafx.scene.layout.GridPane;\nimport javafx.scene.text.Text;\nimport model.cards.Card;\nimport model.cards.SpellTrap;\nimport model.cards.monster.Monster;\n\nimport java.net.URL;\nimport java.util.ArrayList;\nimport java.util.ResourceBundle;\n\npublic class GameView implements Initializable {\n\n    public static final String MY_PHASE_STYLE = \"-fx-background-color: #3ba8e2;\";\n    public static final String OPPONENT_PHASE_STYLE = \"-fx-background-color: #e01313;\";\n    public static final String MY_CURRENT_PHASE_STYLE = \"-fx-background-color: #3ba8e2;-fx-border-color: #001a82; -fx-border-width: 5\";\n    public static final String OPPONENT_CURRENT_PHASE_STYLE = \"-fx-background-color: #e01313;-fx-border-color: #570000; -fx-border-width: 5\";\n    private final ArrayList<ImageView> myMonsters = new ArrayList<>();\n    private final ArrayList<ImageView> mySpellTraps = new ArrayList<>();\n    private final ArrayList<ImageView> oppMonsters = new ArrayList<>();\n    private final ArrayList<ImageView> oppSpellTraps = new ArrayList<>();\n    private final GameController gameController;\n    private final int turn;\n    public Button drawPhaseBut;\n    public Button standbyPhaseBut;\n    public Button mainPhase1But;\n    public Button battlePhaseBut;\n    public Button mainPhase2But;\n    public Button endPhaseBut;\n    public ImageView cardInfo;\n    public TextArea cardDetails;\n\n    @FXML\n    private AnchorPane root;\n\n    @FXML\n    private ImageView opoSpellTrap4;\n\n    @FXML\n    private ImageView opoSpellTrap2;\n\n    @FXML\n    private ImageView opoSpellTrap1;\n\n    @FXML\n    private ImageView opoSpellTrap3;\n\n    @FXML\n    private ImageView opoSpellTrap5;\n\n    @FXML\n    private ImageView oppMonster5;\n\n    @FXML\n    private ImageView oppMonster3;\n\n    @FXML\n    private ImageView oppMonster1;\n\n    @FXML\n    private ImageView oppMonster2;\n\n    @FXML\n    private ImageView oppMonster4;\n\n    @FXML\n    private ImageView myMonster5;\n\n    @FXML\n    private ImageView myMonster3;\n\n    @FXML\n    private ImageView myMonster1;\n\n    @FXML\n    private ImageView myMonster2;\n\n    @FXML\n    private ImageView myMonster4;\n\n    @FXML\n    private ImageView mySpellTrap5;\n\n    @FXML\n    private ImageView mySpellTrap3;\n\n    @FXML\n    private ImageView mySpellTrap1;\n\n    @FXML\n    private ImageView mySpellTrap2;\n\n    @FXML\n    private ImageView mySpellTrap4;\n\n    @FXML\n    private ProgressBar opponentLPProgress;\n\n    @FXML\n    private ProgressBar myLPProgress;\n\n    @FXML\n    private ImageView opponentProfile;\n\n    @FXML\n    private ImageView myProfile;\n\n    @FXML\n    private Text myUsername;\n\n    @FXML\n    private Text myNickname;\n\n    @FXML\n    private Text opponentNickname;\n\n    @FXML\n    private Text opponentUsername;\n\n    @FXML\n    private Text opponentLP;\n\n    @FXML\n    private Text myLP;\n\n    @FXML\n    private GridPane opponentHand;\n\n    @FXML\n    private GridPane myHand;\n\n    @FXML\n    private ImageView myDeckImage;\n\n    public GameView(GameController controller, int turn) {\n        this.gameController = controller;\n        this.turn = turn;\n    }\n\n    public void updatePhase() {\n        if (gameController.getGame().getTurn() != turn) {\n            updatePhaseOpponent();\n            return;\n        }\n\n        standbyPhaseBut.setStyle(MY_PHASE_STYLE);\n        drawPhaseBut.setStyle(MY_PHASE_STYLE);\n        mainPhase1But.setStyle(MY_PHASE_STYLE);\n        battlePhaseBut.setStyle(MY_PHASE_STYLE);\n        mainPhase2But.setStyle(MY_PHASE_STYLE);\n        endPhaseBut.setStyle(MY_PHASE_STYLE);\n\n        Phase phase = gameController.getGame().getPhase();\n        boolean found = false;\n        if (Phase.STANDBY.compareTo(phase) == 0) {\n            found = true;\n            standbyPhaseBut.setOnAction(null);\n            standbyPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            standbyPhaseBut.setOnAction(null);\n        if (Phase.DRAW.compareTo(phase) == 0) {\n            found = true;\n            drawPhaseBut.setOnAction(null);\n            drawPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else {\n            drawPhaseBut.setOnAction(found ? this::drawPhase : null);\n        }\n        if (Phase.MAIN1.compareTo(phase) == 0) {\n            found = true;\n            mainPhase1But.setOnAction(null);\n            mainPhase1But.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            mainPhase1But.setOnAction(found ? this::mainPhase1 : null);\n        if (Phase.BATTLE.compareTo(phase) == 0) {\n            found = true;\n            battlePhaseBut.setOnAction(null);\n            battlePhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            battlePhaseBut.setOnAction(found ? this::battlePhase : null);\n        if (Phase.MAIN2.compareTo(phase) == 0) {\n            found = true;\n            mainPhase2But.setOnAction(null);\n            mainPhase2But.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            mainPhase2But.setOnAction(found ? this::mainPhase2 : null);\n        if (Phase.END.compareTo(phase) == 0) {\n            endPhaseBut.setOnAction(null);\n            endPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);\n        } else\n            endPhaseBut.setOnAction(found ? this::endPhase : null);\n    }\n\n\n    private void updatePhaseOpponent() {\n        standbyPhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n        drawPhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n        mainPhase1But.setStyle(OPPONENT_PHASE_STYLE);\n        battlePhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n        mainPhase2But.setStyle(OPPONENT_PHASE_STYLE);\n        endPhaseBut.setStyle(OPPONENT_PHASE_STYLE);\n\n        standbyPhaseBut.setOnAction(null);\n        drawPhaseBut.setOnAction(null);\n        mainPhase1But.setOnAction(null);\n        battlePhaseBut.setOnAction(null);\n        mainPhase2But.setOnAction(null);\n        endPhaseBut.setOnAction(null);\n\n        switch (gameController.getGame().getPhase()) {\n            case DRAW:\n                drawPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case STANDBY:\n                standbyPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case MAIN1:\n                mainPhase1But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case BATTLE:\n                battlePhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case MAIN2:\n                mainPhase2But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n            case END:\n                endPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);\n                break;\n        }\n    }\n\n    @FXML\n    public void drawPhase(ActionEvent event) {\n        gameController.nextPhase(Phase.DRAW);\n    }\n\n    @FXML\n    void standbyPhase(ActionEvent event) {\n        gameController.nextPhase(Phase.STANDBY);\n    }\n\n    @FXML\n    void mainPhase1(ActionEvent event) {\n        gameController.nextPhase(Phase.MAIN1);\n    }\n\n    @FXML\n    void battlePhase(ActionEvent event) {\n        gameController.nextPhase(Phase.BATTLE);\n    }\n\n    @FXML\n    void mainPhase2(ActionEvent event) {\n        gameController.nextPhase(Phase.MAIN2);\n    }\n\n    @FXML\n    void endPhase(ActionEvent event) {\n        gameController.nextPhase(Phase.END);\n    }\n\n    @Override\n    public void initialize(URL location, ResourceBundle resources) {\n        myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));\n        myNickname.setText(gameController.getGame().getUser(turn).getNickname());\n        myProfile.setImage(gameController.getGame().getUser(turn).getProfileImage());\n        myUsername.setText(gameController.getGame().getUser(turn).getUsername());\n\n        opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));\n        opponentNickname.setText(gameController.getGame().getUser(1 - turn).getNickname());\n        opponentProfile.setImage(gameController.getGame().getUser(1 - turn).getProfileImage());\n        opponentUsername.setText(gameController.getGame().getUser(1 - turn).getUsername());\n\n        initField();\n    }\n\n    private void initField() {\n        myMonsters.add(myMonster1);\n        myMonsters.add(myMonster2);\n        myMonsters.add(myMonster3);\n        myMonsters.add(myMonster4);\n        myMonsters.add(myMonster5);\n\n        mySpellTraps.add(mySpellTrap1);\n        mySpellTraps.add(mySpellTrap2);\n        mySpellTraps.add(mySpellTrap3);\n        mySpellTraps.add(mySpellTrap4);\n        mySpellTraps.add(mySpellTrap5);\n\n        oppMonsters.add(oppMonster1);\n        oppMonsters.add(oppMonster2);\n        oppMonsters.add(oppMonster3);\n        oppMonsters.add(oppMonster4);\n        oppMonsters.add(oppMonster5);\n\n        oppSpellTraps.add(opoSpellTrap1);\n        oppSpellTraps.add(opoSpellTrap2);\n        oppSpellTraps.add(opoSpellTrap3);\n        oppSpellTraps.add(opoSpellTrap4);\n        oppSpellTraps.add(opoSpellTrap5);\n    }\n\n    private void move(int currentX, int currentY, int destX, int destY, Node node) {\n        SequentialTransition sequentialTransition = new SequentialTransition();\n        sequentialTransition.setNode(node);\n        TranslateTransition translateTransition = new TranslateTransition();\n\n        translateTransition.setFromX(currentX);\n        translateTransition.setToX(destX);\n        translateTransition.setFromY(currentY);\n        translateTransition.setToY(destY);\n\n        sequentialTransition.getChildren().add(translateTransition);\n        sequentialTransition.play();\n    }\n\n    public void moveFromDeckToHand(Card card) {\n        ImageView imageView = new CardImageView(card);\n        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());\n        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());\n        int number = myHand.getChildren().size();\n\n        myHand.add(imageView, number, 0);\n\n        imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {\n            @Override\n            public void handle(MouseEvent event) {\n                if (event.getButton().equals(MouseButton.SECONDARY)) {\n                    if (card instanceof Monster) setMonster(card, imageView);\n                    else if (card instanceof SpellTrap) setSpellTrap(card, imageView);\n                } else {\n                    if (card instanceof Monster) summonMonster(card, imageView);\n                    else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);\n                }\n            }\n        });\n    }\n\n    private void activateSpellTrap(Card card, ImageView imageView) {\n        gameController.getGame().getThisBoard().putSpellTrap((SpellTrap) card, SpellTrapPosition.UP);\n        mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(card.getImage());\n        myHand.getChildren().remove(imageView);\n    }\n\n    private void setSpellTrap(Card card, ImageView imageView) {\n        gameController.getGame().getThisBoard().putSpellTrap((SpellTrap) card, SpellTrapPosition.DOWN);\n        mySpellTraps.get(gameController.getGame().getThisBoard().getSpellTrapZoneLastEmpty() - 1).setImage(Card.getUnknownImage());\n        myHand.getChildren().remove(imageView);\n    }\n\n    private void summonMonster(Card card, ImageView imageView) {\n        gameController.getGame().getThisBoard().putMonster((Monster) card, MonsterPosition.ATTACK);\n        myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(card.getImage());\n        myHand.getChildren().remove(imageView);\n    }\n\n    private void setMonster(Card card, ImageView imageView) {\n        gameController.getGame().getThisBoard().putMonster((Monster) card, MonsterPosition.DEFENCE_DOWN);\n        myMonsters.get(gameController.getGame().getThisBoard().getMonsterZoneLastEmpty() - 1).setImage(Card.getUnknownImage());\n        myHand.getChildren().remove(imageView);\n    }\n\n    class CardImageView extends ImageView {\n        Card card;\n        boolean isVisible;\n\n        public CardImageView(Card card) {\n            this(card, true);\n        }\n\n        public CardImageView(Card card, boolean isVisible) {\n            this.card = card;\n            this.isVisible = isVisible;\n            if (isVisible)\n                setImage(card.getImage());\n            else\n                setImage(Card.getUnknownImage());\n\n            setOnMouseEntered(e -> {\n                if (isVisible) {\n                    cardInfo.setImage(card.getImage());\n                    cardDetails.setText(card.getDescription());\n                } else {\n                    cardInfo.setImage(Card.getUnknownImage());\n                    cardDetails.setText(\"\");\n                }\n            });\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/fxmlController/GameView.java b/src/main/java/fxmlController/GameView.java
+--- a/src/main/java/fxmlController/GameView.java	(revision 8e71e77cd20d3152593339d83992d09a962aeca6)
++++ b/src/main/java/fxmlController/GameView.java	(date 1625892222254)
+@@ -53,46 +53,46 @@
+     private AnchorPane root;
+ 
+     @FXML
+-    private ImageView opoSpellTrap4;
++    private CardImageView opoSpellTrap4;
+ 
+     @FXML
+-    private ImageView opoSpellTrap2;
++    private CardImageView opoSpellTrap2;
+ 
+     @FXML
+-    private ImageView opoSpellTrap1;
++    private CardImageView opoSpellTrap1;
+ 
+     @FXML
+-    private ImageView opoSpellTrap3;
++    private CardImageView opoSpellTrap3;
+ 
+     @FXML
+-    private ImageView opoSpellTrap5;
++    private CardImageView opoSpellTrap5;
+ 
+     @FXML
+-    private ImageView oppMonster5;
++    private CardImageView oppMonster5;
+ 
+     @FXML
+-    private ImageView oppMonster3;
++    private CardImageView oppMonster3;
+ 
+     @FXML
+-    private ImageView oppMonster1;
++    private CardImageView oppMonster1;
+ 
+     @FXML
+-    private ImageView oppMonster2;
++    private CardImageView oppMonster2;
+ 
+     @FXML
+-    private ImageView oppMonster4;
++    private CardImageView oppMonster4;
+ 
+     @FXML
+-    private ImageView myMonster5;
++    private CardImageView myMonster5;
+ 
+     @FXML
+-    private ImageView myMonster3;
++    private CardImageView myMonster3;
+ 
+     @FXML
+-    private ImageView myMonster1;
++    private CardImageView myMonster1;
+ 
+     @FXML
+-    private ImageView myMonster2;
++    private CardImageView myMonster2;
+ 
+     @FXML
+     private ImageView myMonster4;
+@@ -378,10 +378,14 @@
+         myHand.getChildren().remove(imageView);
+     }
+ 
+-    class CardImageView extends ImageView {
++    public class CardImageView extends ImageView {
+         Card card;
+         boolean isVisible;
+ 
++        public CardImageView() {
++            this(null, true);
++        }
++
+         public CardImageView(Card card) {
+             this(card, true);
+         }
+@@ -389,20 +393,24 @@
+         public CardImageView(Card card, boolean isVisible) {
+             this.card = card;
+             this.isVisible = isVisible;
+-            if (isVisible)
+-                setImage(card.getImage());
+-            else
+-                setImage(Card.getUnknownImage());
++
++            if (card != null) {
++                if (isVisible)
++                    setImage(card.getImage());
++                else
++                    setImage(Card.getUnknownImage());
+ 
+-            setOnMouseEntered(e -> {
+-                if (isVisible) {
+-                    cardInfo.setImage(card.getImage());
+-                    cardDetails.setText(card.getDescription());
+-                } else {
+-                    cardInfo.setImage(Card.getUnknownImage());
+-                    cardDetails.setText("");
+-                }
+-            });
++
++                setOnMouseEntered(e -> {
++                    if (isVisible) {
++                        cardInfo.setImage(card.getImage());
++                        cardDetails.setText(card.getDescription());
++                    } else {
++                        cardInfo.setImage(Card.getUnknownImage());
++                        cardDetails.setText("");
++                    }
++                });
++            }
+         }
+     }
+ }
+\ No newline at end of file
+Index: src/main/resources/fxml/game.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<?import javafx.scene.control.*?>\n<?import javafx.scene.image.*?>\n<?import javafx.scene.layout.AnchorPane?>\n<?import javafx.scene.layout.GridPane?>\n<?import javafx.scene.text.*?>\n<AnchorPane xmlns:fx=\"http://javafx.com/fxml/1\" fx:id=\"root\" prefHeight=\"600.0\" prefWidth=\"1070.0\"\n            xmlns=\"http://javafx.com/javafx/11.0.1\" fx:controller=\"fxmlController.GameView\">\n    <children>\n        <ImageView fitHeight=\"600.0\" fitWidth=\"770.0\" layoutX=\"300.0\">\n            <image>\n                <Image url=\"@../Assets/Field/fie_normal.bmp\"/>\n            </image>\n        </ImageView>\n        <ImageView fx:id=\"opoSpellTrap4\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"443.0\" layoutY=\"94.0\"\n                   pickOnBounds=\"true\" preserveRatio=\"true\"/>\n        <ImageView fx:id=\"opoSpellTrap2\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"546.0\" layoutY=\"94.0\"\n                   pickOnBounds=\"true\" preserveRatio=\"true\"/>\n        <ImageView fx:id=\"opoSpellTrap1\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"652.0\" layoutY=\"94.0\"\n                   pickOnBounds=\"true\" preserveRatio=\"true\"/>\n        <ImageView fx:id=\"opoSpellTrap3\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"758.0\" layoutY=\"94.0\"\n                   pickOnBounds=\"true\" preserveRatio=\"true\"/>\n        <ImageView fx:id=\"opoSpellTrap5\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"863.0\" layoutY=\"94.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"oppMonster5\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"863.0\" layoutY=\"195.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"oppMonster3\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"758.0\" layoutY=\"195.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"oppMonster1\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"652.0\" layoutY=\"195.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"oppMonster2\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"546.0\" layoutY=\"195.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"oppMonster4\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"443.0\" layoutY=\"195.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"myMonster5\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"443.0\" layoutY=\"313.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"myMonster3\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"546.0\" layoutY=\"313.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"myMonster1\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"652.0\" layoutY=\"313.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"myMonster2\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"758.0\" layoutY=\"313.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"myMonster4\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"863.0\" layoutY=\"313.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"mySpellTrap5\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"443.0\" layoutY=\"415.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"mySpellTrap3\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"546.0\" layoutY=\"415.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"mySpellTrap1\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"652.0\" layoutY=\"415.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"mySpellTrap2\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"758.0\" layoutY=\"415.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"mySpellTrap4\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"863.0\" layoutY=\"415.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ProgressBar fx:id=\"opponentLPProgress\" layoutX=\"77.0\" layoutY=\"35.0\" prefWidth=\"200.0\" progress=\"1.0\" />\n        <ProgressBar fx:id=\"myLPProgress\" layoutX=\"77.0\" layoutY=\"540.0\" prefWidth=\"200.0\" progress=\"1.0\" />\n        <ImageView fx:id=\"opponentProfile\" fitHeight=\"35.0\" fitWidth=\"44.0\" layoutX=\"14.0\" layoutY=\"28.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <ImageView fx:id=\"myProfile\" fitHeight=\"35.0\" fitWidth=\"44.0\" layoutX=\"14.0\" layoutY=\"533.0\" pickOnBounds=\"true\" preserveRatio=\"true\" />\n        <Label layoutX=\"92.0\" layoutY=\"568.0\" text=\"Life Point:\" />\n        <Label layoutX=\"92.0\" layoutY=\"5.0\" text=\"Life Point:\" />\n        <Label layoutX=\"19.0\" layoutY=\"73.0\" text=\"Username:\" />\n        <Label layoutX=\"160.0\" layoutY=\"72.0\" text=\"Nickname:\" />\n        <Label layoutX=\"160.0\" layoutY=\"515.0\" text=\"Nickname:\" />\n        <Label layoutX=\"26.0\" layoutY=\"515.0\" text=\"Username:\" />\n        <Text fx:id=\"myUsername\" layoutX=\"108.0\" layoutY=\"530.0\" strokeType=\"OUTSIDE\" strokeWidth=\"0.0\" text=\"Text\" />\n        <Text fx:id=\"myNickname\" layoutX=\"242.0\" layoutY=\"529.0\" strokeType=\"OUTSIDE\" strokeWidth=\"0.0\" text=\"Text\" />\n        <Text fx:id=\"opponentNickname\" layoutX=\"242.0\" layoutY=\"86.0\" strokeType=\"OUTSIDE\" strokeWidth=\"0.0\" text=\"Text\" />\n        <Text fx:id=\"opponentUsername\" layoutX=\"108.0\" layoutY=\"86.0\" strokeType=\"OUTSIDE\" strokeWidth=\"0.0\" text=\"Text\" wrappingWidth=\"25.98307228088379\" />\n        <Text fx:id=\"opponentLP\" layoutX=\"192.0\" layoutY=\"20.0\" strokeType=\"OUTSIDE\" strokeWidth=\"0.0\" text=\"Text\" />\n        <Text fx:id=\"myLP\" layoutX=\"192.0\" layoutY=\"581.0\" strokeType=\"OUTSIDE\" strokeWidth=\"0.0\" text=\"Text\" />\n        <GridPane fx:id=\"opponentHand\" layoutX=\"415.0\" layoutY=\"1.0\" prefHeight=\"90.0\" prefWidth=\"544.0\">\n\n        </GridPane>\n        <GridPane fx:id=\"myHand\" layoutX=\"443.0\" layoutY=\"506.0\" prefHeight=\"90.0\" prefWidth=\"544.0\">\n\n        </GridPane>\n        <ImageView fx:id=\"myDeckImage\" fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"975.0\" layoutY=\"425.0\">\n            <image>\n                <Image url=\"@../Assets/Cards/Monsters/Unknown.jpg\" />\n            </image>\n        </ImageView>\n        <ImageView fitHeight=\"92.0\" fitWidth=\"92.0\" layoutX=\"975.0\" layoutY=\"80.0\">\n            <image>\n                <Image url=\"@../Assets/Cards/Monsters/Unknown.jpg\"/>\n            </image>\n        </ImageView>\n        <Button fx:id=\"drawPhaseBut\" layoutX=\"300.0\" layoutY=\"88.0\" minWidth=\"26.0\" mnemonicParsing=\"false\"\n                onAction=\"#drawPhase\" prefHeight=\"53.0\" prefWidth=\"29.0\" text=\"DP\" wrapText=\"true\"/>\n        <Button fx:id=\"standbyPhaseBut\" layoutX=\"300.0\" layoutY=\"160.0\" minWidth=\"26.0\" mnemonicParsing=\"false\"\n                onAction=\"#standbyPhase\" prefHeight=\"53.0\" prefWidth=\"29.0\" text=\"SP\" wrapText=\"true\"/>\n        <Button fx:id=\"mainPhase1But\" layoutX=\"300.0\" layoutY=\"234.0\" minWidth=\"26.0\" mnemonicParsing=\"false\"\n                onAction=\"#mainPhase1\" prefHeight=\"53.0\" prefWidth=\"29.0\" text=\"M1\" wrapText=\"true\"/>\n        <Button fx:id=\"battlePhaseBut\" layoutX=\"300.0\" layoutY=\"313.0\" minWidth=\"26.0\" mnemonicParsing=\"false\"\n                onAction=\"#battlePhase\" prefHeight=\"53.0\" prefWidth=\"29.0\" text=\"BP\" wrapText=\"true\"/>\n        <Button fx:id=\"mainPhase2But\" layoutX=\"300.0\" layoutY=\"389.0\" minWidth=\"26.0\" mnemonicParsing=\"false\"\n                onAction=\"#mainPhase2\" prefHeight=\"53.0\" prefWidth=\"29.0\" text=\"M2\" wrapText=\"true\"/>\n        <Button fx:id=\"endPhaseBut\" layoutX=\"300.0\" layoutY=\"461.0\" minWidth=\"26.0\" mnemonicParsing=\"false\"\n                onAction=\"#endPhase\" prefHeight=\"53.0\" prefWidth=\"29.0\" text=\"EP\" wrapText=\"true\"/>\n        <ImageView fx:id=\"cardInfo\" fitHeight=\"240.0\" fitWidth=\"180.0\" layoutX=\"67.0\" layoutY=\"104.0\"\n                   pickOnBounds=\"true\" preserveRatio=\"true\">\n            <image>\n                <Image url=\"@../Assets/Cards/Monsters/Unknown.jpg\"/>\n            </image>\n        </ImageView>\n        <TextArea fx:id=\"cardDetails\" layoutX=\"61.0\" layoutY=\"350.0\" prefHeight=\"150.0\" prefWidth=\"180.0\"\n                  wrapText=\"true\"/>\n    </children>\n</AnchorPane>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/fxml/game.fxml b/src/main/resources/fxml/game.fxml
+--- a/src/main/resources/fxml/game.fxml	(revision 8e71e77cd20d3152593339d83992d09a962aeca6)
++++ b/src/main/resources/fxml/game.fxml	(date 1625892222487)
+@@ -1,10 +1,12 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ 
++<?import fxmlController.*?>
+ <?import javafx.scene.control.*?>
+ <?import javafx.scene.image.*?>
+ <?import javafx.scene.layout.AnchorPane?>
+ <?import javafx.scene.layout.GridPane?>
+ <?import javafx.scene.text.*?>
++<?import fxmlController.GameView.CardImageView?>
+ <AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="600.0" prefWidth="1070.0"
+             xmlns="http://javafx.com/javafx/11.0.1" fx:controller="fxmlController.GameView">
+     <children>
+@@ -13,30 +15,30 @@
+                 <Image url="@../Assets/Field/fie_normal.bmp"/>
+             </image>
+         </ImageView>
+-        <ImageView fx:id="opoSpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="94.0"
+-                   pickOnBounds="true" preserveRatio="true"/>
+-        <ImageView fx:id="opoSpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="94.0"
++        <CardImageView fx:id="opoSpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="94.0"
++                       pickOnBounds="true" preserveRatio="true"/>
++        <CardImageView fx:id="opoSpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="94.0"
+                    pickOnBounds="true" preserveRatio="true"/>
+-        <ImageView fx:id="opoSpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="94.0"
++        <CardImageView fx:id="opoSpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="94.0"
+                    pickOnBounds="true" preserveRatio="true"/>
+-        <ImageView fx:id="opoSpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="94.0"
++        <CardImageView fx:id="opoSpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="94.0"
+                    pickOnBounds="true" preserveRatio="true"/>
+-        <ImageView fx:id="opoSpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="oppMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="oppMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="oppMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="oppMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="oppMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="myMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="myMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="myMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="myMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="myMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="mySpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="mySpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="mySpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="mySpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
+-        <ImageView fx:id="mySpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="opoSpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="oppMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="oppMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="oppMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="oppMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="oppMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="myMonster5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="myMonster3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="myMonster1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="myMonster2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="myMonster4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="mySpellTrap5" fitHeight="92.0" fitWidth="92.0" layoutX="443.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="mySpellTrap3" fitHeight="92.0" fitWidth="92.0" layoutX="546.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="mySpellTrap1" fitHeight="92.0" fitWidth="92.0" layoutX="652.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="mySpellTrap2" fitHeight="92.0" fitWidth="92.0" layoutX="758.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
++        <CardImageView fx:id="mySpellTrap4" fitHeight="92.0" fitWidth="92.0" layoutX="863.0" layoutY="415.0" pickOnBounds="true" preserveRatio="true" />
+         <ProgressBar fx:id="opponentLPProgress" layoutX="77.0" layoutY="35.0" prefWidth="200.0" progress="1.0" />
+         <ProgressBar fx:id="myLPProgress" layoutX="77.0" layoutY="540.0" prefWidth="200.0" progress="1.0" />
+         <ImageView fx:id="opponentProfile" fitHeight="35.0" fitWidth="44.0" layoutX="14.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true" />

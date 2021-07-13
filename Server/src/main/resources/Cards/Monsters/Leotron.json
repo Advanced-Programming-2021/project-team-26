@@ -1,0 +1,11 @@
+{
+  "attackPower": 2000,
+  "defencePower": 0,
+  "level": 4,
+  "type": "CYBERSE",
+  "cardType": "NORMAL",
+  "attribute": "EARTH",
+  "name": "Leotron",
+  "Description": "A territorial electronic monster that guards its own domain.",
+  "price": 2500
+}

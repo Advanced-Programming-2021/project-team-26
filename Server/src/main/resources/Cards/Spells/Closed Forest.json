@@ -1,0 +1,7 @@
+{
+  "type": "FIELD",
+  "status": "UNLIMITED",
+  "name": "Closed Forest",
+  "Description": "All Beast-Type monsters you control gain 100 ATK for each monster in your Graveyard. Field Spell Cards cannot be activated. Field Spell Cards cannot be activated during the turn this card is destroyed.",
+  "price": 4300
+}

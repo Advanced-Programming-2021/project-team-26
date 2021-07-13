@@ -1,0 +1,11 @@
+{
+  "attackPower": 1200,
+  "defencePower": 700,
+  "level": 3,
+  "type": "DRAGON",
+  "cardType": "NORMAL",
+  "attribute": "WIND",
+  "name": "Baby dragon",
+  "Description": "Much more than just a child, this dragon is gifted with untapped power.",
+  "price": 1600
+}
