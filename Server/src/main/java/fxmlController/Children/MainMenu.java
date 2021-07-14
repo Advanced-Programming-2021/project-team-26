@@ -148,8 +148,8 @@ public class MainMenu extends MenuParent {
         new ImpExpMain().run();
     }
 
-    public void logout() {
-        if (App.isAreSoundsActive()) buttonClick.play();
-        Alert.getInstance().successfulPrint(UserController.getInstance().logout());
-    }
+//    public void logout() {
+//        if (App.isAreSoundsActive()) buttonClick.play();
+//        Alert.getInstance().successfulPrint(UserController.getInstance().logout());
+//    }
 }

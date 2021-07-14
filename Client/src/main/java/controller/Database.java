@@ -87,8 +87,9 @@ public class Database {
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser) {
+    public void setCurrentUser(User currentUser,String token) {
         this.currentUser = currentUser;
+        this.token = token;
     }
 
     public void createFolder(String path) {

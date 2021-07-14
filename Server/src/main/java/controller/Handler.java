@@ -74,6 +74,15 @@ public class Handler {
                     response = new Response(false, e.getMessage());
                 }
                 break;
+            case "logout":
+                String token = request.getToken();
+                if(Database.getInstance().isUserLoggedIn(token)){
+                    UserController.getInstance().logout(token);
+                    response = new Response(true,"");
+                }
+                else
+                    response = new Response(false,"");
+                break;
         }
     }
 

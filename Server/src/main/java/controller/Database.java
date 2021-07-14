@@ -372,10 +372,18 @@ public class Database {
         return null;
     }
 
-    public boolean isUserLoggedIn(String username) {
+    public boolean isUsernameLoggedIn(String username) {
         for (User user : loggedInUsers.values())
             if (user.getUsername().equals(username))
                 return true;
         return false;
+    }
+
+    public boolean isUserLoggedIn(String token){
+        return loggedInUsers.containsKey(token);
+    }
+
+    public void removeLoggedInUser(String token) {
+        loggedInUsers.remove(token);
     }
 }

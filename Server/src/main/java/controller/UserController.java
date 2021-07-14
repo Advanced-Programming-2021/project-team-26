@@ -94,15 +94,12 @@ public class UserController {
         User user = User.getUserByUsername(username);
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
-        if(Database.getInstance().isUserLoggedIn(username))
+        if(Database.getInstance().isUsernameLoggedIn(username))
             throw new RuntimeException("User Already Logged In");
         return Database.getInstance().addLoggedInUser(user);
     }
 
-    public String logout() {
-        Database.getInstance().setCurrentUser(null);
-        App.popMenu();
-        Menu.exitMenu(null);
-        return "user logged out successfully!";
+    public void logout(String token) {
+        Database.getInstance().removeLoggedInUser(token);
     }
 }

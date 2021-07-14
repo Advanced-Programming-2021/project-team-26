@@ -97,14 +97,15 @@ public class UserController {
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess()) {
             User user = new Gson().fromJson(response.getData("user"),User.class);
-            Database.getInstance().setCurrentUser(user);
+            Database.getInstance().setCurrentUser(user, response.getMessage());
             return true;
         }
         throw new RuntimeException(response.getMessage());
     }
 
     public String logout() {
-        Database.getInstance().setCurrentUser(null);
+        NetworkController.getInstance().sendAndReceive(new Request("UserController","logout",null));
+        Database.getInstance().setCurrentUser(null,null);
         App.popMenu();
         Menu.exitMenu(null);
         return "user logged out successfully!";
