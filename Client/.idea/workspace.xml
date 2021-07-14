@@ -7,9 +7,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b320045a-e181-47df-a433-2f6a295c94cd" name="Default Changelist" comment="fix Import">
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/NetworkController.java" afterDir="false" />
+    <list default="true" id="b320045a-e181-47df-a433-2f6a295c94cd" name="Default Changelist" comment="NetworkController added">
+      <change afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/project-team-26.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/DeckController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/DeckController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/fxml/ImportExport/Import.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fxml/ImportExport/Import.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/fxml/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fxml/login.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/fxml/signUp.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/fxml/signUp.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +57,7 @@
   </component>
   <component name="ProjectId" id="1qz1W7s0faJMQVg13SVvY4WnUAA" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -75,7 +84,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.23544632" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -117,7 +126,7 @@
   <component name="RunManager">
     <configuration name="App" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="fxmlController.App" />
-      <module name="YuGiOh" />
+      <module name="Client" />
       <option name="VM_PARAMETERS" value="--module-path /usr/share/openjfx/lib --add-modules javafx.controls,javafx.fxml,javafx.media" />
       <extension name="coverage">
         <pattern>
@@ -251,14 +260,10 @@
       <workItem from="1625896062809" duration="29089000" />
       <workItem from="1625934273638" duration="14133000" />
       <workItem from="1626178647078" duration="217000" />
-      <workItem from="1626181922366" duration="325000" />
-    </task>
-    <task id="LOCAL-00054" summary="ignore battle phase in first turn">
-      <created>1623139627026</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1623139627027</updated>
+      <workItem from="1626181922366" duration="1963000" />
+      <workItem from="1626201596424" duration="1634000" />
+      <workItem from="1626247536094" duration="485000" />
+      <workItem from="1626251569003" duration="894000" />
     </task>
     <task id="LOCAL-00055" summary="fix some bugs">
       <created>1623141922549</created>
@@ -596,7 +601,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625949715807</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="NetworkController added">
+      <created>1626182301268</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1626182301268</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -638,7 +650,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="save profile" />
     <MESSAGE value="add escape key for going back in menus" />
     <MESSAGE value="load login after sign in" />
     <MESSAGE value="fix profile image" />
@@ -663,7 +674,8 @@
     <MESSAGE value="get card from user" />
     <MESSAGE value="fix scan" />
     <MESSAGE value="fix Import" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix Import" />
+    <MESSAGE value="NetworkController added" />
+    <option name="LAST_COMMIT_MESSAGE" value="NetworkController added" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
