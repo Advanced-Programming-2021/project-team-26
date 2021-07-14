@@ -5,32 +5,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class NetworkController {
     private static NetworkController controller;
-    private static Socket socket;
-    private static ServerSocket serverSocket;
     private static DataInputStream dataInputStream;
     private static DataOutputStream dataOutputStream;
 
     private NetworkController() {
 
-    }
-
-    public static Socket getSocket() {
-        return socket;
-    }
-
-    public static void setSocket(Socket socket) {
-        NetworkController.socket = socket;
-    }
-
-    public static ServerSocket getServerSocket() {
-        return serverSocket;
-    }
-
-    public static void setServerSocket(ServerSocket serverSocket) {
-        NetworkController.serverSocket = serverSocket;
     }
 
     public static DataInputStream getDataInputStream() {
@@ -56,22 +39,46 @@ public class NetworkController {
 
     public void setupServer() {
         try {
-            serverSocket = new ServerSocket(8080);
-            socket = serverSocket.accept();
-            new Thread(() -> {
-                try {
-                    dataInputStream = new DataInputStream(socket.getInputStream());
-                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
-//                    getInputAndProcess(dataInputStream, dataOutputStream);
-                    dataInputStream.close();
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-
+            ServerSocket serverSocket = new ServerSocket(8080);
+            while (true) {
+                Socket socket = serverSocket.accept();
+                startNewThread(socket);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void startNewThread(Socket socket) {
+        new Thread(() -> {
+            try {
+                dataInputStream = new DataInputStream(socket.getInputStream());
+
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                getInputAndProcess();
+                dataInputStream.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void getInputAndProcess() throws IOException {
+        while (true) {
+            try {
+                String input = dataInputStream.readUTF();
+                String result = process(input);
+                dataOutputStream.writeUTF(result);
+                dataOutputStream.flush();
+            } catch (SocketException e) {
+                System.out.println("Client disconnected");
+                break;
+            }
+        }
+    }
+
+    private String process(String input) {
+        return null;
     }
 }
