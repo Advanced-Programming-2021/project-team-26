@@ -8,11 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b320045a-e181-47df-a433-2f6a295c94cd" name="Default Changelist" comment="Transfer added">
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/Transfer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/DeckController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/DeckController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/NetworkController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/NetworkController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/Transfer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Transfer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +120,6 @@
     <configuration name="App" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="fxmlController.App" />
       <module name="Client" />
-      <option name="VM_PARAMETERS" value="--module-path /usr/share/openjfx/lib --add-modules javafx.controls,javafx.fxml,javafx.media" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="fxmlController.*" />
@@ -258,14 +255,7 @@
       <workItem from="1626181922366" duration="1963000" />
       <workItem from="1626201596424" duration="1634000" />
       <workItem from="1626247536094" duration="485000" />
-      <workItem from="1626251569003" duration="2147000" />
-    </task>
-    <task id="LOCAL-00056" summary="add attack result">
-      <created>1623844788998</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1623844788999</updated>
+      <workItem from="1626251569003" duration="2888000" />
     </task>
     <task id="LOCAL-00057" summary="fix attack and some bugs">
       <created>1623914706827</created>
@@ -603,7 +593,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626256600083</updated>
     </task>
-    <option name="localTasksCounter" value="105" />
+    <task id="LOCAL-00105" summary="Transfer added">
+      <created>1626256620993</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1626256620993</updated>
+    </task>
+    <option name="localTasksCounter" value="106" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
