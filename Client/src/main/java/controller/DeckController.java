@@ -23,6 +23,9 @@ public class DeckController {
     }
 
     public String createDeck(String deckName) throws RepeatedDeckNameException {
+        String command = Transfer.getInstance().commandMaker("DeckController", "createDeck");
+        NetworkController.getInstance().sendData(command);
+
         if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
             Database.getInstance().getCurrentUser().addDeckToUserDecks(deck);

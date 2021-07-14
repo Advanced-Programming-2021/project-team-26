@@ -7,7 +7,6 @@ import java.net.Socket;
 
 public class NetworkController {
     private static NetworkController controller;
-    private static Socket socket;
     private static DataInputStream dataInputStream;
     private static DataOutputStream dataOutputStream;
 
@@ -15,42 +14,38 @@ public class NetworkController {
 
     }
 
-    public static Socket getSocket() {
-        return socket;
-    }
-
-    public static void setSocket(Socket socket) {
-        NetworkController.socket = socket;
-    }
-
-    public static DataInputStream getDataInputStream() {
-        return dataInputStream;
-    }
-
-    public static void setDataInputStream(DataInputStream dataInputStream) {
-        NetworkController.dataInputStream = dataInputStream;
-    }
-
-    public static DataOutputStream getDataOutputStream() {
-        return dataOutputStream;
-    }
-
-    public static void setDataOutputStream(DataOutputStream dataOutputStream) {
-        NetworkController.dataOutputStream = dataOutputStream;
-    }
-
     public static NetworkController getInstance() {
-        if (controller == null) return new NetworkController();
+        if (controller == null) {
+            setupClient();
+            return new NetworkController();
+        }
         return controller;
     }
 
-    public void setupClient() {
+    public static void setupClient() {
         try {
-            socket = new Socket("localhost", 8080);
+            Socket socket = new Socket("localhost", 8080);
             dataInputStream = new DataInputStream(socket.getInputStream());
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendData(String data) {
+        try {
+            dataOutputStream.writeUTF(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String readData() {
+        try {
+            return dataInputStream.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
