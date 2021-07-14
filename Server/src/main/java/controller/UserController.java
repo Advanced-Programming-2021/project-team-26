@@ -87,15 +87,16 @@ public class UserController {
         Database.getInstance().getCurrentUser().setNickname(nickname);
     }
 
-    public boolean loginUser(String username, String password) throws InvalidInput, WrongUsernamePassword {
+    public String loginUser(String username, String password) throws InvalidInput, WrongUsernamePassword {
         if (username.equals("") || password.equals(""))
             throw new InvalidInput();
 
         User user = User.getUserByUsername(username);
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
-        Database.getInstance().setCurrentUser(user);
-        return true;
+        if(Database.getInstance().isUserLoggedIn(username))
+            throw new RuntimeException("User Already Logged In");
+        return Database.getInstance().addLoggedInUser(user);
     }
 
     public String logout() {

@@ -16,6 +16,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class Database {
     private static Database database;
@@ -30,6 +31,7 @@ public class Database {
     private final String databasePath;
     private final String defaultDeckPath;
     private final Gson gson;
+    private final HashMap<String, User> loggedInUsers = new HashMap<>();
     private boolean debuggingMode = true;
     private Deck defaultDeck = null;
     private User currentUser;
@@ -356,5 +358,24 @@ public class Database {
                 return null;
             }
         }
+    }
+
+    public synchronized String addLoggedInUser(User user) {
+        String token = UUID.randomUUID().toString();
+        loggedInUsers.put(token, user);
+        return token;
+    }
+
+    public User getLoggedInUser(String token) {
+        if (loggedInUsers.containsKey(token))
+            return loggedInUsers.get(token);
+        return null;
+    }
+
+    public boolean isUserLoggedIn(String username) {
+        for (User user : loggedInUsers.values())
+            if (user.getUsername().equals(username))
+                return true;
+        return false;
     }
 }

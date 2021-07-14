@@ -32,19 +32,19 @@ public class Login extends MenuParent {
         App.pushMenu(this);
     }
 
-    @FXML
-    void login(ActionEvent event) {
-        if (App.isAreSoundsActive()) buttonClick.play();
-        try {
-            boolean result = UserController.getInstance().loginUser(username.getText(), password.getText());
-            if (result) {
-                Alert.getInstance().successfulPrint("User logged successfully");
-                App.popMenu();
-                new MainMenu().run();
-            }
-        } catch (Exception e) {
-            Alert.getInstance().errorPrint(e.getMessage());
-        }
-    }
+//    @FXML
+//    void login(ActionEvent event) {
+//        if (App.isAreSoundsActive()) buttonClick.play();
+//        try {
+//            boolean result = UserController.getInstance().loginUser(username.getText(), password.getText());
+//            if (result) {
+//                Alert.getInstance().successfulPrint("User logged successfully");
+//                App.popMenu();
+//                new MainMenu().run();
+//            }
+//        } catch (Exception e) {
+//            Alert.getInstance().errorPrint(e.getMessage());
+//        }
+//    }
 }
 

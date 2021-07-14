@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.Gson;
 import exceptions.*;
 import fxmlController.App;
 import model.Request;
@@ -89,14 +90,17 @@ public class UserController {
     }
 
     public boolean loginUser(String username, String password) throws InvalidInput, WrongUsernamePassword {
-        if (username.equals("") || password.equals(""))
-            throw new InvalidInput();
-
-        User user = User.getUserByUsername(username);
-        if (user == null || !user.getPassword().equals(password))
-            throw new WrongUsernamePassword();
-        Database.getInstance().setCurrentUser(user);
-        return true;
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("username", username);
+        parameters.put("password", password);
+        Request request = new Request("UserController", "loginUser", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess()) {
+            User user = new Gson().fromJson(response.getData("user"),User.class);
+            Database.getInstance().setCurrentUser(user);
+            return true;
+        }
+        throw new RuntimeException(response.getMessage());
     }
 
     public String logout() {

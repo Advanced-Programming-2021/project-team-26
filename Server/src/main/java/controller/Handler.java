@@ -57,10 +57,21 @@ public class Handler {
                     String username = request.getParameters().get("username");
                     String password = request.getParameters().get("password");
                     String nickname = request.getParameters().get("nickname");
-                    boolean success = UserController.getInstance().addNewUser(username,password,nickname);
-                    response = new Response(success,"");
-                }catch (Exception e){
-                    response = new Response(false,e.getMessage());
+                    boolean success = UserController.getInstance().addNewUser(username, password, nickname);
+                    response = new Response(success, "");
+                } catch (Exception e) {
+                    response = new Response(false, e.getMessage());
+                }
+                break;
+            case "loginUser":
+                try {
+                    String username = request.getParameters().get("username");
+                    String password = request.getParameters().get("password");
+                    String token = UserController.getInstance().loginUser(username, password);
+                    response = new Response(true, token);
+                    response.addData("user",Database.getInstance().getLoggedInUser(token));
+                } catch (Exception e) {
+                    response = new Response(false, e.getMessage());
                 }
                 break;
         }
