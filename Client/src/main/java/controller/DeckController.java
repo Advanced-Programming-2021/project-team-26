@@ -2,6 +2,7 @@ package controller;
 
 import exceptions.*;
 import model.Deck;
+import model.Request;
 import model.User;
 import model.cards.Card;
 import view.Scan;
@@ -25,7 +26,7 @@ public class DeckController {
     public String createDeck(String deckName) throws RepeatedDeckNameException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("deckName", deckName);
-        String command = new Transfer("DeckController", "createDeck", parameters).toJSON();
+        String command = new Request("DeckController", "createDeck", parameters).toJSON();
         System.out.println(command);
         NetworkController.getInstance().sendData(command);
 

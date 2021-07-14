@@ -1,5 +1,9 @@
 package controller;
 
+import com.google.gson.Gson;
+import model.Request;
+import model.Response;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -44,6 +48,18 @@ public class NetworkController {
     public String readData() {
         try {
             return dataInputStream.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Response sendAndReceive(Request request){
+        try {
+            dataOutputStream.writeUTF(request.toJSON());
+            dataOutputStream.flush();
+            String responseString = dataInputStream.readUTF();
+            return new Gson().fromJson(responseString,Response.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

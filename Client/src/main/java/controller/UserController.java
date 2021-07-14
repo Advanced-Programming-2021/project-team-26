@@ -2,6 +2,8 @@ package controller;
 
 import exceptions.*;
 import fxmlController.App;
+import model.Request;
+import model.Response;
 import model.User;
 import view.Menu;
 import view.Scan;
@@ -22,21 +24,20 @@ public class UserController {
         return userController;
     }
 
-    private void initializeUserDecks(){
+    private void initializeUserDecks() {
 
     }
 
     public boolean addNewUser(String username, String password, String nickname) throws InvalidInput, DuplicateUsername, DuplicateNickname {
-        if (username.equals("") || password.equals("") || nickname.equals(""))
-            throw new InvalidInput();
-
-        if (User.checkUsernameExistence(username))
-            throw new DuplicateUsername(username);
-        if (User.checkNicknameExistence(nickname))
-            throw new DuplicateNickname(nickname);
-
-        new User(username, password, nickname);
-        return true;
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("username", username);
+        parameters.put("password", password);
+        parameters.put("nickname", nickname);
+        Request request = new Request("UserController", "addNewUser", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            return true;
+        throw new RuntimeException(response.getMessage());
     }
 
     public String removeUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {

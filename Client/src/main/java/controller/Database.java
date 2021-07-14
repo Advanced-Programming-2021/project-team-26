@@ -33,6 +33,7 @@ public class Database {
     private boolean debuggingMode = true;
     private Deck defaultDeck = null;
     private User currentUser;
+    private String token = null;
 
     {
         currentUser = null;
@@ -68,6 +69,10 @@ public class Database {
         if (database == null)
             database = new Database();
         return database;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public boolean isDebuggingMode() {

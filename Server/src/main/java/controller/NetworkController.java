@@ -1,5 +1,7 @@
 package controller;
 
+import model.Response;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -50,8 +52,8 @@ public class NetworkController {
         while (true) {
             try {
                 String input = dataInputStream.readUTF();
-                String result = process(input);
-                dataOutputStream.writeUTF(result);
+                Response response = process(input);
+                dataOutputStream.writeUTF(response.toJSON());
                 dataOutputStream.flush();
             } catch (SocketException e) {
                 System.out.println("Client disconnected");
@@ -60,10 +62,10 @@ public class NetworkController {
         }
     }
 
-    private String process(String input) {
+    private Response process(String input) {
         Handler handler =  new Handler(input);
         handler.run();
 
-        return handler.getResult();
+        return handler.getResponse();
     }
 }

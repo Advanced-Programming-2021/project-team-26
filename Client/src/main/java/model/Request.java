@@ -1,18 +1,32 @@
-package controller;
+package model;
 
 import com.google.gson.Gson;
+import controller.Database;
 
 import java.util.HashMap;
 
-public class Transfer {
+public class Request {
+    private String token;
     private String controller;
     private String methodToCall;
     private HashMap<String, String> parameters;
-
-    public Transfer(String controller, String methodToCall, HashMap<String, String> parameters) {
+    public Request(String controller, String methodToCall, HashMap<String, String> parameters) {
+        setToken();
         setController(controller);
         setMethodToCall(methodToCall);
         setParameters(parameters);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setToken(){
+        this.token = Database.getInstance().getToken();
     }
 
     public String getController() {

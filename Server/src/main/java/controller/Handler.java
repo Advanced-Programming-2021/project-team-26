@@ -1,11 +1,13 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.Request;
+import model.Response;
 
 public class Handler {
     private String command;
-    private Transfer transfer;
-    private String result;
+    private Request request;
+    private Response response;
 
     public Handler(String command) {
         this.command = command;
@@ -19,36 +21,55 @@ public class Handler {
         this.command = command;
     }
 
-    public Transfer getTransfer() {
-        return transfer;
+    public Request getTransfer() {
+        return request;
     }
 
-    public void setTransfer(Transfer transfer) {
-        this.transfer = transfer;
+    public void setTransfer(Request request) {
+        this.request = request;
     }
 
-    public String getResult() {
-        return result;
+    public Response getResponse() {
+        return response;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setResponse(Response response) {
+        this.response = response;
     }
 
     public void run() {
-        transfer = new Gson().fromJson(command, Transfer.class);
+        request = new Gson().fromJson(command, Request.class);
 
-        switch (transfer.getController()) {
+        switch (request.getController()) {
+            case "UserController":
+                handleUserCommands();
+                break;
             case "DeckController":
                 handleDeckCommands();
                 break;
         }
     }
 
+    private void handleUserCommands() {
+        switch (request.getMethodToCall()) {
+            case "addNewUser":
+                try {
+                    String username = request.getParameters().get("username");
+                    String password = request.getParameters().get("password");
+                    String nickname = request.getParameters().get("nickname");
+                    boolean success = UserController.getInstance().addNewUser(username,password,nickname);
+                    response = new Response(success,"");
+                }catch (Exception e){
+                    response = new Response(false,e.getMessage());
+                }
+                break;
+        }
+    }
+
     private void handleDeckCommands() {
-        switch (transfer.getMethodToCall()) {
+        switch (request.getMethodToCall()) {
             case "createDeck":
-                result = DeckController.getInstance().createDeck(transfer.getParameters().get("deckName"));
+                //response = DeckController.getInstance().createDeck(request.getParameters().get("deckName"));
                 break;
         }
     }
