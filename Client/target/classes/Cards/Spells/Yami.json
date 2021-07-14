@@ -1,7 +1,0 @@
-{
-  "type": "FIELD",
-  "status": "UNLIMITED",
-  "name": "Yami",
-  "Description": "All Fiend and Spellcaster monsters on the field gain 200 ATK/DEF, also all Fairy monsters on the field lose 200 ATK/DEF.",
-  "price": 4300
-}

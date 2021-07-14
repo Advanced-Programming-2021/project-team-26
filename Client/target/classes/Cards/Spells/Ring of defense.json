@@ -1,7 +1,0 @@
-{
-  "type": "QUICK_PLAY",
-  "status": "UNLIMITED",
-  "name": "Ring of defense",
-  "Description": "When a Trap effect that inflicts damage is activated: Make that effect damage 0.",
-  "price": 3500
-}
