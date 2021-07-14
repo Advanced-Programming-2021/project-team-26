@@ -35,6 +35,7 @@ public class NetworkController {
     public void sendData(String data) {
         try {
             dataOutputStream.writeUTF(data);
+            dataOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

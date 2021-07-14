@@ -9,27 +9,10 @@ import java.net.SocketException;
 
 public class NetworkController {
     private static NetworkController controller;
-    private static DataInputStream dataInputStream;
-    private static DataOutputStream dataOutputStream;
+
 
     private NetworkController() {
 
-    }
-
-    public static DataInputStream getDataInputStream() {
-        return dataInputStream;
-    }
-
-    public static void setDataInputStream(DataInputStream dataInputStream) {
-        NetworkController.dataInputStream = dataInputStream;
-    }
-
-    public static DataOutputStream getDataOutputStream() {
-        return dataOutputStream;
-    }
-
-    public static void setDataOutputStream(DataOutputStream dataOutputStream) {
-        NetworkController.dataOutputStream = dataOutputStream;
     }
 
     public static NetworkController getInstance() {
@@ -52,10 +35,9 @@ public class NetworkController {
     private void startNewThread(Socket socket) {
         new Thread(() -> {
             try {
-                dataInputStream = new DataInputStream(socket.getInputStream());
-
-                dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                getInputAndProcess();
+               DataInputStream  dataInputStream = new DataInputStream(socket.getInputStream());
+               DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                getInputAndProcess(dataInputStream, dataOutputStream);
                 dataInputStream.close();
                 socket.close();
             } catch (IOException e) {
@@ -64,7 +46,7 @@ public class NetworkController {
         }).start();
     }
 
-    private void getInputAndProcess() throws IOException {
+    private void getInputAndProcess(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
         while (true) {
             try {
                 String input = dataInputStream.readUTF();
@@ -79,6 +61,9 @@ public class NetworkController {
     }
 
     private String process(String input) {
-        return null;
+        Handler handler =  new Handler(input);
+        handler.run();
+
+        return handler.getResult();
     }
 }

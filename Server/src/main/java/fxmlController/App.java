@@ -1,5 +1,6 @@
 package fxmlController;
 
+import controller.NetworkController;
 import fxmlController.Children.Welcome;
 import javafx.application.Application;
 import javafx.scene.input.KeyCode;
@@ -33,7 +34,8 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+//        launch(args);
+        NetworkController.getInstance().setupServer();
     }
 
     public static void pushMenu(MenuParent menu) {

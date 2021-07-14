@@ -24,10 +24,12 @@ public class DeckController {
 
     public String createDeck(String deckName) throws RepeatedDeckNameException {
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("String", deckName);
-        String command = Transfer.getInstance().commandMaker("DeckController", "createDeck", parameters);
+        parameters.put("deckName", deckName);
+        String command = new Transfer("DeckController", "createDeck", parameters).toJSON();
         System.out.println(command);
         NetworkController.getInstance().sendData(command);
+
+        System.out.println(NetworkController.getInstance().readData());
 
         if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
