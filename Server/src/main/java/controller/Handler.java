@@ -118,7 +118,7 @@ public class Handler extends Thread {
                     response.addFile("image", file);
                     return response;
                 } catch (IOException e) {
-                    return new Response(false,"image not found");
+                    return new Response(false, "image not found");
                 }
         }
         return new Response(false, "method not found");
@@ -146,6 +146,14 @@ public class Handler extends Thread {
                 try {
                     String deckName = request.getParameters().get("deckName");
                     boolean success = DeckController.getInstance().removeDeck(user, deckName);
+                    return new Response(success, "");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+            case "setActive":
+                try {
+                    String deckName = request.getParameters().get("deckName");
+                    boolean success = DeckController.getInstance().setActive(user, deckName);
                     return new Response(success, "");
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());

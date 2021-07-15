@@ -38,10 +38,10 @@ public class DeckController {
         } else throw new DeckNameDoesntExistException(deckName);
     }
 
-    public String setActive(String deckName) throws DeckNameDoesntExistException {
-        if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
-            Database.getInstance().getCurrentUser().setActiveDeck(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName));
-            return "deck activated successfully!";
+    public boolean setActive(User user, String deckName) throws DeckNameDoesntExistException {
+        if (user.checkDeckNameExistence(deckName)) {
+            user.setActiveDeck(user.getDeckByDeckName(deckName));
+            return true;
         } else throw new DeckNameDoesntExistException(deckName);
     }
 

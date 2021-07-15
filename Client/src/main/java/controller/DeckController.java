@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 public class DeckController {
     private static DeckController deckController;
     private Gson gson;
+    private  HashMap<String, String> parameters;
 
     private DeckController() {
         gson = new Gson();
@@ -28,7 +29,6 @@ public class DeckController {
     }
 
     public boolean createDeck(String deckName) throws RepeatedDeckNameException {
-        HashMap<String, String> parameters = new HashMap<>();
         parameters.put("deckName", deckName);
         Request request = new Request("DeckController", "createDeck", parameters);
         Response response = NetworkController.getInstance().sendAndReceive(request);
@@ -42,7 +42,6 @@ public class DeckController {
     }
 
     public boolean removeDeck(String deckName) throws DeckNameDoesntExistException {
-        HashMap<String, String> parameters = new HashMap<>();
         parameters.put("deckName", deckName);
         Request request = new Request("DeckController", "removeDeck", parameters);
         Response response = NetworkController.getInstance().sendAndReceive(request);
@@ -55,11 +54,17 @@ public class DeckController {
         throw new RuntimeException(response.getMessage());
     }
 
-    public String setActive(String deckName) throws DeckNameDoesntExistException {
-        if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
+    public boolean setActive(String deckName) throws DeckNameDoesntExistException {
+        parameters.put("deckName", deckName);
+        Request request = new Request("DeckController", "setActive", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+
+        if (response.isSuccess()) {
             Database.getInstance().getCurrentUser().setActiveDeck(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName));
-            return "deck activated successfully!";
-        } else throw new DeckNameDoesntExistException(deckName);
+            return true;
+        }
+
+        throw new RuntimeException(response.getMessage());
     }
 
     public String addCard(String cardName, String deckName, boolean side) throws InvalidInput, DeckNameDoesntExistException, CardNotFoundException,
