@@ -10,11 +10,18 @@ public class Request {
     private String controller;
     private String methodToCall;
     private HashMap<String, String> parameters;
+
     public Request(String controller, String methodToCall, HashMap<String, String> parameters) {
         setToken();
         setController(controller);
         setMethodToCall(methodToCall);
         setParameters(parameters);
+    }
+
+    public Request(String controller, String methodToCall) {
+        setToken();
+        setController(controller);
+        setMethodToCall(methodToCall);
     }
 
     public String getToken() {
@@ -25,7 +32,7 @@ public class Request {
         this.token = token;
     }
 
-    public void setToken(){
+    public void setToken() {
         this.token = Database.getInstance().getToken();
     }
 
@@ -51,6 +58,12 @@ public class Request {
 
     public void setParameters(HashMap<String, String> parameters) {
         this.parameters = parameters;
+    }
+
+    public void addParameter(String key,String value){
+        if(parameters==null)
+            parameters = new HashMap<>();
+        parameters.put(key,value);
     }
 
 //    public String commandMaker(String controller, String methodToCall, HashMap<String, String> parameters) {

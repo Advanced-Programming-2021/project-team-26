@@ -42,7 +42,7 @@ public class Profile extends MenuParent {
         nicknameText.setText(currentUser.getNickname());
         nicknameText.textProperty().addListener((observableValue, oldValue, newValue) -> {
             try {
-                UserController.getInstance().changeNickname(newValue);
+                //UserController.getInstance().changeNickname(newValue);
                 nicknameText.setStyle("-fx-background-color: yellow; -fx-background-radius: 50;");
             } catch (Exception e) {
                 nicknameText.setStyle("-fx-background-color: yellow; -fx-background-radius: 50; -fx-text-fill: red;");

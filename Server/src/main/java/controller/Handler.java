@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.Gson;
 import model.Request;
 import model.Response;
+import model.User;
 
 public class Handler {
     private String command;
@@ -69,19 +70,31 @@ public class Handler {
                     String password = request.getParameters().get("password");
                     String token = UserController.getInstance().loginUser(username, password);
                     response = new Response(true, token);
-                    response.addData("user",Database.getInstance().getLoggedInUser(token));
+                    response.addData("user", Database.getInstance().getLoggedInUser(token));
                 } catch (Exception e) {
                     response = new Response(false, e.getMessage());
                 }
                 break;
             case "logout":
                 String token = request.getToken();
-                if(Database.getInstance().isUserLoggedIn(token)){
+                if (Database.getInstance().isUserLoggedIn(token)) {
                     UserController.getInstance().logout(token);
-                    response = new Response(true,"");
-                }
+                    response = new Response(true, "");
+                } else
+                    response = new Response(false, "");
+                break;
+            case "changeNickname":
+                User user = Database.getInstance().getLoggedInUser(request.getToken());
+                if (user == null)
+                    response = new Response(false, "invalid token");
                 else
-                    response = new Response(false,"");
+                    try {
+                        UserController.getInstance().changeNickname(user,request.getParameters().get("nickname"));
+                        response = new Response(true,"done");
+                    }catch (Exception e){
+                        response = new Response(false,e.getMessage());
+                    }
+
                 break;
         }
     }

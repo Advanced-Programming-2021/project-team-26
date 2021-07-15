@@ -78,13 +78,13 @@ public class UserController {
         Database.getInstance().getCurrentUser().setPassword(newPassword);
     }
 
-    public void changeNickname(String nickname) throws InvalidInput, DuplicateNickname {
-        if (Database.getInstance().getCurrentUser().getNickname().equals(nickname))
+    public void changeNickname(User user,String nickname) throws InvalidInput, DuplicateNickname {
+        if (user.getNickname().equals(nickname))
             return;
         if (User.checkNicknameExistence(nickname))
             throw new DuplicateNickname(nickname);
 
-        Database.getInstance().getCurrentUser().setNickname(nickname);
+        user.setNickname(nickname);
     }
 
     public String loginUser(String username, String password) throws InvalidInput, WrongUsernamePassword {

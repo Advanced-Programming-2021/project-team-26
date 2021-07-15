@@ -18,7 +18,8 @@ public class NetworkController {
     }
 
     public static NetworkController getInstance() {
-        if (controller == null) return new NetworkController();
+        if (controller == null)
+            controller = new NetworkController();
         return controller;
     }
 
@@ -37,8 +38,8 @@ public class NetworkController {
     private void startNewThread(Socket socket) {
         new Thread(() -> {
             try {
-               DataInputStream  dataInputStream = new DataInputStream(socket.getInputStream());
-               DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 getInputAndProcess(dataInputStream, dataOutputStream);
                 dataInputStream.close();
                 socket.close();
@@ -63,7 +64,7 @@ public class NetworkController {
     }
 
     private Response process(String input) {
-        Handler handler =  new Handler(input);
+        Handler handler = new Handler(input);
         handler.run();
 
         return handler.getResponse();

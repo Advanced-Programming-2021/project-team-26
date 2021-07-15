@@ -83,10 +83,13 @@ public class UserController {
     public void changeNickname(String nickname) throws InvalidInput, DuplicateNickname {
         if (Database.getInstance().getCurrentUser().getNickname().equals(nickname))
             return;
-        if (User.checkNicknameExistence(nickname))
-            throw new DuplicateNickname(nickname);
-
-        Database.getInstance().getCurrentUser().setNickname(nickname);
+        Request request = new Request("UserController", "changeNickname");
+        request.addParameter("nickname", nickname);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            Database.getInstance().getCurrentUser().setNickname(nickname);
+        else
+            throw new RuntimeException(response.getMessage());
     }
 
     public boolean loginUser(String username, String password) throws InvalidInput, WrongUsernamePassword {
@@ -96,7 +99,7 @@ public class UserController {
         Request request = new Request("UserController", "loginUser", parameters);
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess()) {
-            User user = new Gson().fromJson(response.getData("user"),User.class);
+            User user = new Gson().fromJson(response.getData("user"), User.class);
             Database.getInstance().setCurrentUser(user, response.getMessage());
             return true;
         }
@@ -104,8 +107,8 @@ public class UserController {
     }
 
     public String logout() {
-        NetworkController.getInstance().sendAndReceive(new Request("UserController","logout",null));
-        Database.getInstance().setCurrentUser(null,null);
+        NetworkController.getInstance().sendAndReceive(new Request("UserController", "logout", null));
+        Database.getInstance().setCurrentUser(null, null);
         App.popMenu();
         Menu.exitMenu(null);
         return "user logged out successfully!";
