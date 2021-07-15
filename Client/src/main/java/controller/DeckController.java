@@ -37,7 +37,7 @@ public class DeckController {
             Database.getInstance().getCurrentUser().addDeckToUserDecks(gson.fromJson(response.getData(deckName), Deck.class));
             return true;
         }
-
+        System.out.println(response.getMessage());
         throw new RuntimeException(response.getMessage());
     }
 

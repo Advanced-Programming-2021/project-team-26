@@ -114,22 +114,29 @@ public class Handler {
     }
 
     private void handleDeckCommands() {
+        User user = Database.getInstance().getLoggedInUser(request.getToken());
+        if (user == null) {
+            response = new Response(false, "invalid token");
+            return;
+        }
+
         switch (request.getMethodToCall()) {
             case "createDeck":
                 try {
                     String deckName = request.getParameters().get("deckName");
-                    Deck deck = DeckController.getInstance().createDeck(deckName);
+                    Deck deck = DeckController.getInstance().createDeck(user, deckName);
                     response = new Response(true, "");
                     response.addData(deckName, deck);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     response = new Response(false, e.getMessage());
                 }
 
                 break;
-            case "removeDeck" :
+            case "removeDeck":
                 try {
                     String deckName = request.getParameters().get("deckName");
-                    boolean success = DeckController.getInstance().removeDeck(deckName);
+                    boolean success = DeckController.getInstance().removeDeck(user, deckName);
                     response = new Response(success, "");
                 } catch (Exception e) {
                     response = new Response(false, e.getMessage());

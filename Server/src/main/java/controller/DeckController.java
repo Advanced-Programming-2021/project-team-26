@@ -22,18 +22,18 @@ public class DeckController {
         return deckController;
     }
 
-    public Deck createDeck(String deckName) throws RepeatedDeckNameException {
-        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
-            Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
-            Database.getInstance().getCurrentUser().addDeckToUserDecks(deck);
+    public Deck createDeck(User user, String deckName) throws RepeatedDeckNameException {
+        if (!user.checkDeckNameExistence(deckName)) {
+            Deck deck = new Deck(deckName, user.getUsername());
+            user.addDeckToUserDecks(deck);
             return deck;
         } else throw new RepeatedDeckNameException(deckName);
     }
 
-    public boolean removeDeck(String deckName) throws DeckNameDoesntExistException {
-        if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
-            Objects.requireNonNull(User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername())).getAllDecks().remove(deckName);
-            Database.getInstance().getCurrentUser().getAllDecks().remove(deckName);
+    public boolean removeDeck(User user, String deckName) throws DeckNameDoesntExistException {
+        if (user.checkDeckNameExistence(deckName)) {
+            Objects.requireNonNull(User.getUserByUsername(user.getUsername())).getAllDecks().remove(deckName);
+            user.getAllDecks().remove(deckName);
             return true;
         } else throw new DeckNameDoesntExistException(deckName);
     }
