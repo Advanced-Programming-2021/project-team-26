@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.Deck;
 import model.Request;
 import model.Response;
 import model.User;
@@ -117,10 +118,11 @@ public class Handler {
             case "createDeck":
                 try {
                     String deckName = request.getParameters().get("deckName");
-                    DeckController.getInstance().createDeck(deckName);
-                    response = new Response(true, "")
+                    Deck deck = DeckController.getInstance().createDeck(deckName);
+                    response = new Response(true, "");
+                    response.addObjectData(deckName, deck);
                 } catch (Exception e) {
-
+                    response = new Response(false, e.getMessage());
                 }
 
                 break;

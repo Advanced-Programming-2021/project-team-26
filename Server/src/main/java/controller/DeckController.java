@@ -22,11 +22,11 @@ public class DeckController {
         return deckController;
     }
 
-    public String createDeck(String deckName) throws RepeatedDeckNameException {
+    public Deck createDeck(String deckName) throws RepeatedDeckNameException {
         if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
             Database.getInstance().getCurrentUser().addDeckToUserDecks(deck);
-            return "deck created successfully!";
+            return deck;
         } else throw new RepeatedDeckNameException(deckName);
     }
 

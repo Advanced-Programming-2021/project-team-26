@@ -30,18 +30,26 @@ public class DeckController {
         Request request = new Request("DeckController", "createDeck", parameters);
         Response response = NetworkController.getInstance().sendAndReceive(request);
 
-        if (response.isSuccess())
+        if (response.isSuccess()) {
+            Database.getInstance().getCurrentUser().addDeckToUserDecks((Deck) response.getObjectData(deckName));
             return true;
+        }
 
         throw new RuntimeException(response.getMessage());
     }
 
-    public String removeDeck(String deckName) throws DeckNameDoesntExistException {
-        if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
-            Objects.requireNonNull(User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername())).getAllDecks().remove(deckName);
-            Database.getInstance().getCurrentUser().getAllDecks().remove(deckName);
-            return "deck deleted successfully!";
-        } else throw new DeckNameDoesntExistException(deckName);
+    public boolean removeDeck(String deckName) throws DeckNameDoesntExistException {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("deckName", deckName);
+        Request request = new Request("DeckController", "removeDeck", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+
+        if (response.isSuccess()) {
+            Database.getInstance().getCurrentUser().addDeckToUserDecks((Deck) response.getObjectData(deckName));
+            return true;
+        }
+
+        throw new RuntimeException(response.getMessage());
     }
 
     public String setActive(String deckName) throws DeckNameDoesntExistException {
