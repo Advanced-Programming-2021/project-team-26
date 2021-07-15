@@ -104,9 +104,9 @@ public class Handler {
                     String currentPassword = request.getParameter("currentPassword");
                     String newPassword = request.getParameter("newPassword");
                     String repeatPassword = request.getParameter("repeatPassword");
-                    UserController.getInstance().changePassword(user,currentPassword,newPassword,repeatPassword);
-                }catch (Exception e){
-                    response = new Response(false,e.getMessage());
+                    UserController.getInstance().changePassword(user, currentPassword, newPassword, repeatPassword);
+                } catch (Exception e) {
+                    response = new Response(false, e.getMessage());
                 }
                 break;
         }
@@ -115,7 +115,14 @@ public class Handler {
     private void handleDeckCommands() {
         switch (request.getMethodToCall()) {
             case "createDeck":
-                //response = DeckController.getInstance().createDeck(request.getParameters().get("deckName"));
+                try {
+                    String deckName = request.getParameters().get("deckName");
+                    DeckController.getInstance().createDeck(deckName);
+                    response = new Response(true, "")
+                } catch (Exception e) {
+
+                }
+
                 break;
         }
     }

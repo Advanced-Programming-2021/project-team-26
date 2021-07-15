@@ -3,6 +3,7 @@ package controller;
 import exceptions.*;
 import model.Deck;
 import model.Request;
+import model.Response;
 import model.User;
 import model.cards.Card;
 import view.Scan;
@@ -23,20 +24,16 @@ public class DeckController {
         return deckController;
     }
 
-    public String createDeck(String deckName) throws RepeatedDeckNameException {
+    public boolean createDeck(String deckName) throws RepeatedDeckNameException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("deckName", deckName);
-        String command = new Request("DeckController", "createDeck", parameters).toJSON();
-        System.out.println(command);
-        NetworkController.getInstance().sendData(command);
+        Request request = new Request("DeckController", "createDeck", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
 
-        System.out.println(NetworkController.getInstance().readData());
+        if (response.isSuccess())
+            return true;
 
-        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
-            Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
-            Database.getInstance().getCurrentUser().addDeckToUserDecks(deck);
-            return "deck created successfully!";
-        } else throw new RepeatedDeckNameException(deckName);
+        throw new RuntimeException(response.getMessage());
     }
 
     public String removeDeck(String deckName) throws DeckNameDoesntExistException {
