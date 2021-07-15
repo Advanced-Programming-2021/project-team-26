@@ -8,7 +8,6 @@ public class Response {
     private boolean success;
     private String message;
     private HashMap<String, String> data;
-    private HashMap<String, Object> objectData;
 
     public Response(boolean success, String message) {
         setSuccess(success);
@@ -23,15 +22,7 @@ public class Response {
         return null;
     }
 
-    public Object getObjectData(String key) {
-        if (objectData == null)
-            return null;
-        if (objectData.containsKey(key))
-            return objectData.get(key);
-        return null;
-    }
-
-    public void addObjectData(String key, Object value) {
+    public void addData(String key, Object value) {
         addData(key, new Gson().toJson(value));
     }
 

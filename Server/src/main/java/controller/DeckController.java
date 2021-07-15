@@ -30,11 +30,11 @@ public class DeckController {
         } else throw new RepeatedDeckNameException(deckName);
     }
 
-    public String removeDeck(String deckName) throws DeckNameDoesntExistException {
+    public boolean removeDeck(String deckName) throws DeckNameDoesntExistException {
         if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
             Objects.requireNonNull(User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername())).getAllDecks().remove(deckName);
             Database.getInstance().getCurrentUser().getAllDecks().remove(deckName);
-            return "deck deleted successfully!";
+            return true;
         } else throw new DeckNameDoesntExistException(deckName);
     }
 

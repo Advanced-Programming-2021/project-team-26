@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.Gson;
 import exceptions.*;
 import model.Deck;
 import model.Request;
@@ -14,8 +15,10 @@ import java.util.regex.Matcher;
 
 public class DeckController {
     private static DeckController deckController;
+    private Gson gson;
 
     private DeckController() {
+        gson = new Gson();
     }
 
     public static DeckController getInstance() {
@@ -31,7 +34,7 @@ public class DeckController {
         Response response = NetworkController.getInstance().sendAndReceive(request);
 
         if (response.isSuccess()) {
-            Database.getInstance().getCurrentUser().addDeckToUserDecks((Deck) response.getObjectData(deckName));
+            Database.getInstance().getCurrentUser().addDeckToUserDecks(gson.fromJson(response.getData(deckName), Deck.class));
             return true;
         }
 
@@ -45,7 +48,7 @@ public class DeckController {
         Response response = NetworkController.getInstance().sendAndReceive(request);
 
         if (response.isSuccess()) {
-            Database.getInstance().getCurrentUser().addDeckToUserDecks((Deck) response.getObjectData(deckName));
+            Database.getInstance().getCurrentUser().getAllDecks().remove(deckName);
             return true;
         }
 

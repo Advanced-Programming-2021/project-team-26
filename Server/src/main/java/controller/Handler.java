@@ -120,12 +120,20 @@ public class Handler {
                     String deckName = request.getParameters().get("deckName");
                     Deck deck = DeckController.getInstance().createDeck(deckName);
                     response = new Response(true, "");
-                    response.addObjectData(deckName, deck);
+                    response.addData(deckName, deck);
                 } catch (Exception e) {
                     response = new Response(false, e.getMessage());
                 }
 
                 break;
+            case "removeDeck" :
+                try {
+                    String deckName = request.getParameters().get("deckName");
+                    boolean success = DeckController.getInstance().removeDeck(deckName);
+                    response = new Response(success, "");
+                } catch (Exception e) {
+                    response = new Response(false, e.getMessage());
+                }
         }
     }
 }
