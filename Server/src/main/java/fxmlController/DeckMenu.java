@@ -155,11 +155,11 @@ public class DeckMenu extends MenuParent implements Initializable {
                         case "allCards":
                             return;
                         case "mainDeck":
-                            DeckController.getInstance().removeCard(cardName, getDeckName(), false);
+//                            DeckController.getInstance().removeCard(cardName, getDeckName(), false);
                             updateMainDeck();
                             break;
                         case "sideDeck":
-                            DeckController.getInstance().removeCard(cardName, getDeckName(), true);
+//                            DeckController.getInstance().removeCard(cardName, getDeckName(), true);
                             updateSideDeck();
                             break;
                     }
@@ -206,7 +206,7 @@ public class DeckMenu extends MenuParent implements Initializable {
                             updateAllCards();
                             break;
                         case "sideDeck":
-                            DeckController.getInstance().removeCard(cardName, getDeckName(), true);
+//                            DeckController.getInstance().removeCard(cardName, getDeckName(), true);
 //                            DeckController.getInstance().addCard(cardName, getDeckName(), false);
                             updateSideDeck();
                             break;
@@ -254,7 +254,7 @@ public class DeckMenu extends MenuParent implements Initializable {
                             updateAllCards();
                             break;
                         case "mainDeck":
-                            DeckController.getInstance().removeCard(cardName, getDeckName(), false);
+//                            DeckController.getInstance().removeCard(cardName, getDeckName(), false);
 //                            DeckController.getInstance().addCard(cardName, getDeckName(), true);
                             updateMainDeck();
                             break;

@@ -77,26 +77,25 @@ public class DeckController {
         return true;
     }
 
-    public String removeCard(String cardName, String deckName, boolean side) throws InvalidInput, DeckNameDoesntExistException,
+    public boolean removeCard(User user, String cardName, String deckName, Boolean side) throws InvalidInput, DeckNameDoesntExistException,
             CardNotFoundInSideDeck, CardNotFoundInMainDeck {
-        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
+        if (!user.checkDeckNameExistence(deckName))
             throw new DeckNameDoesntExistException(deckName);
 
         if (side) {
-            if (!Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).doesCardExistInSideDeck(cardName))
+            if (!Objects.requireNonNull(user.getDeckByDeckName(deckName)).doesCardExistInSideDeck(cardName))
                 throw new CardNotFoundInSideDeck(cardName);
         } else {
-            if (!Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).doesCardExistInMainDeck(cardName))
+            if (!Objects.requireNonNull(user.getDeckByDeckName(deckName)).doesCardExistInMainDeck(cardName))
                 throw new CardNotFoundInMainDeck(cardName);
         }
 
-
         if (side)
-            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).deleteCardFromSideDeck(Card.getCard(cardName));
+            Objects.requireNonNull(user.getDeckByDeckName(deckName)).deleteCardFromSideDeck(Card.getCard(cardName));
         else
-            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).deleteCardFromMainDeck(Card.getCard(cardName));
+            Objects.requireNonNull(user.getDeckByDeckName(deckName)).deleteCardFromMainDeck(Card.getCard(cardName));
 
-        return "card removed form deck successfully";
+        return true;
     }
 
     public String showDeck(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException {

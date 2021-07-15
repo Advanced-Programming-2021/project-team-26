@@ -133,6 +133,7 @@ public class Handler extends Thread {
         switch (request.getMethodToCall()) {
             case "createDeck":
                 try {
+                    System.out.println(1);
                     String deckName = request.getParameters().get("deckName");
                     Deck deck = DeckController.getInstance().createDeck(user, deckName);
                     Response response = new Response(true, "");
@@ -164,8 +165,18 @@ public class Handler extends Thread {
                     String cardName = request.getParameters().get("cardName");
                     Boolean side = Boolean.valueOf(request.getParameters().get("side"));
 
-
                     boolean success = DeckController.getInstance().addCard(user, cardName, deckName, side);
+                    return new Response(success, "");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+            case "removeCard":
+                try {
+                    String deckName = request.getParameters().get("deckName");
+                    String cardName = request.getParameters().get("cardName");
+                    Boolean side = Boolean.valueOf(request.getParameters().get("side"));
+
+                    boolean success = DeckController.getInstance().removeCard(user, cardName, deckName, side);
                     return new Response(success, "");
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
