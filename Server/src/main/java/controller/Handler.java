@@ -142,8 +142,6 @@ public class Handler extends Thread {
                     e.printStackTrace();
                     return new Response(false, e.getMessage());
                 }
-
-                break;
             case "removeDeck":
                 try {
                     String deckName = request.getParameters().get("deckName");
