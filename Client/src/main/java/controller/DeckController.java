@@ -1,8 +1,10 @@
 package controller;
 
+import com.google.gson.Gson;
 import exceptions.*;
 import model.Deck;
 import model.Request;
+import model.Response;
 import model.User;
 import model.cards.Card;
 import view.Scan;
@@ -13,8 +15,10 @@ import java.util.regex.Matcher;
 
 public class DeckController {
     private static DeckController deckController;
+    private Gson gson;
 
     private DeckController() {
+        gson = new Gson();
     }
 
     public static DeckController getInstance() {
@@ -23,28 +27,32 @@ public class DeckController {
         return deckController;
     }
 
-    public String createDeck(String deckName) throws RepeatedDeckNameException {
+    public boolean createDeck(String deckName) throws RepeatedDeckNameException {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("deckName", deckName);
-        String command = new Request("DeckController", "createDeck", parameters).toJSON();
-        System.out.println(command);
-        NetworkController.getInstance().sendData(command);
+        Request request = new Request("DeckController", "createDeck", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
 
-        System.out.println(NetworkController.getInstance().readData());
-
-        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
-            Deck deck = new Deck(deckName, Database.getInstance().getCurrentUser().getUsername());
-            Database.getInstance().getCurrentUser().addDeckToUserDecks(deck);
-            return "deck created successfully!";
-        } else throw new RepeatedDeckNameException(deckName);
+        if (response.isSuccess()) {
+            Database.getInstance().getCurrentUser().addDeckToUserDecks(gson.fromJson(response.getData(deckName), Deck.class));
+            return true;
+        }
+        System.out.println(response.getMessage());
+        throw new RuntimeException(response.getMessage());
     }
 
-    public String removeDeck(String deckName) throws DeckNameDoesntExistException {
-        if (Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName)) {
-            Objects.requireNonNull(User.getUserByUsername(Database.getInstance().getCurrentUser().getUsername())).getAllDecks().remove(deckName);
+    public boolean removeDeck(String deckName) throws DeckNameDoesntExistException {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("deckName", deckName);
+        Request request = new Request("DeckController", "removeDeck", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+
+        if (response.isSuccess()) {
             Database.getInstance().getCurrentUser().getAllDecks().remove(deckName);
-            return "deck deleted successfully!";
-        } else throw new DeckNameDoesntExistException(deckName);
+            return true;
+        }
+
+        throw new RuntimeException(response.getMessage());
     }
 
     public String setActive(String deckName) throws DeckNameDoesntExistException {

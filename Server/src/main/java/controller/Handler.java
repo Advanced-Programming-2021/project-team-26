@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.Deck;
 import model.Request;
 import model.Response;
 import model.User;
@@ -124,10 +125,33 @@ public class Handler extends Thread {
     }
 
     private Response handleDeckCommands(Request request) {
+        User user = Database.getInstance().getLoggedInUser(request.getToken());
+        if (user == null) {
+            return new Response(false, "invalid token");
+        }
+
         switch (request.getMethodToCall()) {
             case "createDeck":
-                //response = DeckController.getInstance().createDeck(request.getParameters().get("deckName"));
+                try {
+                    String deckName = request.getParameters().get("deckName");
+                    Deck deck = DeckController.getInstance().createDeck(user, deckName);
+                    Response response = new Response(true, "");
+                    response.addData(deckName, deck);
+                    return response;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new Response(false, e.getMessage());
+                }
+
                 break;
+            case "removeDeck":
+                try {
+                    String deckName = request.getParameters().get("deckName");
+                    boolean success = DeckController.getInstance().removeDeck(user, deckName);
+                    return new Response(success, "");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
         }
         return new Response(false, "method not found");
     }

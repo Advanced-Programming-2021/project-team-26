@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Reflection?>
 <?import javafx.scene.image.Image?>
@@ -8,29 +9,28 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.PasswordField?>
-<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.SignUp">
+<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Children.SignUp">
    <children>
-      <Button layoutX="360.0" layoutY="342.0" mnemonicParsing="false" onAction="#signup" prefHeight="58.0" prefWidth="135.0" style="-fx-background-radius: 100; -fx-background-color: gray; -fx-background-size: red;" text="Signup" textFill="#1a3229">
+      <Button layoutX="611.0" layoutY="362.0" mnemonicParsing="false" onAction="#signup" prefHeight="58.0" prefWidth="135.0" style="-fx-background-radius: 100; -fx-background-color: gray; -fx-background-size: red;" text="Signup" textFill="#1a3229">
          <effect>
             <Reflection bottomOpacity="0.04" fraction="0.43" topOpacity="0.79" />
          </effect>
          <font>
             <Font name="System Bold Italic" size="23.0" />
          </font></Button>
-      <TextField fx:id="username" layoutX="306.0" layoutY="77.0" prefHeight="58.0" prefWidth="272.0" promptText="Username" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+      <TextField fx:id="username" layoutX="442.0" layoutY="76.0" prefHeight="58.0" prefWidth="272.0" promptText="Username" style="-fx-background-color: yellow; -fx-background-radius: 50;">
          <font>
             <Font size="17.0" />
          </font></TextField>
-      <PasswordField fx:id="password" layoutX="306.0" layoutY="153.0" prefHeight="58.0" prefWidth="272.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+      <PasswordField fx:id="password" layoutX="442.0" layoutY="157.0" prefHeight="58.0" prefWidth="272.0" promptText="Password" style="-fx-background-color: yellow; -fx-background-radius: 50;">
          <font>
             <Font size="17.0" />
          </font></PasswordField>
-      <TextField fx:id="nickname" layoutX="306.0" layoutY="234.0" prefHeight="58.0" prefWidth="272.0" promptText="Nickname" style="-fx-background-color: yellow; -fx-background-radius: 50;">
+      <TextField fx:id="nickname" layoutX="442.0" layoutY="250.0" prefHeight="58.0" prefWidth="272.0" promptText="Nickname" style="-fx-background-color: yellow; -fx-background-radius: 50;">
          <font>
             <Font size="17.0" />
          </font></TextField>
-      <ImageView fitHeight="260.0" fitWidth="305.0" layoutX="42.0" layoutY="40.0">
+      <ImageView fitHeight="260.0" fitWidth="272.0" layoutX="42.0" layoutY="40.0">
          <image>
             <Image url="@../Assets/Arts/MBB_004574.dds.png" />
          </image>

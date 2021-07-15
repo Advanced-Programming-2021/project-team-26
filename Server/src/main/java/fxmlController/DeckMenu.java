@@ -320,7 +320,7 @@ public class DeckMenu extends MenuParent implements Initializable {
         Button add = new Button("make");
         add.setOnAction(event -> {
             try {
-                DeckController.getInstance().createDeck(deckName.getText());
+//                DeckController.getInstance().createDeck(deckName.getText());
                 Alert.getInstance().successfulPrint("deck added");
             } catch (Exception e) {
                 Alert.getInstance().errorPrint(e.getMessage());
@@ -345,7 +345,7 @@ public class DeckMenu extends MenuParent implements Initializable {
             return;
         }
         try {
-            DeckController.getInstance().removeDeck(selectedDeck.getName());
+//            DeckController.getInstance().removeDeck(selectedDeck.getName());
             Alert.getInstance().successfulPrint("Deck removed");
             updateDecksName();
         } catch (Exception e) {
