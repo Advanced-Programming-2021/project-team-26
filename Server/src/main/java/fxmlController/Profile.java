@@ -88,7 +88,7 @@ public class Profile extends MenuParent {
         repeatPassword.setPromptText("repeat password");
         change.setOnAction(event -> {
             try {
-                UserController.getInstance().changePassword(oldPassword.getText(), newPassword.getText(), repeatPassword.getText());
+                //UserController.getInstance().changePassword(oldPassword.getText(), newPassword.getText(), repeatPassword.getText());
                 Alert.getInstance().successfulPrint("password changed successfully!");
                 stage.close();
             } catch (Exception e) {

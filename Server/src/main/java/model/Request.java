@@ -44,6 +44,12 @@ public class Request {
         return parameters;
     }
 
+    public String getParameter(String key){
+        if(parameters.containsKey(key))
+            return parameters.get(key);
+        return null;
+    }
+
     public void setParameters(HashMap<String, String> parameters) {
         this.parameters = parameters;
     }

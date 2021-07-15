@@ -167,7 +167,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-        Database.getInstance().writeUser(this);
     }
 
     public String getNickname() {
@@ -176,7 +175,6 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-        Database.getInstance().writeUser(this);
     }
 
     public int getScore() {

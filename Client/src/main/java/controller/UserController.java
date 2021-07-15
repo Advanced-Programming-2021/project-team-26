@@ -77,11 +77,20 @@ public class UserController {
         if (currentPassword.equals(newPassword))
             throw new SamePassword();
 
-        Database.getInstance().getCurrentUser().setPassword(newPassword);
+        Request request = new Request("UserController", "changePassword");
+        request.addParameter("currentPassword", currentPassword);
+        request.addParameter("newPassword", newPassword);
+        request.addParameter("repeatPassword", repeatPassword);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            Database.getInstance().getCurrentUser().setPassword(newPassword);
+        throw new RuntimeException(response.getMessage());
     }
 
     public void changeNickname(String nickname) throws InvalidInput, DuplicateNickname {
         if (Database.getInstance().getCurrentUser().getNickname().equals(nickname))
+            return;
+        if (nickname.equals(""))
             return;
         Request request = new Request("UserController", "changeNickname");
         request.addParameter("nickname", nickname);

@@ -1,9 +1,7 @@
 package controller;
 
 import exceptions.*;
-import fxmlController.App;
 import model.User;
-import view.Menu;
 import view.Scan;
 
 import java.util.HashMap;
@@ -22,7 +20,7 @@ public class UserController {
         return userController;
     }
 
-    private void initializeUserDecks(){
+    private void initializeUserDecks() {
 
     }
 
@@ -66,7 +64,7 @@ public class UserController {
         return "user removed successfully!";
     }
 
-    public void changePassword(String currentPassword, String newPassword, String repeatPassword) throws InvalidInput, WrongPassword, SamePassword {
+    public void changePassword(User user, String currentPassword, String newPassword, String repeatPassword) throws InvalidInput, WrongPassword, SamePassword {
         if (!newPassword.equals(repeatPassword))
             throw new RuntimeException("repeat password not matched");
         if (!Database.getInstance().getCurrentUser().getPassword().equals(currentPassword))
@@ -75,10 +73,10 @@ public class UserController {
         if (currentPassword.equals(newPassword))
             throw new SamePassword();
 
-        Database.getInstance().getCurrentUser().setPassword(newPassword);
+        user.setPassword(newPassword);
     }
 
-    public void changeNickname(User user,String nickname) throws InvalidInput, DuplicateNickname {
+    public void changeNickname(User user, String nickname) throws InvalidInput, DuplicateNickname {
         if (user.getNickname().equals(nickname))
             return;
         if (User.checkNicknameExistence(nickname))
@@ -94,7 +92,7 @@ public class UserController {
         User user = User.getUserByUsername(username);
         if (user == null || !user.getPassword().equals(password))
             throw new WrongUsernamePassword();
-        if(Database.getInstance().isUsernameLoggedIn(username))
+        if (Database.getInstance().isUsernameLoggedIn(username))
             throw new RuntimeException("User Already Logged In");
         return Database.getInstance().addLoggedInUser(user);
     }

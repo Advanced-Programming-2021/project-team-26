@@ -167,7 +167,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-        Database.getInstance().writeUser(this);
     }
 
     public String getNickname() {

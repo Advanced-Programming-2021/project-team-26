@@ -52,29 +52,36 @@ public class Handler {
     }
 
     private void handleUserCommands() {
+        if (request.getMethodToCall().equals("addNewUser")) {
+            try {
+                String username = request.getParameters().get("username");
+                String password = request.getParameters().get("password");
+                String nickname = request.getParameters().get("nickname");
+                boolean success = UserController.getInstance().addNewUser(username, password, nickname);
+                response = new Response(success, "");
+            } catch (Exception e) {
+                response = new Response(false, e.getMessage());
+            }
+            return;
+        }
+        if (request.getMethodToCall().equals("loginUser")) {
+            try {
+                String username = request.getParameters().get("username");
+                String password = request.getParameters().get("password");
+                String token = UserController.getInstance().loginUser(username, password);
+                response = new Response(true, token);
+                response.addData("user", Database.getInstance().getLoggedInUser(token));
+            } catch (Exception e) {
+                response = new Response(false, e.getMessage());
+            }
+            return;
+        }
+        User user = Database.getInstance().getLoggedInUser(request.getToken());
+        if (user == null) {
+            response = new Response(false, "invalid token");
+            return;
+        }
         switch (request.getMethodToCall()) {
-            case "addNewUser":
-                try {
-                    String username = request.getParameters().get("username");
-                    String password = request.getParameters().get("password");
-                    String nickname = request.getParameters().get("nickname");
-                    boolean success = UserController.getInstance().addNewUser(username, password, nickname);
-                    response = new Response(success, "");
-                } catch (Exception e) {
-                    response = new Response(false, e.getMessage());
-                }
-                break;
-            case "loginUser":
-                try {
-                    String username = request.getParameters().get("username");
-                    String password = request.getParameters().get("password");
-                    String token = UserController.getInstance().loginUser(username, password);
-                    response = new Response(true, token);
-                    response.addData("user", Database.getInstance().getLoggedInUser(token));
-                } catch (Exception e) {
-                    response = new Response(false, e.getMessage());
-                }
-                break;
             case "logout":
                 String token = request.getToken();
                 if (Database.getInstance().isUserLoggedIn(token)) {
@@ -84,17 +91,23 @@ public class Handler {
                     response = new Response(false, "");
                 break;
             case "changeNickname":
-                User user = Database.getInstance().getLoggedInUser(request.getToken());
-                if (user == null)
-                    response = new Response(false, "invalid token");
-                else
-                    try {
-                        UserController.getInstance().changeNickname(user,request.getParameters().get("nickname"));
-                        response = new Response(true,"done");
-                    }catch (Exception e){
-                        response = new Response(false,e.getMessage());
-                    }
+                try {
+                    UserController.getInstance().changeNickname(user, request.getParameter("nickname"));
+                    response = new Response(true, "done");
+                } catch (Exception e) {
+                    response = new Response(false, e.getMessage());
+                }
 
+                break;
+            case "changePassword":
+                try {
+                    String currentPassword = request.getParameter("currentPassword");
+                    String newPassword = request.getParameter("newPassword");
+                    String repeatPassword = request.getParameter("repeatPassword");
+                    UserController.getInstance().changePassword(user,currentPassword,newPassword,repeatPassword);
+                }catch (Exception e){
+                    response = new Response(false,e.getMessage());
+                }
                 break;
         }
     }
