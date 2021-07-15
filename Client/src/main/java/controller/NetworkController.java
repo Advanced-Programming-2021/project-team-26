@@ -21,7 +21,7 @@ public class NetworkController {
     public static NetworkController getInstance() {
         if (controller == null) {
             setupClient();
-            return new NetworkController();
+            controller = new NetworkController();
         }
         return controller;
     }
@@ -54,12 +54,12 @@ public class NetworkController {
         return null;
     }
 
-    public Response sendAndReceive(Request request){
+    public Response sendAndReceive(Request request) {
         try {
             dataOutputStream.writeUTF(request.toJSON());
             dataOutputStream.flush();
             String responseString = dataInputStream.readUTF();
-            return new Gson().fromJson(responseString,Response.class);
+            return new Gson().fromJson(responseString, Response.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

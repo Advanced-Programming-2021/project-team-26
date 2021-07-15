@@ -4,6 +4,7 @@ import model.Response;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -56,8 +57,9 @@ public class NetworkController {
                 Response response = process(input);
                 dataOutputStream.writeUTF(response.toJSON());
                 dataOutputStream.flush();
-            } catch (SocketException e) {
-                System.out.println("Client disconnected");
+                Logger.log(input + " -> " + response.toJSON());
+            } catch (SocketException | EOFException e) {
+                Logger.log("Client disconnected");
                 break;
             }
         }
@@ -68,5 +70,11 @@ public class NetworkController {
         handler.run();
 
         return handler.getResponse();
+    }
+}
+
+class Logger{
+    public static void log(String message){
+        System.out.println(message);
     }
 }
