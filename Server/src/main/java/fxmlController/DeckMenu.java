@@ -202,12 +202,12 @@ public class DeckMenu extends MenuParent implements Initializable {
                         case "mainDeck":
                             return;
                         case "allCards":
-                            DeckController.getInstance().addCard(cardName, getDeckName(), false);
+//                            DeckController.getInstance().addCard(cardName, getDeckName(), false);
                             updateAllCards();
                             break;
                         case "sideDeck":
                             DeckController.getInstance().removeCard(cardName, getDeckName(), true);
-                            DeckController.getInstance().addCard(cardName, getDeckName(), false);
+//                            DeckController.getInstance().addCard(cardName, getDeckName(), false);
                             updateSideDeck();
                             break;
                     }
@@ -250,12 +250,12 @@ public class DeckMenu extends MenuParent implements Initializable {
                         case "sideDeck":
                             return;
                         case "allCards":
-                            DeckController.getInstance().addCard(cardName, getDeckName(), true);
+//                            DeckController.getInstance().addCard(cardName, getDeckName(), true);
                             updateAllCards();
                             break;
                         case "mainDeck":
                             DeckController.getInstance().removeCard(cardName, getDeckName(), false);
-                            DeckController.getInstance().addCard(cardName, getDeckName(), true);
+//                            DeckController.getInstance().addCard(cardName, getDeckName(), true);
                             updateMainDeck();
                             break;
                     }
@@ -360,7 +360,7 @@ public class DeckMenu extends MenuParent implements Initializable {
             return;
         }
         try {
-            DeckController.getInstance().setActive(selectedDeck.getName());
+//            DeckController.getInstance().setActive(selectedDeck.getName());
             Alert.getInstance().successfulPrint("done");
             updateDecksName();
         } catch (Exception e) {

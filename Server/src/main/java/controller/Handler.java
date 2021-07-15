@@ -158,6 +158,18 @@ public class Handler extends Thread {
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
+            case "addCard":
+                try {
+                    String deckName = request.getParameters().get("deckName");
+                    String cardName = request.getParameters().get("cardName");
+                    Boolean side = Boolean.valueOf(request.getParameters().get("side"));
+
+
+                    boolean success = DeckController.getInstance().addCard(user, cardName, deckName, side);
+                    return new Response(success, "");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
         }
         return new Response(false, "method not found");
     }

@@ -5,7 +5,6 @@ import exceptions.*;
 import model.Deck;
 import model.Request;
 import model.Response;
-import model.User;
 import model.cards.Card;
 import view.Scan;
 
@@ -15,8 +14,8 @@ import java.util.regex.Matcher;
 
 public class DeckController {
     private static DeckController deckController;
-    private Gson gson;
-    private  HashMap<String, String> parameters;
+    private final Gson gson;
+    private HashMap<String, String> parameters;
 
     private DeckController() {
         gson = new Gson();
@@ -67,36 +66,23 @@ public class DeckController {
         throw new RuntimeException(response.getMessage());
     }
 
-    public String addCard(String cardName, String deckName, boolean side) throws InvalidInput, DeckNameDoesntExistException, CardNotFoundException,
-            InvalidNumberOfACardException, FullMainDeckException, FullSideDeckException {
-        if (!Database.getInstance().getCurrentUser().doesUserHaveThisCard(cardName))
-            throw new CardNotFoundException();
-        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
-            throw new DeckNameDoesntExistException(deckName);
+    public boolean addCard(String cardName, String deckName, Boolean side) {
+        parameters.put("cardName", cardName);
+        parameters.put("deckName", deckName);
+        parameters.put("side", side.toString());
 
-        if (side) {
-            if (Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).getSideDeck().size() == 15)
-                throw new FullSideDeckException();
-        } else {
-            if (Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).getMainDeck().size() == 60)
-                throw new FullMainDeckException();
+        Request request = new Request("DeckController", "addCard", parameters);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+
+        if (response.isSuccess()) {
+            if (side)
+                Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToSideDeck(Card.getCard(cardName));
+            else
+                Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToMainDeck(Card.getCard(cardName));
+            return true;
         }
 
-        if (!Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).IsNumberOfTheCardInDeckValid(cardName))
-            throw new InvalidNumberOfACardException(cardName, deckName);
-
-        HashMap<String, Integer> userCards = Database.getInstance().getCurrentUser().getAllCards();
-        int numberOfTheCardInUserCards = userCards.get(cardName);
-        int numberOfTheCardInDeckCards = Database.getInstance().getCurrentUser().getDeckByDeckName(deckName).getNumberOfCardINDeck(cardName);
-
-        if (numberOfTheCardInDeckCards >= numberOfTheCardInUserCards)
-            throw new CardNotFoundException();
-
-        if (side)
-            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToSideDeck(Card.getCard(cardName));
-        else
-            Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).addCardToMainDeck(Card.getCard(cardName));
-        return "card added to deck successfully!";
+        throw new RuntimeException(response.getMessage());
     }
 
     public String removeCard(String cardName, String deckName, boolean side) throws InvalidInput, DeckNameDoesntExistException,
