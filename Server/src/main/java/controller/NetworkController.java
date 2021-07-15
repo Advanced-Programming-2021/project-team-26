@@ -29,7 +29,8 @@ public class NetworkController {
             ServerSocket serverSocket = new ServerSocket(8080);
             while (true) {
                 Socket socket = serverSocket.accept();
-                startNewThread(socket);
+                Handler handler = new Handler(socket);
+                handler.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,10 +67,11 @@ public class NetworkController {
     }
 
     private Response process(String input) {
-        Handler handler = new Handler(input);
-        handler.run();
-
-        return handler.getResponse();
+//        Handler handler = new Handler(input);
+//        handler.run();
+//
+//        return handler.getResponse();
+        return null;
     }
 }
 

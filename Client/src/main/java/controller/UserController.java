@@ -9,6 +9,10 @@ import model.User;
 import view.Menu;
 import view.Scan;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
@@ -121,5 +125,13 @@ public class UserController {
         App.popMenu();
         Menu.exitMenu(null);
         return "user logged out successfully!";
+    }
+
+    public void changeProfile(File file) throws IOException {
+        Request request = new Request("UserController", "changeProfile");
+        request.addFile("image",file);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if(!response.isSuccess())
+            throw new RuntimeException(response.getMessage());
     }
 }

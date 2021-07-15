@@ -1,9 +1,14 @@
 package controller;
 
 import exceptions.*;
+import model.Request;
+import model.Response;
 import model.User;
 import view.Scan;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
@@ -99,5 +104,10 @@ public class UserController {
 
     public void logout(String token) {
         Database.getInstance().removeLoggedInUser(token);
+    }
+
+    public void changeProfile(User user,File file) {
+        if(!user.setProfileImage(file))
+            throw new RuntimeException("failed");
     }
 }

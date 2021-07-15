@@ -19,7 +19,6 @@ import model.User;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 public class Profile extends MenuParent {
     public TextField usernameText;
@@ -49,8 +48,7 @@ public class Profile extends MenuParent {
             }
         });
 
-        String imagePath = currentUser.getProfileImagePath();
-        Image image = new Image(imagePath);
+        Image image = currentUser.getProfileImage();
         profileImage.setImage(image);
     }
 
@@ -62,14 +60,11 @@ public class Profile extends MenuParent {
         File file = fileChooser.showOpenDialog(App.getStage());
         if (file != null) {
             try {
-                if (Database.getInstance().getCurrentUser().setProfileImage(file)) {
-                    profileImage.setImage(new Image(file.toURL().toExternalForm()));
-                } else {
-                    Alert.getInstance().errorPrint("loading image failed");
-                }
-            } catch (MalformedURLException e) {
+                UserController.getInstance().changeProfile(file);
+                profileImage.setImage(Database.getInstance().getCurrentUser().getProfileImage());
+            } catch (Exception e) {
                 e.printStackTrace();
-                Alert.getInstance().errorPrint("loading image failed");
+                Alert.getInstance().errorPrint(e.getMessage());
             }
         } else {
             Alert.getInstance().errorPrint("loading image failed");

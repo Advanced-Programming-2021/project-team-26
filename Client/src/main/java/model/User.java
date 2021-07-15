@@ -1,6 +1,7 @@
 package model;
 
 import controller.Database;
+import controller.NetworkController;
 import javafx.scene.image.Image;
 import model.cards.Card;
 
@@ -273,7 +274,14 @@ public class User {
         return true;
     }
 
-    public Image getProfileImage(){
-       return new Image(getProfileImagePath());
+    public Image getProfileImage() {
+        Request request = new Request("UserController", "getProfileImage");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess()) {
+            File file = response.getFile("image");
+            profileImagePath = Database.getInstance().writeProfile(file, username);
+            return new Image(getProfileImagePath());
+        }
+        return null;
     }
 }

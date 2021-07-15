@@ -5,118 +5,130 @@ import model.Request;
 import model.Response;
 import model.User;
 
-public class Handler {
-    private String command;
-    private Request request;
-    private Response response;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
 
-    public Handler(String command) {
-        this.command = command;
-    }
+public class Handler extends Thread {
+    private final Socket socket;
+    DataInputStream dataInputStream;
+    DataOutputStream dataOutputStream;
 
-    public String getCommand() {
-        return command;
-    }
-
-    public void setCommand(String command) {
-        this.command = command;
-    }
-
-    public Request getTransfer() {
-        return request;
-    }
-
-    public void setTransfer(Request request) {
-        this.request = request;
-    }
-
-    public Response getResponse() {
-        return response;
-    }
-
-    public void setResponse(Response response) {
-        this.response = response;
+    public Handler(Socket socket) throws IOException {
+        this.socket = socket;
+        dataInputStream = new DataInputStream(socket.getInputStream());
+        dataOutputStream = new DataOutputStream(socket.getOutputStream());
     }
 
     public void run() {
-        request = new Gson().fromJson(command, Request.class);
-
-        switch (request.getController()) {
-            case "UserController":
-                handleUserCommands();
+        while (true) {
+            try {
+                String input = dataInputStream.readUTF();
+                Request request = new Gson().fromJson(input, Request.class);
+                Response response = process(request);
+                dataOutputStream.writeUTF(response.toJSON());
+                dataOutputStream.flush();
+                Logger.log(input + " -> " + response.toJSON());
+            } catch (IOException e) {
+                Logger.log("Client disconnected");
                 break;
-            case "DeckController":
-                handleDeckCommands();
-                break;
+            }
         }
+
     }
 
-    private void handleUserCommands() {
+    private Response process(Request request) {
+        switch (request.getController()) {
+            case "UserController":
+                return handleUserCommands(request);
+            case "DeckController":
+                return handleDeckCommands(request);
+        }
+        return new Response(false, "controller not found");
+    }
+
+    private Response handleUserCommands(Request request) {
         if (request.getMethodToCall().equals("addNewUser")) {
             try {
                 String username = request.getParameters().get("username");
                 String password = request.getParameters().get("password");
                 String nickname = request.getParameters().get("nickname");
                 boolean success = UserController.getInstance().addNewUser(username, password, nickname);
-                response = new Response(success, "");
+                return new Response(success, "");
             } catch (Exception e) {
-                response = new Response(false, e.getMessage());
+                return new Response(false, e.getMessage());
             }
-            return;
         }
         if (request.getMethodToCall().equals("loginUser")) {
             try {
                 String username = request.getParameters().get("username");
                 String password = request.getParameters().get("password");
                 String token = UserController.getInstance().loginUser(username, password);
-                response = new Response(true, token);
+                Response response = new Response(true, token);
                 response.addData("user", Database.getInstance().getLoggedInUser(token));
+                return response;
             } catch (Exception e) {
-                response = new Response(false, e.getMessage());
+                return new Response(false, e.getMessage());
             }
-            return;
         }
         User user = Database.getInstance().getLoggedInUser(request.getToken());
         if (user == null) {
-            response = new Response(false, "invalid token");
-            return;
+            return new Response(false, "invalid token");
         }
         switch (request.getMethodToCall()) {
             case "logout":
                 String token = request.getToken();
                 if (Database.getInstance().isUserLoggedIn(token)) {
                     UserController.getInstance().logout(token);
-                    response = new Response(true, "");
+                    return new Response(true, "");
                 } else
-                    response = new Response(false, "");
-                break;
+                    return new Response(false, "");
             case "changeNickname":
                 try {
                     UserController.getInstance().changeNickname(user, request.getParameter("nickname"));
-                    response = new Response(true, "done");
+                    return new Response(true, "done");
                 } catch (Exception e) {
-                    response = new Response(false, e.getMessage());
+                    return new Response(false, e.getMessage());
                 }
-
-                break;
             case "changePassword":
                 try {
                     String currentPassword = request.getParameter("currentPassword");
                     String newPassword = request.getParameter("newPassword");
                     String repeatPassword = request.getParameter("repeatPassword");
-                    UserController.getInstance().changePassword(user,currentPassword,newPassword,repeatPassword);
-                }catch (Exception e){
-                    response = new Response(false,e.getMessage());
+                    UserController.getInstance().changePassword(user, currentPassword, newPassword, repeatPassword);
+                    return new Response(true, "password changed");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
                 }
-                break;
+            case "changeProfile":
+                try {
+                    File file = request.getFile("image");
+                    UserController.getInstance().changeProfile(user, file);
+                    return new Response(true, "done");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+            case "getProfileImage":
+                try {
+                    File file = new File(user.getProfileImagePath());
+                    Response response = new Response(true, null);
+                    response.addFile("image", file);
+                    return response;
+                } catch (IOException e) {
+                    return new Response(false,"image not found");
+                }
         }
+        return new Response(false, "method not found");
     }
 
-    private void handleDeckCommands() {
+    private Response handleDeckCommands(Request request) {
         switch (request.getMethodToCall()) {
             case "createDeck":
                 //response = DeckController.getInstance().createDeck(request.getParameters().get("deckName"));
                 break;
         }
+        return new Response(false, "method not found");
     }
 }

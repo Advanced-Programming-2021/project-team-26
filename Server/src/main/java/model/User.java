@@ -262,7 +262,7 @@ public class User {
     }
 
     public String getProfileImagePath() {
-        return "file:" + System.getProperty("user.dir") + File.separator + profileImagePath;
+        return profileImagePath;
     }
 
     public boolean setProfileImage(File file) {
@@ -274,7 +274,7 @@ public class User {
         return true;
     }
 
-    public Image getProfileImage(){
-       return new Image(getProfileImagePath());
+    public Image getProfileImage() {
+        return new Image(getProfileImagePath());
     }
 }

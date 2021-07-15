@@ -1,8 +1,12 @@
 package model;
 
 import com.google.gson.Gson;
-import controller.Database;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
 import java.util.HashMap;
 
 public class Request {
@@ -10,6 +14,7 @@ public class Request {
     private String controller;
     private String methodToCall;
     private HashMap<String, String> parameters;
+
     public Request(String controller, String methodToCall, HashMap<String, String> parameters) {
         setController(controller);
         setMethodToCall(methodToCall);
@@ -44,36 +49,49 @@ public class Request {
         return parameters;
     }
 
+    public void setParameters(HashMap<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public void addParameter(String key,String value){
+        if(parameters==null)
+            parameters = new HashMap<>();
+        parameters.put(key,value);
+    }
+
+    public void addParameter(String key,Object value){
+        addParameter(key,new Gson().toJson(value));
+    }
+
     public String getParameter(String key){
         if(parameters.containsKey(key))
             return parameters.get(key);
         return null;
     }
 
-    public void setParameters(HashMap<String, String> parameters) {
-        this.parameters = parameters;
+    public boolean addFile(String key,File file){
+        try {
+            byte[] content = Files.readAllBytes(file.toPath());
+            addParameter(key, Base64.getEncoder().encodeToString(content));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
-//    public String commandMaker(String controller, String methodToCall, HashMap<String, String> parameters) {
-//        JSONObject json = new JSONObject();
-//        try {
-//            json.put("controller", controller);
-//            json.put("methodToCall", methodToCall);
-//
-//            JSONObject json1 = new JSONObject();
-//
-//            for (String parameterType : parameters.keySet()) {
-//                json1.put(parameterType, parameters.get(parameterType));
-//            }
-//            JSONArray parametersArray = new JSONArray();
-//            parametersArray.put(json1);
-//
-//            json.put("parameters", parametersArray);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return json.toString();
-//    }
+    public File getFile(String key){
+        String string = getParameter(key);
+        if (string==null)
+            return null;
+        byte[] bytes = Base64.getDecoder().decode(string);
+        try {
+            Path path = Files.createTempFile("tmp","tmp");
+            return Files.write(path,bytes).toFile();
+        } catch (IOException e) {
+            return null;
+        }
+
+    }
 
     public String toJSON() {
         return new Gson().toJson(this);

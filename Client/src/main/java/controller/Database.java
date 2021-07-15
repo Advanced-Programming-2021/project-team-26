@@ -343,7 +343,7 @@ public class Database {
     public String writeProfile(File file, String name) {
         File dest = new File(profileDirectoryPath + File.separator + name);
         try {
-            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return "database" + File.separator + "Profile" + File.separator + name;
         } catch (IOException e) {
             return null;

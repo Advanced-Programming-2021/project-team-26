@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import model.Request;
 import model.Response;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public class NetworkController {
@@ -55,9 +53,24 @@ public class NetworkController {
     }
 
     public Response sendAndReceive(Request request) {
+        if (!sendRequest(request))
+            return null;
+        return getResponse();
+    }
+
+    public boolean sendRequest(Request request) {
         try {
             dataOutputStream.writeUTF(request.toJSON());
             dataOutputStream.flush();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Response getResponse() {
+        try {
             String responseString = dataInputStream.readUTF();
             return new Gson().fromJson(responseString, Response.class);
         } catch (IOException e) {
