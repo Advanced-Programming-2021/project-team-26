@@ -41,8 +41,8 @@ public class MainMenuController {
         if (!response.isSuccess())
             throw new RuntimeException(response.getMessage());
 
+        int turn = Integer.parseInt(response.getData("turn"));
         if (response.getData("user") != null) {
-            int turn = Integer.parseInt(response.getData("turn"));
             User first = Database.getInstance().getCurrentUser();
             User second = new Gson().fromJson(response.getData("user"), User.class);
             new HeadOrTailController(first, second, round, turn).run();
@@ -54,7 +54,6 @@ public class MainMenuController {
             response = NetworkController.getInstance().sendAndReceive(request);
 
             if (response.isSuccess()) {
-                int turn = Integer.parseInt(response.getData("turn"));
                 User first = Database.getInstance().getCurrentUser();
                 User second = new Gson().fromJson(response.getData("user"), User.class);
                 new HeadOrTailController(first, second, round, turn).run();

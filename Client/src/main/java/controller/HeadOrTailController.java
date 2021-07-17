@@ -19,7 +19,6 @@ import model.User;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class HeadOrTailController {
     int winner = -1;
@@ -31,7 +30,7 @@ public class HeadOrTailController {
     int myTurn;
     boolean[] isSignSet = new boolean[]{false, false};
 
-    public HeadOrTailController(User firstUser, User secondUser, int round,int turn) {
+    public HeadOrTailController(User firstUser, User secondUser, int round, int turn) {
         players[0] = firstUser;
         players[1] = secondUser;
         this.myTurn = turn;
@@ -68,13 +67,13 @@ public class HeadOrTailController {
     }
 
     public String getSign(int turn) {
-        Request request = new Request("HeadOrTail" , "throwCoin");
+        Request request = new Request("HeadOrTail", "throwCoin");
         Response response = NetworkController.getInstance().sendAndReceive(request);
         return response.getMessage();
     }
 
     public void startThrowCoin() {
-        graphic.playGif();
+        Platform.runLater(() -> graphic.playGif());
         Response response = NetworkController.getInstance().getResponse();
         int result = Integer.parseInt(response.getMessage());
 
@@ -86,23 +85,23 @@ public class HeadOrTailController {
                     winner = result;
                     graphic.setResult(result);
 
-                    if(winner==myTurn) {
+                    if (winner == myTurn) {
                         try {
                             AnchorPane root = (AnchorPane) GetFXML.getFXML("whoStartsGame");
                             Button iStartButton = (Button) root.lookup("#iStartButton");
                             Button opStartButton = (Button) root.lookup("#opStartButton");
 
-                            Request request = new Request("","");
+                            Request request = new Request("", "");
                             iStartButton.setOnAction(e -> {
                                 starter = winner;
-                                request.addParameter("starter",String.valueOf(starter));
+                                request.addParameter("starter", String.valueOf(starter));
                                 NetworkController.getInstance().sendRequest(request);
                                 startGame();
                             });
 
                             opStartButton.setOnAction(e -> {
                                 starter = 1 - winner;
-                                request.addParameter("starter",String.valueOf(starter));
+                                request.addParameter("starter", String.valueOf(starter));
                                 NetworkController.getInstance().sendRequest(request);
                                 startGame();
                             });
@@ -110,8 +109,7 @@ public class HeadOrTailController {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
-                    else{
+                    } else {
                         Response response1 = NetworkController.getInstance().getResponse();
                         starter = Integer.parseInt(response1.getData("starter"));
                         startGame();
