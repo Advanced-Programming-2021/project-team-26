@@ -393,6 +393,7 @@ public class GameView implements Initializable {
             myMonsters.get(i).setOnMouseClicked(e -> {
                 if (myMonsters.get(finalI).getImage() == null)
                     return;
+                //TODO flip summon
                 switch (gameController.getGame().getPhase()) {
                     case BATTLE:
                         attacker = finalI;

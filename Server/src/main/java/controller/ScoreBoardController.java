@@ -1,12 +1,9 @@
 package controller;
 
 import model.User;
-import view.Print;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.regex.Matcher;
 
 public class ScoreBoardController {
     private static final ArrayList<ScoreBoardController> scoreBoardControllers;

@@ -4,11 +4,9 @@ import exceptions.*;
 import model.Deck;
 import model.User;
 import model.cards.Card;
-import view.Scan;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.regex.Matcher;
 
 public class DeckController {
     private static DeckController deckController;
@@ -96,34 +94,5 @@ public class DeckController {
             Objects.requireNonNull(user.getDeckByDeckName(deckName)).deleteCardFromMainDeck(Card.getCard(cardName));
 
         return true;
-    }
-
-    public String showDeck(Matcher matcher) throws InvalidInput, DeckNameDoesntExistException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String deckName = null;
-        if (input.containsKey("deck-name"))
-            deckName = input.get("deck-name");
-        else if (input.containsKey("d-n"))
-            deckName = input.get("d-n");
-        if (deckName == null)
-            throw new InvalidInput();
-
-        if (!Database.getInstance().getCurrentUser().checkDeckNameExistence(deckName))
-            throw new DeckNameDoesntExistException(deckName);
-
-        if (input.containsKey("side"))
-            return Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).showDeck("side");
-        else
-            return Objects.requireNonNull(Database.getInstance().getCurrentUser().getDeckByDeckName(deckName)).showDeck("main");
-    }
-
-    public String showCards(Matcher matcher) {
-        return Database.getInstance().getCurrentUser().showAllCards();
-    }
-
-
-    public String showAllDeck(Matcher matcher) {
-        return Database.getInstance().getCurrentUser().showAllDecks();
     }
 }

@@ -1,15 +1,13 @@
 package controller;
 
 import Utilities.Alert;
-import exceptions.CardNotFoundException;
-import exceptions.InvalidInput;
 import exceptions.InvalidSelection;
-import exceptions.NoCardSelectedException;
-import model.*;
+import model.AttackResult;
+import model.Board;
+import model.CardAddress;
+import model.Game;
 import model.cards.Card;
 import model.cards.monster.Monster;
-import view.Print;
-import view.Scan;
 
 import java.util.*;
 
@@ -191,16 +189,13 @@ public class MonsterController {
                 setRivalMonsterZoneAccessible(true);
                 Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask(
                         "Do you want to activate the card effect?");
-                Print.getInstance().printMessage("Do you want to activate the card effect?" +
-                        "1. yes" +
-                        "2. no");
+
                 if (answer == null)
                     answer = false;
                 if (answer) {
                     ArrayList<Card> options = new ArrayList<>();
                     for (MonsterController monsterController : gameController.getGame().getOtherBoard().getMonstersZone())
                         options.add(monsterController.getMonster());
-                    Print.getInstance().printMessage("Select one of rival Monsters to remove from his Monster Zone");
 
                     ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
                             options,
@@ -233,10 +228,7 @@ public class MonsterController {
             @Override
             public void runMonsterEffectOnEachTurn() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
-                    Print.getInstance().printMessage("You have Scanner in your Monster" +
-                            " Zone and you should select a card to clone it");
 
-                    Print.getInstance().printMessage("Select a monster from rival GRAVEYARD");
                     ArrayList<Card> options = new ArrayList<>();
                     for (Card card : gameController.getGame().getOtherBoard().getGraveyard()) {
                         if (card instanceof Monster)
@@ -322,14 +314,11 @@ public class MonsterController {
             @Override
             public void runMonsterEffectOnEachTurn() throws InvalidSelection {
                 if (!isHasActivateEffectThisTurn()) {
-                    Print.getInstance().printMessage("Do you want to activate the card effect?\n" +
-                            "1. yes\n" +
-                            "2. no");
+
 
                     Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask("Do you want to activate the card effect?");
 
                     if (answer != null && answer) {
-                        Print.getInstance().printMessage("Select a Card from your HAND to remove");
                         ArrayList<Card> options = new ArrayList<>();
                         for (Card card : gameController.getGame().getThisBoard().getHand()) {
                             options.add(card);
@@ -346,8 +335,6 @@ public class MonsterController {
 
                         setHandAccessible(false);
                         setOurGraveyardAccessible(true);
-
-                        Print.getInstance().printMessage("Select a Monster from your GRAVEYARD with level 7 or more to put it in your HAND");
 
                         options.clear();
                         for (Card card : gameController.getGame().getThisBoard().getGraveyard()) {
@@ -406,7 +393,6 @@ public class MonsterController {
                     throw new InvalidSelection();
 
                 if (ask) {
-                    Print.getInstance().printMessage("Select a card from your HAND to remove");
                     ArrayList<Card> options = new ArrayList<>();
                     options.addAll(gameController.getGame().getThisBoard().getHand());
 
@@ -623,77 +609,6 @@ public class MonsterController {
                 }
         }
         return null;
-    }
-
-    public void select(String selectCommand) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(selectCommand);
-        Game game = gameController.getGame();
-        String addressNumber;
-
-
-        if ((addressNumber = Scan.getInstance().getValue(input, "monster", "m")) != null) {
-            int monsterNumber = Integer.parseInt(addressNumber);
-            if (monsterNumber > Board.CARD_NUMBER_IN_ROW)
-                throw new InvalidSelection();
-
-            if (input.containsKey("opponent") || input.containsKey("o") && isRivalMonsterZoneAccessible) {
-                if (game.getOtherBoard().getMonsterByIndex(monsterNumber - 1) != null) {
-                    selectedCard = game.getOtherBoard().getMonsterByIndex(monsterNumber - 1).getMonster();
-                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
-                }
-            } else if (isOurMonsterZoneAccessible) {
-                if (game.getThisBoard().getMonsterByIndex(monsterNumber - 1) != null) {
-                    selectedCard = game.getThisBoard().getMonsterByIndex(monsterNumber - 1).getMonster();
-                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
-                }
-            } else throw new InvalidSelection();
-
-            if (selectedCard == null)
-                throw new CardNotFoundException();
-
-        } else if ((addressNumber = Scan.getInstance().getValue(input, "hand", "h")) != null && isHandAccessible) {
-            int handNumber = Integer.parseInt(addressNumber);
-            if (handNumber > game.getThisBoard().getHand().size())
-                throw new InvalidSelection();
-
-            selectedCard = game.getThisBoard().getHand().get(handNumber - 1);
-            selectedCardAddress = new CardAddress(Place.Hand, Owner.Me, handNumber - 1);
-
-            if (this.selectedCard == null)
-                throw new CardNotFoundException();
-
-        } else if ((addressNumber = Scan.getInstance().getValue(input, "graveyard", "g")) != null) {
-            int graveyardNumber = Integer.parseInt(addressNumber);
-
-            if (input.containsKey("opponent") || input.containsKey("o") && isRivalGraveyardAccessible) {
-                if (graveyardNumber > game.getOtherBoard().getGraveyard().size())
-                    throw new InvalidSelection();
-                else {
-                    this.selectedCard = game.getOtherBoard().getGraveyard().get(graveyardNumber - 1);
-                    selectedCardAddress = new CardAddress(Place.Graveyard, Owner.Opponent, graveyardNumber - 1);
-                }
-            } else if (isOurGraveyardAccessible) {
-                if (graveyardNumber > game.getThisBoard().getGraveyard().size())
-                    throw new InvalidSelection();
-                else {
-                    this.selectedCard = game.getThisBoard().getGraveyard().get(graveyardNumber - 1);
-                    selectedCardAddress = new CardAddress(Place.Graveyard, Owner.Me, graveyardNumber - 1);
-                }
-            } else throw new InvalidSelection();
-
-            if (selectedCard == null)
-                throw new CardNotFoundException();
-
-        } else if (input.containsKey("-d")) {
-            if (selectedCard == null) {
-                throw new NoCardSelectedException();
-            }
-            deselect();
-        } else
-            throw new InvalidInput();
-
-        if (selectedCard == null)
-            throw new CardNotFoundException();
     }
 
     public void deselect() {

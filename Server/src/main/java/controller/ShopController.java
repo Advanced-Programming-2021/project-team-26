@@ -1,12 +1,9 @@
 package controller;
 
-import exceptions.InvalidInput;
 import model.cards.Card;
-import view.Scan;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -53,24 +50,6 @@ public class ShopController {
 
     public int getUserBalance() {
         return Database.getInstance().getCurrentUser().getMoney();
-    }
-
-    public String increaseMoney(Matcher matcher) {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-        String moneyString = Scan.getInstance().getValue(input, "money", "m");
-        if (moneyString == null)
-            throw new InvalidInput();
-
-        try {
-            int money = Integer.parseInt(moneyString);
-            if (Database.getInstance().isDebuggingMode())
-                Database.getInstance().getCurrentUser().increaseMoney(money);
-            else
-                throw new InvalidInput();
-        } catch (NumberFormatException e) {
-            throw new InvalidInput();
-        }
-        return "successfully increased";
     }
 
     private String allCardsToString() {

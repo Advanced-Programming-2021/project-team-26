@@ -9,7 +9,6 @@ import model.cards.monster.Monster;
 import model.cards.monster.MonsterType;
 import model.cards.spell.Spell;
 import model.cards.spell.SpellType;
-import view.Print;
 
 import java.util.*;
 
@@ -68,9 +67,7 @@ public class SpellController extends SpellTrapController {
 
                 if (answer == null)
                     answer = true;
-                Print.getInstance().printMessage("Select a monster from your or the rival GRAVEYARD" +
-                        "1. select from my GRAVEYARD" +
-                        "2. select from rival GRAVEYARD");
+
                 ArrayList<Card> options = new ArrayList<>();
                 for (Card card : gameController.getGame().getThisBoard().getGraveyard()) {
                     if (card instanceof Monster)
@@ -119,10 +116,7 @@ public class SpellController extends SpellTrapController {
                     }
                 }
 
-                //Print.getInstance().printMessage(showCards(fieldSpells));
                 gameController.getGame().getThisBoard().shuffleDeck();
-                //Print.getInstance().printMessage("\n");
-                Print.getInstance().printMessage("select number of the spell you want:");
 
                 ArrayList<Card> selected = gameController.getViews()[gameController.getGame().getTurn()].getCardInput(
                         fieldSpells,
@@ -180,8 +174,6 @@ public class SpellController extends SpellTrapController {
 
             @Override
             public void activate() throws InvalidSelection {
-                Print.getInstance().printMessage("select a Monster from rival monsterZone:");
-
                 ArrayList<Card> options = new ArrayList<>();
                 for (MonsterController monsterController : gameController.getGame().getOtherBoard().getMonstersZone())
                     options.add(monsterController.getMonster());
@@ -231,7 +223,6 @@ public class SpellController extends SpellTrapController {
         return new SpellController(gameController, spell, position) {
             @Override
             public void activate() throws InvalidSelection {
-                Print.getInstance().printMessage("Select a card from yor HAND to remove");
 
                 ArrayList<Card> options = new ArrayList<>();
                 for (Card card : gameController.getGame().getThisBoard().getHand())
@@ -245,9 +236,6 @@ public class SpellController extends SpellTrapController {
 
                 Card theSelectedCardFromHand = selected.get(0);
 
-                Print.getInstance().printMessage("Do you want to destroy one SpellTrap or two ones?\n" +
-                        "1. one\n" +
-                        "2. two");
                 Boolean answer = gameController.getViews()[gameController.getGame().getTurn()].ask("Do you want to destroy one SpellTrap or two ones?(yes if one,otherwise no)");
                 if (answer == null)
                     answer = true;
@@ -256,7 +244,6 @@ public class SpellController extends SpellTrapController {
                 setRivalSpellTrapAccessible(true);
 
                 if (answer) {
-                    Print.getInstance().printMessage("Select a spellTrap from rival spellTrapZone.");
                     options.clear();
                     for (SpellTrapController controller : gameController.getGame().getOtherBoard().getSpellTrapZone())
                         options.add(controller.getCard());
@@ -269,7 +256,6 @@ public class SpellController extends SpellTrapController {
                     if (selected.size() == 1)
                         removeSpell(selected.get(0));
                 } else {
-                    Print.getInstance().printMessage("Select two spellTraps from rival spellTrapZone.");
                     options.clear();
                     for (SpellTrapController controller : gameController.getGame().getOtherBoard().getSpellTrapZone())
                         options.add(controller.getCard());
@@ -300,8 +286,6 @@ public class SpellController extends SpellTrapController {
         return new SpellController(gameController, spell, position) {
             @Override
             public void activate() {
-                Print.getInstance().printMessage("Select a spellTrap from field to remove");
-
                 ArrayList<Card> options = new ArrayList<>();
                 for (SpellTrapController controller : gameController.getGame().getOtherBoard().getSpellTrapZone())
                     options.add(controller.getCard());

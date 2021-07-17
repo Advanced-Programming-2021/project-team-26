@@ -1,16 +1,9 @@
 package controller;
 
 import exceptions.*;
-import model.Request;
-import model.Response;
 import model.User;
-import view.Scan;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.regex.Matcher;
 
 public class UserController {
     private static UserController userController;
@@ -40,33 +33,6 @@ public class UserController {
 
         new User(username, password, nickname);
         return true;
-    }
-
-    public String removeUser(Matcher matcher) throws InvalidInput, WrongUsernamePassword {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String username = null;
-        if (input.containsKey("username"))
-            username = input.get("username");
-        else if (input.containsKey("u"))
-            username = input.get("u");
-        if (username == null)
-            throw new InvalidInput();
-
-        String password = null;
-        if (input.containsKey("password"))
-            password = input.get("password");
-        else if (input.containsKey("p"))
-            password = input.get("p");
-        if (password == null)
-            throw new InvalidInput();
-
-        User user = User.getUserByUsername(username);
-        if (user == null || !user.getPassword().equals(password))
-            throw new WrongUsernamePassword();
-
-        User.removeUser(user.getUsername());
-        return "user removed successfully!";
     }
 
     public void changePassword(User user, String currentPassword, String newPassword, String repeatPassword) throws InvalidInput, WrongPassword, SamePassword {
@@ -106,8 +72,8 @@ public class UserController {
         Database.getInstance().removeLoggedInUser(token);
     }
 
-    public void changeProfile(User user,File file) {
-        if(!user.setProfileImage(file))
+    public void changeProfile(User user, File file) {
+        if (!user.setProfileImage(file))
             throw new RuntimeException("failed");
     }
 }
