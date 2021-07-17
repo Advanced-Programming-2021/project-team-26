@@ -19,6 +19,7 @@ public class Handler extends Thread {
     DataInputStream dataInputStream;
     DataOutputStream dataOutputStream;
     Handler opponent;
+    GameView view;
     int round = -1;
     private boolean getInput = true;
     public Handler(Socket socket) throws IOException {
@@ -82,6 +83,10 @@ public class Handler extends Thread {
                 return handleDeckCommands(request);
             case "MainMenuController":
                 return handleMainMenuCommands(request);
+            case "GameController":
+                if(view==null)
+                    break;
+                return view.handle(request);
         }
         return new Response(false, "controller not found");
     }
@@ -269,5 +274,9 @@ public class Handler extends Thread {
 
     public void startGetInput() {
         getInput = true;
+    }
+
+    public void setView(GameView view) {
+        this.view = view;
     }
 }

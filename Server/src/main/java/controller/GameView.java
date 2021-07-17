@@ -30,10 +30,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.CardAddress;
-import model.Game;
-import model.Owner;
-import model.Place;
+import model.*;
 import model.cards.Card;
 import model.cards.SpellTrap;
 import model.cards.monster.Monster;
@@ -952,8 +949,8 @@ public class GameView implements Initializable {
         return result[0];
     }
 
-    public void run() {
-        //TODO
+    public Response handle(Request request) {
+        return null;
     }
 
     public void close() {

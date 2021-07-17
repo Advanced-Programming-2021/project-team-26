@@ -75,8 +75,10 @@ public class GameController {
         handlers[1].stopGetInput();
         initCallers(0);
         initCallers(1);
-        views[0].run();
-        views[1].run();
+        handlers[0].setView(views[0]);
+        handlers[1].setView(views[1]);
+        handlers[0].startGetInput();
+        handlers[1].startGetInput();
         getGame().getBoard(0).initBoard();
         getGame().getBoard(1).initBoard();
         game.nextPhase();

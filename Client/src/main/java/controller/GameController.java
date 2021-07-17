@@ -80,6 +80,7 @@ public class GameController {
     }
 
     public void run() {
+        initCaller();
         FXMLLoader firstLoader = new FXMLLoader();
         firstLoader.setControllerFactory(type -> {
             try {
@@ -126,7 +127,6 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        initCaller();
         getGame().getBoard(0).initBoard();
         getGame().getBoard(1).initBoard();
         game.nextPhase();
