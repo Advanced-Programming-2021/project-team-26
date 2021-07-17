@@ -2,16 +2,12 @@ package controller;
 
 import exceptions.*;
 import fxmlController.App;
-import fxmlController.GameView;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 import model.*;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -21,6 +17,7 @@ import model.cards.spell.SpellType;
 import model.cards.trap.Trap;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,9 +27,9 @@ public class GameController {
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
     private final Handler[] handlers = new Handler[2];
+    private final Caller[] callers = new Caller[2];
     private final Deck[] decks = new Deck[2];
     private final GameView[] views = new GameView[2];
-    private final Stage[] stages = new Stage[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
     private final int roundNumber;
     private Game game;
@@ -51,11 +48,9 @@ public class GameController {
         decks[0] = (Deck) players[0].getActiveDeck().clone();
         decks[1] = (Deck) players[1].getActiveDeck().clone();
 
-        views[0] = new GameView(this, 0);
-        views[1] = new GameView(this, 1);
+        views[0] = new GameView(handlers[0], this, 0);
+        views[1] = new GameView(handlers[1], this, 1);
 
-        stages[0] = new Stage();
-        stages[1] = new Stage();
         this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
         this.roundNumber = round;
     }
@@ -76,55 +71,28 @@ public class GameController {
     }
 
     public void run() {
-        FXMLLoader firstLoader = new FXMLLoader();
-        firstLoader.setControllerFactory(type -> {
-            try {
-                if (type == GameView.class) {
-                    return views[0];
-                }
-                return type.newInstance();
-            } catch (Exception exc) {
-                throw new RuntimeException(exc);
-            }
-        });
-        firstLoader.setLocation(GameController.class.getResource("/fxml/" + "game" + ".fxml"));
-
-        FXMLLoader secondLoader = new FXMLLoader();
-        secondLoader.setControllerFactory(type -> {
-            try {
-                if (type == GameView.class)
-                    return views[1];
-
-                return type.newInstance();
-            } catch (Exception exc) {
-                throw new RuntimeException(exc);
-            }
-        });
-        secondLoader.setLocation(GameController.class.getResource("/fxml/" + "game" + ".fxml"));
-
-        try {
-            Parent firstRoot = firstLoader.load();
-            Parent secondRoot = secondLoader.load();
-
-            Scene[] scenes = new Scene[2];
-            scenes[0] = new Scene(firstRoot);
-            scenes[1] = new Scene(secondRoot);
-            addEscape(scenes);
-            addDebugMode(scenes);
-            stages[0].setScene(scenes[0]);
-            stages[1].setScene(scenes[1]);
-            stages[0].setResizable(false);
-            stages[1].setResizable(false);
-            App.getStage().close();
-            stages[0].show();
-            stages[1].show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        handlers[0].stopGetInput();
+        handlers[1].stopGetInput();
+        initCallers(0);
+        initCallers(1);
+        views[0].run();
+        views[1].run();
         getGame().getBoard(0).initBoard();
         getGame().getBoard(1).initBoard();
         game.nextPhase();
+    }
+
+    private void initCallers(int i) {
+        Request request = handlers[i].getRequest();
+        String host = handlers[i].getSocket().getInetAddress().getHostAddress();
+        int port = Integer.parseInt(request.getParameter("port"));
+        try {
+            Socket socket = new Socket(host,port);
+            callers[i] = new Caller(socket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void addDebugMode(Scene[] scenes) {
@@ -749,8 +717,10 @@ public class GameController {
     }
 
     private void closeGame() {
-        stages[0].close();
-        stages[1].close();
+        views[0].close();
+        views[1].close();
+        handlers[0].startGetInput();
+        handlers[1].startGetInput();
         App.getStage().show();
     }
 

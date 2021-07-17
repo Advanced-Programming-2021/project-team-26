@@ -22,7 +22,11 @@ import model.cards.trap.Trap;
 import view.Print;
 import view.Scan;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +40,7 @@ public class GameController {
     private final Stage[] stages = new Stage[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
     private final int roundNumber;
+    private Caller caller;
     private Game game;
     private CardAddress selectedCardAddress = null;
     private Card selectedCard = null;
@@ -121,9 +126,25 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        initCaller();
         getGame().getBoard(0).initBoard();
         getGame().getBoard(1).initBoard();
         game.nextPhase();
+    }
+
+    private void initCaller() {
+        try {
+            ServerSocket serverSocket = new ServerSocket(0);
+            String port = String.valueOf(serverSocket.getLocalPort());
+            Request request = new Request("", "");
+            request.addParameter("port", port);
+            NetworkController.getInstance().sendRequest(request);
+            Socket socket = serverSocket.accept();
+            caller = new Caller(this,socket);
+            caller.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addDebugMode(Scene[] scenes) {
@@ -890,6 +911,7 @@ public class GameController {
     }
 
     private void closeGame() {
+        caller.end();
         stages[0].close();
         stages[1].close();
         App.getStage().show();

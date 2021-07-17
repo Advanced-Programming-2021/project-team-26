@@ -21,11 +21,14 @@ public class Handler extends Thread {
     Handler opponent;
     int round = -1;
     private boolean getInput = true;
-
     public Handler(Socket socket) throws IOException {
         this.socket = socket;
         dataInputStream = new DataInputStream(socket.getInputStream());
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 
     public Request getRequest() {
@@ -49,7 +52,7 @@ public class Handler extends Thread {
 
     public void run() {
         while (true) {
-            if(!getInput)
+            if (!getInput)
                 continue;
             try {
                 String input = dataInputStream.readUTF();
@@ -97,12 +100,11 @@ public class Handler extends Thread {
                     Response response = new Response(true, "game created");
                     if (opponent != null) {
                         opponent.opponent = this;
-                        response.addData("user",opponent.user);
-                        response.addData("turn",String.valueOf(1));
+                        response.addData("user", opponent.user);
+                        response.addData("turn", String.valueOf(1));
                         stopGetInput();
-                    }
-                    else{
-                        response.addData("turn",String.valueOf(0));
+                    } else {
+                        response.addData("turn", String.valueOf(0));
                     }
                     return response;
                 } catch (Exception e) {
@@ -114,7 +116,7 @@ public class Handler extends Thread {
                     response.addData("user", opponent.user);
                     sendResponse(response);
                     stopGetInput();
-                    new HeadOrTailController(this,opponent,round).run();
+                    new HeadOrTailController(this, opponent, round).run();
                     return null;
                 } else
                     return new Response(false, "not found yet");
@@ -263,5 +265,9 @@ public class Handler extends Thread {
 
     public void stopGetInput() {
         getInput = false;
+    }
+
+    public void startGetInput() {
+        getInput = true;
     }
 }
