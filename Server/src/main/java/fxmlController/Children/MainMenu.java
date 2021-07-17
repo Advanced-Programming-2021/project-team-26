@@ -40,7 +40,7 @@ public class MainMenu extends MenuParent {
         String secondPlayer = (String) result[0];
         Integer round = (Integer) result[1];
         try {
-            MainMenuController.getInstance().createNewGameWithRealPlayer(secondPlayer, round);
+            //MainMenuController.getInstance().createNewGameWithRealPlayer(secondPlayer, round);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
         }

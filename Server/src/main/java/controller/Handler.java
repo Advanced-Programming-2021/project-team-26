@@ -14,8 +14,13 @@ import java.net.Socket;
 
 public class Handler extends Thread {
     private final Socket socket;
+    User user;
+    String token;
     DataInputStream dataInputStream;
     DataOutputStream dataOutputStream;
+    Handler opponent;
+    int round = -1;
+    private boolean getInput = true;
 
     public Handler(Socket socket) throws IOException {
         this.socket = socket;
@@ -23,16 +28,40 @@ public class Handler extends Thread {
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
     }
 
+    public Request getRequest() {
+        try {
+            String input = dataInputStream.readUTF();
+            return new Gson().fromJson(input, Request.class);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public void sendResponse(Response response) {
+        try {
+            dataOutputStream.writeUTF(response.toJSON());
+            dataOutputStream.flush();
+        } catch (IOException ignored) {
+        }
+    }
+
     public void run() {
         while (true) {
+            if(!getInput)
+                continue;
             try {
                 String input = dataInputStream.readUTF();
                 Request request = new Gson().fromJson(input, Request.class);
+                token = request.getToken();
+                user = Database.getInstance().getLoggedInUser(token);
                 Response response = process(request);
-                dataOutputStream.writeUTF(response.toJSON());
-                dataOutputStream.flush();
-                Logger.log(input + " -> " + response.toJSON());
+                if (response != null) {
+                    dataOutputStream.writeUTF(response.toJSON());
+                    dataOutputStream.flush();
+                    Logger.log(input + " -> " + response.toJSON());
+                }
             } catch (IOException e) {
+                Database.getInstance().removeLoggedInUser(token);
                 Logger.log("Client disconnected");
                 break;
             }
@@ -46,8 +75,50 @@ public class Handler extends Thread {
                 return handleUserCommands(request);
             case "DeckController":
                 return handleDeckCommands(request);
+            case "MainMenuController":
+                return handleMainMenuCommands(request);
         }
         return new Response(false, "controller not found");
+    }
+
+    private Response handleMainMenuCommands(Request request) {
+        if (user == null) {
+            return new Response(false, "invalid token");
+        }
+
+        switch (request.getMethodToCall()) {
+            case "newGame":
+                try {
+                    int round = Integer.parseInt(request.getParameter("round"));
+                    opponent = MainMenuController.getInstance().createNewGameWithRealPlayer(this, round);
+                    this.round = round;
+                    Response response = new Response(true, "game created");
+                    if (opponent != null) {
+                        opponent.opponent = this;
+                        response.addData("user",opponent.user);
+                        response.addData("turn",String.valueOf(1));
+                        stopGetInput();
+                    }
+                    else{
+                        response.addData("turn",String.valueOf(0));
+                    }
+                    return response;
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+            case "foundPlayer":
+                if (opponent != null) {
+                    Response response = new Response(true, "found");
+                    response.addData("user", opponent.user);
+                    sendResponse(response);
+                    stopGetInput();
+                    new HeadOrTailController(this,opponent,round).run();
+                    return null;
+                } else
+                    return new Response(false, "not found yet");
+        }
+
+        return new Response(false, "method not found");
     }
 
     private Response handleUserCommands(Request request) {
@@ -66,15 +137,15 @@ public class Handler extends Thread {
             try {
                 String username = request.getParameters().get("username");
                 String password = request.getParameters().get("password");
-                String token = UserController.getInstance().loginUser(username, password);
+                token = UserController.getInstance().loginUser(username, password);
+                user = Database.getInstance().getLoggedInUser(token);
                 Response response = new Response(true, token);
-                response.addData("user", Database.getInstance().getLoggedInUser(token));
+                response.addData("user", user);
                 return response;
             } catch (Exception e) {
                 return new Response(false, e.getMessage());
             }
         }
-        User user = Database.getInstance().getLoggedInUser(request.getToken());
         if (user == null) {
             return new Response(false, "invalid token");
         }
@@ -125,7 +196,6 @@ public class Handler extends Thread {
     }
 
     private Response handleDeckCommands(Request request) {
-        User user = Database.getInstance().getLoggedInUser(request.getToken());
         if (user == null) {
             return new Response(false, "invalid token");
         }
@@ -183,5 +253,13 @@ public class Handler extends Thread {
                 }
         }
         return new Response(false, "method not found");
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void stopGetInput() {
+        getInput = false;
     }
 }

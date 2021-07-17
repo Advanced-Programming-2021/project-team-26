@@ -1,6 +1,10 @@
 package controller;
 
-import exceptions.*;
+import com.google.gson.Gson;
+import exceptions.NoPlayerAvailable;
+import exceptions.NotSupportedRoundNumber;
+import model.Request;
+import model.Response;
 import model.User;
 
 public class MainMenuController {
@@ -29,32 +33,64 @@ public class MainMenuController {
         //TODO load duel menu
     }
 
-    public void createNewGameWithRealPlayer(String secondUsername, int round) {
-        if (secondUsername == null)
-            throw new InvalidInput();
+    public void createNewGameWithRealPlayer(int round) {
+        Request request = new Request("MainMenuController", "newGame");
+        request.addParameter("round", String.valueOf(round));
 
-        User firstUser = Database.getInstance().getCurrentUser();
-        User secondUser = User.getUserByUsername(secondUsername);
-        if (secondUser == null)
-            throw new UsernameNotFoundException();
-        if (firstUser.getActiveDeck() == null)
-            throw new NoActiveDeck(firstUser.getUsername());
-        if (secondUser.getActiveDeck() == null)
-            throw new NoActiveDeck(secondUser.getUsername());
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (!response.isSuccess())
+            throw new RuntimeException(response.getMessage());
 
-        if (firstUser.getUsername().equals(secondUser.getUsername())) {
-            throw new PlayWithYourself();
+        if (response.getData("user") != null) {
+            int turn = Integer.parseInt(response.getData("turn"));
+            User first = Database.getInstance().getCurrentUser();
+            User second = new Gson().fromJson(response.getData("user"), User.class);
+            new HeadOrTailController(first, second, round, turn).run();
+            return;
         }
+        //TODO show waiting page
+        while (true) {
+            request = new Request("MainMenuController", "foundPlayer");
+            response = NetworkController.getInstance().sendAndReceive(request);
 
-        if (!firstUser.getActiveDeck().isDeckValid())
-            throw new InvalidDeckException(firstUser.getUsername());
-        if (!secondUser.getActiveDeck().isDeckValid())
-            throw new InvalidDeckException(secondUser.getUsername());
-
-        if (round != 1 && round != 3)
-            throw new NotSupportedRoundNumber();
-
-        new HeadOrTailController(firstUser, secondUser, round).run();
+            if (response.isSuccess()) {
+                int turn = Integer.parseInt(response.getData("turn"));
+                User first = Database.getInstance().getCurrentUser();
+                User second = new Gson().fromJson(response.getData("user"), User.class);
+                new HeadOrTailController(first, second, round, turn).run();
+                return;
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+//        if (secondUsername == null)
+//            throw new InvalidInput();
+//
+//        User firstUser = Database.getInstance().getCurrentUser();
+//        User secondUser = User.getUserByUsername(secondUsername);
+//        if (secondUser == null)
+//            throw new UsernameNotFoundException();
+//        if (firstUser.getActiveDeck() == null)
+//            throw new NoActiveDeck(firstUser.getUsername());
+//        if (secondUser.getActiveDeck() == null)
+//            throw new NoActiveDeck(secondUser.getUsername());
+//
+//        if (firstUser.getUsername().equals(secondUser.getUsername())) {
+//            throw new PlayWithYourself();
+//        }
+//
+//        if (!firstUser.getActiveDeck().isDeckValid())
+//            throw new InvalidDeckException(firstUser.getUsername());
+//        if (!secondUser.getActiveDeck().isDeckValid())
+//            throw new InvalidDeckException(secondUser.getUsername());
+//
+//        if (round != 1 && round != 3)
+//            throw new NotSupportedRoundNumber();
+//
+//        new HeadOrTailController(firstUser, secondUser, round).run();
     }
 
 //    public String enterMenu(Matcher matcher) throws InvalidMenuException {

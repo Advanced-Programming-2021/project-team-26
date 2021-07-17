@@ -29,6 +29,7 @@ public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
+    private final Handler[] handlers = new Handler[2];
     private final Deck[] decks = new Deck[2];
     private final GameView[] views = new GameView[2];
     private final Stage[] stages = new Stage[2];
@@ -42,9 +43,11 @@ public class GameController {
     private boolean temporaryTurnChange = false;
     private int currentRound = 0;
 
-    public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
-        players[0] = firstPlayer;
-        players[1] = secondPayer;
+    public GameController(Handler firstPlayer, Handler secondPayer, int round) throws NoPlayerAvailable {
+        handlers[0] = firstPlayer;
+        handlers[1] = secondPayer;
+        players[0] = handlers[0].getUser();
+        players[1] = handlers[1].getUser();
         decks[0] = (Deck) players[0].getActiveDeck().clone();
         decks[1] = (Deck) players[1].getActiveDeck().clone();
 

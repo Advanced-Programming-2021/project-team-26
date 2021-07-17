@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.Request;
+import model.Response;
 import model.User;
 
 import java.io.IOException;
@@ -23,60 +25,42 @@ public class HeadOrTailController {
     int winner = -1;
     int starter;
     User[] players = new User[2];
-    HeadOrTail[] graphics = new HeadOrTail[2];
-    Stage[] stages = new Stage[2];
+    HeadOrTail graphic;
+    Stage stage;
     int round;
+    int myTurn;
     boolean[] isSignSet = new boolean[]{false, false};
 
-    public HeadOrTailController(User firstUser, User secondUser, int round) {
+    public HeadOrTailController(User firstUser, User secondUser, int round,int turn) {
         players[0] = firstUser;
         players[1] = secondUser;
+        this.myTurn = turn;
 
-        graphics[0] = new HeadOrTail(this, 0);
-        graphics[1] = new HeadOrTail(this, 1);
-
-        stages[0] = new Stage();
-        stages[1] = new Stage();
-
+        graphic = new HeadOrTail(this, myTurn);
+        stage = new Stage();
         this.round = round;
+
     }
 
     public void run() {
-        FXMLLoader firstLoader = new FXMLLoader();
-        firstLoader.setControllerFactory(type -> {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setControllerFactory(type -> {
             try {
                 if (type == HeadOrTail.class) {
-                    return graphics[0];
+                    return graphic;
                 }
                 return type.newInstance();
             } catch (Exception exc) {
                 throw new RuntimeException(exc);
             }
         });
-        firstLoader.setLocation(HeadOrTailController.class.getResource("/fxml/" + "headOrTail" + ".fxml"));
-
-        FXMLLoader secondLoader = new FXMLLoader();
-        secondLoader.setControllerFactory(type -> {
-            try {
-                if (type == HeadOrTail.class)
-                    return graphics[1];
-
-                return type.newInstance();
-            } catch (Exception exc) {
-                throw new RuntimeException(exc);
-            }
-        });
-        secondLoader.setLocation(HeadOrTailController.class.getResource("/fxml/" + "headOrTail" + ".fxml"));
+        loader.setLocation(HeadOrTailController.class.getResource("/fxml/" + "headOrTail" + ".fxml"));
 
         try {
-            Parent firstRoot = firstLoader.load();
-            Parent secondRoot = secondLoader.load();
-
-            stages[0].setScene(new Scene(firstRoot));
-            stages[1].setScene(new Scene(secondRoot));
+            Parent root = loader.load();
+            stage.setScene(new Scene(root));
             App.getStage().close();
-            stages[0].show();
-            stages[1].show();
+            stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,53 +68,53 @@ public class HeadOrTailController {
     }
 
     public String getSign(int turn) {
-        String result;
-        if (turn == 0) {
-            isSignSet[0] = true;
-            result = "B";
-        } else {
-            isSignSet[1] = true;
-            result = "#";
-        }
-
-        if (isSignSet[0] && isSignSet[1])
-            startThrowCoin();
-
-        return result;
+        Request request = new Request("HeadOrTail" , "throwCoin");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        return response.getMessage();
     }
 
-    private void startThrowCoin() {
-        graphics[0].playGif();
-        graphics[1].playGif();
+    public void startThrowCoin() {
+        graphic.playGif();
+        Response response = NetworkController.getInstance().getResponse();
+        int result = Integer.parseInt(response.getMessage());
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    int result = ThreadLocalRandom.current().nextInt(2);
                     winner = result;
+                    graphic.setResult(result);
 
-                    graphics[0].setResult(result);
-                    graphics[1].setResult(result);
+                    if(winner==myTurn) {
+                        try {
+                            AnchorPane root = (AnchorPane) GetFXML.getFXML("whoStartsGame");
+                            Button iStartButton = (Button) root.lookup("#iStartButton");
+                            Button opStartButton = (Button) root.lookup("#opStartButton");
 
-                    try {
-                        AnchorPane root = (AnchorPane) GetFXML.getFXML("whoStartsGame");
-                        Button iStartButton = (Button) root.lookup("#iStartButton");
-                        Button opStartButton = (Button) root.lookup("#opStartButton");
+                            Request request = new Request("","");
+                            iStartButton.setOnAction(e -> {
+                                starter = winner;
+                                request.addParameter("starter",String.valueOf(starter));
+                                NetworkController.getInstance().sendRequest(request);
+                                startGame();
+                            });
 
-                        iStartButton.setOnAction(e -> {
-                            starter = winner;
-                            startGame();
-                        });
-
-                        opStartButton.setOnAction(e -> {
-                            starter = 1 - winner;
-                            startGame();
-                        });
-                        stages[winner].setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            opStartButton.setOnAction(e -> {
+                                starter = 1 - winner;
+                                request.addParameter("starter",String.valueOf(starter));
+                                NetworkController.getInstance().sendRequest(request);
+                                startGame();
+                            });
+                            stage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        Response response1 = NetworkController.getInstance().getResponse();
+                        starter = Integer.parseInt(response1.getData("starter"));
+                        startGame();
                     }
                 });
             }
@@ -138,8 +122,7 @@ public class HeadOrTailController {
     }
 
     private void startGame() {
-        stages[0].close();
-        stages[1].close();
+        stage.close();
 
         App.getStage().show();
 

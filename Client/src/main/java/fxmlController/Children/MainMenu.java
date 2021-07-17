@@ -36,11 +36,9 @@ public class MainMenu extends MenuParent {
     public void newTwoPlayerGame() {
         if (App.isAreSoundsActive()) buttonClick.play();
 
-        Object[] result = getSecondPlayerAndRound();
-        String secondPlayer = (String) result[0];
-        Integer round = (Integer) result[1];
+        Integer round = getRound();
         try {
-            MainMenuController.getInstance().createNewGameWithRealPlayer(secondPlayer, round);
+            MainMenuController.getInstance().createNewGameWithRealPlayer(round);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
         }

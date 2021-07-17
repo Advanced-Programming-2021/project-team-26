@@ -29,32 +29,18 @@ public class MainMenuController {
         //TODO load duel menu
     }
 
-    public void createNewGameWithRealPlayer(String secondUsername, int round) {
-        if (secondUsername == null)
-            throw new InvalidInput();
+    public Handler createNewGameWithRealPlayer(Handler handler, int round) {
+        User user = handler.getUser();
+        if (user.getActiveDeck() == null)
+            throw new NoActiveDeck(user.getUsername());
 
-        User firstUser = Database.getInstance().getCurrentUser();
-        User secondUser = User.getUserByUsername(secondUsername);
-        if (secondUser == null)
-            throw new UsernameNotFoundException();
-        if (firstUser.getActiveDeck() == null)
-            throw new NoActiveDeck(firstUser.getUsername());
-        if (secondUser.getActiveDeck() == null)
-            throw new NoActiveDeck(secondUser.getUsername());
-
-        if (firstUser.getUsername().equals(secondUser.getUsername())) {
-            throw new PlayWithYourself();
-        }
-
-        if (!firstUser.getActiveDeck().isDeckValid())
-            throw new InvalidDeckException(firstUser.getUsername());
-        if (!secondUser.getActiveDeck().isDeckValid())
-            throw new InvalidDeckException(secondUser.getUsername());
+        if (!user.getActiveDeck().isDeckValid())
+            throw new InvalidDeckException(user.getUsername());
 
         if (round != 1 && round != 3)
             throw new NotSupportedRoundNumber();
 
-        new HeadOrTailController(firstUser, secondUser, round).run();
+        return Database.getInstance().findMatch(handler,round);
     }
 
 //    public String enterMenu(Matcher matcher) throws InvalidMenuException {

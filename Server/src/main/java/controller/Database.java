@@ -15,6 +15,7 @@ import model.cards.trap.Trap;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -339,7 +340,7 @@ public class Database {
     public String writeProfile(File file, String name) {
         File dest = new File(profileDirectoryPath + File.separator + name);
         try {
-            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return "database" + File.separator + "Profile" + File.separator + name;
         } catch (IOException e) {
             return null;
@@ -385,5 +386,29 @@ public class Database {
 
     public void removeLoggedInUser(String token) {
         loggedInUsers.remove(token);
+    }
+
+    ArrayList<WaitingGame> waitingGames = new ArrayList<>();
+
+    public synchronized Handler findMatch(Handler handler, int round) {
+        for(WaitingGame waitingGame:waitingGames){
+            if(waitingGame.round==round){
+                waitingGames.remove(waitingGame);
+                return waitingGame.handler;
+            }
+        }
+
+        waitingGames.add(new WaitingGame(handler,round));
+        return null;
+    }
+}
+
+class WaitingGame{
+    Handler handler;
+    int round;
+
+    public WaitingGame(Handler handler,int round){
+        this.handler = handler;
+        this.round = round;
     }
 }

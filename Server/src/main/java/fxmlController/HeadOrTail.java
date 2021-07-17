@@ -29,7 +29,7 @@ public class HeadOrTail {
     @FXML
     void throwCoin(ActionEvent event) {
         Sounds.buttonClick.play();
-        sign.setText(controller.getSign(turn));
+        //sign.setText(controller.getSign(turn));
     }
 
     public void initialize() {

@@ -30,6 +30,7 @@ public class HeadOrTail {
     void throwCoin(ActionEvent event) {
         Sounds.buttonClick.play();
         sign.setText(controller.getSign(turn));
+        controller.startThrowCoin();
     }
 
     public void initialize() {
