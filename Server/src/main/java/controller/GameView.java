@@ -419,7 +419,7 @@ public class GameView implements Initializable {
                 if (mySpellTraps.get(finalI).getImage() == null)
                     return;
                 try {
-                    gameController.activateEffect(turn, mySpellTraps.get(finalI).card, new CardAddress(Place.SpellTrapZone, Owner.Me));
+                    //gameController.activateEffect(turn, mySpellTraps.get(finalI).card, new CardAddress(Place.SpellTrapZone, Owner.Me));
                 } catch (Exception exception) {
                     Alert.getInstance().errorPrint(exception.getMessage());
                 }
@@ -563,13 +563,13 @@ public class GameView implements Initializable {
         oppSpellTraps.add(opoSpellTrap5);
 
         for (CardImageView imageView : myMonsters)
-            imageView.setGameView(this);
+            imageView.setGameView(null);
         for (CardImageView imageView : mySpellTraps)
-            imageView.setGameView(this);
+            imageView.setGameView(null);
         for (CardImageView imageView : oppMonsters)
-            imageView.setGameView(this);
+            imageView.setGameView(null);
         for (CardImageView imageView : oppSpellTraps)
-            imageView.setGameView(this);
+            imageView.setGameView(null);
     }
 
 
@@ -588,7 +588,7 @@ public class GameView implements Initializable {
     }
 
     public void moveFromDeckToHand(Card card) {
-        CardImageView imageView = new CardImageView(this, card, true);
+        CardImageView imageView = new CardImageView(null, card, true);
         imageView.setX(975);
         imageView.setY(425);
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
@@ -630,7 +630,7 @@ public class GameView implements Initializable {
     }
 
     public void moveFromOpponentDeckToHand(Card addedCard) {
-        CardImageView imageView = new CardImageView(this, addedCard, false);
+        CardImageView imageView = new CardImageView(null, addedCard, false);
         imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
         imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
         imageView.setX(975);
@@ -777,7 +777,7 @@ public class GameView implements Initializable {
         List<Card> hand = gameController.getGame().getBoard(turn).getHand();
         myHand.getChildren().clear();
         for (Card card : hand) {
-            ImageView imageView = new CardImageView(this, card, true);
+            ImageView imageView = new CardImageView(null, card, true);
             imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
             imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
             int number = myHand.getChildren().size();
