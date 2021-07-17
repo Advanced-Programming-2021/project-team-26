@@ -31,6 +31,7 @@ public class Handler extends Thread {
     public Request getRequest() {
         try {
             String input = dataInputStream.readUTF();
+            Logger.log("input:" + input);
             return new Gson().fromJson(input, Request.class);
         } catch (IOException e) {
             return null;
@@ -41,6 +42,7 @@ public class Handler extends Thread {
         try {
             dataOutputStream.writeUTF(response.toJSON());
             dataOutputStream.flush();
+            Logger.log("output:" + response.toJSON());
         } catch (IOException ignored) {
         }
     }

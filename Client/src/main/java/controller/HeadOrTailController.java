@@ -73,8 +73,8 @@ public class HeadOrTailController {
     }
 
     public void startThrowCoin() {
-        Platform.runLater(() -> graphic.playGif());
         Response response = NetworkController.getInstance().getResponse();
+        Platform.runLater(graphic::playGif);
         int result = Integer.parseInt(response.getMessage());
 
         Timer timer = new Timer();
