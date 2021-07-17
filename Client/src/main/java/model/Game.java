@@ -9,10 +9,10 @@ import java.util.ArrayList;
 
 public class Game {
     public final static int LIFE_POINT = 8000;
-    private final GameController gameController;
     private final Board[] boards = new Board[2];
     private final User[] users = new User[2];
     private final int[] lifePoints = new int[2];
+    private GameController gameController;
     private boolean firstTurn = true;
     private int turn = 1;
     private Phase phase = Phase.END;
@@ -219,5 +219,9 @@ public class Game {
 
     public void setWinner(int winner) {
         this.winner = winner;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 }

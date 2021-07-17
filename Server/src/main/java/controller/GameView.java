@@ -1,6 +1,8 @@
 package controller;
 
 import Utilities.Alert;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import fxmlController.CardImageView;
 import fxmlController.Size;
 import javafx.animation.KeyFrame;
@@ -26,7 +28,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -37,6 +42,7 @@ import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
 
@@ -168,8 +174,9 @@ public class GameView implements Initializable {
     private ImageView myDeckImage;
 
     private int attacker = -1;
+    private Caller caller;
 
-    public GameView(Handler handler,GameController controller, int turn) {
+    public GameView(Handler handler, GameController controller, int turn) {
         this.handler = handler;
         this.gameController = controller;
         this.turn = turn;
@@ -490,7 +497,7 @@ public class GameView implements Initializable {
         ImageView attackIcon = new ImageView();
         attackIcon.setLayoutX(attackerX);
         attackIcon.setLayoutY(attackerY);
-        if(owner == Owner.Opponent) attackIcon.setRotate(180);
+        if (owner == Owner.Opponent) attackIcon.setRotate(180);
         String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/OlderIcons/atk_icon.png";
         attackIcon.setImage(new Image(path));
         root.getChildren().add(attackIcon);
@@ -692,26 +699,7 @@ public class GameView implements Initializable {
     }
 
     public void updateOpponentMonsterZone() {
-        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(1 - turn).getMonsterZoneMap();
-        for (int i = 0; i < 5; i++) {
-            if (!monsterZone.containsKey(i)) {
-                CardImageView imageView = oppMonsters.get(i);
-                imageView.removeCard();
-            } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
-                CardImageView imageView = oppMonsters.get(i);
-                imageView.addCard(monsterZone.get(i).getMonster(), true);
-                imageView.setRotate(180);
-            } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
-                CardImageView imageView = oppMonsters.get(i);
-                imageView.addCard(monsterZone.get(i).getMonster(), true);
-                imageView.setRotate(90);
-            } else {
-                CardImageView imageView = oppMonsters.get(i);
-                imageView.addCard(monsterZone.get(i).getMonster(), false);
-                imageView.setRotate(90);
-            }
-        }
-
+        caller.sendAndReceive(new Request("view", "updateOpponentMonsterZone"));
     }
 
     public void updateOpponentSpellTraps() {
@@ -732,26 +720,7 @@ public class GameView implements Initializable {
     }
 
     public void updateMyMonsterZone() {
-        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(turn).getMonsterZoneMap();
-        for (int i = 0; i < 5; i++) {
-            if (!monsterZone.containsKey(i)) {
-                CardImageView imageView = myMonsters.get(i);
-                imageView.removeCard();
-            } else if (monsterZone.get(i).getPosition() == MonsterPosition.ATTACK) {
-                CardImageView imageView = myMonsters.get(i);
-                imageView.addCard(monsterZone.get(i).getMonster(), true);
-                imageView.setRotate(0);
-            } else if (monsterZone.get(i).getPosition() == MonsterPosition.DEFENCE_UP) {
-                CardImageView imageView = myMonsters.get(i);
-                imageView.addCard(monsterZone.get(i).getMonster(), true);
-                imageView.setRotate(270);
-            } else {
-                CardImageView imageView = myMonsters.get(i);
-                imageView.addCard(monsterZone.get(i).getMonster(), false);
-                imageView.setRotate(270);
-            }
-        }
-
+        caller.sendAndReceive(new Request("view","updateMyMonsterZone"));
     }
 
     public void updateMySpellTraps() {
@@ -771,45 +740,11 @@ public class GameView implements Initializable {
     }
 
     public void updateMyHand() {
-        List<Card> hand = gameController.getGame().getBoard(turn).getHand();
-        myHand.getChildren().clear();
-        for (Card card : hand) {
-            ImageView imageView = new CardImageView(null, card, true);
-            imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
-            imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-            int number = myHand.getChildren().size();
-
-            myHand.add(imageView, number, 0);
-
-            imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton().equals(MouseButton.SECONDARY)) {
-                        if (card instanceof Monster) setMonster(card, imageView);
-                        else if (card instanceof SpellTrap) setSpellTrap(card, imageView);
-                    } else {
-                        if (card instanceof Monster) summonMonster(card, imageView);
-                        else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);
-                    }
-                }
-            });
-        }
+        caller.sendAndReceive(new Request("view","updateMyHand"));
     }
 
     public void updateOpponentHand() {
-        List<Card> hand = gameController.getGame().getBoard(1 - turn).getHand();
-        while (hand.size() != opponentHand.getChildren().size()) {
-            if (opponentHand.getChildren().size() < hand.size()) {
-                int number = opponentHand.getChildren().size();
-                ImageView imageView = new ImageView();
-                imageView.setImage(Card.getUnknownImage());
-                imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
-                imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-                opponentHand.add(imageView, number, 0);
-            } else if (opponentHand.getChildren().size() > hand.size()) {
-                opponentHand.getChildren().remove(0);
-            }
-        }
+        caller.sendAndReceive(new Request("view", "updateOpponentHand"));
     }
 
     public void escape() {
@@ -877,48 +812,18 @@ public class GameView implements Initializable {
     }
 
     public ArrayList<Card> getCardInput(ArrayList<Card> cards, int number, String message) {
-        ArrayList<Card> selected = new ArrayList<>();
-        try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/getCard.fxml"));
-            Label question = (Label) root.lookup("#question");
-            HBox cardsHBox = (HBox) root.lookup("#cards");
+        Request request = new Request("view", "getCardInput");
+        request.addParameter("cards", cards);
+        request.addParameter("number", number);
+        request.addParameter("message", message);
 
-            question.setText(message);
-
-            for (Card card : cards) {
-                ImageView imageView = new ImageView(card.getImage());
-                imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
-                imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-                StackPane stackPane = new StackPane(imageView);
-                stackPane.setStyle("");
-                stackPane.setOnMouseClicked(e -> {
-                    if (selected.size() >= number) {
-                        stage.close();
-                        return;
-                    }
-                    if (stackPane.getStyle().equals("")) {
-                        //TODO set border
-                        stackPane.setStyle("-fx-background-color: blue; -fx-padding: 10;");
-                        selected.add(card);
-                    } else {
-                        stackPane.setStyle("");
-                        selected.remove(card);
-                    }
-                    if (selected.size() >= number) {
-                        stage.close();
-                    }
-                });
-
-                cardsHBox.getChildren().add(stackPane);
-            }
-
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-        } catch (Exception ignored) {
-
+        Response response = caller.sendAndReceive(request);
+        if (!response.isSuccess())
+            return new ArrayList<>();
+        else {
+            Type cardListType = new TypeToken<ArrayList<Card>>(){}.getType();
+            return new Gson().fromJson(response.getData("selected"), cardListType);
         }
-        return selected;
     }
 
     public Boolean ask(String message) {
@@ -950,10 +855,27 @@ public class GameView implements Initializable {
     }
 
     public Response handle(Request request) {
-        return null;
+        switch (request.getMethodToCall()) {
+            case "summon":
+                try {
+                    String cardName = request.getParameter("card");
+                    Card card = Card.getCard(cardName);
+                    if (card == null)
+                        return new Response(false, "card not found");
+                    gameController.summon(turn, card);
+                    return new Response(true, "summoned");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+        }
+        return new Response(false, "method not supported");
     }
 
     public void close() {
-        //TODO
+        handler.setView(null);
+    }
+
+    public void setCaller(Caller caller) {
+        this.caller = caller;
     }
 }

@@ -674,7 +674,7 @@ public class GameView implements Initializable {
 
     private void summonMonster(Card card, ImageView imageView) {
         try {
-            gameController.summon(turn, card);
+            gameController.summon(card);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();

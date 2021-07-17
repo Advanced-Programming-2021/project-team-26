@@ -89,8 +89,9 @@ public class GameController {
         String host = handlers[i].getSocket().getInetAddress().getHostAddress();
         int port = Integer.parseInt(request.getParameter("port"));
         try {
-            Socket socket = new Socket(host,port);
+            Socket socket = new Socket(host, port);
             callers[i] = new Caller(socket);
+            views[i].setCaller(callers[i]);
         } catch (IOException e) {
             e.printStackTrace();
         }

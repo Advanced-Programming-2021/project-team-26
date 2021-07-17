@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.Gson;
 import exceptions.*;
 import fxmlController.App;
 import fxmlController.GameView;
@@ -22,8 +23,6 @@ import model.cards.trap.Trap;
 import view.Print;
 import view.Scan;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -36,10 +35,10 @@ public class GameController {
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
     private final Deck[] decks = new Deck[2];
-    private final GameView[] views = new GameView[2];
-    private final Stage[] stages = new Stage[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
     private final int roundNumber;
+    private GameView view;
+    private Stage stage;
     private Caller caller;
     private Game game;
     private CardAddress selectedCardAddress = null;
@@ -47,19 +46,19 @@ public class GameController {
     private MonsterController selectedMonster = null;
     private SpellTrapController selectedSpellTrap = null;
     private boolean temporaryTurnChange = false;
+    private int myTurn;
     private int currentRound = 0;
 
-    public GameController(User firstPlayer, User secondPayer, int round) throws NoPlayerAvailable {
+    public GameController(User firstPlayer, User secondPayer, int round, int myTurn) throws NoPlayerAvailable {
+        this.myTurn = myTurn;
         players[0] = firstPlayer;
         players[1] = secondPayer;
         decks[0] = (Deck) players[0].getActiveDeck().clone();
         decks[1] = (Deck) players[1].getActiveDeck().clone();
 
-        views[0] = new GameView(this, 0);
-        views[1] = new GameView(this, 1);
+        view = new GameView(this, myTurn);
 
-        stages[0] = new Stage();
-        stages[1] = new Stage();
+        stage = new Stage();
         this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
         this.roundNumber = round;
     }
@@ -81,49 +80,29 @@ public class GameController {
 
     public void run() {
         initCaller();
-        FXMLLoader firstLoader = new FXMLLoader();
-        firstLoader.setControllerFactory(type -> {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setControllerFactory(type -> {
             try {
                 if (type == GameView.class) {
-                    return views[0];
+                    return view;
                 }
                 return type.newInstance();
             } catch (Exception exc) {
                 throw new RuntimeException(exc);
             }
         });
-        firstLoader.setLocation(GameController.class.getResource("/fxml/" + "game" + ".fxml"));
-
-        FXMLLoader secondLoader = new FXMLLoader();
-        secondLoader.setControllerFactory(type -> {
-            try {
-                if (type == GameView.class)
-                    return views[1];
-
-                return type.newInstance();
-            } catch (Exception exc) {
-                throw new RuntimeException(exc);
-            }
-        });
-        secondLoader.setLocation(GameController.class.getResource("/fxml/" + "game" + ".fxml"));
+        loader.setLocation(GameController.class.getResource("/fxml/" + "game" + ".fxml"));
 
         try {
-            Parent firstRoot = firstLoader.load();
-            Parent secondRoot = secondLoader.load();
+            Parent root = loader.load();
 
-            Scene[] scenes = new Scene[2];
-            scenes[0] = new Scene(firstRoot);
-            scenes[1] = new Scene(secondRoot);
-            addEscape(scenes);
-            addDebugMode(scenes);
-            stages[0].setScene(scenes[0]);
-            stages[1].setScene(scenes[1]);
-            stages[0].setResizable(false);
-            stages[1].setResizable(false);
+            Scene scene = new Scene(root);
+            addEscape(scene);
+            addDebugMode(scene);
+            stage.setScene(scene);
+            stage.setResizable(false);
             App.getStage().close();
-            stages[0].show();
-            stages[1].show();
-
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -140,31 +119,23 @@ public class GameController {
             request.addParameter("port", port);
             NetworkController.getInstance().sendRequest(request);
             Socket socket = serverSocket.accept();
-            caller = new Caller(this,socket);
+            caller = new Caller(this,view, socket);
             caller.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void addDebugMode(Scene[] scenes) {
+    private void addDebugMode(Scene scene) {
         KeyCombination key = new KeyCodeCombination(KeyCode.C,
                 KeyCombination.CONTROL_DOWN,
                 KeyCodeCombination.SHIFT_DOWN);
 
-        scenes[0].getAccelerators().put(key, () -> {
+        scene.getAccelerators().put(key, () -> {
             new Thread(() -> {
                 System.out.println("debugging mode 0");
                 String input = new Scanner(System.in).nextLine();
-                handleDebug(input, 0);
-            }).start();
-        });
-
-        scenes[1].getAccelerators().put(key, () -> {
-            new Thread(() -> {
-                System.out.println("debugging mode 1");
-                String input = new Scanner(System.in).nextLine();
-                handleDebug(input, 1);
+                handleDebug(input, myTurn);
             }).start();
         });
     }
@@ -188,14 +159,10 @@ public class GameController {
         }
     }
 
-    private void addEscape(Scene[] scenes) {
-        scenes[0].addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
+    private void addEscape(Scene scene) {
+        scene.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ESCAPE)
-                views[0].escape();
-        });
-        scenes[1].addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ESCAPE)
-                views[1].escape();
+                view.escape();
         });
     }
 
@@ -208,109 +175,11 @@ public class GameController {
     }
 
     public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public String select(Matcher matcher) throws InvalidSelection, CardNotFoundException, InvalidInput, NoCardSelectedException {
-        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
-
-        String addressNumber;
-        if ((addressNumber = Scan.getInstance().getValue(input, "monster", "m")) != null) {
-            int monsterNumber = Integer.parseInt(addressNumber);
-            if (monsterNumber > Board.CARD_NUMBER_IN_ROW)
-                throw new InvalidSelection();
-
-            if (input.containsKey("opponent") || input.containsKey("o")) {
-                if (game.getOtherBoard().getMonsterByIndex(monsterNumber - 1) != null) {
-                    selectedMonster = game.getOtherBoard().getMonsterByIndex(monsterNumber - 1);
-                    selectedCard = game.getOtherBoard().getMonsterByIndex(monsterNumber - 1).getCard();
-                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Opponent, monsterNumber - 1);
-                }
-            } else {
-                if (game.getThisBoard().getMonsterByIndex(monsterNumber - 1) != null) {
-                    selectedMonster = game.getThisBoard().getMonsterByIndex(monsterNumber - 1);
-                    selectedCard = selectedMonster.getCard();
-                    selectedCardAddress = new CardAddress(Place.MonsterZone, Owner.Me, monsterNumber - 1);
-                }
-            }
-
-            if (selectedCard == null)
-                throw new CardNotFoundInPositionException();
-
-        } else if ((addressNumber = Scan.getInstance().getValue(input, "spell", "s")) != null) {
-            int spellNumber = Integer.parseInt(addressNumber);
-            if (spellNumber > Board.CARD_NUMBER_IN_ROW)
-                throw new InvalidSelection();
-
-            if (input.containsKey("opponent") || input.containsKey("o")) {
-                if (game.getOtherBoard().getSpellTrapByIndex(spellNumber - 1) != null) {
-                    selectedSpellTrap = game.getOtherBoard().getSpellTrapByIndex(spellNumber - 1);
-                    selectedCard = game.getOtherBoard().getSpellTrapByIndex(spellNumber - 1).getCard();
-                    selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Opponent, spellNumber - 1);
-                }
-            } else {
-                if (game.getThisBoard().getSpellTrapByIndex(spellNumber - 1) != null) {
-                    selectedSpellTrap = game.getThisBoard().getSpellTrapByIndex(spellNumber - 1);
-                    selectedCard = selectedSpellTrap.getCard();
-                    selectedCardAddress = new CardAddress(Place.SpellTrapZone, Owner.Me, spellNumber - 1);
-                }
-            }
-
-            if (selectedCard == null)
-                throw new CardNotFoundInPositionException();
-
-        } else if (Scan.getInstance().getValue(input, "field", "f") != null) {
-            if (input.containsKey("opponent") || input.containsKey("o")) {
-                if (game.getOtherBoard().getFieldZone() != null) {
-                    selectedSpellTrap = game.getOtherBoard().getFieldZone();
-                    selectedCard = selectedSpellTrap.getCard();
-                    selectedCardAddress = new CardAddress(Place.Field, Owner.Opponent);
-                }
-            } else {
-                if (game.getThisBoard().getFieldZone() != null) {
-                    selectedSpellTrap = game.getThisBoard().getFieldZone();
-                    selectedCard = selectedSpellTrap.getCard();
-                    selectedCardAddress = new CardAddress(Place.Field, Owner.Me);
-                }
-            }
-
-            if (selectedCard == null)
-                throw new CardNotFoundInPositionException();
-        } else if ((addressNumber = Scan.getInstance().getValue(input, "hand", "h")) != null) {
-            if (input.containsKey("force") || input.containsKey("f")) {
-                if (Database.getInstance().isDebuggingMode()) {
-                    String cardName = addressNumber;
-                    Card card = Card.getCard(cardName);
-                    if (card == null)
-                        throw new CardNotFoundException();
-                    game.getThisBoard().addCardToHand(card);
-                    int cardIndex = game.getThisBoard().getHand().size() - 1;
-                    selectedCard = card;
-                    selectedCardAddress = new CardAddress(Place.Hand, Owner.Me, cardIndex);
-                    return "card selected";
-                } else {
-                    throw new InvalidInput();
-                }
-            }
-            int handNumber = Integer.parseInt(addressNumber);
-            if (handNumber > game.getThisBoard().getHand().size())
-                throw new InvalidSelection();
-
-            selectedCard = game.getThisBoard().getHand().get(handNumber - 1);
-            selectedCardAddress = new CardAddress(Place.Hand, Owner.Me, handNumber - 1);
-        } else if (input.containsKey("-d")) {
-            if (selectedCard == null) {
-                throw new NoCardSelectedException();
-            }
-            deselect();
-            return "card deselected";
-        } else
-            throw new InvalidInput();
-        return "card selected";
+        Request request = new Request("GameController","getGame");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        this.game = new Gson().fromJson(response.getData("game"),Game.class);
+        this.game.setGameController(this);
+        return this.game;
     }
 
     public void deselect() {
@@ -326,93 +195,12 @@ public class GameController {
             game.nextPhase();
     }
 
-    public String summon(int turn, Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+    public String summon(Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
-        if (turn != game.getTurn())
-            return null;
-        selectedCard = card;
 
-        if (temporaryTurnChange)
-            throw new NotYourTurnException();
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
-
-        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
-            throw new ActionNotAllowed();
-
-        if (game.getThisBoard().getMonsterZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
-            throw new FullMonsterZone();
-
-        if (game.isSummonOrSetThisTurn())
-            throw new AlreadySummonException();
-
-        Monster selectedMonster = (Monster) selectedCard;
-
-        if (selectedMonster.getLevel() > 4 && selectedMonster.getLevel() <= 6) {
-            if (game.getThisBoard().getMonsterZoneNumber() < 1)
-                throw new NotEnoughCardForTribute();
-
-            ArrayList<Card> options = new ArrayList<>();
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
-                options.add(monsterController.getMonster());
-            ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monster you want to tribute:");
-
-            if (selected.size() != 1)
-                return null;
-
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
-                if (monsterController.getMonster() == selected.get(0)) {
-                    game.getThisBoard().removeMonster(monsterController);
-                    break;
-                }
-            }
-        } else if (selectedMonster.getLevel() > 6) {
-            if (game.getThisBoard().getMonsterZoneNumber() < 2)
-                throw new NotEnoughCardForTribute();
-
-            ArrayList<Card> options = new ArrayList<>();
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
-                options.add(monsterController.getMonster());
-            ArrayList<Card> selected = views[turn].getCardInput(options, 2, "Select the monsters you want to tribute");
-
-            if (selected.size() != 2)
-                return null;
-
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
-                if (monsterController.getMonster() == selected.get(0)) {
-                    game.getThisBoard().removeMonster(monsterController);
-                    break;
-                }
-            }
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
-                if (monsterController.getMonster() == selected.get(1)) {
-                    game.getThisBoard().removeMonster(monsterController);
-                    break;
-                }
-            }
-        }
-        MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.ATTACK);
-        game.setSummonOrSetThisTurn(true);
-        monster.summon();
-        for (MonsterController monsterEffect : game.getThisBoard().getMonstersZone())
-            monsterEffect.runMonsterEffectAtSummon();
-
-        if (game.getThisBoard().getFieldZone() != null)
-            game.getThisBoard().getFieldZone().runFieldEffectAtSummon();
-
-        if (game.getOtherBoard().getFieldZone() != null)
-            game.getOtherBoard().getFieldZone().runFieldEffectAtSummon();
-
-        deselect();
-        if (activeOpponentTrapOnSummon(monster, "normal")) {
-            return null;
-        }
-
-        views[1 - game.getTurn()].updateOpponentMonsterZone();
-        views[1 - game.getTurn()].updateOpponentHand();
-        views[game.getTurn()].updateMyHand();
-        views[game.getTurn()].updateMyMonsterZone();
+        Request request = new Request("GameController","summon");
+        request.addParameter("card",card.getName());
         return "summoned successfully";
     }
 

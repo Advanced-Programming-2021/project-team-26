@@ -1,6 +1,7 @@
 package model;
 
 import com.google.gson.Gson;
+import controller.Database;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,11 @@ public class Request {
         setController(controller);
         setMethodToCall(methodToCall);
         setParameters(parameters);
+    }
+
+    public Request(String controller, String methodToCall) {
+        setController(controller);
+        setMethodToCall(methodToCall);
     }
 
     public String getToken() {
@@ -53,40 +59,35 @@ public class Request {
         this.parameters = parameters;
     }
 
-    public void addParameter(String key,String value){
-        if(parameters==null)
+    public void addParameter(String key, String value) {
+        if (parameters == null)
             parameters = new HashMap<>();
-        parameters.put(key,value);
+        parameters.put(key, value);
     }
 
-    public void addParameter(String key,Object value){
-        addParameter(key,new Gson().toJson(value));
+    public void addParameter(String key, Object value) {
+        addParameter(key, new Gson().toJson(value));
     }
 
-    public String getParameter(String key){
-        if(parameters.containsKey(key))
+    public String getParameter(String key) {
+        if (parameters.containsKey(key))
             return parameters.get(key);
         return null;
     }
 
-    public boolean addFile(String key,File file){
-        try {
-            byte[] content = Files.readAllBytes(file.toPath());
-            addParameter(key, Base64.getEncoder().encodeToString(content));
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+    public void addFile(String key, File file) throws IOException {
+        byte[] content = Files.readAllBytes(file.toPath());
+        addParameter(key, Base64.getEncoder().encodeToString(content));
     }
 
-    public File getFile(String key){
+    public File getFile(String key) {
         String string = getParameter(key);
-        if (string==null)
+        if (string == null)
             return null;
         byte[] bytes = Base64.getDecoder().decode(string);
         try {
-            Path path = Files.createTempFile("tmp","tmp");
-            return Files.write(path,bytes).toFile();
+            Path path = Files.createTempFile("tmp", "tmp");
+            return Files.write(path, bytes).toFile();
         } catch (IOException e) {
             return null;
         }
