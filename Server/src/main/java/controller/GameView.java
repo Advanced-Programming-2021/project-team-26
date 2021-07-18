@@ -20,10 +20,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -843,6 +840,30 @@ public class GameView implements Initializable {
 
             no.setOnAction(ev -> {
                 result[0] = false;
+                stage.close();
+            });
+
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        } catch (Exception ignored) {
+
+        }
+        return result[0];
+    }
+
+
+    public String getString(String message){
+        final String[] result = {""};
+        try {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/getString.fxml"));
+            Label question = (Label) root.lookup("#question");
+            Button confirm = (Button) root.lookup("#confirm");
+            TextField input = (TextField) root.lookup("#input");
+
+            question.setText(message);
+            confirm.setOnAction(ev -> {
+                result[0] = input.getText();
                 stage.close();
             });
 

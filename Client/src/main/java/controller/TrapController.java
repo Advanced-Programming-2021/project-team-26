@@ -1,5 +1,6 @@
 package controller;
 
+import Utilities.Alert;
 import exceptions.TrapNotFoundException;
 import model.AttackResult;
 import model.cards.Card;
@@ -85,8 +86,7 @@ public class TrapController extends SpellTrapController {
         return new TrapController(gameController, trap, position) {
             @Override
             public void onActive() {
-                Print.getInstance().printMessage("enter card name to remove:");
-                String cardName = Scan.getInstance().getString();
+                String cardName = gameController.getViews()[myTurn].getString("enter card name to remove:");
                 boolean found = false;
                 List<Card> hand = otherBoard.getDeck();
                 for (Card card : hand) {
@@ -99,12 +99,12 @@ public class TrapController extends SpellTrapController {
                 if (found) {
                     List<Card> opDeck = otherBoard.getDeck();
                     opDeck.removeIf(card -> card.getName().equals(cardName));
-                    Print.getInstance().printMessage("all " + cardName + " are removed from opponent deck");
+                    Alert.getInstance().successfulPrint("all " + cardName + " are removed from opponent deck");
                 } else {
                     List<Card> myDeck = thisBoard.getDeck();
                     int rnd = new Random().nextInt(myDeck.size());
                     Card removed = myDeck.remove(rnd);
-                    Print.getInstance().printMessage(removed.getName() + " is removed from your deck");
+                    Alert.getInstance().successfulPrint(removed.getName() + " is removed from your deck");
                 }
             }
         };
@@ -141,7 +141,7 @@ public class TrapController extends SpellTrapController {
                 for (MonsterController monster : otherBoard.getMonstersZone()) {
                     otherBoard.removeMonster(monster);
                 }
-                Print.getInstance().printMessage("all monsters removed");
+                Alert.getInstance().successfulPrint("all monsters removed");
                 return true;
             }
         };
@@ -181,7 +181,7 @@ public class TrapController extends SpellTrapController {
             public boolean onSummon(MonsterController summonMonster, String type) {
                 gameController.getGame().decreaseLifePoint(myTurn, 2000);
                 otherBoard.removeMonster(summonMonster);
-                Print.getInstance().printMessage("your monster removed");
+                Alert.getInstance().successfulPrint("your monster removed");
                 return true;
             }
         };
