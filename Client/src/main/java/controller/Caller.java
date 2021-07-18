@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fxmlController.GameView;
+import javafx.application.Platform;
 import model.Request;
 import model.Response;
 import model.cards.Card;
@@ -48,6 +49,17 @@ public class Caller extends Thread {
         }
     }
 
+    public void sendResponse(Response response){
+        try {
+            if (response != null) {
+                dataOutputStream.writeUTF(response.toJSON());
+                dataOutputStream.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Response process(Request request) {
         switch (request.getController()) {
             case "view":
@@ -65,53 +77,56 @@ public class Caller extends Thread {
                         }.getType());
                 int number = gson.fromJson(request.getParameter("number"), int.class);
                 String message = request.getParameter("message");
-                ArrayList<Card> selected = view.getCardInput(cards, number, message);
-                Response response = new Response(true, "");
-                response.addData("selected", selected);
-                return response;
+                Platform.runLater(() -> {
+                    ArrayList<Card> selected = view.getCardInput(cards, number, message);
+                    Response response = new Response(true, "");
+                    response.addData("selected", selected);
+                    sendResponse(response);
+                });
+                return null;
             case "updateOpponentMonsterZone":
-                view.updateOpponentMonsterZone();
+                Platform.runLater(()->view.updateOpponentMonsterZone());
                 return new Response(true, "");
             case "updateOpponentHand":
-                view.updateOpponentHand();
+                Platform.runLater(()->view.updateOpponentHand());
                 return new Response(true, "");
             case "updateMyHand":
-                view.updateMyHand();
+                Platform.runLater(()->view.updateMyHand());
                 return new Response(true, "");
             case "updateMyMonsterZone":
-                view.updateMyMonsterZone();
+                Platform.runLater(()->view.updateMyMonsterZone());
                 return new Response(true, "");
             case "updateMySpellTraps":
-                view.updateMySpellTraps();
+                Platform.runLater(()->view.updateMySpellTraps());
                 return new Response(true, "");
             case "updateOpponentSpellTraps":
-                view.updateOpponentSpellTraps();
+                Platform.runLater(()->view.updateOpponentSpellTraps());
                 return new Response(true, "");
             case "updateLifePoint":
-                view.updateLifePoint();
+                Platform.runLater(()->view.updateLifePoint());
                 return new Response(true, "");
             case "updateMyGraveyard":
                 Card card = Card.getCard(request.getParameter("card"));
-                view.updateMyGraveyard(card);
+                Platform.runLater(()->view.updateMyGraveyard(card));
                 return new Response(true, "");
             case "updateOppGraveyard":
                 Card card1 = Card.getCard(request.getParameter("card"));
-                view.updateOppGraveyard(card1);
+                Platform.runLater(()->view.updateOppGraveyard(card1));
                 return new Response(true, "");
             case "updateFieldImage":
                 Spell spell = (Spell) Card.getCard(request.getParameter("spell"));
-                view.updateFieldImage(spell);
+                Platform.runLater(()->view.updateFieldImage(spell));
                 return new Response(true, "");
             case "moveFromDeckToHand":
                 Card card2 = Card.getCard(request.getParameter("card"));
-                view.moveFromDeckToHand(card2);
+                Platform.runLater(()->view.moveFromDeckToHand(card2));
                 return new Response(true, "");
             case "moveFromOpponentDeckToHand":
                 Card card3 = Card.getCard(request.getParameter("card"));
-                view.moveFromOpponentDeckToHand(card3);
+                Platform.runLater(()->view.moveFromOpponentDeckToHand(card3));
                 return new Response(true, "");
             case "updatePhase":
-                view.updatePhase();
+                Platform.runLater(()->view.updatePhase());
                 return new Response(true,"");
         }
         return new Response(false, "method not supported");

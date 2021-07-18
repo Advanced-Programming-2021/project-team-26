@@ -54,7 +54,7 @@ public class Handler extends Thread {
 
     public void run() {
         while (true) {
-            if (!getInput)
+            if (!isGetInput())
                 continue;
             try {
                 String input = dataInputStream.readUTF();
@@ -287,11 +287,15 @@ public class Handler extends Thread {
         return this.user;
     }
 
-    public void stopGetInput() {
+    public synchronized boolean isGetInput(){
+        return getInput;
+    }
+
+    public synchronized void stopGetInput() {
         getInput = false;
     }
 
-    public void startGetInput() {
+    public synchronized void startGetInput() {
         getInput = true;
     }
 
