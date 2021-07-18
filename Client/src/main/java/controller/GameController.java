@@ -119,7 +119,7 @@ public class GameController {
             request.addParameter("port", port);
             NetworkController.getInstance().sendRequest(request);
             Socket socket = serverSocket.accept();
-            caller = new Caller(this,view, socket);
+            caller = new Caller(this, view, socket);
             caller.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -175,9 +175,9 @@ public class GameController {
     }
 
     public Game getGame() {
-        Request request = new Request("GameController","getGame");
+        Request request = new Request("GameController", "getGame");
         Response response = NetworkController.getInstance().sendAndReceive(request);
-        this.game = new Gson().fromJson(response.getData("game"),Game.class);
+        this.game = new Gson().fromJson(response.getData("game"), Game.class);
         this.game.setGameController(this);
         return this.game;
     }
@@ -199,9 +199,13 @@ public class GameController {
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
 
-        Request request = new Request("GameController","summon");
-        request.addParameter("card",card.getName());
-        return "summoned successfully";
+        Request request = new Request("GameController", "summon");
+        request.addParameter("card", card.getName());
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            return "summoned successfully";
+        else
+            throw new RuntimeException(response.getMessage());
     }
 
     public String set(Card card) throws NoCardSelectedException, CannotSetException {
@@ -222,8 +226,8 @@ public class GameController {
             throw new ActionNotAllowed();
 
         MonsterPosition wantedPosition;
-        if(selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN){
-            return flipSummon(turn,index);
+        if (selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN) {
+            return flipSummon(turn, index);
         }
         if (selectedMonster.getPosition() == MonsterPosition.ATTACK)
             wantedPosition = MonsterPosition.DEFENCE_UP;
