@@ -890,8 +890,8 @@ public class GameView implements Initializable {
                     int attacker = Integer.parseInt(request.getParameter("attacker"));
                     int number = Integer.parseInt(request.getParameter("number"));
 
-                    gameController.attack(attacker, number);
-                    return new Response(true, "attack was successful");
+                   String message = gameController.attack(attacker, number);
+                    return new Response(true, message);
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
