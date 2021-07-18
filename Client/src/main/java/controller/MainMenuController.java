@@ -1,11 +1,23 @@
 package controller;
 
+import Utilities.GetFXML;
 import com.google.gson.Gson;
 import exceptions.NoPlayerAvailable;
 import exceptions.NotSupportedRoundNumber;
+import fxmlController.App;
+import fxmlController.Size;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
 import model.Request;
 import model.Response;
 import model.User;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class MainMenuController {
     private static MainMenuController instance;
@@ -48,7 +60,9 @@ public class MainMenuController {
             new HeadOrTailController(first, second, round, turn).run();
             return;
         }
-        //TODO show waiting page
+
+        loadWaitingPage();
+
         while (true) {
             request = new Request("MainMenuController", "foundPlayer");
             response = NetworkController.getInstance().sendAndReceive(request);
@@ -59,60 +73,30 @@ public class MainMenuController {
                 new HeadOrTailController(first, second, round, turn).run();
                 return;
             }
+
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-//        if (secondUsername == null)
-//            throw new InvalidInput();
-//
-//        User firstUser = Database.getInstance().getCurrentUser();
-//        User secondUser = User.getUserByUsername(secondUsername);
-//        if (secondUser == null)
-//            throw new UsernameNotFoundException();
-//        if (firstUser.getActiveDeck() == null)
-//            throw new NoActiveDeck(firstUser.getUsername());
-//        if (secondUser.getActiveDeck() == null)
-//            throw new NoActiveDeck(secondUser.getUsername());
-//
-//        if (firstUser.getUsername().equals(secondUser.getUsername())) {
-//            throw new PlayWithYourself();
-//        }
-//
-//        if (!firstUser.getActiveDeck().isDeckValid())
-//            throw new InvalidDeckException(firstUser.getUsername());
-//        if (!secondUser.getActiveDeck().isDeckValid())
-//            throw new InvalidDeckException(secondUser.getUsername());
-//
-//        if (round != 1 && round != 3)
-//            throw new NotSupportedRoundNumber();
-//
-//        new HeadOrTailController(firstUser, secondUser, round).run();
     }
 
-//    public String enterMenu(Matcher matcher) throws InvalidMenuException {
-//        String newMenu = matcher.group(1);
-//        if (newMenu.contains("Login")) {
-//            new LoginMenu().execute();
-//            return "_______MAIN MENU_______";
-//        } else if (newMenu.contains("Deck")) {
-//            new DeckMenu().execute();
-//            return "_______MAIN MENU_______";
-//        } else if (newMenu.contains("Export")) {
-//            new InterchangeMenu().execute();
-//            return "_______MAIN MENU_______";
-//        } else if (newMenu.contains("Shop")) {
-//            new ShopMenu().execute();
-//            return "_______MAIN MENU_______";
-//        } else if (newMenu.contains("Profile")) {
-//            new ProfileMenu().execute();
-//            return "_______MAIN MENU_______";
-//        } else if (newMenu.contains("Score")) {
-//            new ScoreBoardMenu().execute();
-//            return "_______MAIN MENU_______";
-//        }
-//        throw new InvalidMenuException();
-//    }
+    private void loadWaitingPage() {
+        Stage stage = App.getStage();
+        Parent root = null;
+        try {
+            root = GetFXML.getFXML("waitingPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setTitle("Waiting Page");
+        stage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
+        stage.show();
+    }
+
+    public void stopWaiting(ActionEvent actionEvent) {
+
+    }
+
 }
