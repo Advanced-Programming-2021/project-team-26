@@ -6,6 +6,7 @@ import fxmlController.GameView;
 import model.Request;
 import model.Response;
 import model.cards.Card;
+import model.cards.spell.Spell;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,11 +15,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Caller extends Thread {
-    private GameController gameController;
+    private final GameController gameController;
+    private final Socket socket;
+    private final DataInputStream dataInputStream;
+    private final DataOutputStream dataOutputStream;
     private GameView view;
-    private Socket socket;
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
     private boolean end;
 
     public Caller(GameController gameController, GameView view, Socket socket) throws IOException {
@@ -80,6 +81,24 @@ public class Caller extends Thread {
                 return new Response(true, "");
             case "updateMySpellTraps":
                 view.updateMySpellTraps();
+                return new Response(true, "");
+            case "updateOpponentSpellTraps":
+                view.updateOpponentSpellTraps();
+                return new Response(true, "");
+            case "updateLifePoint":
+                view.updateLifePoint();
+                return new Response(true, "");
+            case "updateMyGraveyard":
+                Card card = Card.getCard(request.getParameter("card"));
+                view.updateMyGraveyard(card);
+                return new Response(true, "");
+            case "updateOppGraveyard":
+                Card card1 = Card.getCard(request.getParameter("card"));
+                view.updateOppGraveyard(card1);
+                return new Response(true, "");
+            case "updateFieldImage":
+                Spell spell = (Spell) Card.getCard(request.getParameter("spell"));
+                view.updateFieldImage(spell);
                 return new Response(true, "");
         }
         return new Response(false, "method not supported");

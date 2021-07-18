@@ -702,20 +702,7 @@ public class GameView implements Initializable {
     }
 
     public void updateOpponentSpellTraps() {
-        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(1 - turn).getSpellTrapZoneMap();
-        for (int i = 0; i < 5; i++) {
-            if (!spellTrapZone.containsKey(i)) {
-                CardImageView imageView = oppSpellTraps.get(i);
-                imageView.removeCard();
-            } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {
-                CardImageView imageView = oppSpellTraps.get(i);
-                imageView.addCard(spellTrapZone.get(i).getCard(), true);
-                imageView.setRotate(180);
-            } else {
-                CardImageView imageView = oppSpellTraps.get(i);
-                imageView.addCard(spellTrapZone.get(i).getCard(), false);
-            }
-        }
+        caller.sendAndReceive(new Request("view", "updateOpponentSpellTraps"));
     }
 
     public void updateMyMonsterZone() {
@@ -767,35 +754,25 @@ public class GameView implements Initializable {
 
 
     public void updateLifePoint() {
-        int myLifePoint = gameController.getGame().getLifePoint(turn);
-        myLP.setText(String.valueOf(myLifePoint));
-        updateProgressBar(myLPProgress, 1.0 * myLifePoint / Game.LIFE_POINT);
-        int opponentLifePoint = gameController.getGame().getLifePoint(1 - turn);
-        opponentLP.setText(String.valueOf(opponentLifePoint));
-        updateProgressBar(opponentLPProgress, 1.0 * opponentLifePoint / Game.LIFE_POINT);
-    }
-
-    private void updateProgressBar(ProgressBar progressBar, double value) {
-        progressBar.setProgress(value);
-        if (value >= 0.8)
-            progressBar.setStyle("-fx-accent:green");
-        else if (0.4 <= value && value < 0.8)
-            progressBar.setStyle("-fx-accent:yellow");
-        else
-            progressBar.setStyle("-fx-accent:red");
+        caller.sendAndReceive(new Request("view", "updateLifePoint"));
     }
 
     public void updateMyGraveyard(Card card) {
-        myGraveyard.setImage(card.getImage());
+        Request request = new Request("view", "updateMyGraveyard");
+        request.addParameter("card", card.getName());
+        caller.sendAndReceive(request);
     }
 
     public void updateOppGraveyard(Card card) {
-        oppGraveyard.setImage(card.getImage());
+        Request request = new Request("view", "updateOppGraveyard");
+        request.addParameter("card", card.getName());
+        caller.sendAndReceive(request);
     }
 
     public void updateFieldImage(Spell spell) {
-        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/Field/" + spell.getName() + ".bmp";
-        field.setImage(new Image(path));
+        Request request = new Request("view", "updateFieldImage");
+        request.addParameter("spell", spell.getName());
+        caller.sendAndReceive(request);
     }
 
     public ArrayList<Card> getCardInput(ArrayList<Card> cards, int number, String message) {
@@ -873,6 +850,27 @@ public class GameView implements Initializable {
 
                     gameController.setPosition(turn, index);
                     return new Response(true, "position set successfully");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+
+            case "attackDirect":
+                try {
+                    int attacker = Integer.parseInt(request.getParameter("attacker"));
+
+                    gameController.attackDirect(attacker);
+                    return new Response(true, "direct attack was successful");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+
+            case "attack":
+                try {
+                    int attacker = Integer.parseInt(request.getParameter("attacker"));
+                    int number = Integer.parseInt(request.getParameter("number"));
+
+                    gameController.attack(attacker, number);
+                    return new Response(true, "attack was successful");
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }

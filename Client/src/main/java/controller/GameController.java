@@ -250,99 +250,33 @@ public class GameController {
     }
 
     public String attackDirect(int attacker) {
-        selectedCard = game.getThisBoard().getMonsterByIndex(attacker).getCard();
-        selectedMonster = game.getThisBoard().getMonsterByIndex(attacker);
-        if (temporaryTurnChange)
-            throw new NotYourTurnException();
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
+        Request request = new Request("GameController","attackDirect");
+        request.addParameter("index", String.valueOf(attacker));
 
-        if (game.getPhase() != Phase.BATTLE)
-            throw new ActionNotAllowed();
-
-        if (selectedMonster.isHasAttackedThisTurn())
-            throw new AlreadyAttackedException();
-
-        if (!game.getOtherBoard().canDirectAttack())
-            throw new CannotAttackDirectlyException();
-
-        AttackResult result = activeOpponentTrapOnAttack(selectedMonster, null);
-
-        if (result == null) {
-            result = new AttackResult(0, selectedMonster.getCard().getAttackPower(), false, false);
-        }
-
-        if (result.isRemoveMyCard())
-            selectedMonster.remove(null);
-
-        game.decreaseThisLifePoint(result.getMyLPDecrease());
-        game.decreaseOtherLifePoint(result.getOpLPDecrease());
-        updateViewsGameBoard();
-        deselect();
-        return result.getMessage();
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            return "direct attack was successful";
+        else
+            throw new RuntimeException(response.getMessage());
     }
 
     private void updateViewsGameBoard() {
-        for (int i = 0; i < 2; i++) {
-            views[i].updateMyMonsterZone();
-            views[i].updateMySpellTraps();
-            views[i].updateOpponentMonsterZone();
-            views[i].updateOpponentSpellTraps();
-        }
+            view.updateMyMonsterZone();
+            view.updateMySpellTraps();
+            view.updateOpponentMonsterZone();
+            view.updateOpponentSpellTraps();
     }
 
     public String attack(int attacker, int number) {
-        selectedCard = game.getThisBoard().getMonsterByIndex(attacker).getCard();
-        selectedMonster = game.getThisBoard().getMonsterByIndex(attacker);
-        if (temporaryTurnChange)
-            throw new NotYourTurnException();
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
+        Request request = new Request("GameController","attack");
+        request.addParameter("index", String.valueOf(attacker));
+        request.addParameter("number", String.valueOf(number));
 
-        if (selectedMonster.getPosition() != MonsterPosition.ATTACK)
-            throw new CannotAttackException();
-
-        if (game.getPhase() != Phase.BATTLE)
-            throw new ActionNotAllowed();
-
-        if (selectedMonster.isHasAttackedThisTurn())
-            throw new AlreadyAttackedException();
-
-        MonsterController toBeAttacked = game.getOtherBoard().getMonsterByIndex(number);
-        if (toBeAttacked == null || !toBeAttacked.canBeAttacked(selectedMonster))
-            throw new NoCardToAttackException();
-
-        AttackResult attackResult = toBeAttacked.attack(selectedMonster);
-        AttackResult trapEffect = activeOpponentTrapOnAttack(selectedMonster, toBeAttacked);
-        if (trapEffect != null)
-            attackResult = trapEffect;
-        if (attackResult == null)
-            attackResult = new AttackResult(selectedMonster, toBeAttacked);
-
-        getViews()[game.getTurn()].attackAnimation(attacker, number, Owner.Me);
-        getViews()[1 - game.getTurn()].attackAnimation(attacker, number, Owner.Opponent);
-
-        Timer timer = new Timer();
-        AttackResult finalAttackResult = attackResult;
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    if (finalAttackResult.isRemoveOpCard())
-                        toBeAttacked.remove(selectedMonster);
-                    if (finalAttackResult.isRemoveMyCard())
-                        selectedMonster.remove(toBeAttacked);
-
-                    updateViewsGameBoard();
-                });
-            }
-        }, 1440);
-
-        game.decreaseThisLifePoint(attackResult.getMyLPDecrease());
-        game.decreaseOtherLifePoint(attackResult.getOpLPDecrease());
-        deselect();
-
-        return attackResult.getMessage();
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            return "attack was successful";
+        else
+            throw new RuntimeException(response.getMessage());
     }
 
 
