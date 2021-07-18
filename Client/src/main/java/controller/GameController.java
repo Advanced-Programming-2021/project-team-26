@@ -212,7 +212,11 @@ public class GameController {
         Request request = new Request("GameController","set");
         request.addParameter("card",card.getName());
 
-        return "set successfully";
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            return "set successfully";
+        else
+            throw new RuntimeException(response.getMessage());
     }
 
     public String setPosition(int turn, int index) {

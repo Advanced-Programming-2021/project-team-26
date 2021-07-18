@@ -665,7 +665,7 @@ public class GameView implements Initializable {
 
     private void setSpellTrap(Card card, ImageView imageView) {
         try {
-            gameController.set(turn, card);
+            gameController.set(card);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();
@@ -683,7 +683,7 @@ public class GameView implements Initializable {
 
     private void setMonster(Card card, ImageView imageView) {
         try {
-            gameController.set(turn, card);
+            gameController.set(card);
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();
