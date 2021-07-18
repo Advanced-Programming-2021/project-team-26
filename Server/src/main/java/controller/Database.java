@@ -401,6 +401,15 @@ public class Database {
         waitingGames.add(new WaitingGame(handler,round));
         return null;
     }
+
+    public synchronized void removeWaitingGame(Handler handler){
+        for(WaitingGame waitingGame:waitingGames){
+            if(waitingGame.handler==handler){
+                waitingGames.remove(waitingGame);
+                return;
+            }
+        }
+    }
 }
 
 class WaitingGame{

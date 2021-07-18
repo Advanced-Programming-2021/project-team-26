@@ -68,12 +68,23 @@ public class Handler extends Thread {
                     Logger.log(input + " -> " + response.toJSON());
                 }
             } catch (IOException e) {
-                Database.getInstance().removeLoggedInUser(token);
                 Logger.log("Client disconnected");
+                cleanup();
                 break;
             }
         }
 
+    }
+
+    private void cleanup() {
+        Database.getInstance().removeLoggedInUser(token);
+        Database.getInstance().removeWaitingGame(this);
+        user = null;
+        token = null;
+        opponent = null;
+        view = null;
+        round = -1;
+        getInput = true;
     }
 
     private Response process(Request request) {
@@ -126,6 +137,13 @@ public class Handler extends Thread {
                     return null;
                 } else
                     return new Response(false, "not found yet");
+            case "cancelGame":
+                if(opponent!=null)
+                    return new Response(false,"can't cancel game");
+                else{
+                    Database.getInstance().removeWaitingGame(this);
+                    return new Response(true,"game canceled");
+                }
         }
 
         return new Response(false, "method not found");
