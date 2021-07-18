@@ -108,6 +108,7 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        caller.start();
         getGame().getBoard(0).initBoard();
         getGame().getBoard(1).initBoard();
         game.nextPhase();
@@ -122,7 +123,6 @@ public class GameController {
             NetworkController.getInstance().sendRequest(request);
             Socket socket = serverSocket.accept();
             caller = new Caller(this, view, socket);
-            caller.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
