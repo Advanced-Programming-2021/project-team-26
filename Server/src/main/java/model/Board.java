@@ -100,8 +100,16 @@ public class Board {
         Collections.shuffle(this.deck);
     }
 
-    private void setGameController(GameController gameController) {
+    public void setGameController(GameController gameController) {
         this.gameController = gameController;
+        for(MonsterController monsterController:getMonstersZone())
+            if(monsterController!=null)
+                monsterController.setGameController(gameController);
+        for(SpellTrapController spellTrapController:getSpellTrapZone())
+            if(spellTrapController!=null)
+                spellTrapController.setGameController(gameController);
+        if(fieldZone!=null)
+            fieldZone.setGameController(gameController);
     }
 
     private void initMonstersZone() {

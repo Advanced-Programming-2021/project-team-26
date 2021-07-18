@@ -223,5 +223,7 @@ public class Game {
 
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
+        boards[0].setGameController(gameController);
+        boards[1].setGameController(gameController);
     }
 }

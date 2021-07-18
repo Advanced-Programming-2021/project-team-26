@@ -36,9 +36,9 @@ public class MonsterController {
         MONSTER_MAKERS.put("The Tricky", MonsterController::makeTheTricky);
     }
 
-    private final GameController gameController;
     protected Board thisBoard;
     protected Board otherBoard;
+    private GameController gameController;
     private Monster monster;
     private MonsterPosition position;
     private CardAddress monsterAddress;
@@ -53,8 +53,6 @@ public class MonsterController {
     private boolean isOurGraveyardAccessible;
     private Card selectedCard;
     private CardAddress selectedCardAddress;
-
-
     private MonsterController(GameController gameController, Monster monster,
                               MonsterPosition position, CardAddress monsterAddress) {
         this.gameController = gameController;
@@ -418,6 +416,10 @@ public class MonsterController {
                 }
             }
         };
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 
     public CardAddress getMonsterAddress() {

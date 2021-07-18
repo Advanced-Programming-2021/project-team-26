@@ -19,7 +19,10 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,10 +31,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.CardAddress;
-import model.Owner;
-import model.Request;
-import model.Response;
+import model.*;
 import model.cards.Card;
 import model.cards.spell.Spell;
 
@@ -173,7 +173,7 @@ public class GameView implements Initializable {
     }
 
     public void updatePhase() {
-        caller.sendAndReceive(new Request("view","updatePhase"));
+        caller.sendAndReceive(new Request("view", "updatePhase"));
     }
 
     private void setButtonActivity(Button button, EventHandler<ActionEvent> e, boolean active) {
@@ -533,14 +533,14 @@ public class GameView implements Initializable {
     }
 
     public void moveFromDeckToHand(Card card) {
-        Request request = new Request("view","moveFromDeckToHand");
-        request.addParameter("card",card.getName());
+        Request request = new Request("view", "moveFromDeckToHand");
+        request.addParameter("card", card.getName());
         caller.sendAndReceive(request);
     }
 
     public void moveFromOpponentDeckToHand(Card addedCard) {
-        Request request = new Request("view","moveFromOpponentDeckToHand");
-        request.addParameter("card",addedCard.getName());
+        Request request = new Request("view", "moveFromOpponentDeckToHand");
+        request.addParameter("card", addedCard.getName());
         caller.sendAndReceive(request);
     }
 
@@ -724,6 +724,13 @@ public class GameView implements Initializable {
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
+            case "getGame":
+                Game game = gameController.getGame();
+                game.setGameController(null);
+                Response response = new Response(true,"");
+                response.addData("game",game);
+                game.setGameController(gameController);
+                return response;
         }
         return new Response(false, "method not supported");
     }

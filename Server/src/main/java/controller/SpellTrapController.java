@@ -75,7 +75,7 @@ public abstract class SpellTrapController {
         return gameController;
     }
 
-    protected void setGameController(GameController gameController) {
+    public void setGameController(GameController gameController) {
         this.gameController = gameController;
     }
 

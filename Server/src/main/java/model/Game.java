@@ -9,10 +9,10 @@ import java.util.ArrayList;
 
 public class Game {
     public final static int LIFE_POINT = 8000;
-    private final GameController gameController;
     private final Board[] boards = new Board[2];
     private final User[] users = new User[2];
     private final int[] lifePoints = new int[2];
+    private GameController gameController;
     private boolean firstTurn = true;
     private int turn = 1;
     private Phase phase = Phase.END;
@@ -20,7 +20,6 @@ public class Game {
     private boolean summonOrSetThisTurn = false;
     private int surrenderPlayer = -1;
     private int winner = -1;
-
     public Game(GameController gameController, User first, User second, Deck firstDeck, Deck secondDeck) throws NoPlayerAvailable {
         if (first == null || second == null)
             throw new NoPlayerAvailable();
@@ -31,6 +30,12 @@ public class Game {
         boards[1] = new Board(gameController, secondDeck);
         lifePoints[0] = LIFE_POINT;
         lifePoints[1] = LIFE_POINT;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+        boards[0].setGameController(gameController);
+        boards[1].setGameController(gameController);
     }
 
     public void setFinished(boolean finished) {

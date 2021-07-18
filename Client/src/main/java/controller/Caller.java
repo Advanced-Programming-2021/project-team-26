@@ -43,6 +43,7 @@ public class Caller extends Thread {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                break;
             }
         }
     }
