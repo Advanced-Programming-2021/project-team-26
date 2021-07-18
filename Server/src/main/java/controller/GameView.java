@@ -15,7 +15,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -23,19 +22,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.*;
+import model.CardAddress;
+import model.Owner;
+import model.Request;
+import model.Response;
 import model.cards.Card;
-import model.cards.SpellTrap;
-import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 
 import java.io.IOException;
@@ -45,9 +42,7 @@ import java.util.*;
 
 public class GameView implements Initializable {
 
-    public static final String MY_PHASE_STYLE = "-fx-background-color: #3ba8e2;";
     public static final String OPPONENT_PHASE_STYLE = "-fx-background-color: #e01313;";
-    public static final String MY_CURRENT_PHASE_STYLE = "-fx-background-color: #3ba8e2;-fx-border-color: #001a82; -fx-border-width: 5";
     public static final String OPPONENT_CURRENT_PHASE_STYLE = "-fx-background-color: #e01313;-fx-border-color: #570000; -fx-border-width: 5";
     private final ArrayList<CardImageView> myMonsters = new ArrayList<>();
     private final ArrayList<CardImageView> mySpellTraps = new ArrayList<>();
@@ -62,8 +57,6 @@ public class GameView implements Initializable {
     public Button battlePhaseBut;
     public Button mainPhase2But;
     public Button endPhaseBut;
-    public ImageView cardInfo;
-    public TextArea cardDetails;
     public ImageView myGraveyard;
     public ImageView oppGraveyard;
     public ImageView field;
@@ -180,55 +173,7 @@ public class GameView implements Initializable {
     }
 
     public void updatePhase() {
-        if (gameController.getGame().getTurn() != turn) {
-            updatePhaseOpponent();
-            return;
-        }
-
-        standbyPhaseBut.setStyle(MY_PHASE_STYLE);
-        drawPhaseBut.setStyle(MY_PHASE_STYLE);
-        mainPhase1But.setStyle(MY_PHASE_STYLE);
-        battlePhaseBut.setStyle(MY_PHASE_STYLE);
-        mainPhase2But.setStyle(MY_PHASE_STYLE);
-        endPhaseBut.setStyle(MY_PHASE_STYLE);
-
-        Phase phase = gameController.getGame().getPhase();
-        boolean found = false;
-        if (Phase.STANDBY.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(standbyPhaseBut, null, false);
-            standbyPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(standbyPhaseBut, null, false);
-        if (Phase.DRAW.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(drawPhaseBut, null, false);
-            drawPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(drawPhaseBut, this::drawPhase, found);
-        if (Phase.MAIN1.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(mainPhase1But, null, false);
-            mainPhase1But.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(mainPhase1But, this::mainPhase1, found);
-        if (Phase.BATTLE.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(battlePhaseBut, this::battlePhase, false);
-            battlePhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(battlePhaseBut, this::battlePhase, found);
-        if (Phase.MAIN2.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(mainPhase2But, null, false);
-            mainPhase2But.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(mainPhase2But, this::mainPhase2, found);
-        if (Phase.END.compareTo(phase) == 0) {
-            setButtonActivity(endPhaseBut, null, false);
-            endPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(endPhaseBut, this::endPhase, found);
+        caller.sendAndReceive(new Request("view","updatePhase"));
     }
 
     private void setButtonActivity(Button button, EventHandler<ActionEvent> e, boolean active) {
@@ -589,13 +534,13 @@ public class GameView implements Initializable {
 
     public void moveFromDeckToHand(Card card) {
         Request request = new Request("view","moveFromDeckToHand");
-        request.addParameter("card",card);
+        request.addParameter("card",card.getName());
         caller.sendAndReceive(request);
     }
 
     public void moveFromOpponentDeckToHand(Card addedCard) {
         Request request = new Request("view","moveFromOpponentDeckToHand");
-        request.addParameter("card",addedCard);
+        request.addParameter("card",addedCard.getName());
         caller.sendAndReceive(request);
     }
 

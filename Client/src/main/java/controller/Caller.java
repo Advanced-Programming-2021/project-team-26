@@ -24,6 +24,7 @@ public class Caller extends Thread {
 
     public Caller(GameController gameController, GameView view, Socket socket) throws IOException {
         this.gameController = gameController;
+        this.view = view;
         this.socket = socket;
         this.dataInputStream = new DataInputStream(socket.getInputStream());
         this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -101,13 +102,16 @@ public class Caller extends Thread {
                 view.updateFieldImage(spell);
                 return new Response(true, "");
             case "moveFromDeckToHand":
-                Card card2 = new Gson().fromJson(request.getParameter("card"), Card.class);
+                Card card2 = Card.getCard(request.getParameter("card"));
                 view.moveFromDeckToHand(card2);
                 return new Response(true, "");
             case "moveFromOpponentDeckToHand":
-                Card card3 = new Gson().fromJson(request.getParameter("card"), Card.class);
+                Card card3 = Card.getCard(request.getParameter("card"));
                 view.moveFromOpponentDeckToHand(card3);
                 return new Response(true, "");
+            case "updatePhase":
+                view.updatePhase();
+                return new Response(true,"");
         }
         return new Response(false, "method not supported");
     }
