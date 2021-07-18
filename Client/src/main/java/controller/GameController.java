@@ -19,14 +19,16 @@ import model.cards.SpellTrap;
 import model.cards.monster.Monster;
 import model.cards.spell.Spell;
 import model.cards.spell.SpellType;
-import model.cards.trap.Trap;
 import view.Print;
 import view.Scan;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -209,8 +211,8 @@ public class GameController {
     }
 
     public String set(Card card) throws NoCardSelectedException, CannotSetException {
-        Request request = new Request("GameController","set");
-        request.addParameter("card",card.getName());
+        Request request = new Request("GameController", "set");
+        request.addParameter("card", card.getName());
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess())
@@ -220,7 +222,7 @@ public class GameController {
     }
 
     public String setPosition(int index) {
-        Request request = new Request("GameController","setPosition");
+        Request request = new Request("GameController", "setPosition");
         request.addParameter("index", String.valueOf(index));
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
@@ -250,7 +252,7 @@ public class GameController {
     }
 
     public String attackDirect(int attacker) {
-        Request request = new Request("GameController","attackDirect");
+        Request request = new Request("GameController", "attackDirect");
         request.addParameter("index", String.valueOf(attacker));
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
@@ -261,14 +263,14 @@ public class GameController {
     }
 
     private void updateViewsGameBoard() {
-            view.updateMyMonsterZone();
-            view.updateMySpellTraps();
-            view.updateOpponentMonsterZone();
-            view.updateOpponentSpellTraps();
+        view.updateMyMonsterZone();
+        view.updateMySpellTraps();
+        view.updateOpponentMonsterZone();
+        view.updateOpponentSpellTraps();
     }
 
     public String attack(int attacker, int number) {
-        Request request = new Request("GameController","attack");
+        Request request = new Request("GameController", "attack");
         request.addParameter("index", String.valueOf(attacker));
         request.addParameter("number", String.valueOf(number));
 
@@ -280,56 +282,17 @@ public class GameController {
     }
 
 
-    public String activateEffect(int turn, Card card, CardAddress address) {
-        if (turn != game.getTurn())
-            return null;
-        selectedCard = card;
-        selectedCardAddress = address;
-        if (temporaryTurnChange) {
-            activateEffectOnOpponentTurn();
-            return null;
-        }
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
+    public String activateEffect(Card card, CardAddress address) {
+        Request request = new Request("GameController", "activateEffect");
+        request.addParameter("card", card);
+        request.addParameter("address", address);
 
-        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
-            throw new ActionNotAllowed();
+        Response response = NetworkController.getInstance().sendAndReceive(request);
 
-        if (selectedCardAddress.getPlace() == Place.SpellTrapZone &&
-                selectedSpellTrap.getPosition() == SpellTrapPosition.UP)
-            throw new AlreadyActivatedException();
-
-        Spell spell = (Spell) selectedCard;
-
-        if (spell.getType() == SpellType.FIELD) {
-            SpellController spellController = game.getThisBoard().putFiled(spell);
-            spellController.runFieldEffectAtSummon();
-        } else {
-            SpellTrapController controller;
-            if (selectedCardAddress.getPlace() == Place.Hand) {
-                if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
-                    throw new FullSpellTrapZone();
-                controller = game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.UP);
-            } else {
-                controller = selectedSpellTrap;
-                if (controller.isSpellTrapNew())
-                    throw new CannotActivateException();
-            }
-
-            chain.push(controller);
-            if (conditionsForChangingTurn()) {
-                changeTurn();
-            } else {
-                while (!chain.isEmpty()) {
-                    SpellTrapController current = chain.pop();
-                    current.activate();
-                }
-            }
-        }
-        deselect();
-        views[1 - game.getTurn()].updateOpponentHand();
-        views[game.getTurn()].updateMyHand();
-        return "spell activated";
+        if (response.isSuccess())
+            return "spell activated";
+        else
+            throw new RuntimeException(response.getMessage());
     }
 
     private void activateEffectOnOpponentTurn() {
@@ -362,54 +325,9 @@ public class GameController {
         deselect();
     }
 
-    public String showGraveyard(Matcher matcher) {
-        List<Card> graveyard = game.getThisBoard().getGraveyard();
-        if (graveyard.isEmpty()) {
-            Print.getInstance().printMessage("graveyard empty");
-        } else {
-            int i = 1;
-            for (Card card : graveyard) {
-                Print.getInstance().printMessage(i + ". " + card.getName() + ":" + card.getDescription());
-                i++;
-            }
-        }
-        while (true) {
-            if (Scan.getInstance().getString().equals("back"))
-                break;
-        }
-        return null;
-    }
-
-    public String showCard(Matcher matcher) {
-        String[] rawInput = matcher.group().split("\\s+");
-        Map<String, String> input = Scan.getInstance().parseInput(matcher.group());
-        if (input.containsKey("selected") || input.containsKey("s")) {
-            if (selectedCard == null)
-                throw new NoCardSelectedException();
-            if (selectedCardAddress.getOwner() == Owner.Opponent) {
-                if ((selectedCard instanceof Monster) && selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN)
-                    throw new CardNotVisibleException();
-                if ((selectedCard instanceof SpellTrap) && selectedSpellTrap.getPosition() == SpellTrapPosition.DOWN)
-                    throw new CardNotVisibleException();
-            }
-            Print.getInstance().printCard(selectedCard);
-        } else {
-            String cardName = rawInput[2];
-            Card card = Card.getCard(cardName);
-            if (card == null)
-                throw new CardNotFoundInPositionException();
-            Print.getInstance().printCard(card);
-        }
-        return null;
-    }
-
     public void surrender() {
         game.setSurrenderPlayer(game.getTurn());
         endGame();
-    }
-
-    public boolean isFinished() {
-        return false;
     }
 
     public void endGame() {
@@ -514,8 +432,7 @@ public class GameController {
 
     private void closeGame() {
         caller.end();
-        stages[0].close();
-        stages[1].close();
+        stage.close();
         App.getStage().show();
     }
 

@@ -412,7 +412,7 @@ public class GameView implements Initializable {
                 if (mySpellTraps.get(finalI).getImage() == null)
                     return;
                 try {
-                    gameController.activateEffect(turn, mySpellTraps.get(finalI).card, new CardAddress(Place.SpellTrapZone, Owner.Me));
+                    gameController.activateEffect(mySpellTraps.get(finalI).card, new CardAddress(Place.SpellTrapZone, Owner.Me));
                 } catch (Exception exception) {
                     Alert.getInstance().errorPrint(exception.getMessage());
                 }
@@ -486,7 +486,7 @@ public class GameView implements Initializable {
         ImageView attackIcon = new ImageView();
         attackIcon.setLayoutX(attackerX);
         attackIcon.setLayoutY(attackerY);
-        if(owner == Owner.Opponent) attackIcon.setRotate(180);
+        if (owner == Owner.Opponent) attackIcon.setRotate(180);
         String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/OlderIcons/atk_icon.png";
         attackIcon.setImage(new Image(path));
         root.getChildren().add(attackIcon);
@@ -653,7 +653,7 @@ public class GameView implements Initializable {
 
     private void activateSpellTrap(Card card, ImageView imageView) {
         try {
-            gameController.activateEffect(turn, card, new CardAddress(Place.Hand, Owner.Me));
+            gameController.activateEffect(card, new CardAddress(Place.Hand, Owner.Me));
         } catch (Exception e) {
             Alert.getInstance().errorPrint(e.getMessage());
             e.printStackTrace();
@@ -944,7 +944,7 @@ public class GameView implements Initializable {
         return result[0];
     }
 
-    public String getString(String message){
+    public String getString(String message) {
         final String[] result = {""};
         try {
             Stage stage = new Stage();

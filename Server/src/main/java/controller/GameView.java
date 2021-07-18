@@ -895,6 +895,16 @@ public class GameView implements Initializable {
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
+            case "activateEffect":
+                try {
+                    Card card = new Gson().fromJson(request.getParameter("card"),Card.class);
+                    CardAddress address = new Gson().fromJson(request.getParameter("address"),CardAddress.class);
+
+                    gameController.activateEffect(turn,card,address);
+                    return new Response(true,"done");
+                }catch (Exception e){
+                    return new Response(false,e.getMessage());
+                }
         }
         return new Response(false, "method not supported");
     }
