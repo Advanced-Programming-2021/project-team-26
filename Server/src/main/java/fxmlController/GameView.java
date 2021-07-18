@@ -393,7 +393,6 @@ public class GameView implements Initializable {
             myMonsters.get(i).setOnMouseClicked(e -> {
                 if (myMonsters.get(finalI).getImage() == null)
                     return;
-                //TODO flip summon
                 switch (gameController.getGame().getPhase()) {
                     case BATTLE:
                         attacker = finalI;
@@ -898,7 +897,6 @@ public class GameView implements Initializable {
                         return;
                     }
                     if (stackPane.getStyle().equals("")) {
-                        //TODO set border
                         stackPane.setStyle("-fx-background-color: blue; -fx-padding: 10;");
                         selected.add(card);
                     } else {

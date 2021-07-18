@@ -217,6 +217,7 @@ public class MonsterController {
                 }
 
                 this.setPosition(MonsterPosition.ATTACK);
+                this.setHasPositionChanged(true);
             }
         };
     }
@@ -503,6 +504,7 @@ public class MonsterController {
 
     public void flip() {
         this.setPosition(MonsterPosition.ATTACK);
+        setHasPositionChanged(true);
     }
 
     public void remove(MonsterController attacker) {

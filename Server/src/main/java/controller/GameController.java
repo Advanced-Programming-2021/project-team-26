@@ -390,6 +390,9 @@ public class GameController {
             throw new ActionNotAllowed();
 
         MonsterPosition wantedPosition;
+        if(selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN){
+            return flipSummon(turn,index);
+        }
         if (selectedMonster.getPosition() == MonsterPosition.ATTACK)
             wantedPosition = MonsterPosition.DEFENCE_UP;
         else
@@ -411,16 +414,12 @@ public class GameController {
         return "monster card position changed successfully";
     }
 
-    public String flipSummon(Matcher matcher) {
+    public String flipSummon(int turn, int index) {
+        if (turn != game.getTurn())
+            return null;
+        selectedMonster = game.getThisBoard().getMonsterByIndex(index);
         if (temporaryTurnChange)
             throw new NotYourTurnException();
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
-
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                selectedCardAddress.getPlace() != Place.MonsterZone ||
-                !(selectedCard instanceof Monster))
-            throw new CannotChangeException();
 
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();

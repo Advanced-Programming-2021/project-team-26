@@ -39,7 +39,6 @@ public class SignUp extends MenuParent {
             boolean result = UserController.getInstance().addNewUser(username.getText(), password.getText(), nickname.getText());
             if (result) {
                 Alert.getInstance().successfulPrint("User created successfully");
-                //TODO load login page
                 App.popMenu();
                 new Login().run();
             }

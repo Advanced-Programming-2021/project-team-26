@@ -897,7 +897,6 @@ public class GameView implements Initializable {
                         return;
                     }
                     if (stackPane.getStyle().equals("")) {
-                        //TODO set border
                         stackPane.setStyle("-fx-background-color: blue; -fx-padding: 10;");
                         selected.add(card);
                     } else {
