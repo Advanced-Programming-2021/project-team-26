@@ -390,8 +390,8 @@ public class GameController {
             throw new ActionNotAllowed();
 
         MonsterPosition wantedPosition;
-        if(selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN){
-            return flipSummon(turn,index);
+        if (selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN) {
+            return flipSummon(turn, index);
         }
         if (selectedMonster.getPosition() == MonsterPosition.ATTACK)
             wantedPosition = MonsterPosition.DEFENCE_UP;

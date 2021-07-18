@@ -1,6 +1,9 @@
 package controller;
 
-import exceptions.*;
+import exceptions.InvalidDeckException;
+import exceptions.NoActiveDeck;
+import exceptions.NoPlayerAvailable;
+import exceptions.NotSupportedRoundNumber;
 import model.User;
 
 public class MainMenuController {
@@ -40,7 +43,7 @@ public class MainMenuController {
         if (round != 1 && round != 3)
             throw new NotSupportedRoundNumber();
 
-        return Database.getInstance().findMatch(handler,round);
+        return Database.getInstance().findMatch(handler, round);
     }
 
 //    public String enterMenu(Matcher matcher) throws InvalidMenuException {

@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class Caller {
-    private Socket socket;
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
+    private final Socket socket;
+    private final DataInputStream dataInputStream;
+    private final DataOutputStream dataOutputStream;
 
     public Caller(Socket socket) throws IOException {
         this.socket = socket;

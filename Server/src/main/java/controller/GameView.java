@@ -817,7 +817,7 @@ public class GameView implements Initializable {
     }
 
 
-    public String getString(String message){
+    public String getString(String message) {
         final String[] result = {""};
         try {
             Stage stage = new Stage();
@@ -890,20 +890,20 @@ public class GameView implements Initializable {
                     int attacker = Integer.parseInt(request.getParameter("attacker"));
                     int number = Integer.parseInt(request.getParameter("number"));
 
-                   String message = gameController.attack(attacker, number);
+                    String message = gameController.attack(attacker, number);
                     return new Response(true, message);
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
             case "activateEffect":
                 try {
-                    Card card = new Gson().fromJson(request.getParameter("card"),Card.class);
-                    CardAddress address = new Gson().fromJson(request.getParameter("address"),CardAddress.class);
+                    Card card = new Gson().fromJson(request.getParameter("card"), Card.class);
+                    CardAddress address = new Gson().fromJson(request.getParameter("address"), CardAddress.class);
 
-                    gameController.activateEffect(turn,card,address);
-                    return new Response(true,"done");
-                }catch (Exception e){
-                    return new Response(false,e.getMessage());
+                    gameController.activateEffect(turn, card, address);
+                    return new Response(true, "done");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
                 }
         }
         return new Response(false, "method not supported");

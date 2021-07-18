@@ -1,7 +1,6 @@
 package model;
 
 import com.google.gson.Gson;
-import controller.Database;
 
 import java.io.File;
 import java.io.IOException;
