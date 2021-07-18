@@ -723,19 +723,7 @@ public class GameView implements Initializable {
     }
 
     public void updateMySpellTraps() {
-        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(turn).getSpellTrapZoneMap();
-        for (int i = 0; i < 5; i++) {
-            if (!spellTrapZone.containsKey(i)) {
-                CardImageView imageView = mySpellTraps.get(i);
-                imageView.removeCard();
-            } else if (spellTrapZone.get(i).getPosition() == SpellTrapPosition.UP) {
-                CardImageView imageView = mySpellTraps.get(i);
-                imageView.addCard(spellTrapZone.get(i).getCard(), true);
-            } else {
-                CardImageView imageView = mySpellTraps.get(i);
-                imageView.addCard(spellTrapZone.get(i).getCard(), false);
-            }
-        }
+        caller.sendAndReceive(new Request("view", "updateMySpellTraps"));
     }
 
     public void updateMyHand() {
