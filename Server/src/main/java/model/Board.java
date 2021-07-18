@@ -26,7 +26,7 @@ public class Board {
 
     public Board(GameController gameController, Deck deck) {
         initDeck(deck);
-        setGameController(gameController);
+        this.gameController = gameController;
     }
 
     public void initBoard() {
