@@ -719,7 +719,7 @@ public class GameView implements Initializable {
     }
 
     public void updateMyMonsterZone() {
-        caller.sendAndReceive(new Request("view","updateMyMonsterZone"));
+        caller.sendAndReceive(new Request("view", "updateMyMonsterZone"));
     }
 
     public void updateMySpellTraps() {
@@ -739,7 +739,7 @@ public class GameView implements Initializable {
     }
 
     public void updateMyHand() {
-        caller.sendAndReceive(new Request("view","updateMyHand"));
+        caller.sendAndReceive(new Request("view", "updateMyHand"));
     }
 
     public void updateOpponentHand() {
@@ -820,7 +820,8 @@ public class GameView implements Initializable {
         if (!response.isSuccess())
             return new ArrayList<>();
         else {
-            Type cardListType = new TypeToken<ArrayList<Card>>(){}.getType();
+            Type cardListType = new TypeToken<ArrayList<Card>>() {
+            }.getType();
             return new Gson().fromJson(response.getData("selected"), cardListType);
         }
     }
@@ -863,6 +864,17 @@ public class GameView implements Initializable {
                         return new Response(false, "card not found");
                     gameController.summon(turn, card);
                     return new Response(true, "summoned");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
+            case "set":
+                try {
+                    String cardName = request.getParameter("card");
+                    Card card = Card.getCard(cardName);
+                    if (card == null)
+                        return new Response(false, "card not found");
+                    gameController.set(turn, card);
+                    return new Response(true, "set successfully");
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }

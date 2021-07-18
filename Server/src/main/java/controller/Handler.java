@@ -22,6 +22,7 @@ public class Handler extends Thread {
     GameView view;
     int round = -1;
     private boolean getInput = true;
+
     public Handler(Socket socket) throws IOException {
         this.socket = socket;
         dataInputStream = new DataInputStream(socket.getInputStream());
@@ -84,7 +85,7 @@ public class Handler extends Thread {
             case "MainMenuController":
                 return handleMainMenuCommands(request);
             case "GameController":
-                if(view==null)
+                if (view == null)
                     break;
                 return view.handle(request);
         }

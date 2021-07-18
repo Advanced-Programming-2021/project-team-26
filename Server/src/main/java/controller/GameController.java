@@ -279,7 +279,6 @@ public class GameController {
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
-
         if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
             throw new ActionNotAllowed();
 

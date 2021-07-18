@@ -204,114 +204,11 @@ public class GameController {
         return "summoned successfully";
     }
 
-    public String set(int turn, Card card) throws NoCardSelectedException, CannotSetException {
-        if (turn != game.getTurn())
-            return null;
-        selectedCard = card;
+    public String set(Card card) throws NoCardSelectedException, CannotSetException {
+        Request request = new Request("GameController","set");
+        request.addParameter("card",card.getName());
 
-        if (temporaryTurnChange)
-            throw new NotYourTurnException();
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
-
-
-        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
-            throw new ActionNotAllowed();
-
-        if (selectedCard instanceof Monster) {
-            setMonster(turn);
-        } else if (selectedCard instanceof Spell) {
-            setSpell();
-        } else if (selectedCard instanceof Trap) {
-            setTrap();
-        }
-        deselect();
         return "set successfully";
-    }
-
-    private void setTrap() {
-        if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
-            throw new FullSpellTrapZone();
-
-        Trap trap = (Trap) selectedCard;
-        game.getThisBoard().putSpellTrap(trap, SpellTrapPosition.DOWN);
-        views[1 - game.getTurn()].updateOpponentSpellTraps();
-        views[1 - game.getTurn()].updateOpponentHand();
-        views[game.getTurn()].updateMySpellTraps();
-        views[game.getTurn()].updateMyHand();
-    }
-
-    private void setSpell() {
-        if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
-            throw new FullSpellTrapZone();
-
-        Spell spell = (Spell) selectedCard;
-        game.getThisBoard().putSpellTrap(spell, SpellTrapPosition.DOWN);
-        views[1 - game.getTurn()].updateOpponentSpellTraps();
-        views[1 - game.getTurn()].updateOpponentHand();
-        views[game.getTurn()].updateMySpellTraps();
-        views[game.getTurn()].updateMyHand();
-    }
-
-    private void setMonster(int turn) {
-        if (game.getThisBoard().getMonsterZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
-            throw new FullMonsterZone();
-
-        if (game.isSummonOrSetThisTurn())
-            throw new AlreadySummonException();
-
-        Monster selectedMonster = (Monster) selectedCard;
-
-        if (selectedMonster.getLevel() > 4 && selectedMonster.getLevel() <= 6) {
-            if (game.getThisBoard().getMonsterZoneNumber() < 1)
-                throw new NotEnoughCardForTribute();
-
-            ArrayList<Card> options = new ArrayList<>();
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
-                options.add(monsterController.getMonster());
-            ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monster you want to tribute:");
-
-            if (selected.size() != 1)
-                return;
-
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
-                if (monsterController.getMonster() == selected.get(0)) {
-                    game.getThisBoard().removeMonster(monsterController);
-                    break;
-                }
-            }
-        } else if (selectedMonster.getLevel() > 6) {
-            if (game.getThisBoard().getMonsterZoneNumber() < 2)
-                throw new NotEnoughCardForTribute();
-
-            ArrayList<Card> options = new ArrayList<>();
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
-                options.add(monsterController.getMonster());
-            ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monsters you want to tribute");
-
-            if (selected.size() != 2)
-                return;
-
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
-                if (monsterController.getMonster() == selected.get(0)) {
-                    game.getThisBoard().removeMonster(monsterController);
-                    break;
-                }
-            }
-            for (MonsterController monsterController : game.getThisBoard().getMonstersZone()) {
-                if (monsterController.getMonster() == selected.get(1)) {
-                    game.getThisBoard().removeMonster(monsterController);
-                    break;
-                }
-            }
-        }
-        MonsterController monster = game.getThisBoard().putMonster(selectedMonster, MonsterPosition.DEFENCE_DOWN);
-        game.setSummonOrSetThisTurn(true);
-        monster.set();
-        views[1 - game.getTurn()].updateOpponentMonsterZone();
-        views[1 - game.getTurn()].updateOpponentHand();
-        views[game.getTurn()].updateMyMonsterZone();
-        views[game.getTurn()].updateMyHand();
     }
 
     public String setPosition(int turn, int index) {
