@@ -400,7 +400,7 @@ public class GameView implements Initializable {
                     case MAIN1:
                     case MAIN2:
                         try {
-                            gameController.setPosition(turn, finalI);
+                            gameController.setPosition(finalI);
                         } catch (Exception exception) {
                             Alert.getInstance().errorPrint(exception.getMessage());
                         }

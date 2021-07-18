@@ -866,6 +866,16 @@ public class GameView implements Initializable {
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
+
+            case "setPosition":
+                try {
+                    int index = Integer.parseInt(request.getParameter("index"));
+
+                    gameController.setPosition(turn, index);
+                    return new Response(true, "position set successfully");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
         }
         return new Response(false, "method not supported");
     }

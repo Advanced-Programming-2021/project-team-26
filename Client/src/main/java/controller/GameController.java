@@ -219,39 +219,15 @@ public class GameController {
             throw new RuntimeException(response.getMessage());
     }
 
-    public String setPosition(int turn, int index) {
-        if (turn != game.getTurn())
-            return null;
-        selectedMonster = game.getThisBoard().getMonsterByIndex(index);
-        if (temporaryTurnChange)
-            throw new NotYourTurnException();
+    public String setPosition(int index) {
+        Request request = new Request("GameController","setPosition");
+        request.addParameter("index", String.valueOf(index));
 
-        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
-            throw new ActionNotAllowed();
-
-        MonsterPosition wantedPosition;
-        if (selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN) {
-            return flipSummon(turn, index);
-        }
-        if (selectedMonster.getPosition() == MonsterPosition.ATTACK)
-            wantedPosition = MonsterPosition.DEFENCE_UP;
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        if (response.isSuccess())
+            return "position set successfully";
         else
-            wantedPosition = MonsterPosition.ATTACK;
-
-        if (wantedPosition == MonsterPosition.ATTACK && selectedMonster.getPosition() != MonsterPosition.DEFENCE_UP)
-            throw new CannotChangeException();
-        if (wantedPosition == MonsterPosition.DEFENCE_UP && selectedMonster.getPosition() != MonsterPosition.ATTACK)
-            throw new CannotChangeException();
-
-        if (selectedMonster.isHasPositionChanged())
-            throw new AlreadyChangeException();
-
-        selectedMonster.setPosition(wantedPosition);
-        selectedMonster.setHasPositionChanged(true);
-        deselect();
-        views[turn].updateMyMonsterZone();
-        views[1 - turn].updateOpponentMonsterZone();
-        return "monster card position changed successfully";
+            throw new RuntimeException(response.getMessage());
     }
 
     public String flipSummon(int turn, int index) {
