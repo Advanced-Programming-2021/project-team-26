@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Caller extends Thread{
+public class Caller extends Thread {
     private GameController gameController;
     private GameView view;
     private Socket socket;
@@ -21,7 +21,7 @@ public class Caller extends Thread{
     private DataOutputStream dataOutputStream;
     private boolean end;
 
-    public Caller(GameController gameController,GameView view,Socket socket) throws IOException {
+    public Caller(GameController gameController, GameView view, Socket socket) throws IOException {
         this.gameController = gameController;
         this.socket = socket;
         this.dataInputStream = new DataInputStream(socket.getInputStream());
@@ -30,12 +30,12 @@ public class Caller extends Thread{
 
     @Override
     public void run() {
-        while (!end){
+        while (!end) {
             try {
                 String input = dataInputStream.readUTF();
-                Request request = new Gson().fromJson(input,Request.class);
+                Request request = new Gson().fromJson(input, Request.class);
                 Response response = process(request);
-                if(response!=null) {
+                if (response != null) {
                     dataOutputStream.writeUTF(response.toJSON());
                     dataOutputStream.flush();
                 }
@@ -46,39 +46,43 @@ public class Caller extends Thread{
     }
 
     private Response process(Request request) {
-        switch (request.getController()){
+        switch (request.getController()) {
             case "view":
                 return handleView(request);
         }
-        return new Response(false,"controller not found");
+        return new Response(false, "controller not found");
     }
 
     private Response handleView(Request request) {
-        switch (request.getMethodToCall()){
+        switch (request.getMethodToCall()) {
             case "getCardInput":
                 Gson gson = new Gson();
                 ArrayList<Card> cards = gson.fromJson(request.getParameter("cards"),
-                        new TypeToken<ArrayList<Card>>(){}.getType());
-                int number = gson.fromJson(request.getParameter("number"),int.class);
+                        new TypeToken<ArrayList<Card>>() {
+                        }.getType());
+                int number = gson.fromJson(request.getParameter("number"), int.class);
                 String message = request.getParameter("message");
-                ArrayList<Card> selected = view.getCardInput(cards,number,message);
-                Response response = new Response(true,"");
-                response.addData("selected",selected);
+                ArrayList<Card> selected = view.getCardInput(cards, number, message);
+                Response response = new Response(true, "");
+                response.addData("selected", selected);
                 return response;
             case "updateOpponentMonsterZone":
                 view.updateOpponentMonsterZone();
-                return new Response(true,"");
+                return new Response(true, "");
             case "updateOpponentHand":
                 view.updateOpponentHand();
-                return new Response(true,"");
+                return new Response(true, "");
             case "updateMyHand":
                 view.updateMyHand();
-                return new Response(true,"");
+                return new Response(true, "");
             case "updateMyMonsterZone":
                 view.updateMyMonsterZone();
-                return new Response(true,"");
+                return new Response(true, "");
+            case "updateMySpellTraps":
+                view.updateMySpellTraps();
+                return new Response(true, "");
         }
-        return new Response(false,"method not supported");
+        return new Response(false, "method not supported");
     }
 
     public void end() {
