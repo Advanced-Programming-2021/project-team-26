@@ -139,17 +139,6 @@ public class GameController {
         }
     }
 
-    private void addEscape(Scene[] scenes) {
-        scenes[0].addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ESCAPE)
-                views[0].escape();
-        });
-        scenes[1].addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.ESCAPE)
-                views[1].escape();
-        });
-    }
-
     public boolean isTemporaryTurnChange() {
         return temporaryTurnChange;
     }

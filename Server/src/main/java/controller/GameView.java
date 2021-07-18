@@ -588,110 +588,15 @@ public class GameView implements Initializable {
     }
 
     public void moveFromDeckToHand(Card card) {
-        CardImageView imageView = new CardImageView(null, card, true);
-        imageView.setX(975);
-        imageView.setY(425);
-        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
-        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-        root.getChildren().add(imageView);
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
-            if (imageView.getY() < 550) {
-                imageView.setY(imageView.getY() + 5);
-            }
-        }));
-
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    int number = myHand.getChildren().size();
-                    myHand.add(imageView, number, 0);
-                });
-            }
-        }, 2500);
-
-        imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    if (card instanceof Monster) setMonster(card, imageView);
-                    else if (card instanceof SpellTrap) setSpellTrap(card, imageView);
-                } else {
-                    if (card instanceof Monster) summonMonster(card, imageView);
-                    else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);
-                }
-            }
-        });
+        Request request = new Request("view","moveFromDeckToHand");
+        request.addParameter("card",card);
+        caller.sendAndReceive(request);
     }
 
     public void moveFromOpponentDeckToHand(Card addedCard) {
-        CardImageView imageView = new CardImageView(null, addedCard, false);
-        imageView.setFitHeight(Size.CARD_HEIGHT_IN_SHOP.getValue());
-        imageView.setFitWidth(Size.CARD_WIDTH_IN_SHOP.getValue());
-        imageView.setX(975);
-        imageView.setY(80);
-        root.getChildren().add(imageView);
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> {
-            if (imageView.getY() > 10) {
-                imageView.setY(imageView.getY() - 5);
-            }
-        }));
-
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    int number = opponentHand.getChildren().size();
-                    opponentHand.add(imageView, number, 0);
-                });
-            }
-        }, 2500);
-    }
-
-    private void activateSpellTrap(Card card, ImageView imageView) {
-        try {
-            gameController.activateEffect(turn, card, new CardAddress(Place.Hand, Owner.Me));
-        } catch (Exception e) {
-            Alert.getInstance().errorPrint(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void setSpellTrap(Card card, ImageView imageView) {
-        try {
-            gameController.set(turn, card);
-        } catch (Exception e) {
-            Alert.getInstance().errorPrint(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void summonMonster(Card card, ImageView imageView) {
-        try {
-            gameController.summon(turn, card);
-        } catch (Exception e) {
-            Alert.getInstance().errorPrint(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void setMonster(Card card, ImageView imageView) {
-        try {
-            gameController.set(turn, card);
-        } catch (Exception e) {
-            Alert.getInstance().errorPrint(e.getMessage());
-            e.printStackTrace();
-        }
+        Request request = new Request("view","moveFromOpponentDeckToHand");
+        request.addParameter("card",addedCard);
+        caller.sendAndReceive(request);
     }
 
     public void updateOpponentMonsterZone() {
@@ -716,37 +621,6 @@ public class GameView implements Initializable {
 
     public void updateOpponentHand() {
         caller.sendAndReceive(new Request("view", "updateOpponentHand"));
-    }
-
-    public void escape() {
-        Stage stage = new Stage();
-        VBox root;
-        Button yes;
-        Button no;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/fxml/askSurrender.fxml"));
-            yes = (Button) root.lookup("#yes");
-            no = (Button) root.lookup("#no");
-        } catch (IOException e) {
-            Label label = new Label("want to surrender?");
-            yes = new Button("yes");
-            no = new Button("no");
-            HBox hBox = new HBox(yes, no);
-            hBox.setSpacing(5);
-            hBox.setAlignment(Pos.CENTER);
-            root = new VBox(label, hBox);
-            root.setSpacing(5);
-            root.setAlignment(Pos.CENTER);
-        }
-        yes.setOnAction(e -> {
-            gameController.surrender();
-            stage.close();
-        });
-        no.setOnAction(e -> {
-            stage.close();
-        });
-        stage.setScene(new Scene(root));
-        stage.showAndWait();
     }
 
 

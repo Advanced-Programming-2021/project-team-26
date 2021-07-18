@@ -100,6 +100,14 @@ public class Caller extends Thread {
                 Spell spell = (Spell) Card.getCard(request.getParameter("spell"));
                 view.updateFieldImage(spell);
                 return new Response(true, "");
+            case "moveFromDeckToHand":
+                Card card2 = new Gson().fromJson(request.getParameter("card"), Card.class);
+                view.moveFromDeckToHand(card2);
+                return new Response(true, "");
+            case "moveFromOpponentDeckToHand":
+                Card card3 = new Gson().fromJson(request.getParameter("card"), Card.class);
+                view.moveFromOpponentDeckToHand(card3);
+                return new Response(true, "");
         }
         return new Response(false, "method not supported");
     }
