@@ -77,7 +77,7 @@ public class GameController {
     }
 
     public GameView[] getViews() {
-        return views;
+        return null;
     }
 
     public void run() {
@@ -232,25 +232,6 @@ public class GameController {
             throw new RuntimeException(response.getMessage());
     }
 
-    public String flipSummon(int turn, int index) {
-        if (turn != game.getTurn())
-            return null;
-        selectedMonster = game.getThisBoard().getMonsterByIndex(index);
-        if (temporaryTurnChange)
-            throw new NotYourTurnException();
-
-        if (game.getPhase() != Phase.MAIN1 && game.getPhase() != Phase.MAIN2)
-            throw new ActionNotAllowed();
-
-        if (selectedMonster.getPosition() != MonsterPosition.DEFENCE_DOWN || selectedMonster.isMonsterNew())
-            throw new CannotFlipSummon();
-
-        activeOpponentTrapOnSummon(selectedMonster, "flip");
-        selectedMonster.flip();
-        deselect();
-        return "flip summoned successfully";
-    }
-
     public String attackDirect(int attacker) {
         Request request = new Request("GameController", "attackDirect");
         request.addParameter("index", String.valueOf(attacker));
@@ -295,35 +276,6 @@ public class GameController {
             throw new RuntimeException(response.getMessage());
     }
 
-    private void activateEffectOnOpponentTurn() {
-        if (selectedCard == null)
-            throw new NoCardSelectedException();
-
-        if (selectedCardAddress.getOwner() != Owner.Me ||
-                !(selectedCard instanceof SpellTrap))
-            throw new CannotActivateException();
-
-        SpellTrap spellTrap = (SpellTrap) selectedCard;
-        if (selectedCardAddress.getPlace() == Place.SpellTrapZone) {
-            chain.push(selectedSpellTrap);
-            while (!chain.isEmpty()) {
-                SpellTrapController current = chain.pop();
-                current.activate();
-            }
-        } else if (selectedCardAddress.getPlace() == Place.Hand) {
-            if (spellTrap instanceof Spell && ((Spell) spellTrap).getType() != SpellType.QUICK_PLAY) {
-                throw new ActionNotAllowed();
-            }
-            SpellTrapController controller = game.getThisBoard().putSpellTrap(spellTrap, SpellTrapPosition.UP);
-            chain.push(controller);
-            while (!chain.isEmpty()) {
-                SpellTrapController current = chain.pop();
-                current.activate();
-            }
-            controller.remove();
-        }
-        deselect();
-    }
 
     public void surrender() {
         game.setSurrenderPlayer(game.getTurn());
@@ -442,71 +394,6 @@ public class GameController {
 
     public boolean conditionsForChangingTurn() {
         return false;
-    }
-
-    public void finishTemporaryChangeTurn() {
-        if (temporaryTurnChange)
-            game.temporaryChangeTurn();
-    }
-
-    public AttackResult activeOpponentTrapOnAttack(MonsterController attacker, MonsterController defender) {
-        AttackResult result = null;
-        boolean found = false;
-        for (SpellTrapController controller : game.getOtherBoard().getSpellTrapZone()) {
-            if (controller instanceof TrapController) {
-                TrapController trap = (TrapController) controller;
-                if (trap.canActiveOnAttacked(attacker, defender)) {
-                    if (!found) {
-                        found = true;
-                        game.temporaryChangeTurn();
-                    }
-                    Boolean answer = views[game.getTurn()].ask("do you want to activate " + trap.getCard().getName());
-                    if (answer != null && answer) {
-                        result = trap.onAttacked(attacker, defender);
-                        trap.remove();
-                    }
-                }
-            }
-        }
-        if (found) {
-            game.temporaryChangeTurn();
-        }
-        return result;
-    }
-
-    public boolean activeOpponentTrapOnSummon(MonsterController summoned, String type) {
-        boolean result = false;
-        boolean found = false;
-        for (SpellTrapController controller : game.getOtherBoard().getSpellTrapZone()) {
-            if (controller instanceof TrapController) {
-                TrapController trap = (TrapController) controller;
-                if (trap.canActiveOnSummon(summoned, type)) {
-                    if (!found) {
-                        found = true;
-                        game.temporaryChangeTurn();
-                    }
-                    Boolean answer = views[game.getTurn()].ask("do you want to activate " + trap.getCard().getName());
-                    if (answer != null && answer) {
-                        result |= trap.onSummon(summoned, type);
-                        trap.remove();
-                    }
-                }
-            }
-        }
-        if (found) {
-            game.temporaryChangeTurn();
-        }
-        return result;
-    }
-
-    public void changeTurn() {
-        if (!temporaryTurnChange && conditionsForChangingTurn()) {
-            game.temporaryChangeTurn();
-            Boolean answer = views[game.getTurn()].ask("do you want to activate your trap and spell?");
-            if (answer != null && !answer) {
-                game.temporaryChangeTurn();
-            }
-        }
     }
 
     public String increaseLP(Matcher matcher) {
