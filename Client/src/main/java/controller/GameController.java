@@ -31,9 +31,6 @@ public class GameController {
     private final GameView view;
     private final Stage stage;
     private final Game game;
-    private final CardAddress selectedCardAddress = null;
-    private final Card selectedCard = null;
-    private final boolean temporaryTurnChange = false;
     private final int myTurn;
     private Caller caller;
 

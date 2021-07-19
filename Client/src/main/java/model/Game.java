@@ -10,12 +10,8 @@ public class Game {
     private final User[] users = new User[2];
     private final int[] lifePoints = new int[2];
     private GameController gameController;
-    private final boolean firstTurn = true;
     private final int turn = 1;
     private final Phase phase = Phase.END;
-    private boolean finished = false;
-    private final boolean summonOrSetThisTurn = false;
-    private int surrenderPlayer = -1;
     private int winner = -1;
 
     public Game(GameController gameController, User first, User second, Deck firstDeck, Deck secondDeck) throws NoPlayerAvailable {
@@ -31,13 +27,10 @@ public class Game {
     }
 
     public void setFinished(boolean finished) {
-        this.finished = finished;
     }
 
     public void setSurrenderPlayer(int surrenderPlayer) {
-        this.surrenderPlayer = surrenderPlayer;
         winner = 1 - surrenderPlayer;
-        finished = true;
     }
 
     public int getTurn() {
@@ -85,7 +78,6 @@ public class Game {
         gameController.getViews()[0].updateLifePoint();
         gameController.getViews()[1].updateLifePoint();
         if (lifePoints[turn] <= 0) {
-            finished = true;
             winner = 1 - turn;
             gameController.endGame();
         }

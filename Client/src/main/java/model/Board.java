@@ -10,7 +10,6 @@ import model.cards.monster.Monster;
 import java.util.*;
 
 public class Board {
-    public final static int CARD_NUMBER_IN_ROW = 5;
     private List<Card> deck;
     private final GameController gameController;
     private int myTurn = -1;
