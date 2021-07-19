@@ -3,8 +3,6 @@ package controller;
 import Utilities.Alert;
 import Utilities.GetFXML;
 import com.google.gson.Gson;
-import exceptions.NoPlayerAvailable;
-import exceptions.NotSupportedRoundNumber;
 import fxmlController.App;
 import fxmlController.MenuParent;
 import fxmlController.Size;
@@ -36,15 +34,6 @@ public class MainMenuController {
     }
 
     public void creatNewGameWithAI(Integer round) {
-        if (round != 1 && round != 3)
-            throw new NotSupportedRoundNumber();
-
-        GameController gameController = null;
-        try {
-            gameController = new GameController(Database.getInstance().getCurrentUser(), round);
-        } catch (NoPlayerAvailable ignored) {
-
-        }
         //TODO load duel menu
     }
 
@@ -119,5 +108,4 @@ public class MainMenuController {
             exception.printStackTrace();
         }
     }
-
 }

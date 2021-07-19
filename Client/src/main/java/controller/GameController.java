@@ -1,10 +1,8 @@
 package controller;
 
-import com.google.gson.Gson;
 import exceptions.*;
 import fxmlController.App;
 import fxmlController.GameView;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,46 +13,35 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import model.*;
 import model.cards.Card;
-import model.cards.SpellTrap;
-import model.cards.monster.Monster;
-import model.cards.spell.Spell;
-import model.cards.spell.SpellType;
 import view.Print;
-import view.Scan;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
-    private final Deck[] decks = new Deck[2];
     private final Stack<SpellTrapController> chain = new Stack<>();
     private final int roundNumber;
-    private GameView view;
-    private Stage stage;
+    private final GameView view;
+    private final Stage stage;
+    private final Game game;
+    private final CardAddress selectedCardAddress = null;
+    private final Card selectedCard = null;
+    private final boolean temporaryTurnChange = false;
+    private final int myTurn;
     private Caller caller;
-    private Game game;
-    private CardAddress selectedCardAddress = null;
-    private Card selectedCard = null;
-    private MonsterController selectedMonster = null;
-    private SpellTrapController selectedSpellTrap = null;
-    private boolean temporaryTurnChange = false;
-    private int myTurn;
-    private int currentRound = 0;
 
     public GameController(User firstPlayer, User secondPayer, int round, int myTurn) throws NoPlayerAvailable {
         this.myTurn = myTurn;
         players[0] = firstPlayer;
         players[1] = secondPayer;
+        Deck[] decks = new Deck[2];
         decks[0] = (Deck) players[0].getActiveDeck().clone();
         decks[1] = (Deck) players[1].getActiveDeck().clone();
 
@@ -63,17 +50,6 @@ public class GameController {
         stage = new Stage();
         this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
         this.roundNumber = round;
-    }
-
-    public GameController(User player, int round) throws NoPlayerAvailable {
-        players[0] = player;
-        players[1] = new Ai(this, 1);
-        decks[0] = (Deck) players[0].getActiveDeck().clone();
-        decks[1] = (Deck) players[1].getActiveDeck().clone();
-        this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
-        ((Ai) players[1]).init();
-        this.roundNumber = round;
-        game.nextPhase();
     }
 
     public GameView[] getViews() {
@@ -109,9 +85,6 @@ public class GameController {
             e.printStackTrace();
         }
         caller.start();
-        getGame().getBoard(0).initBoard();
-        getGame().getBoard(1).initBoard();
-        game.nextPhase();
     }
 
     private void initCaller() {
@@ -143,22 +116,23 @@ public class GameController {
     }
 
     private void handleDebug(String input, int turn) {
-        if (!Database.getInstance().isDebuggingMode())
-            return;
-        Matcher matcher;
-        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
-            String cardName = matcher.group(1);
-            Card card = Card.getCard(cardName);
-            if (card == null)
-                return;
-            Platform.runLater(() -> game.getBoard(turn).addCardToHand(card));
-        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
-            Matcher finalMatcher = matcher;
-            Platform.runLater(() -> increaseLP(finalMatcher));
-        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
-            Matcher finalMatcher1 = matcher;
-            Platform.runLater(() -> setWinner(finalMatcher1));
-        }
+//        if (!Database.getInstance().isDebuggingMode())
+//            return;
+//        Matcher matcher;
+//        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
+//            String cardName = matcher.group(1);
+//            Card card = Card.getCard(cardName);
+//            if (card == null)
+//                return;
+//            Platform.runLater(() -> game.getBoard(turn).addCardToHand(card));
+//        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
+//            Matcher finalMatcher = matcher;
+//            Platform.runLater(() -> increaseLP(finalMatcher));
+//        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
+//            Matcher finalMatcher1 = matcher;
+//            Platform.runLater(() -> setWinner(finalMatcher1));
+//        }
+        //TODO request to server
     }
 
     private void addEscape(Scene scene) {
@@ -168,33 +142,13 @@ public class GameController {
         });
     }
 
-    public boolean isTemporaryTurnChange() {
-        return temporaryTurnChange;
-    }
-
-    public void setTemporaryTurnChange(boolean temporaryTurnChange) {
-        this.temporaryTurnChange = temporaryTurnChange;
-    }
-
     public Game getGame() {
-        Request request = new Request("GameController", "getGame");
-        Response response = NetworkController.getInstance().sendAndReceive(request);
-        this.game = new Gson().fromJson(response.getData("game"), Game.class);
-        this.game.setGameController(this);
         return this.game;
     }
 
-    public void deselect() {
-        selectedCardAddress = null;
-        selectedCard = null;
-        selectedMonster = null;
-        selectedSpellTrap = null;
-    }
 
     public void nextPhase(Phase phase) {
-        int myTurn = game.getTurn();
-        while (myTurn == game.getTurn() && game.getPhase().compareTo(phase) < 0)
-            game.nextPhase();
+        //TODO request to server
     }
 
     public String summon(Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
@@ -283,76 +237,77 @@ public class GameController {
     }
 
     public void endGame() {
-        int winner = game.getWinner();
-        int[] scores = new int[2];
-        scores[winner] = 1000;
-        scores[1 - winner] = 0;
-        Print.getInstance().printMessage(game.getUser(winner).getUsername() + " won the game" +
-                " and the score is: " + scores[0] + "-" + scores[1]);
-        winningRounds[winner]++;
-        maxLifePoint[winner] = Math.max(maxLifePoint[winner], game.getLifePoint(winner));
-        if (winningRounds[0] > roundNumber / 2 || winningRounds[1] > roundNumber / 2) {
-            endMatch();
-        } else {
-            currentRound++;
-            changeDeck(0);
-            changeDeck(1);
-            try {
-                game = new Game(this, players[0], players[1], decks[0], decks[1]);
-            } catch (NoPlayerAvailable ignored) {
-
-            }
-        }
+//        int winner = game.getWinner();
+//        int[] scores = new int[2];
+//        scores[winner] = 1000;
+//        scores[1 - winner] = 0;
+//        Print.getInstance().printMessage(game.getUser(winner).getUsername() + " won the game" +
+//                " and the score is: " + scores[0] + "-" + scores[1]);
+//        winningRounds[winner]++;
+//        maxLifePoint[winner] = Math.max(maxLifePoint[winner], game.getLifePoint(winner));
+//        if (winningRounds[0] > roundNumber / 2 || winningRounds[1] > roundNumber / 2) {
+//            endMatch();
+//        } else {
+//            currentRound++;
+//            changeDeck(0);
+//            changeDeck(1);
+//            try {
+//                game = new Game(this, players[0], players[1], decks[0], decks[1]);
+//            } catch (NoPlayerAvailable ignored) {
+//
+//            }
+//        }
+        //TODO request to server
     }
 
     private void changeDeck(int turn) {
         //TODO make it graphic
-        if (players[turn] instanceof Ai)
-            return;
-        Print print = Print.getInstance();
-        print.printMessage(decks[turn].showDeck("main"));
-        print.printMessage(decks[turn].showDeck("side"));
-
-        print.printMessage("\"<card name> side\" : put <card name> from main to side");
-        print.printMessage("\"<card name> main\" : put <card name> from side to main");
-        print.printMessage("\"show\" : show deck");
-        print.printMessage("\"end\" : finish arranging deck");
-
-        int mainDeckChange = 0;
-        String command;
-        Pattern sidePattern = Pattern.compile("[\\w ]* side");
-        Pattern mainPattern = Pattern.compile("[\\w ]* main");
-        while (true) {
-            command = Scan.getInstance().getString();
-            Matcher matcher;
-            if ((matcher = sidePattern.matcher(command)).find()) {
-                String name = matcher.group(1);
-                if (!decks[turn].getMainDeck().contains(name)) {
-                    print.printMessage("no such card");
-                    continue;
-                }
-                decks[turn].getMainDeck().remove(name);
-                decks[turn].getSideDeck().add(name);
-                mainDeckChange--;
-            } else if ((matcher = mainPattern.matcher(command)).find()) {
-                String name = matcher.group(1);
-                if (!decks[turn].getSideDeck().contains(name)) {
-                    print.printMessage("no such card");
-                    continue;
-                }
-                decks[turn].getSideDeck().remove(name);
-                decks[turn].getMainDeck().add(name);
-                mainDeckChange++;
-            } else if (command.equals("show")) {
-                print.printMessage(decks[turn].showDeck("main"));
-                print.printMessage(decks[turn].showDeck("side"));
-            } else if (command.equals("end")) {
-                if (mainDeckChange != 0) {
-                    print.printMessage("main deck card number shouldn't change");
-                } else
-                    break;
-            }
-        }
+//        if (players[turn] instanceof Ai)
+//            return;
+//        Print print = Print.getInstance();
+//        print.printMessage(decks[turn].showDeck("main"));
+//        print.printMessage(decks[turn].showDeck("side"));
+//
+//        print.printMessage("\"<card name> side\" : put <card name> from main to side");
+//        print.printMessage("\"<card name> main\" : put <card name> from side to main");
+//        print.printMessage("\"show\" : show deck");
+//        print.printMessage("\"end\" : finish arranging deck");
+//
+//        int mainDeckChange = 0;
+//        String command;
+//        Pattern sidePattern = Pattern.compile("[\\w ]* side");
+//        Pattern mainPattern = Pattern.compile("[\\w ]* main");
+//        while (true) {
+//            command = Scan.getInstance().getString();
+//            Matcher matcher;
+//            if ((matcher = sidePattern.matcher(command)).find()) {
+//                String name = matcher.group(1);
+//                if (!decks[turn].getMainDeck().contains(name)) {
+//                    print.printMessage("no such card");
+//                    continue;
+//                }
+//                decks[turn].getMainDeck().remove(name);
+//                decks[turn].getSideDeck().add(name);
+//                mainDeckChange--;
+//            } else if ((matcher = mainPattern.matcher(command)).find()) {
+//                String name = matcher.group(1);
+//                if (!decks[turn].getSideDeck().contains(name)) {
+//                    print.printMessage("no such card");
+//                    continue;
+//                }
+//                decks[turn].getSideDeck().remove(name);
+//                decks[turn].getMainDeck().add(name);
+//                mainDeckChange++;
+//            } else if (command.equals("show")) {
+//                print.printMessage(decks[turn].showDeck("main"));
+//                print.printMessage(decks[turn].showDeck("side"));
+//            } else if (command.equals("end")) {
+//                if (mainDeckChange != 0) {
+//                    print.printMessage("main deck card number shouldn't change");
+//                } else
+//                    break;
+//            }
+//        }
     }
 
     public void endMatch() {

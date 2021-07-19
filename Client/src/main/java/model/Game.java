@@ -1,11 +1,8 @@
 package model;
 
-import controller.*;
+import controller.GameController;
+import controller.Phase;
 import exceptions.NoPlayerAvailable;
-import model.cards.Card;
-import view.Print;
-
-import java.util.ArrayList;
 
 public class Game {
     public final static int LIFE_POINT = 8000;
@@ -13,11 +10,11 @@ public class Game {
     private final User[] users = new User[2];
     private final int[] lifePoints = new int[2];
     private GameController gameController;
-    private boolean firstTurn = true;
-    private int turn = 1;
-    private Phase phase = Phase.END;
+    private final boolean firstTurn = true;
+    private final int turn = 1;
+    private final Phase phase = Phase.END;
     private boolean finished = false;
-    private boolean summonOrSetThisTurn = false;
+    private final boolean summonOrSetThisTurn = false;
     private int surrenderPlayer = -1;
     private int winner = -1;
 
@@ -37,117 +34,10 @@ public class Game {
         this.finished = finished;
     }
 
-    public int getSurrenderPlayer() {
-        return surrenderPlayer;
-    }
-
     public void setSurrenderPlayer(int surrenderPlayer) {
         this.surrenderPlayer = surrenderPlayer;
         winner = 1 - surrenderPlayer;
         finished = true;
-    }
-
-    public boolean isSummonOrSetThisTurn() {
-        return summonOrSetThisTurn;
-    }
-
-    public void setSummonOrSetThisTurn(boolean summonOrSetThisTurn) {
-        this.summonOrSetThisTurn = summonOrSetThisTurn;
-    }
-
-    public void nextPhase() {
-        if (finished)
-            return;
-        Phase nextPhase = this.phase.nextPhase();
-        if (firstTurn && nextPhase == Phase.BATTLE)
-            nextPhase = null;
-        if (nextPhase == null) {
-            changeTurn();
-            nextPhase = Phase.DRAW;
-        }
-        this.phase = nextPhase;
-        gameController.getViews()[0].updatePhase();
-        gameController.getViews()[1].updatePhase();
-        if (this.phase == Phase.DRAW) {
-            drawPhase();
-            nextPhase();
-        } else if (this.phase == Phase.STANDBY) {
-            standByPhase();
-            nextPhase();
-        } else if (this.phase == Phase.MAIN1 || this.phase == Phase.MAIN2 || this.phase == Phase.BATTLE) {
-            if (this.phase == Phase.MAIN1) {
-                for (MonsterController monster : getThisBoard().getMonstersZone())
-                    monster.runMonsterEffectOnEachTurn();
-            }
-            if (getThisUser() instanceof Ai) {
-                switch (this.phase) {
-                    case MAIN1:
-                        ((Ai) getThisUser()).mainPhase1();
-                        break;
-                    case MAIN2:
-                        ((Ai) getThisUser()).mainPhase2();
-                        break;
-                    case BATTLE:
-                        ((Ai) getThisUser()).battlePhase();
-                        break;
-                }
-                nextPhase();
-            } else
-                Print.getInstance().printGame(this);
-        } else if (this.phase == Phase.END) {
-            nextPhase();
-        }
-    }
-
-    public void standByPhase() {
-        getThisBoard().standByPhase();
-    }
-
-    public void drawPhase() {
-        Card card = getThisBoard().addCardToHand();
-        if (card == null) {
-            finished = true;
-            winner = 1 - turn;
-            gameController.endGame();
-            return;
-        }
-        Print.getInstance().printMessage("new card added to the hand : " + card.getName());
-    }
-
-    public void changeTurn() {
-        if (firstTurn && this.turn == 0)
-            firstTurn = false;
-        this.turn = 1 - this.turn;
-        summonOrSetThisTurn = false;
-        gameController.deselect();
-        ArrayList<MonsterController> monsterControllers = MonsterController.getAllMonsterControllers();
-        for (MonsterController monsterController : monsterControllers) {
-            monsterController.nextTurn();
-            monsterController.setHasActivateEffectThisTurn(false);
-            monsterController.setHasPositionChanged(false);
-        }
-
-        for (SpellTrapController spellTrapController : SpellController.getAllSpellControllers()) {
-            spellTrapController.nextTurn();
-        }
-
-        ArrayList<SpellTrapController> spellTrapControllers = SpellController.getAllSpellControllers();
-        for (SpellTrapController spellTrapController : spellTrapControllers) {
-            if (spellTrapController instanceof SpellController) {
-                SpellController spellController = (SpellController) spellTrapController;
-                spellController.endActivation();
-            }
-        }
-
-        Print.getInstance().printMessage("its " + getThisUser().getNickname() + "’s turn");
-    }
-
-    public void temporaryChangeTurn() {
-        this.turn = 1 - this.turn;
-        gameController.deselect();
-        gameController.setTemporaryTurnChange(!gameController.isTemporaryTurnChange());
-        Print.getInstance().printMessage("now it will be " + users[turn].getUsername() + "’s turn");
-        Print.getInstance().printGame(this);
     }
 
     public int getTurn() {
@@ -223,7 +113,5 @@ public class Game {
 
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
-        boards[0].setGameController(gameController);
-        boards[1].setGameController(gameController);
     }
 }

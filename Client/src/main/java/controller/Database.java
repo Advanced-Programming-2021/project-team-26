@@ -3,7 +3,6 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.opencsv.CSVReader;
-import model.Ai;
 import model.Deck;
 import model.User;
 import model.cards.Card;
@@ -87,7 +86,7 @@ public class Database {
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser,String token) {
+    public void setCurrentUser(User currentUser, String token) {
         this.currentUser = currentUser;
         this.token = token;
     }
@@ -296,19 +295,16 @@ public class Database {
     }
 
     public boolean writeUser(User user) {
-        if (!(user instanceof Ai)) {
-            try {
-                String path = userDirectoryPath + File.separator + user.getUsername() + ".json";
-                FileWriter fileWriter = new FileWriter(path);
-                gson.toJson(user, fileWriter);
-                fileWriter.close();
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
+        try {
+            String path = userDirectoryPath + File.separator + user.getUsername() + ".json";
+            FileWriter fileWriter = new FileWriter(path);
+            gson.toJson(user, fileWriter);
+            fileWriter.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public HashMap<String, User> getAllUsers() {
