@@ -128,6 +128,9 @@ public class Caller extends Thread {
             case "updatePhase":
                 Platform.runLater(()->view.updatePhase());
                 return new Response(true,"");
+            case "endGame":
+                Platform.runLater(() -> gameController.endGame(request.getParameter("message")));
+                return new Response(true,"");
         }
         return new Response(false, "method not supported");
     }

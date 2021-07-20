@@ -1,5 +1,6 @@
 package controller;
 
+import Utilities.Alert;
 import exceptions.*;
 import fxmlController.App;
 import fxmlController.GameView;
@@ -21,6 +22,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
@@ -45,7 +47,7 @@ public class GameController {
         view = new GameView(this, myTurn);
 
         stage = new Stage();
-        this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
+        this.game = new Game(players[0], players[1]);
         this.roundNumber = round;
     }
 
@@ -107,29 +109,29 @@ public class GameController {
             new Thread(() -> {
                 System.out.println("debugging mode 0");
                 String input = new Scanner(System.in).nextLine();
-                handleDebug(input, myTurn);
+                handleDebug(input);
             }).start();
         });
     }
 
-    private void handleDebug(String input, int turn) {
-//        if (!Database.getInstance().isDebuggingMode())
-//            return;
-//        Matcher matcher;
-//        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
-//            String cardName = matcher.group(1);
-//            Card card = Card.getCard(cardName);
-//            if (card == null)
-//                return;
-//            Platform.runLater(() -> game.getBoard(turn).addCardToHand(card));
-//        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
-//            Matcher finalMatcher = matcher;
-//            Platform.runLater(() -> increaseLP(finalMatcher));
-//        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
-//            Matcher finalMatcher1 = matcher;
-//            Platform.runLater(() -> setWinner(finalMatcher1));
-//        }
-        //TODO request to server
+    private void handleDebug(String input) {
+        if (!Database.getInstance().isDebuggingMode())
+            return;
+        Matcher matcher;
+        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
+            String cardName = matcher.group(1);
+            addCardToHand(cardName);
+        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
+            increaseLP(matcher);
+        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
+            setWinner(matcher);
+        }
+    }
+
+    private void addCardToHand(String cardName) {
+        Request request = new Request("GameController","addCardToHand");
+        request.addParameter("cardName",cardName);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 
     private void addEscape(Scene scene) {
@@ -229,32 +231,13 @@ public class GameController {
 
 
     public void surrender() {
-        game.setSurrenderPlayer(game.getTurn());
-        endGame();
+        Request request = new Request("GameController","surrender");
+        request.addParameter("turn",myTurn);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 
-    public void endGame() {
-//        int winner = game.getWinner();
-//        int[] scores = new int[2];
-//        scores[winner] = 1000;
-//        scores[1 - winner] = 0;
-//        Print.getInstance().printMessage(game.getUser(winner).getUsername() + " won the game" +
-//                " and the score is: " + scores[0] + "-" + scores[1]);
-//        winningRounds[winner]++;
-//        maxLifePoint[winner] = Math.max(maxLifePoint[winner], game.getLifePoint(winner));
-//        if (winningRounds[0] > roundNumber / 2 || winningRounds[1] > roundNumber / 2) {
-//            endMatch();
-//        } else {
-//            currentRound++;
-//            changeDeck(0);
-//            changeDeck(1);
-//            try {
-//                game = new Game(this, players[0], players[1], decks[0], decks[1]);
-//            } catch (NoPlayerAvailable ignored) {
-//
-//            }
-//        }
-        //TODO request to server
+    public void endGame(String message) {
+        Alert.getInstance().successfulPrint(message);
     }
 
     private void changeDeck(int turn) {
@@ -348,7 +331,7 @@ public class GameController {
         return false;
     }
 
-    public String increaseLP(Matcher matcher) {
+    public void increaseLP(Matcher matcher) {
         if (!Database.getInstance().isDebuggingMode())
             throw new InvalidInput();
 
@@ -356,25 +339,17 @@ public class GameController {
         if (lpString == null)
             throw new InvalidInput();
         int lp = Integer.parseInt(lpString);
-        game.decreaseThisLifePoint(-lp);
-        return "LifePoint added";
+        Request request = new Request("GameController","increaseLP");
+        request.addParameter("lp",lp);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 
-    public String setWinner(Matcher matcher) {
+    public void setWinner(Matcher matcher) {
         if (!Database.getInstance().isDebuggingMode())
             throw new InvalidInput();
         String nickname = matcher.group(1);
-        if (game.getThisUser().getNickname().equals(nickname)) {
-            game.setFinished(true);
-            game.setWinner(game.getTurn());
-            endGame();
-            return null;
-        } else if (game.getOtherUser().getNickname().equals(nickname)) {
-            game.setFinished(true);
-            game.setWinner(1 - game.getTurn());
-            endGame();
-            return null;
-        } else
-            throw new InvalidInput();
+        Request request = new Request("GameController","setWinner");
+        request.addParameter("nickname",nickname);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 }

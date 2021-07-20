@@ -811,37 +811,6 @@ public class GameView implements Initializable {
         }
     }
 
-    public void escape() {
-        Stage stage = new Stage();
-        VBox root;
-        Button yes;
-        Button no;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/fxml/askSurrender.fxml"));
-            yes = (Button) root.lookup("#yes");
-            no = (Button) root.lookup("#no");
-        } catch (IOException e) {
-            Label label = new Label("want to surrender?");
-            yes = new Button("yes");
-            no = new Button("no");
-            HBox hBox = new HBox(yes, no);
-            hBox.setSpacing(5);
-            hBox.setAlignment(Pos.CENTER);
-            root = new VBox(label, hBox);
-            root.setSpacing(5);
-            root.setAlignment(Pos.CENTER);
-        }
-        yes.setOnAction(e -> {
-            gameController.surrender();
-            stage.close();
-        });
-        no.setOnAction(e -> {
-            stage.close();
-        });
-        stage.setScene(new Scene(root));
-        stage.showAndWait();
-    }
-
 
     public void updateLifePoint() {
         int myLifePoint = gameController.getGame().getLifePoint(turn);

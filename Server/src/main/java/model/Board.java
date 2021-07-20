@@ -102,17 +102,17 @@ public class Board {
 
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
-        if(monstersZone!=null) {
+        if (monstersZone != null) {
             for (MonsterController monsterController : getMonstersZone())
                 if (monsterController != null)
                     monsterController.setGameController(gameController);
         }
-        if(spellTrapZone!=null) {
+        if (spellTrapZone != null) {
             for (SpellTrapController spellTrapController : getSpellTrapZone())
                 if (spellTrapController != null)
                     spellTrapController.setGameController(gameController);
         }
-        if(fieldZone!=null)
+        if (fieldZone != null)
             fieldZone.setGameController(gameController);
     }
 
@@ -300,16 +300,39 @@ public class Board {
     }
 
     public Response handle(Request request) {
-        switch (request.getParameter("function")){
+        switch (request.getParameter("function")) {
             case "getMonsterZoneMap":
-                HashMap<Integer,MonsterTransfer> map = new HashMap<>();
-                monstersZone.forEach((i,monster) -> {
-                    map.put(i,new MonsterTransfer(monster.getMonster(),monster.getPosition()));
+                HashMap<Integer, MonsterTransfer> map = new HashMap<>();
+                monstersZone.forEach((i, monster) -> {
+                    map.put(i, new MonsterTransfer(monster.getMonster(), monster.getPosition()));
                 });
-                Response response = new Response(true,"");
-                response.addData("MonsterZoneMap",map);
+                Response response = new Response(true, "");
+                response.addData("MonsterZoneMap", map);
+                return response;
+            case "getSpellTrapZoneMap":
+                HashMap<Integer, SpellTrapTransfer> map1 = new HashMap<>();
+                spellTrapZone.forEach((i, spellTrap) -> {
+                    map1.put(i, new SpellTrapTransfer(spellTrap.getCard(), spellTrap.getPosition()));
+                });
+                response = new Response(true, "");
+                response.addData("SpellTrapZoneMap", map1);
+                return response;
+            case "getDeck":
+                List<Card> deck = getDeck();
+                response = new Response(true, "");
+                response.addData("Deck", deck);
+                return response;
+            case "getGraveyard":
+                List<Card> graveyard = getGraveyard();
+                response = new Response(true, "");
+                response.addData("Graveyard", graveyard);
+                return response;
+            case "getHand":
+                List<Card> hand = getHand();
+                response = new Response(true, "");
+                response.addData("Hand", hand);
                 return response;
         }
-        return new Response(false,"method not found");
+        return new Response(false, "method not found");
     }
 }
