@@ -45,7 +45,7 @@ public class GameController {
         view = new GameView(this, myTurn);
 
         stage = new Stage();
-        this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
+        this.game = new Game(this, players[0], players[1], decks[1]);
         this.roundNumber = round;
     }
 

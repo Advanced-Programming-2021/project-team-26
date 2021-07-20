@@ -14,14 +14,14 @@ public class Game {
     private final Phase phase = Phase.END;
     private int winner = -1;
 
-    public Game(GameController gameController, User first, User second, Deck firstDeck, Deck secondDeck) throws NoPlayerAvailable {
+    public Game(GameController gameController, User first, User second, Deck secondDeck) throws NoPlayerAvailable {
         if (first == null || second == null)
             throw new NoPlayerAvailable();
         this.gameController = gameController;
         users[0] = first;
         users[1] = second;
-        boards[0] = new Board(firstDeck,0);
-        boards[1] = new Board(secondDeck,1);
+        boards[0] = new Board(0);
+        boards[1] = new Board(1);
         lifePoints[0] = LIFE_POINT;
         lifePoints[1] = LIFE_POINT;
     }
