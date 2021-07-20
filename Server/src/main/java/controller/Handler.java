@@ -212,7 +212,11 @@ public class Handler extends Thread {
                 }
             case "getProfileImage":
                 try {
-                    File file = new File(user.getProfileImagePath());
+                    String username = request.getParameter("username");
+                    User user1 = User.getUserByUsername(username);
+                    if(user1==null)
+                        return new Response(false,"user not found");
+                    File file = new File(user1.getProfileImagePath());
                     Response response = new Response(true, null);
                     response.addFile("image", file);
                     return response;

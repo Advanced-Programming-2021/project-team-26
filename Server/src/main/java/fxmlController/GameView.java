@@ -12,7 +12,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -44,10 +43,6 @@ import java.util.*;
 
 public class GameView implements Initializable {
 
-    public static final String MY_PHASE_STYLE = "-fx-background-color: #3ba8e2;";
-    public static final String OPPONENT_PHASE_STYLE = "-fx-background-color: #e01313;";
-    public static final String MY_CURRENT_PHASE_STYLE = "-fx-background-color: #3ba8e2;-fx-border-color: #001a82; -fx-border-width: 5";
-    public static final String OPPONENT_CURRENT_PHASE_STYLE = "-fx-background-color: #e01313;-fx-border-color: #570000; -fx-border-width: 5";
     private final ArrayList<CardImageView> myMonsters = new ArrayList<>();
     private final ArrayList<CardImageView> mySpellTraps = new ArrayList<>();
     private final ArrayList<CardImageView> oppMonsters = new ArrayList<>();
@@ -175,58 +170,6 @@ public class GameView implements Initializable {
         this.turn = turn;
     }
 
-    public void updatePhase() {
-        if (gameController.getGame().getTurn() != turn) {
-            updatePhaseOpponent();
-            return;
-        }
-
-        standbyPhaseBut.setStyle(MY_PHASE_STYLE);
-        drawPhaseBut.setStyle(MY_PHASE_STYLE);
-        mainPhase1But.setStyle(MY_PHASE_STYLE);
-        battlePhaseBut.setStyle(MY_PHASE_STYLE);
-        mainPhase2But.setStyle(MY_PHASE_STYLE);
-        endPhaseBut.setStyle(MY_PHASE_STYLE);
-
-        Phase phase = gameController.getGame().getPhase();
-        boolean found = false;
-        if (Phase.STANDBY.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(standbyPhaseBut, null, false);
-            standbyPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(standbyPhaseBut, null, false);
-        if (Phase.DRAW.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(drawPhaseBut, null, false);
-            drawPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(drawPhaseBut, this::drawPhase, found);
-        if (Phase.MAIN1.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(mainPhase1But, null, false);
-            mainPhase1But.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(mainPhase1But, this::mainPhase1, found);
-        if (Phase.BATTLE.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(battlePhaseBut, this::battlePhase, false);
-            battlePhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(battlePhaseBut, this::battlePhase, found);
-        if (Phase.MAIN2.compareTo(phase) == 0) {
-            found = true;
-            setButtonActivity(mainPhase2But, null, false);
-            mainPhase2But.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(mainPhase2But, this::mainPhase2, found);
-        if (Phase.END.compareTo(phase) == 0) {
-            setButtonActivity(endPhaseBut, null, false);
-            endPhaseBut.setStyle(MY_CURRENT_PHASE_STYLE);
-        } else
-            setButtonActivity(endPhaseBut, this::endPhase, found);
-    }
-
     private void setButtonActivity(Button button, EventHandler<ActionEvent> e, boolean active) {
         if (active) {
             button.setOnAction(e);
@@ -235,73 +178,6 @@ public class GameView implements Initializable {
             button.setOnAction(null);
             button.setCursor(Cursor.DEFAULT);
         }
-    }
-
-    private void updatePhaseOpponent() {
-        standbyPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-        drawPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-        mainPhase1But.setStyle(OPPONENT_PHASE_STYLE);
-        battlePhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-        mainPhase2But.setStyle(OPPONENT_PHASE_STYLE);
-        endPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-
-        setButtonActivity(standbyPhaseBut, null, false);
-        setButtonActivity(drawPhaseBut, null, false);
-        setButtonActivity(mainPhase1But, null, false);
-        setButtonActivity(battlePhaseBut, null, false);
-        setButtonActivity(mainPhase2But, null, false);
-        setButtonActivity(endPhaseBut, null, false);
-
-        switch (gameController.getGame().getPhase()) {
-            case DRAW:
-                drawPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case STANDBY:
-                standbyPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case MAIN1:
-                mainPhase1But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case BATTLE:
-                battlePhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case MAIN2:
-                mainPhase2But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case END:
-                endPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-        }
-    }
-
-    @FXML
-    public void drawPhase(ActionEvent event) {
-        gameController.nextPhase(Phase.DRAW);
-    }
-
-    @FXML
-    void standbyPhase(ActionEvent event) {
-        gameController.nextPhase(Phase.STANDBY);
-    }
-
-    @FXML
-    void mainPhase1(ActionEvent event) {
-        gameController.nextPhase(Phase.MAIN1);
-    }
-
-    @FXML
-    void battlePhase(ActionEvent event) {
-        gameController.nextPhase(Phase.BATTLE);
-    }
-
-    @FXML
-    void mainPhase2(ActionEvent event) {
-        gameController.nextPhase(Phase.MAIN2);
-    }
-
-    @FXML
-    void endPhase(ActionEvent event) {
-        gameController.nextPhase(Phase.END);
     }
 
     @Override

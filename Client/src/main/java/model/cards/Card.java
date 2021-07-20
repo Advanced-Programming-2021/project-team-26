@@ -18,7 +18,7 @@ public class Card {
     protected String name;
     protected String Description;
     protected int price;
-    protected Image image;
+    protected transient Image image;
 
     //copy constructor
     public Card(Card o) {

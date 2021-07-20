@@ -223,36 +223,6 @@ public class GameView implements Initializable {
         }
     }
 
-    @FXML
-    public void drawPhase(ActionEvent event) {
-        gameController.nextPhase(Phase.DRAW);
-    }
-
-    @FXML
-    void standbyPhase(ActionEvent event) {
-        gameController.nextPhase(Phase.STANDBY);
-    }
-
-    @FXML
-    void mainPhase1(ActionEvent event) {
-        gameController.nextPhase(Phase.MAIN1);
-    }
-
-    @FXML
-    void battlePhase(ActionEvent event) {
-        gameController.nextPhase(Phase.BATTLE);
-    }
-
-    @FXML
-    void mainPhase2(ActionEvent event) {
-        gameController.nextPhase(Phase.MAIN2);
-    }
-
-    @FXML
-    void endPhase(ActionEvent event) {
-        gameController.nextPhase(Phase.END);
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
@@ -724,13 +694,10 @@ public class GameView implements Initializable {
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
-            case "getGame":
-                Game game = gameController.getGame();
-                game.setGameController(null);
-                Response response = new Response(true,"");
-                response.addData("game",game);
-                game.setGameController(gameController);
-                return response;
+            case "nextPhase":
+                Phase phase = new Gson().fromJson(request.getParameter("phase"),Phase.class);
+                gameController.nextPhase(turn,phase);
+                return new Response(true,"");
             case "Board":
                 int wantedTurn = Integer.parseInt(request.getParameter("turn"));
                 Board board = gameController.getGame().getBoard(wantedTurn);

@@ -276,6 +276,7 @@ public class User {
 
     public Image getProfileImage() {
         Request request = new Request("UserController", "getProfileImage");
+        request.addParameter("username",this.username);
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess()) {
             File file = response.getFile("image");

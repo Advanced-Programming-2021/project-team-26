@@ -117,9 +117,8 @@ public class GameController {
         selectedSpellTrap = null;
     }
 
-    public void nextPhase(Phase phase) {
-        int myTurn = game.getTurn();
-        while (myTurn == game.getTurn() && game.getPhase().compareTo(phase) < 0)
+    public void nextPhase(int turn,Phase phase) {
+        while (turn == game.getTurn() && game.getPhase().compareTo(phase) < 0)
             game.nextPhase();
     }
 
@@ -323,9 +322,9 @@ public class GameController {
         views[game.getTurn()].updateMyHand();
     }
 
-    public String setPosition(int turn, int index) {
+    public void setPosition(int turn, int index) {
         if (turn != game.getTurn())
-            return null;
+            return;
         selectedMonster = game.getThisBoard().getMonsterByIndex(index);
         if (temporaryTurnChange)
             throw new NotYourTurnException();
@@ -335,7 +334,8 @@ public class GameController {
 
         MonsterPosition wantedPosition;
         if (selectedMonster.getPosition() == MonsterPosition.DEFENCE_DOWN) {
-            return flipSummon(turn, index);
+            flipSummon(turn, index);
+            return;
         }
         if (selectedMonster.getPosition() == MonsterPosition.ATTACK)
             wantedPosition = MonsterPosition.DEFENCE_UP;
@@ -355,7 +355,6 @@ public class GameController {
         deselect();
         views[turn].updateMyMonsterZone();
         views[1 - turn].updateOpponentMonsterZone();
-        return "monster card position changed successfully";
     }
 
     public String flipSummon(int turn, int index) {
@@ -670,7 +669,6 @@ public class GameController {
         views[1].close();
         handlers[0].startGetInput();
         handlers[1].startGetInput();
-        App.getStage().show();
     }
 
 

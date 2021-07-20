@@ -70,12 +70,12 @@
                 <Image url="@../Assets/Cards/deckImage.jpg" />
             </image>
         </ImageView>
-        <Button fx:id="drawPhaseBut" layoutX="300.0" layoutY="88.0" minWidth="26.0" mnemonicParsing="false" onAction="#drawPhase" prefHeight="53.0" prefWidth="29.0" text="DP" wrapText="true" />
-        <Button fx:id="standbyPhaseBut" layoutX="300.0" layoutY="160.0" minWidth="26.0" mnemonicParsing="false" onAction="#standbyPhase" prefHeight="53.0" prefWidth="29.0" text="SP" wrapText="true" />
-        <Button fx:id="mainPhase1But" layoutX="300.0" layoutY="234.0" minWidth="26.0" mnemonicParsing="false" onAction="#mainPhase1" prefHeight="53.0" prefWidth="29.0" text="M1" wrapText="true" />
-        <Button fx:id="battlePhaseBut" layoutX="300.0" layoutY="313.0" minWidth="26.0" mnemonicParsing="false" onAction="#battlePhase" prefHeight="53.0" prefWidth="29.0" text="BP" wrapText="true" />
-        <Button fx:id="mainPhase2But" layoutX="300.0" layoutY="389.0" minWidth="26.0" mnemonicParsing="false" onAction="#mainPhase2" prefHeight="53.0" prefWidth="29.0" text="M2" wrapText="true" />
-        <Button fx:id="endPhaseBut" layoutX="300.0" layoutY="461.0" minWidth="26.0" mnemonicParsing="false" onAction="#endPhase" prefHeight="53.0" prefWidth="29.0" text="EP" wrapText="true" />
+        <Button fx:id="drawPhaseBut" layoutX="300.0" layoutY="88.0" minWidth="26.0" mnemonicParsing="false"  prefHeight="53.0" prefWidth="29.0" text="DP" wrapText="true" />
+        <Button fx:id="standbyPhaseBut" layoutX="300.0" layoutY="160.0" minWidth="26.0" mnemonicParsing="false"  prefHeight="53.0" prefWidth="29.0" text="SP" wrapText="true" />
+        <Button fx:id="mainPhase1But" layoutX="300.0" layoutY="234.0" minWidth="26.0" mnemonicParsing="false"  prefHeight="53.0" prefWidth="29.0" text="M1" wrapText="true" />
+        <Button fx:id="battlePhaseBut" layoutX="300.0" layoutY="313.0" minWidth="26.0" mnemonicParsing="false"  prefHeight="53.0" prefWidth="29.0" text="BP" wrapText="true" />
+        <Button fx:id="mainPhase2But" layoutX="300.0" layoutY="389.0" minWidth="26.0" mnemonicParsing="false"  prefHeight="53.0" prefWidth="29.0" text="M2" wrapText="true" />
+        <Button fx:id="endPhaseBut" layoutX="300.0" layoutY="461.0" minWidth="26.0" mnemonicParsing="false"  prefHeight="53.0" prefWidth="29.0" text="EP" wrapText="true" />
         <ImageView fx:id="cardInfo" fitHeight="240.0" fitWidth="180.0" layoutX="67.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../Assets/Cards/Monsters/Unknown.jpg" />

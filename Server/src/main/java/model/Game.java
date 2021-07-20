@@ -240,6 +240,7 @@ public class Game {
             case "getPhase":
                 response = new Response(true,"");
                 response.addData("phase",getPhase());
+                return response;
         }
         return new Response(false,"method not found");
     }

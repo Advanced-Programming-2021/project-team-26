@@ -147,7 +147,9 @@ public class GameController {
 
 
     public void nextPhase(Phase phase) {
-        //TODO request to server
+        Request request = new Request("GameController","nextPhase");
+        request.addParameter("phase",phase);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 
     public String summon(Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
