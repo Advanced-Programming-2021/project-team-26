@@ -5,32 +5,24 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fxmlController.CardImageView;
 import fxmlController.Size;
-import javafx.animation.KeyFrame;
-import javafx.animation.SequentialTransition;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.*;
 import model.cards.Card;
 import model.cards.spell.Spell;
@@ -38,7 +30,9 @@ import model.cards.spell.Spell;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class GameView implements Initializable {
 
@@ -419,67 +413,12 @@ public class GameView implements Initializable {
     }
 
     public void attackAnimation(int attackerMonster, int defenderMonster, Owner owner) {
-        ImageView attacker;
-        ImageView defender;
-        if (owner == Owner.Me) {
-            attacker = myMonsters.get(attackerMonster);
-            defender = oppMonsters.get(defenderMonster);
-        } else {
-            attacker = oppMonsters.get(attackerMonster);
-            defender = myMonsters.get(defenderMonster);
-        }
+        Request request = new Request("view", "attackAnimation");
+        request.addParameter("attackerMonster", attackerMonster);
+        request.addParameter("defenderMonster", defenderMonster);
+        request.addParameter("owner", owner);
 
-        int attackerX = (int) attacker.getLayoutX();
-        int attackerY = (int) attacker.getLayoutY();
-
-        int defenderX = (int) defender.getLayoutX();
-        int defenderY = (int) defender.getLayoutY();
-
-        ImageView attackIcon = new ImageView();
-        attackIcon.setLayoutX(attackerX);
-        attackIcon.setLayoutY(attackerY);
-        if (owner == Owner.Opponent) attackIcon.setRotate(180);
-        String path = "file:" + System.getProperty("user.dir") + "/src/main/resources/Assets/OlderIcons/atk_icon.png";
-        attackIcon.setImage(new Image(path));
-        root.getChildren().add(attackIcon);
-
-        Timeline timelineForX = new Timeline(new KeyFrame(Duration.millis(30), (ActionEvent event) -> {
-            if ((int) attackIcon.getLayoutX() > defenderX)
-                attackIcon.setLayoutX(attackIcon.getLayoutX() - 5);
-            else
-                attackIcon.setLayoutX(attackIcon.getLayoutX() + 5);
-        }));
-
-        Timeline timelineForY = new Timeline(new KeyFrame(Duration.millis(30), (ActionEvent event) -> {
-            if ((int) attackIcon.getLayoutY() > defenderY)
-                attackIcon.setLayoutY(attackIcon.getLayoutY() - 5);
-            else
-                attackIcon.setLayoutY(attackIcon.getLayoutY() + 5);
-        }));
-
-        timelineForX.setCycleCount(24);
-        timelineForX.play();
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    timelineForY.setCycleCount(24);
-                    timelineForY.play();
-                });
-            }
-        }, 720);
-
-        Timer timer1 = new Timer();
-        timer1.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    root.getChildren().remove(attackIcon);
-                });
-            }
-        }, 1440);
+        caller.sendAndReceive(request);
     }
 
     private void initField() {
@@ -517,20 +456,6 @@ public class GameView implements Initializable {
             imageView.setGameView(null);
     }
 
-
-    private void move(int currentX, int currentY, int destX, int destY, Node node) {
-        SequentialTransition sequentialTransition = new SequentialTransition();
-        sequentialTransition.setNode(node);
-        TranslateTransition translateTransition = new TranslateTransition();
-
-        translateTransition.setFromX(currentX);
-        translateTransition.setToX(destX);
-        translateTransition.setFromY(currentY);
-        translateTransition.setToY(destY);
-
-        sequentialTransition.getChildren().add(translateTransition);
-        sequentialTransition.play();
-    }
 
     public void moveFromDeckToHand(Card card) {
         Request request = new Request("view", "moveFromDeckToHand");
@@ -727,8 +652,8 @@ public class GameView implements Initializable {
             case "getGame":
                 Game game = gameController.getGame();
                 game.setGameController(null);
-                Response response = new Response(true,"");
-                response.addData("game",game);
+                Response response = new Response(true, "");
+                response.addData("game", game);
                 game.setGameController(gameController);
                 return response;
             case "Board":
@@ -739,15 +664,15 @@ public class GameView implements Initializable {
                 return gameController.getGame().handle(request);
             case "surrender":
                 gameController.surrender(turn);
-                return new Response(true,"");
+                return new Response(true, "");
             case "addCardToHand":
                 String cardName = request.getParameter("cardName");
-                gameController.addCardToHand(turn,cardName);
-                return new Response(true,"");
+                gameController.addCardToHand(turn, cardName);
+                return new Response(true, "");
             case "increaseLP":
                 int lp = Integer.parseInt(request.getParameter("lp"));
-                gameController.increaseLP(turn,lp);
-                return new Response(true,"");
+                gameController.increaseLP(turn, lp);
+                return new Response(true, "");
             case "setWinner":
                 String nickname = request.getParameter("nickname");
                 gameController.setWinner(nickname);
