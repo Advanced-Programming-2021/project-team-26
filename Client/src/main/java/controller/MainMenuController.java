@@ -37,7 +37,7 @@ public class MainMenuController {
         //TODO load duel menu
     }
 
-    public void createNewGameWithRealPlayer(int round) throws Exception {
+    public void createNewGameWithRealPlayer(int round) {
         Request request = new Request("MainMenuController", "newGame");
         request.addParameter("round", String.valueOf(round));
 
@@ -56,10 +56,10 @@ public class MainMenuController {
         cancelGame = false;
         loadWaitingPage();
 
-        new Thread(() -> waitForOpponent(round,turn)).start();
+        new Thread(() -> waitForOpponent(round, turn)).start();
     }
 
-    private void waitForOpponent(int round,int turn){
+    private void waitForOpponent(int round, int turn) {
         while (true) {
             if (cancelGame) {
                 Request request = new Request("MainMenuController", "cancelGame");
@@ -77,7 +77,7 @@ public class MainMenuController {
             if (response.isSuccess()) {
                 User first = Database.getInstance().getCurrentUser();
                 User second = new Gson().fromJson(response.getData("user"), User.class);
-                Platform.runLater(()->new HeadOrTailController(first, second, round, turn).run());
+                Platform.runLater(() -> new HeadOrTailController(first, second, round, turn).run());
                 break;
             }
 

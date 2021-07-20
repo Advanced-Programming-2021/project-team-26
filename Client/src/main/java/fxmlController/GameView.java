@@ -162,9 +162,6 @@ public class GameView implements Initializable {
     @FXML
     private GridPane myHand;
 
-    @FXML
-    private ImageView myDeckImage;
-
     private int attacker = -1;
 
     public GameView(GameController controller, int turn) {
@@ -563,21 +560,6 @@ public class GameView implements Initializable {
             imageView.setGameView(this);
         for (CardImageView imageView : oppSpellTraps)
             imageView.setGameView(this);
-    }
-
-
-    private void move(int currentX, int currentY, int destX, int destY, Node node) {
-        SequentialTransition sequentialTransition = new SequentialTransition();
-        sequentialTransition.setNode(node);
-        TranslateTransition translateTransition = new TranslateTransition();
-
-        translateTransition.setFromX(currentX);
-        translateTransition.setToX(destX);
-        translateTransition.setFromY(currentY);
-        translateTransition.setToY(destY);
-
-        sequentialTransition.getChildren().add(translateTransition);
-        sequentialTransition.play();
     }
 
     public void moveFromDeckToHand(Card card) {

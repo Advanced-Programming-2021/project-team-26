@@ -14,7 +14,7 @@ import Utilities.Alert;
 
 import java.io.IOException;
 
-import static fxmlController.App.buttonClick;
+//import static fxmlController.App.buttonClick;
 
 public class Login extends MenuParent {
     @FXML
@@ -34,7 +34,7 @@ public class Login extends MenuParent {
 
     @FXML
     void login(ActionEvent event) {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
         try {
             boolean result = UserController.getInstance().loginUser(username.getText(), password.getText());
             if (result) {

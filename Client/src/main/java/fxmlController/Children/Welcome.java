@@ -42,14 +42,14 @@ public class Welcome extends MenuParent {
         new SignUp().run();
     }
 
-    public void muteOrPlay(MouseEvent mouseEvent) {
-        if (App.isAreSoundsActive()) {
-            App.mediaView.getMediaPlayer().pause();
-            playAndPause.setImage(pause);
-        } else {
-            App.mediaView.getMediaPlayer().play();
-            playAndPause.setImage(play);
-        }
-        App.setAreSoundsActive(!App.isAreSoundsActive());
-    }
+//    public void muteOrPlay(MouseEvent mouseEvent) {
+//        if (App.isAreSoundsActive()) {
+//            App.mediaView.getMediaPlayer().pause();
+//            playAndPause.setImage(pause);
+//        } else {
+//            App.mediaView.getMediaPlayer().play();
+//            playAndPause.setImage(play);
+//        }
+//        App.setAreSoundsActive(!App.isAreSoundsActive());
+//    }
 }
