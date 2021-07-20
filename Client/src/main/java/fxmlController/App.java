@@ -17,7 +17,7 @@ public class App extends Application {
     public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
     public static Media media;
     public static MediaView mediaView = null;
-    private static boolean areSoundsActive = true;
+    private static boolean areSoundsActive = false;
     private static Stage stage;
 
     public static Stage getStage() {
@@ -75,7 +75,7 @@ public class App extends Application {
         mediaView = new MediaView(new MediaPlayer(media));
 
         if (areSoundsActive) mediaView.getMediaPlayer().play();
-        mediaView.getMediaPlayer().autoPlayProperty().setValue(true);
+        //mediaView.getMediaPlayer().autoPlayProperty().setValue(true);
         new Welcome().run();
         stage.show();
     }

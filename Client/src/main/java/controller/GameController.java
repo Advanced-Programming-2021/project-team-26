@@ -22,6 +22,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
@@ -46,7 +47,7 @@ public class GameController {
         view = new GameView(this, myTurn);
 
         stage = new Stage();
-        this.game = new Game(this, players[0], players[1], decks[0], decks[1]);
+        this.game = new Game(players[0], players[1], decks[0], decks[1]);
         this.roundNumber = round;
     }
 
@@ -108,29 +109,30 @@ public class GameController {
             new Thread(() -> {
                 System.out.println("debugging mode 0");
                 String input = new Scanner(System.in).nextLine();
-                handleDebug(input, myTurn);
+                handleDebug(input);
             }).start();
         });
     }
 
-    private void handleDebug(String input, int turn) {
-//        if (!Database.getInstance().isDebuggingMode())
-//            return;
-//        Matcher matcher;
-//        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
-//            String cardName = matcher.group(1);
-//            Card card = Card.getCard(cardName);
-//            if (card == null)
-//                return;
-//            Platform.runLater(() -> game.getBoard(turn).addCardToHand(card));
-//        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
-//            Matcher finalMatcher = matcher;
-//            Platform.runLater(() -> increaseLP(finalMatcher));
-//        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
-//            Matcher finalMatcher1 = matcher;
-//            Platform.runLater(() -> setWinner(finalMatcher1));
-//        }
+    private void handleDebug(String input) {
+        if (!Database.getInstance().isDebuggingMode())
+            return;
+        Matcher matcher;
+        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
+            String cardName = matcher.group(1);
+            addCardToHand(cardName);
+        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
+            increaseLP(matcher);
+        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
+            setWinner(matcher);
+        }
         //TODO request to server
+    }
+
+    private void addCardToHand(String cardName) {
+        Request request = new Request("GameController","addCardToHand");
+        request.addParameter("cardName",cardName);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 
     private void addEscape(Scene scene) {
@@ -330,7 +332,7 @@ public class GameController {
         return false;
     }
 
-    public String increaseLP(Matcher matcher) {
+    public void increaseLP(Matcher matcher) {
         if (!Database.getInstance().isDebuggingMode())
             throw new InvalidInput();
 
@@ -338,25 +340,17 @@ public class GameController {
         if (lpString == null)
             throw new InvalidInput();
         int lp = Integer.parseInt(lpString);
-        game.decreaseThisLifePoint(-lp);
-        return "LifePoint added";
+        Request request = new Request("GameController","increaseLP");
+        request.addParameter("lp",lp);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 
-    public String setWinner(Matcher matcher) {
+    public void setWinner(Matcher matcher) {
         if (!Database.getInstance().isDebuggingMode())
             throw new InvalidInput();
         String nickname = matcher.group(1);
-        if (game.getThisUser().getNickname().equals(nickname)) {
-            game.setFinished(true);
-            game.setWinner(game.getTurn());
-            endGame();
-            return null;
-        } else if (game.getOtherUser().getNickname().equals(nickname)) {
-            game.setFinished(true);
-            game.setWinner(1 - game.getTurn());
-            endGame();
-            return null;
-        } else
-            throw new InvalidInput();
+        Request request = new Request("GameController","setWinner");
+        request.addParameter("nickname",nickname);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 }

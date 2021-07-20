@@ -3,10 +3,6 @@ package controller;
 import exceptions.*;
 import fxmlController.App;
 import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import model.*;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -17,9 +13,10 @@ import model.cards.trap.Trap;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
@@ -95,47 +92,6 @@ public class GameController {
             e.printStackTrace();
         }
 
-    }
-
-    private void addDebugMode(Scene[] scenes) {
-        KeyCombination key = new KeyCodeCombination(KeyCode.C,
-                KeyCombination.CONTROL_DOWN,
-                KeyCodeCombination.SHIFT_DOWN);
-
-        scenes[0].getAccelerators().put(key, () -> {
-            new Thread(() -> {
-                System.out.println("debugging mode 0");
-                String input = new Scanner(System.in).nextLine();
-                handleDebug(input, 0);
-            }).start();
-        });
-
-        scenes[1].getAccelerators().put(key, () -> {
-            new Thread(() -> {
-                System.out.println("debugging mode 1");
-                String input = new Scanner(System.in).nextLine();
-                handleDebug(input, 1);
-            }).start();
-        });
-    }
-
-    private void handleDebug(String input, int turn) {
-        if (!Database.getInstance().isDebuggingMode())
-            return;
-        Matcher matcher;
-        if ((matcher = Pattern.compile("select --hand (.+) --force").matcher(input)).find()) {
-            String cardName = matcher.group(1);
-            Card card = Card.getCard(cardName);
-            if (card == null)
-                return;
-            Platform.runLater(() -> game.getBoard(turn).addCardToHand(card));
-        } else if ((matcher = Pattern.compile("increase --LP (-?\\d+)").matcher(input)).find()) {
-            Matcher finalMatcher = matcher;
-            Platform.runLater(() -> increaseLP(finalMatcher));
-        } else if ((matcher = Pattern.compile("duel set-winner (.+)").matcher(input)).find()) {
-            Matcher finalMatcher1 = matcher;
-            Platform.runLater(() -> setWinner(finalMatcher1));
-        }
     }
 
     public boolean isTemporaryTurnChange() {
@@ -611,8 +567,8 @@ public class GameController {
         scores[winner] = 1000;
         scores[1 - winner] = 0;
         String message = game.getUser(winner).getUsername() + " won the game" + " and the score is: " + scores[0] + "-" + scores[1];
-        Request request = new Request("","endGame");
-        request.addParameter("message",message);
+        Request request = new Request("", "endGame");
+        request.addParameter("message", message);
         callers[0].sendAndReceive(request);
         callers[1].sendAndReceive(request);
         winningRounds[winner]++;
@@ -787,33 +743,26 @@ public class GameController {
         }
     }
 
-    public String increaseLP(Matcher matcher) {
-        if (!Database.getInstance().isDebuggingMode())
-            throw new InvalidInput();
-
-        String lpString = matcher.group(1);
-        if (lpString == null)
-            throw new InvalidInput();
-        int lp = Integer.parseInt(lpString);
-        game.decreaseThisLifePoint(-lp);
-        return "LifePoint added";
+    public void increaseLP(int turn, int lp) {
+        game.decreaseLifePoint(turn, -lp);
     }
 
-    public String setWinner(Matcher matcher) {
-        if (!Database.getInstance().isDebuggingMode())
-            throw new InvalidInput();
-        String nickname = matcher.group(1);
+    public void setWinner(String nickname) {
         if (game.getThisUser().getNickname().equals(nickname)) {
             game.setFinished(true);
             game.setWinner(game.getTurn());
             endGame();
-            return null;
         } else if (game.getOtherUser().getNickname().equals(nickname)) {
             game.setFinished(true);
             game.setWinner(1 - game.getTurn());
             endGame();
-            return null;
-        } else
-            throw new InvalidInput();
+        }
+    }
+
+    public void addCardToHand(int turn, String cardName) {
+        Card card = Card.getCard(cardName);
+        if (card == null)
+            return;
+        game.getBoard(turn).addCardToHand(card);
     }
 }

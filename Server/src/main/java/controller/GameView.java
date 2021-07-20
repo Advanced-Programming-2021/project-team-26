@@ -732,13 +732,23 @@ public class GameView implements Initializable {
                 game.setGameController(gameController);
                 return response;
             case "Board":
-                int turn = Integer.parseInt(request.getParameter("turn"));
-                Board board = gameController.getGame().getBoard(turn);
+                int wantedTurn = Integer.parseInt(request.getParameter("turn"));
+                Board board = gameController.getGame().getBoard(wantedTurn);
                 return board.handle(request);
             case "surrender":
-                turn = Integer.parseInt(request.getParameter("turn"));
                 gameController.surrender(turn);
                 return new Response(true,"");
+            case "addCardToHand":
+                String cardName = request.getParameter("cardName");
+                gameController.addCardToHand(turn,cardName);
+                return new Response(true,"");
+            case "increaseLP":
+                int lp = Integer.parseInt(request.getParameter("lp"));
+                gameController.increaseLP(turn,lp);
+                return new Response(true,"");
+            case "setWinner":
+                String nickname = request.getParameter("nickname");
+                gameController.setWinner(nickname);
         }
         return new Response(false, "method not supported");
     }
