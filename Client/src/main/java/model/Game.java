@@ -11,7 +11,7 @@ public class Game {
     private final int turn = 1;
     private final Phase phase = Phase.END;
 
-    public Game(User first, User second, Deck firstDeck, Deck secondDeck) throws NoPlayerAvailable {
+    public Game(User first, User second) throws NoPlayerAvailable {
         if (first == null || second == null)
             throw new NoPlayerAvailable();
         users[0] = first;

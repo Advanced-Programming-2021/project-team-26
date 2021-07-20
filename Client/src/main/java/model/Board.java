@@ -11,7 +11,6 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class Board {
-    private List<Card> deck;
     private final int myTurn;
 
     public Board(int myTurn) {
