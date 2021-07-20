@@ -3,9 +3,7 @@ package fxmlController;
 import Utilities.Alert;
 import controller.*;
 import javafx.animation.KeyFrame;
-import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,7 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -594,11 +591,11 @@ public class GameView implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    if (card instanceof Monster) setMonster(card, imageView);
-                    else if (card instanceof SpellTrap) setSpellTrap(card, imageView);
+                    if (card instanceof Monster) setMonster(card);
+                    else if (card instanceof SpellTrap) setSpellTrap(card);
                 } else {
-                    if (card instanceof Monster) summonMonster(card, imageView);
-                    else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);
+                    if (card instanceof Monster) summonMonster(card);
+                    else if (card instanceof SpellTrap) activateSpellTrap(card);
                 }
             }
         });
@@ -633,7 +630,7 @@ public class GameView implements Initializable {
         }, 2500);
     }
 
-    private void activateSpellTrap(Card card, ImageView imageView) {
+    private void activateSpellTrap(Card card) {
         try {
             gameController.activateEffect(card, new CardAddress(Place.Hand, Owner.Me));
         } catch (Exception e) {
@@ -642,7 +639,7 @@ public class GameView implements Initializable {
         }
     }
 
-    private void setSpellTrap(Card card, ImageView imageView) {
+    private void setSpellTrap(Card card) {
         try {
             gameController.set(card);
         } catch (Exception e) {
@@ -651,7 +648,7 @@ public class GameView implements Initializable {
         }
     }
 
-    private void summonMonster(Card card, ImageView imageView) {
+    private void summonMonster(Card card) {
         try {
             gameController.summon(card);
         } catch (Exception e) {
@@ -660,7 +657,7 @@ public class GameView implements Initializable {
         }
     }
 
-    private void setMonster(Card card, ImageView imageView) {
+    private void setMonster(Card card) {
         try {
             gameController.set(card);
         } catch (Exception e) {
@@ -689,7 +686,6 @@ public class GameView implements Initializable {
                 imageView.setRotate(90);
             }
         }
-
     }
 
     public void updateOpponentSpellTraps() {
@@ -763,11 +759,11 @@ public class GameView implements Initializable {
                 @Override
                 public void handle(MouseEvent event) {
                     if (event.getButton().equals(MouseButton.SECONDARY)) {
-                        if (card instanceof Monster) setMonster(card, imageView);
-                        else if (card instanceof SpellTrap) setSpellTrap(card, imageView);
+                        if (card instanceof Monster) setMonster(card);
+                        else if (card instanceof SpellTrap) setSpellTrap(card);
                     } else {
-                        if (card instanceof Monster) summonMonster(card, imageView);
-                        else if (card instanceof SpellTrap) activateSpellTrap(card, imageView);
+                        if (card instanceof Monster) summonMonster(card);
+                        else if (card instanceof SpellTrap) activateSpellTrap(card);
                     }
                 }
             });
