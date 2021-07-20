@@ -1,7 +1,7 @@
 package view;
 
-import controller.MonsterController;
-import controller.SpellTrapController;
+import controller.MonsterTransfer;
+import controller.SpellTrapTransfer;
 import model.Board;
 import model.Game;
 import model.cards.Card;
@@ -77,7 +77,7 @@ public class Print {
         //  monster zone
         printMultipleTimes("\t", 1);
         for (int i : new int[]{4, 2, 0, 1, 3}) {
-            MonsterController monster = board.getMonsterByIndex(i);
+            MonsterTransfer monster = board.getMonsterByIndex(i);
             if (monster == null)
                 System.out.print("E");
             else {
@@ -91,7 +91,7 @@ public class Print {
         //  spell zone
         printMultipleTimes("\t", 1);
         for (int i : new int[]{4, 2, 0, 1, 3}) {
-            SpellTrapController spellTrap = board.getSpellTrapByIndex(i);
+            SpellTrapTransfer spellTrap = board.getSpellTrapByIndex(i);
             if (spellTrap == null)
                 System.out.print("E");
             else {
@@ -132,7 +132,7 @@ public class Print {
         //  spell zone
         printMultipleTimes("\t", 1);
         for (int i : new int[]{3, 1, 0, 2, 4}) {
-            SpellTrapController spellTrap = board.getSpellTrapByIndex(i);
+            SpellTrapTransfer spellTrap = board.getSpellTrapByIndex(i);
             if (spellTrap == null)
                 System.out.print("E");
             else {
@@ -146,7 +146,7 @@ public class Print {
         //  monster zone
         printMultipleTimes("\t", 1);
         for (int i : new int[]{3, 1, 0, 2, 4}) {
-            MonsterController monster = board.getMonsterByIndex(i);
+            MonsterTransfer monster = board.getMonsterByIndex(i);
             if (monster == null)
                 System.out.print("E");
             else {

@@ -1,30 +1,35 @@
 package model;
 
-import controller.GameController;
-import controller.MonsterController;
-import controller.SpellController;
-import controller.SpellTrapController;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import controller.*;
 import model.cards.Card;
 import model.cards.monster.Monster;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class Board {
     private List<Card> deck;
     private final GameController gameController;
-    private int myTurn = -1;
+    private int myTurn;
 
-    public Board(GameController gameController, Deck deck) {
+    public Board(GameController gameController, Deck deck,int myTurn) {
         initDeck(deck);
         this.gameController = gameController;
+        this.myTurn = myTurn;
     }
 
-    public HashMap<Integer, MonsterController> getMonsterZoneMap() {
-        //TODO request to server
-        return null;
+    public HashMap<Integer, MonsterTransfer> getMonsterZoneMap() {
+        Request request = new Request("GameController","Board");
+        request.addParameter("turn",myTurn);
+        request.addParameter("function","getMonsterZoneMap");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        Type hashMapType = new TypeToken<Map<Integer, MonsterTransfer>>() {}.getType();
+        return new Gson().fromJson(response.getData("MonsterZoneMap"),hashMapType);
     }
 
-    public HashMap<Integer, SpellTrapController> getSpellTrapZoneMap() {
+    public HashMap<Integer, SpellTrapTransfer> getSpellTrapZoneMap() {
         //TODO request to server
         return null;
     }
@@ -33,22 +38,22 @@ public class Board {
         return deck;
     }
 
-    public Collection<MonsterController> getMonstersZone() {
+    public Collection<MonsterTransfer> getMonstersZone() {
         //TODO request to server
         return null;
     }
 
-    public MonsterController getMonsterByIndex(int index) {
+    public MonsterTransfer getMonsterByIndex(int index) {
         //TODO request to server
         return null;
     }
 
-    public Collection<SpellTrapController> getSpellTrapZone() {
+    public Collection<SpellTrapTransfer> getSpellTrapZone() {
         //TODO request to server
         return null;
     }
 
-    public SpellTrapController getSpellTrapByIndex(int index) {
+    public SpellTrapTransfer getSpellTrapByIndex(int index) {
         //TODO request to server
         return null;
     }
@@ -63,7 +68,7 @@ public class Board {
         return null;
     }
 
-    public SpellController getFieldZone() {
+    public SpellTransfer getFieldZone() {
         //TODO request to server
         return null;
     }
@@ -98,7 +103,7 @@ public class Board {
 
     }
 
-    public void removeMonster(MonsterController monster) {
+    public void removeMonster(MonsterTransfer monster) {
         //TODO request to server
     }
 
@@ -111,7 +116,7 @@ public class Board {
         //TODO request to server
     }
 
-    public void removeSpellTrap(SpellTrapController spellTrap) {
+    public void removeSpellTrap(SpellTrapTransfer spellTrap) {
         //TODO request to server
 
     }

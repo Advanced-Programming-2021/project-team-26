@@ -2,7 +2,7 @@ package controller;
 
 import model.cards.Card;
 
-public abstract class SpellTrapController {
+public abstract class SpellTrapTransfer {
     protected SpellTrapPosition position;
     public abstract Card getCard();
 

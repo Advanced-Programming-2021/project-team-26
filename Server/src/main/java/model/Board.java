@@ -298,4 +298,18 @@ public class Board {
         gameController.getViews()[gameController.getGame().getTurn()].updateFieldImage(spell);
         return this.fieldZone;
     }
+
+    public Response handle(Request request) {
+        switch (request.getParameter("function")){
+            case "getMonsterZoneMap":
+                HashMap<Integer,MonsterTransfer> map = new HashMap<>();
+                monstersZone.forEach((i,monster) -> {
+                    map.put(i,new MonsterTransfer(monster.getMonster(),monster.getPosition()));
+                });
+                Response response = new Response(true,"");
+                response.addData("MonsterZoneMap",map);
+                return response;
+        }
+        return new Response(false,"method not found");
+    }
 }

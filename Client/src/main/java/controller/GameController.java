@@ -26,7 +26,7 @@ public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
     private final int[] winningRounds = new int[]{0, 0};
     private final User[] players = new User[2];
-    private final Stack<SpellTrapController> chain = new Stack<>();
+    private final Stack<SpellTrapTransfer> chain = new Stack<>();
     private final int roundNumber;
     private final GameView view;
     private final Stage stage;

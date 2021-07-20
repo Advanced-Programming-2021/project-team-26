@@ -688,7 +688,7 @@ public class GameView implements Initializable {
     }
 
     public void updateOpponentMonsterZone() {
-        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(1 - turn).getMonsterZoneMap();
+        HashMap<Integer, MonsterTransfer> monsterZone = gameController.getGame().getBoard(1 - turn).getMonsterZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!monsterZone.containsKey(i)) {
                 CardImageView imageView = oppMonsters.get(i);
@@ -711,7 +711,7 @@ public class GameView implements Initializable {
     }
 
     public void updateOpponentSpellTraps() {
-        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(1 - turn).getSpellTrapZoneMap();
+        HashMap<Integer, SpellTrapTransfer> spellTrapZone = gameController.getGame().getBoard(1 - turn).getSpellTrapZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!spellTrapZone.containsKey(i)) {
                 CardImageView imageView = oppSpellTraps.get(i);
@@ -728,7 +728,7 @@ public class GameView implements Initializable {
     }
 
     public void updateMyMonsterZone() {
-        HashMap<Integer, MonsterController> monsterZone = gameController.getGame().getBoard(turn).getMonsterZoneMap();
+        HashMap<Integer, MonsterTransfer> monsterZone = gameController.getGame().getBoard(turn).getMonsterZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!monsterZone.containsKey(i)) {
                 CardImageView imageView = myMonsters.get(i);
@@ -751,7 +751,7 @@ public class GameView implements Initializable {
     }
 
     public void updateMySpellTraps() {
-        HashMap<Integer, SpellTrapController> spellTrapZone = gameController.getGame().getBoard(turn).getSpellTrapZoneMap();
+        HashMap<Integer, SpellTrapTransfer> spellTrapZone = gameController.getGame().getBoard(turn).getSpellTrapZoneMap();
         for (int i = 0; i < 5; i++) {
             if (!spellTrapZone.containsKey(i)) {
                 CardImageView imageView = mySpellTraps.get(i);

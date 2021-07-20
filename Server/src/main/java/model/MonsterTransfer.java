@@ -1,12 +1,13 @@
-package controller;
+package model;
 
+import controller.MonsterPosition;
 import model.cards.monster.Monster;
 
-public class MonsterController {
+public class MonsterTransfer {
     private Monster monster;
     private MonsterPosition position;
 
-    private MonsterController(Monster monster, MonsterPosition position) {
+    public MonsterTransfer(Monster monster, MonsterPosition position) {
         setMonster(new Monster(monster));
         setPosition(position);
     }

@@ -20,8 +20,8 @@ public class Game {
         this.gameController = gameController;
         users[0] = first;
         users[1] = second;
-        boards[0] = new Board(gameController, firstDeck);
-        boards[1] = new Board(gameController, secondDeck);
+        boards[0] = new Board(gameController, firstDeck,0);
+        boards[1] = new Board(gameController, secondDeck,1);
         lifePoints[0] = LIFE_POINT;
         lifePoints[1] = LIFE_POINT;
     }
@@ -53,24 +53,8 @@ public class Game {
         return boards[turn];
     }
 
-    public Board getThisBoard() {
-        return boards[turn];
-    }
-
-    public Board getOtherBoard() {
-        return boards[1 - turn];
-    }
-
     public int getLifePoint(int turn) {
         return lifePoints[turn];
-    }
-
-    public int getThisLifePoint() {
-        return lifePoints[turn];
-    }
-
-    public int getOtherLifePint() {
-        return lifePoints[1 - turn];
     }
 
     public void decreaseLifePoint(int turn, int amount) {
@@ -87,23 +71,12 @@ public class Game {
         decreaseLifePoint(turn, amount);
     }
 
-    public void decreaseOtherLifePoint(int amount) {
-        decreaseLifePoint(1 - turn, amount);
-    }
-
     public Phase getPhase() {
         return this.phase;
-    }
-
-    public int getWinner() {
-        return winner;
     }
 
     public void setWinner(int winner) {
         this.winner = winner;
     }
 
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
 }

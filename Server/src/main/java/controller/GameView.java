@@ -731,6 +731,10 @@ public class GameView implements Initializable {
                 response.addData("game",game);
                 game.setGameController(gameController);
                 return response;
+            case "Board":
+                int turn = Integer.parseInt(request.getParameter("turn"));
+                Board board = gameController.getGame().getBoard(turn);
+                return board.handle(request);
         }
         return new Response(false, "method not supported");
     }
