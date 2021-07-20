@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import model.*;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -600,8 +599,8 @@ public class GameController {
         deselect();
     }
 
-    public void surrender() {
-        game.setSurrenderPlayer(game.getTurn());
+    public void surrender(int turn) {
+        game.setSurrenderPlayer(turn);
         endGame();
     }
 
@@ -611,8 +610,11 @@ public class GameController {
         int[] scores = new int[2];
         scores[winner] = 1000;
         scores[1 - winner] = 0;
-//        Print.getInstance().printMessage(game.getUser(winner).getUsername() + " won the game" +
-//                " and the score is: " + scores[0] + "-" + scores[1]);
+        String message = game.getUser(winner).getUsername() + " won the game" + " and the score is: " + scores[0] + "-" + scores[1];
+        Request request = new Request("","endGame");
+        request.addParameter("message",message);
+        callers[0].sendAndReceive(request);
+        callers[1].sendAndReceive(request);
         winningRounds[winner]++;
         maxLifePoint[winner] = Math.max(maxLifePoint[winner], game.getLifePoint(winner));
         if (winningRounds[0] > roundNumber / 2 || winningRounds[1] > roundNumber / 2) {
