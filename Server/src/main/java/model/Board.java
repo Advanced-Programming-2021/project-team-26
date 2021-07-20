@@ -309,6 +309,14 @@ public class Board {
                 Response response = new Response(true,"");
                 response.addData("MonsterZoneMap",map);
                 return response;
+            case "getSpellTrapZoneMap":
+                HashMap<Integer,SpellTrapTransfer> map1 = new HashMap<>();
+                spellTrapZone.forEach((i,spellTrap) -> {
+                    map1.put(i,new SpellTrapTransfer(spellTrap.getCard(),spellTrap.getPosition()));
+                });
+                response = new Response(true,"");
+                response.addData("SpellTrapZoneMap",map1);
+                return response;
         }
         return new Response(false,"method not found");
     }

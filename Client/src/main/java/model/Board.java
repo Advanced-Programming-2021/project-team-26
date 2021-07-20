@@ -30,8 +30,12 @@ public class Board {
     }
 
     public HashMap<Integer, SpellTrapTransfer> getSpellTrapZoneMap() {
-        //TODO request to server
-        return null;
+        Request request = new Request("GameController","Board");
+        request.addParameter("turn",myTurn);
+        request.addParameter("function","getSpellTrapZoneMap");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        Type hashMapType = new TypeToken<Map<Integer, SpellTrapTransfer>>() {}.getType();
+        return new Gson().fromJson(response.getData("SpellTrapZoneMap"),hashMapType);
     }
 
     public List<Card> getDeck() {
