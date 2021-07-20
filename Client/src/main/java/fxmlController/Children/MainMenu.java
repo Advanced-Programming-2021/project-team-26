@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static fxmlController.App.buttonClick;
+//import static fxmlController.App.buttonClick;
 
 public class MainMenu extends MenuParent {
 
@@ -34,7 +34,7 @@ public class MainMenu extends MenuParent {
     }
 
     public void newTwoPlayerGame() {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
 
         Integer round = getRound();
         try {
@@ -122,32 +122,32 @@ public class MainMenu extends MenuParent {
     }
 
     public void openDeck() throws IOException {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
         new DeckMenu().run();
     }
 
     public void openShop() throws IOException {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
         new Shop().run();
     }
 
     public void openProfile() throws IOException {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
         new Profile().run();
     }
 
     public void openScoreBoard() throws IOException {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
         new Scoreboard().run();
     }
 
     public void openImportExport() throws IOException {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
         new ImpExpMain().run();
     }
 
     public void logout() {
-        if (App.isAreSoundsActive()) buttonClick.play();
+//        if (App.isAreSoundsActive()) buttonClick.play();
         Alert.getInstance().successfulPrint(UserController.getInstance().logout());
     }
 }

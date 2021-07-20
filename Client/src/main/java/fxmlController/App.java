@@ -14,23 +14,23 @@ import java.util.Stack;
 
 public class App extends Application {
     private static final Stack<MenuParent> menus = new Stack<>();
-    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
-    public static Media media;
-    public static MediaView mediaView = null;
-    private static boolean areSoundsActive = true;
+//    public static AudioClip buttonClick = new AudioClip(App.class.getResource("/Assets/Sounds/buttonClick.wav").toString());
+//    public static Media media;
+//    public static MediaView mediaView = null;
+//    private static boolean areSoundsActive = true;
     private static Stage stage;
 
     public static Stage getStage() {
         return stage;
     }
 
-    public static boolean isAreSoundsActive() {
-        return areSoundsActive;
-    }
+//    public static boolean isAreSoundsActive() {
+//        return areSoundsActive;
+//    }
 
-    public static void setAreSoundsActive(boolean areSoundsActive) {
-        App.areSoundsActive = areSoundsActive;
-    }
+//    public static void setAreSoundsActive(boolean areSoundsActive) {
+//        App.areSoundsActive = areSoundsActive;
+//    }
 
     public static void main(String[] args) {
         launch(args);
@@ -71,11 +71,11 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         stage.setResizable(false);
-        media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());
-        mediaView = new MediaView(new MediaPlayer(media));
-
-        if (areSoundsActive) mediaView.getMediaPlayer().play();
-        mediaView.getMediaPlayer().autoPlayProperty().setValue(true);
+//        media = new Media(getClass().getResource("/Assets/YuGiOh_entry.mp4").toExternalForm());
+//        mediaView = new MediaView(new MediaPlayer(media));
+//
+//        if (areSoundsActive) mediaView.getMediaPlayer().play();
+//        mediaView.getMediaPlayer().autoPlayProperty().setValue(true);
         new Welcome().run();
         stage.show();
     }

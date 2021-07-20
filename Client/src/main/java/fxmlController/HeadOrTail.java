@@ -28,7 +28,7 @@ public class HeadOrTail {
 
     @FXML
     void throwCoin(ActionEvent event) {
-        Sounds.buttonClick.play();
+//        Sounds.buttonClick.play();
         sign.setText(controller.getSign(turn));
         new Thread(controller::startThrowCoin).start();
     }
