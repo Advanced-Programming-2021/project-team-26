@@ -2,7 +2,6 @@ package model;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import controller.GameController;
 import controller.MonsterTransfer;
 import controller.NetworkController;
 import controller.SpellTrapTransfer;
@@ -12,13 +11,11 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class Board {
-    private final GameController gameController;
     private List<Card> deck;
     private int myTurn;
 
-    public Board(GameController gameController, Deck deck, int myTurn) {
+    public Board(Deck deck, int myTurn) {
         initDeck(deck);
-        this.gameController = gameController;
         this.myTurn = myTurn;
     }
 
@@ -53,13 +50,23 @@ public class Board {
     }
 
     public List<Card> getGraveyard() {
-        //TODO request to server
-        return null;
+        Request request = new Request("GameController", "Board");
+        request.addParameter("turn", myTurn);
+        request.addParameter("function", "getGraveyard");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        Type listType = new TypeToken<List<Card>>() {
+        }.getType();
+        return new Gson().fromJson(response.getData("Graveyard"), listType);
     }
 
     public List<Card> getHand() {
-        //TODO request to server
-        return null;
+        Request request = new Request("GameController", "Board");
+        request.addParameter("turn", myTurn);
+        request.addParameter("function", "getHand");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        Type listType = new TypeToken<List<Card>>() {
+        }.getType();
+        return new Gson().fromJson(response.getData("Hand"), listType);
     }
 
     private void initDeck(Deck deck) {
@@ -72,5 +79,4 @@ public class Board {
 
         Collections.shuffle(this.deck);
     }
-
 }
