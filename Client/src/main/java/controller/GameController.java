@@ -1,5 +1,6 @@
 package controller;
 
+import Utilities.Alert;
 import exceptions.*;
 import fxmlController.App;
 import fxmlController.GameView;
@@ -229,32 +230,13 @@ public class GameController {
 
 
     public void surrender() {
-        game.setSurrenderPlayer(game.getTurn());
-        endGame();
+        Request request = new Request("GameController","surrender");
+        request.addParameter("turn",myTurn);
+        NetworkController.getInstance().sendAndReceive(request);
     }
 
-    public void endGame() {
-//        int winner = game.getWinner();
-//        int[] scores = new int[2];
-//        scores[winner] = 1000;
-//        scores[1 - winner] = 0;
-//        Print.getInstance().printMessage(game.getUser(winner).getUsername() + " won the game" +
-//                " and the score is: " + scores[0] + "-" + scores[1]);
-//        winningRounds[winner]++;
-//        maxLifePoint[winner] = Math.max(maxLifePoint[winner], game.getLifePoint(winner));
-//        if (winningRounds[0] > roundNumber / 2 || winningRounds[1] > roundNumber / 2) {
-//            endMatch();
-//        } else {
-//            currentRound++;
-//            changeDeck(0);
-//            changeDeck(1);
-//            try {
-//                game = new Game(this, players[0], players[1], decks[0], decks[1]);
-//            } catch (NoPlayerAvailable ignored) {
-//
-//            }
-//        }
-        //TODO request to server
+    public void endGame(String message) {
+        Alert.getInstance().successfulPrint(message);
     }
 
     private void changeDeck(int turn) {

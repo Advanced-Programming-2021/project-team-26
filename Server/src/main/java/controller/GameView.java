@@ -735,6 +735,10 @@ public class GameView implements Initializable {
                 int turn = Integer.parseInt(request.getParameter("turn"));
                 Board board = gameController.getGame().getBoard(turn);
                 return board.handle(request);
+            case "surrender":
+                turn = Integer.parseInt(request.getParameter("turn"));
+                gameController.surrender(turn);
+                return new Response(true,"");
         }
         return new Response(false, "method not supported");
     }
