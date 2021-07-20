@@ -317,6 +317,11 @@ public class Board {
                 response = new Response(true,"");
                 response.addData("SpellTrapZoneMap",map1);
                 return response;
+            case "getDeck":
+                List<Card> deck = getDeck();
+                response = new Response(true,"");
+                response.addData("Deck",deck);
+                return response;
         }
         return new Response(false,"method not found");
     }

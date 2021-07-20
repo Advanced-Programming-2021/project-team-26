@@ -39,20 +39,15 @@ public class Board {
     }
 
     public List<Card> getDeck() {
-        return deck;
-    }
-
-    public Collection<MonsterTransfer> getMonstersZone() {
-        //TODO request to server
-        return null;
+        Request request = new Request("GameController","Board");
+        request.addParameter("turn",myTurn);
+        request.addParameter("function","getDeck");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        Type listType = new TypeToken<List<Card>>() {}.getType();
+        return new Gson().fromJson(response.getData("Deck"),listType);
     }
 
     public MonsterTransfer getMonsterByIndex(int index) {
-        //TODO request to server
-        return null;
-    }
-
-    public Collection<SpellTrapTransfer> getSpellTrapZone() {
         //TODO request to server
         return null;
     }
