@@ -12,10 +12,9 @@ import java.util.*;
 
 public class Board {
     private List<Card> deck;
-    private int myTurn;
+    private final int myTurn;
 
-    public Board(Deck deck, int myTurn) {
-        initDeck(deck);
+    public Board(int myTurn) {
         this.myTurn = myTurn;
     }
 
@@ -67,16 +66,5 @@ public class Board {
         Type listType = new TypeToken<List<Card>>() {
         }.getType();
         return new Gson().fromJson(response.getData("Hand"), listType);
-    }
-
-    private void initDeck(Deck deck) {
-        ArrayList<String> mainDeck = deck.getMainDeck();
-        this.deck = new ArrayList<>();
-
-        for (String cardName : mainDeck) {
-            this.deck.add(Card.getCard(cardName));
-        }
-
-        Collections.shuffle(this.deck);
     }
 }

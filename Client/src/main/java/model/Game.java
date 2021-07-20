@@ -16,8 +16,8 @@ public class Game {
             throw new NoPlayerAvailable();
         users[0] = first;
         users[1] = second;
-        boards[0] = new Board(firstDeck, 0);
-        boards[1] = new Board(secondDeck, 1);
+        boards[0] = new Board( 0);
+        boards[1] = new Board( 1);
         lifePoints[0] = LIFE_POINT;
         lifePoints[1] = LIFE_POINT;
     }
