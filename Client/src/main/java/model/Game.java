@@ -1,5 +1,7 @@
 package model;
 
+import com.google.gson.Gson;
+import controller.NetworkController;
 import controller.Phase;
 import exceptions.NoPlayerAvailable;
 
@@ -7,9 +9,6 @@ public class Game {
     public final static int LIFE_POINT = 8000;
     private final Board[] boards = new Board[2];
     private final User[] users = new User[2];
-    private final int[] lifePoints = new int[2];
-    private final int turn = 1;
-    private final Phase phase = Phase.END;
 
     public Game(User first, User second) throws NoPlayerAvailable {
         if (first == null || second == null)
@@ -18,13 +17,13 @@ public class Game {
         users[1] = second;
         boards[0] = new Board( 0);
         boards[1] = new Board( 1);
-        lifePoints[0] = LIFE_POINT;
-        lifePoints[1] = LIFE_POINT;
     }
 
     public int getTurn() {
-        //TODO
-        return turn;
+        Request request = new Request("GameController","Game");
+        request.addParameter("function","getTurn");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        return Integer.parseInt(response.getData("turn"));
     }
 
     public User getUser(int turn) {
@@ -36,11 +35,18 @@ public class Game {
     }
 
     public int getLifePoint(int turn) {
-        return lifePoints[turn];
+        Request request = new Request("GameController","Game");
+        request.addParameter("function","getLifePoint");
+        request.addParameter("turn",turn);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        return Integer.parseInt(response.getData("lp"));
     }
 
     public Phase getPhase() {
-        return this.phase;
+        Request request = new Request("GameController","Game");
+        request.addParameter("function","getPhase");
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+        return new Gson().fromJson(response.getData("phase"),Phase.class);
     }
 
 }

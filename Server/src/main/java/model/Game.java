@@ -225,4 +225,22 @@ public class Game {
     public void setWinner(int winner) {
         this.winner = winner;
     }
+
+    public Response handle(Request request) {
+        switch (request.getParameter("function")){
+            case "getTurn":
+                Response response = new Response(true,"");
+                response.addData("turn",this.turn);
+                return response;
+            case "getLifePoint":
+                int wantedTurn = Integer.parseInt(request.getParameter("turn"));
+                response = new Response(true,"");
+                response.addData("lp",getLifePoint(wantedTurn));
+                return response;
+            case "getPhase":
+                response = new Response(true,"");
+                response.addData("phase",getPhase());
+        }
+        return new Response(false,"method not found");
+    }
 }
