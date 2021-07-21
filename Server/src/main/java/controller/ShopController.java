@@ -14,33 +14,33 @@ import java.util.regex.Matcher;
 public class ShopController {
     private static final int INITIAL_NUMBER_OF_CARDS = 20;
     private static Map<String, Integer> allCards; //CardName, CardNumber
-    private static Map<String, Boolean> cardsBuyingState;//true -> selling possible
+    private static Map<String, Boolean> cardsShoppingState;//true -> selling and buying possible
 
     static {
         setAllCards(new HashMap<>());
         for (String cardName : Card.getAllCards().keySet()) {
             allCards.put(cardName, INITIAL_NUMBER_OF_CARDS);
         }
-        setCardsBuyingState(new HashMap<>());
+        setCardsShoppingState(new HashMap<>());
         for (String cardName : Card.getAllCards().keySet()) {
-            cardsBuyingState.put(cardName, true);
+            cardsShoppingState.put(cardName, true);
         }
     }
 
-    public static void disableSelling(String cardName){
-        cardsBuyingState.put(cardName, false);
+    public static void disableShopping(String cardName){
+        cardsShoppingState.put(cardName, false);
     }
 
-    public static void enableSelling(String cardName){
-        cardsBuyingState.put(cardName, true);
+    public static void enableShopping(String cardName){
+        cardsShoppingState.put(cardName, true);
     }
 
-    public static Map<String, Boolean> getCardsBuyingState() {
-        return cardsBuyingState;
+    public static Map<String, Boolean> getCardsShoppingState() {
+        return cardsShoppingState;
     }
 
-    public static void setCardsBuyingState(Map<String, Boolean> cardsBuyingState) {
-        ShopController.cardsBuyingState = cardsBuyingState;
+    public static void setCardsShoppingState(Map<String, Boolean> cardsBuyingState) {
+        ShopController.cardsShoppingState = cardsBuyingState;
     }
 
     public static Map<String, Integer> getAllCards() {

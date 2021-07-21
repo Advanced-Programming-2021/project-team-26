@@ -32,21 +32,18 @@ public class AdminPanel extends MenuParent {
 
 
     public void increaseInventory(String cardName, int amount) {
-
+        ShopController.increaseCardAmountInShop(amount, cardName);
     }
 
     public void decreaseInventory(String cardName, int amount) {
+        ShopController.decreaseCardAmountInShop(amount, cardName);
     }
 
-    public void disableBuying(String cardName) {
+    public void disableShopping(String cardName) {
+        ShopController.disableShopping(cardName);
     }
 
     public void enableBuying(String cardName) {
-    }
-
-    public void disableSelling(String cardName) {
-    }
-
-    public void enableSelling(String cardName) {
+        ShopController.enableShopping(cardName);
     }
 }
