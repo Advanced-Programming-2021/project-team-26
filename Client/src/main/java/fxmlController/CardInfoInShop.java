@@ -1,7 +1,7 @@
 package fxmlController;
 
+import Utilities.Alert;
 import Utilities.GetFXML;
-import Utilities.Sounds;
 import controller.Database;
 import controller.ShopController;
 import fxmlController.Children.Shop;
@@ -45,10 +45,19 @@ public class CardInfoInShop extends MenuParent implements Initializable {
 
     @FXML
     void buyCard(ActionEvent event) {
-        shopController.buyCard(Shop.getCurrentCard());
+        if (Shop.getCurrentCard().getPrice() > shopController.getUserBalance()){
+            Alert.getInstance().errorPrint("Not enough money");
+            buyCard.setDisable(true);
+        }
+
+        try {
+            shopController.buyCard(Shop.getCurrentCard());
+        } catch (Exception e) {
+            Alert.getInstance().errorPrint(e.getMessage());
+        }
         setBalance(shopController.getUserBalance());
-        setCardPrice(shopController.getPrice(Shop.getCurrentCard()));
-        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInUserCards(Shop.getCurrentCard().getName()));
+        setCardPrice(shopController.getPrice(Shop.getCurrentCard().getName()));
+        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInShop(Shop.getCurrentCard().getName()));
     }
 
     public void run() throws IOException {
@@ -60,12 +69,11 @@ public class CardInfoInShop extends MenuParent implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
         setCard();
-        User currentUser = Database.getInstance().getCurrentUser();
-        if (Shop.getCurrentCard().getPrice() > currentUser.getMoney()) buyCard.setDisable(true);
+        if (Shop.getCurrentCard().getPrice() > shopController.getUserBalance()) buyCard.setDisable(true);
 
         setBalance(shopController.getUserBalance());
-        setCardPrice(shopController.getPrice(Shop.getCurrentCard()));
-        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInUserCards(Shop.getCurrentCard().getName()));
+        setCardPrice(shopController.getPrice(Shop.getCurrentCard().getName()));
+        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInShop(Shop.getCurrentCard().getName()));
     }
 
     private void setCard() {

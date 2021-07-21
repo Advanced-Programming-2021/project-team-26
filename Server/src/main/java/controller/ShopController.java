@@ -1,67 +1,70 @@
 package controller;
 
+import exceptions.InvalidInput;
+import exceptions.NotEnoughCardException;
+import model.User;
 import model.cards.Card;
+import view.Scan;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
 public class ShopController {
-    private static final Map<String, Card> allCards;
+    private static final int INITIAL_NUMBER_OF_CARDS = 20;
+    private static Map<String, Integer> allCards; //CardName, CardNumber
 
     static {
-        allCards = Card.getAllCards();
+        setAllCards(new HashMap<>());
+        for (String cardName : Card.getAllCards().keySet()) {
+            allCards.put(cardName, INITIAL_NUMBER_OF_CARDS);
+        }
     }
 
-    public static Map<String, Card> getAllCards() {
+    public static Map<String, Integer> getAllCards() {
         return allCards;
     }
 
-    public boolean buyCard(Card card) {
+    public static void setAllCards(Map<String, Integer> allCards) {
+        ShopController.allCards = allCards;
+    }
+
+    public static boolean buyCard(User user, Card card) throws Exception{
+        if (allCards.get(card.getName()) == 0) throw new NotEnoughCardException();
         int cardPrice = card.getPrice();
-        Database.getInstance().getCurrentUser().setMoney(Database.getInstance().getCurrentUser().getMoney() - cardPrice);
-        Database.getInstance().getCurrentUser().addCardToUserCards(card);
+        user.setMoney(user.getMoney() - cardPrice);
+        user.addCardToUserCards(card);
+        allCards.put(card.getName(), allCards.get(card.getName()) - 1);
         return true;
     }
 
-    public int getNumberOfThisCardInUserCards(String cardName) {
-        if (Database.getInstance().getCurrentUser().getAllCards().containsKey(cardName))
-            return Database.getInstance().getCurrentUser().getAllCards().get(cardName);
-        return 0;
+    public static int getNumberOfThisCardInShop(String cardName) {
+        return allCards.get(cardName);
     }
 
-    public String showAll(Matcher matcher) {
-        return allCardsToString();
+    public static int getPrice(String cardName) {
+        return Card.getCard(cardName).getPrice();
     }
 
-    public boolean checkCardNameExistence(String cardName) {
-        for (String key : allCards.keySet()) {
-            if (key.equals(cardName)) {
-                return true;
-            }
+    public static int getUserBalance(String username) {
+        return User.getUserByUsername(username).getMoney();
+    }
+
+    public String increaseMoney(Matcher matcher) {
+        HashMap<String, String> input = Scan.getInstance().parseInput(matcher.group());
+        String moneyString = Scan.getInstance().getValue(input, "money", "m");
+        if (moneyString == null)
+            throw new InvalidInput();
+
+        try {
+            int money = Integer.parseInt(moneyString);
+            if (Database.getInstance().isDebuggingMode())
+                Database.getInstance().getCurrentUser().increaseMoney(money);
+            else
+                throw new InvalidInput();
+        } catch (NumberFormatException e) {
+            throw new InvalidInput();
         }
-        return false;
-    }
-
-    public int getPrice(Card card) {
-        return card.getPrice();
-    }
-
-    public int getUserBalance() {
-        return Database.getInstance().getCurrentUser().getMoney();
-    }
-
-    private String allCardsToString() {
-        StringBuilder stringToReturn = new StringBuilder();
-        Map<String, Card> allCards = getAllCards();
-        ArrayList<String> sortedCardNames = new ArrayList<>(getAllCards().keySet());
-        Collections.sort(sortedCardNames);
-
-        for (String name : sortedCardNames) {
-            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
-        }
-
-        return stringToReturn.toString();
+        return "successfully increased";
     }
 }

@@ -1,58 +1,46 @@
 package controller;
 
 import exceptions.InvalidInput;
+import model.Request;
+import model.Response;
 import model.cards.Card;
 import view.Scan;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 public class ShopController {
-    private static final Map<String, Card> allCards;
+    public boolean buyCard(Card card) throws Exception {
+        Request request = new Request("ShopController", "buyCard");
+        request.addParameter("card", card.getName());
+        Response response = NetworkController.getInstance().sendAndReceive(request);
 
-    static {
-        allCards = Card.getAllCards();
+        if (response.isSuccess()) return true;
+        throw new RuntimeException(response.getMessage());
     }
 
-    public static Map<String, Card> getAllCards() {
-        return allCards;
+    public int getNumberOfThisCardInShop(String cardName) {
+        Request request = new Request("ShopController", "getNumberOfThisCardInShop");
+        request.addParameter("cardName", cardName);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+
+        return Integer.parseInt(response.getData("NumberOfThisCardInShop"));
     }
 
-    public boolean buyCard(Card card) {
-        int cardPrice = card.getPrice();
-        Database.getInstance().getCurrentUser().setMoney(Database.getInstance().getCurrentUser().getMoney() - cardPrice);
-        Database.getInstance().getCurrentUser().addCardToUserCards(card);
-        return true;
-    }
+    public int getPrice(String cardName) {
+        Request request = new Request("ShopController", "getPrice");
+        request.addParameter("cardName", cardName);
+        Response response = NetworkController.getInstance().sendAndReceive(request);
 
-    public int getNumberOfThisCardInUserCards(String cardName) {
-        if (Database.getInstance().getCurrentUser().getAllCards().containsKey(cardName))
-            return Database.getInstance().getCurrentUser().getAllCards().get(cardName);
-        return 0;
-    }
-
-    public String showAll(Matcher matcher) {
-        return allCardsToString();
-    }
-
-    public boolean checkCardNameExistence(String cardName) {
-        for (String key : allCards.keySet()) {
-            if (key.equals(cardName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int getPrice(Card card) {
-        return card.getPrice();
+        return Integer.parseInt(response.getData("Price"));
     }
 
     public int getUserBalance() {
-        return Database.getInstance().getCurrentUser().getMoney();
+        Request request = new Request("ShopController", "getUserBalance");
+        request.addParameter("username", Database.getInstance().getCurrentUser().getUsername());
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+
+        return Integer.parseInt(response.getData("UserBalance"));
     }
 
     public String increaseMoney(Matcher matcher) {
@@ -71,18 +59,5 @@ public class ShopController {
             throw new InvalidInput();
         }
         return "successfully increased";
-    }
-
-    private String allCardsToString() {
-        StringBuilder stringToReturn = new StringBuilder();
-        Map<String, Card> allCards = getAllCards();
-        ArrayList<String> sortedCardNames = new ArrayList<>(getAllCards().keySet());
-        Collections.sort(sortedCardNames);
-
-        for (String name : sortedCardNames) {
-            stringToReturn.append(name).append(":").append(allCards.get(name).getDescription()).append("\n");
-        }
-
-        return stringToReturn.toString();
     }
 }

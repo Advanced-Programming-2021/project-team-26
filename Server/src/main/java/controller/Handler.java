@@ -5,6 +5,7 @@ import model.Deck;
 import model.Request;
 import model.Response;
 import model.User;
+import model.cards.Card;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -95,12 +96,49 @@ public class Handler extends Thread {
                 return handleDeckCommands(request);
             case "MainMenuController":
                 return handleMainMenuCommands(request);
+            case "ShopController":
+                return handleShopCommands(request);
             case "GameController":
                 if (view == null)
                     break;
                 return view.handle(request);
         }
         return new Response(false, "controller not found");
+    }
+
+    private Response handleShopCommands(Request request) {
+        if (user == null) {
+            return new Response(false, "invalid token");
+        }
+
+        switch (request.getMethodToCall()) {
+            case "buyCard":
+                try {
+                    Card card = Card.getCard(request.getParameter("card"));
+                    boolean success = ShopController.buyCard(user, card);
+                    return new Response(success, "");
+                } catch (Exception e){
+                    return new Response(false, e.getMessage());
+                }
+
+            case "getNumberOfThisCardInShop":
+                String cardName = request.getParameter("cardName");
+                Response response = new Response(true, "");
+                response.addData("NumberOfThisCardInShop", ShopController.getNumberOfThisCardInShop(cardName));
+                return response;
+            case "getPrice":
+                String cardName1 = request.getParameter("cardName");
+                Response response1 = new Response(true, "");
+                response1.addData("Price", ShopController.getPrice(cardName1));
+                return response1;
+            case "getUserBalance":
+                String username = request.getParameter("username");
+                Response response2 = new Response(true, "");
+                response2.addData("UserBalance", ShopController.getUserBalance(username));
+                return response2;
+        }
+
+        return new Response(false, "method not found");
     }
 
     private Response handleMainMenuCommands(Request request) {
@@ -138,11 +176,11 @@ public class Handler extends Thread {
                 } else
                     return new Response(false, "not found yet");
             case "cancelGame":
-                if(opponent!=null)
-                    return new Response(false,"can't cancel game");
-                else{
+                if (opponent != null)
+                    return new Response(false, "can't cancel game");
+                else {
                     Database.getInstance().removeWaitingGame(this);
-                    return new Response(true,"game canceled");
+                    return new Response(true, "game canceled");
                 }
         }
 
@@ -214,8 +252,8 @@ public class Handler extends Thread {
                 try {
                     String username = request.getParameter("username");
                     User user1 = User.getUserByUsername(username);
-                    if(user1==null)
-                        return new Response(false,"user not found");
+                    if (user1 == null)
+                        return new Response(false, "user not found");
                     File file = new File(user1.getProfileImagePath());
                     Response response = new Response(true, null);
                     response.addFile("image", file);
@@ -235,7 +273,6 @@ public class Handler extends Thread {
         switch (request.getMethodToCall()) {
             case "createDeck":
                 try {
-                    System.out.println(1);
                     String deckName = request.getParameters().get("deckName");
                     Deck deck = DeckController.getInstance().createDeck(user, deckName);
                     Response response = new Response(true, "");
@@ -291,7 +328,7 @@ public class Handler extends Thread {
         return this.user;
     }
 
-    public synchronized boolean isGetInput(){
+    public synchronized boolean isGetInput() {
         return getInput;
     }
 

@@ -128,11 +128,6 @@ public class MainMenu extends MenuParent {
         new DeckMenu().run();
     }
 
-    public void openShop() throws IOException {
-        if (App.isAreSoundsActive()) buttonClick.play();
-        new Shop().run();
-    }
-
     public void openProfile() throws IOException {
         if (App.isAreSoundsActive()) buttonClick.play();
         new Profile().run();
