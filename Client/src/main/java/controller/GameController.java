@@ -4,6 +4,7 @@ import Utilities.Alert;
 import exceptions.*;
 import fxmlController.App;
 import fxmlController.GameView;
+import fxmlController.SimpleMenu;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,10 +12,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 import model.*;
 import model.cards.Card;
-import view.Print;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -31,7 +30,7 @@ public class GameController {
     private final Stack<SpellTrapTransfer> chain = new Stack<>();
     private final int roundNumber;
     private final GameView view;
-    private final Stage stage;
+    private final SimpleMenu menu;
     private final Game game;
     private final int myTurn;
     private Caller caller;
@@ -46,7 +45,7 @@ public class GameController {
 
         view = new GameView(this, myTurn);
 
-        stage = new Stage();
+        menu = new SimpleMenu("Game");
         this.game = new Game(players[0], players[1]);
         this.roundNumber = round;
     }
@@ -76,10 +75,8 @@ public class GameController {
             Scene scene = new Scene(root);
             addEscape(scene);
             addDebugMode(scene);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            App.getStage().close();
-            stage.show();
+            menu.setScene(scene);
+            App.pushMenu(menu, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,8 +126,8 @@ public class GameController {
     }
 
     private void addCardToHand(String cardName) {
-        Request request = new Request("GameController","addCardToHand");
-        request.addParameter("cardName",cardName);
+        Request request = new Request("GameController", "addCardToHand");
+        request.addParameter("cardName", cardName);
         NetworkController.getInstance().sendAndReceive(request);
     }
 
@@ -147,8 +144,8 @@ public class GameController {
 
 
     public void nextPhase(Phase phase) {
-        Request request = new Request("GameController","nextPhase");
-        request.addParameter("phase",phase);
+        Request request = new Request("GameController", "nextPhase");
+        request.addParameter("phase", phase);
         NetworkController.getInstance().sendAndReceive(request);
     }
 
@@ -233,8 +230,8 @@ public class GameController {
 
 
     public void surrender() {
-        Request request = new Request("GameController","surrender");
-        request.addParameter("turn",myTurn);
+        Request request = new Request("GameController", "surrender");
+        request.addParameter("turn", myTurn);
         NetworkController.getInstance().sendAndReceive(request);
     }
 
@@ -292,37 +289,13 @@ public class GameController {
 //        }
     }
 
-    public void endMatch() {
-        int winner;
-        if (winningRounds[0] > roundNumber / 2)
-            winner = 0;
-        else
-            winner = 1;
-        int looser = 1 - winner;
-        int winnerScore = 1000 * roundNumber;
-        int looserScore = 0;
-
-        int winnerPrize = roundNumber * (1000 + maxLifePoint[winner]);
-        int looserPrize = roundNumber * 100;
-
-        players[winner].increaseScore(winnerScore);
-        players[looser].increaseScore(looserScore);
-        players[winner].increaseMoney(winnerPrize);
-        players[looser].increaseMoney(looserPrize);
-
-        int[] scores = new int[2];
-        scores[winner] = winnerScore;
-        scores[looser] = looserScore;
-        Print.getInstance().printMessage(players[winner].getUsername() + " won the whole match" +
-                " with score: " + scores[0] + "-" + scores[1]);
-
-        closeGame();
+    public void endMatch(String message) {
+        Alert.getInstance().successfulPrint(message);
     }
 
-    private void closeGame() {
+    public void closeGame() {
         caller.end();
-        stage.close();
-        App.getStage().show();
+        App.popMenu();
     }
 
     public void showBoard() {
@@ -341,8 +314,8 @@ public class GameController {
         if (lpString == null)
             throw new InvalidInput();
         int lp = Integer.parseInt(lpString);
-        Request request = new Request("GameController","increaseLP");
-        request.addParameter("lp",lp);
+        Request request = new Request("GameController", "increaseLP");
+        request.addParameter("lp", lp);
         NetworkController.getInstance().sendAndReceive(request);
     }
 
@@ -350,8 +323,8 @@ public class GameController {
         if (!Database.getInstance().isDebuggingMode())
             throw new InvalidInput();
         String nickname = matcher.group(1);
-        Request request = new Request("GameController","setWinner");
-        request.addParameter("nickname",nickname);
+        Request request = new Request("GameController", "setWinner");
+        request.addParameter("nickname", nickname);
         NetworkController.getInstance().sendAndReceive(request);
     }
 }

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.Timer;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
@@ -142,6 +141,7 @@ public class GameController {
             throw new AlreadySummonException();
 
         Monster selectedMonster = (Monster) selectedCard;
+        boolean responseSent = false;
 
         if (selectedMonster.getLevel() > 4 && selectedMonster.getLevel() <= 6) {
             if (game.getThisBoard().getMonsterZoneNumber() < 1)
@@ -150,6 +150,8 @@ public class GameController {
             ArrayList<Card> options = new ArrayList<>();
             for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
                 options.add(monsterController.getMonster());
+            handlers[game.getTurn()].sendResponse(new Response(true, "summoned"));
+            responseSent = true;
             ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monster you want to tribute:");
 
             if (selected.size() != 1)
@@ -168,6 +170,8 @@ public class GameController {
             ArrayList<Card> options = new ArrayList<>();
             for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
                 options.add(monsterController.getMonster());
+            handlers[game.getTurn()].sendResponse(new Response(true, "summoned"));
+            responseSent = true;
             ArrayList<Card> selected = views[turn].getCardInput(options, 2, "Select the monsters you want to tribute");
 
             if (selected.size() != 2)
@@ -207,6 +211,8 @@ public class GameController {
         views[1 - game.getTurn()].updateOpponentHand();
         views[game.getTurn()].updateMyHand();
         views[game.getTurn()].updateMyMonsterZone();
+        if(!responseSent)
+            handlers[game.getTurn()].sendResponse(new Response(true, "summoned"));
         return "summoned successfully";
     }
 
@@ -554,7 +560,7 @@ public class GameController {
         scores[winner] = 1000;
         scores[1 - winner] = 0;
         String message = game.getUser(winner).getUsername() + " won the game" + " and the score is: " + scores[0] + "-" + scores[1];
-        Request request = new Request("", "endGame");
+        Request request = new Request("view", "endGame");
         request.addParameter("message", message);
         callers[0].sendAndReceive(request);
         callers[1].sendAndReceive(request);
@@ -646,13 +652,19 @@ public class GameController {
         int[] scores = new int[2];
         scores[winner] = winnerScore;
         scores[looser] = looserScore;
-//        Print.getInstance().printMessage(players[winner].getUsername() + " won the whole match" +
-//                " with score: " + scores[0] + "-" + scores[1]);
-
+        String message = players[winner].getUsername() + " won the whole match" +
+                " with score: " + scores[0] + "-" + scores[1];
+        Request request = new Request("view", "endMatch");
+        request.addParameter("message", message);
+        callers[0].sendAndReceive(request);
+        callers[1].sendAndReceive(request);
         closeGame();
     }
 
     private void closeGame() {
+        Request request = new Request("view", "closeGame");
+        callers[0].sendAndReceive(request);
+        callers[1].sendAndReceive(request);
         views[0].close();
         views[1].close();
         handlers[0].startGetInput();

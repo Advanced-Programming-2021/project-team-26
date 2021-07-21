@@ -92,14 +92,14 @@ public class Handler extends Thread {
         switch (request.getController()) {
             case "UserController":
                 return handleUserCommands(request);
-            case "AdminPanel":
-                return handleAdminPanelCommands(request);
             case "DeckController":
                 return handleDeckCommands(request);
             case "MainMenuController":
                 return handleMainMenuCommands(request);
             case "ShopController":
                 return handleShopCommands(request);
+            case "ScoreBoardController":
+                return handleScoreBoardCommands(request);
             case "GameController":
                 if (view == null)
                     break;
@@ -108,25 +108,19 @@ public class Handler extends Thread {
         return new Response(false, "controller not found");
     }
 
-    private Response handleAdminPanelCommands(Request request) {
-        String cardName = request.getParameter("cardName");
-        switch(request.getMethodToCall()){
-            case"enableShopping":
-                new AdminPanel().enableShopping(cardName);
-                return new Response(true, "card enable");
-            case"disableShopping":
-                new AdminPanel().disableShopping(cardName);
-                return new Response(true, "card disable");
-            case"decreaseInventory":
-                int amount = Integer.parseInt(request.getParameter("amount"));
-                new AdminPanel().decreaseInventory(cardName, amount);
-                return new Response(true, "successful");
-            case"increaseInventory":
-                 amount = Integer.parseInt(request.getParameter("amount"));
-                 new AdminPanel().increaseInventory(cardName, amount);
-                return new Response(true, "successful");
+    private Response handleScoreBoardCommands(Request request) {
+        if (user == null) {
+            return new Response(false, "invalid token");
         }
-        return new Response(false, "methode not found");
+
+        switch (request.getMethodToCall()) {
+            case "getAndSetDataFromUser":
+                Response response = new Response(true, "");
+                response.addData("ScoreBoardControllers", ScoreBoardController.getAndSetDataFromUser());
+                return response;
+        }
+
+        return new Response(false, "method not found");
     }
 
     private Response handleShopCommands(Request request) {
@@ -143,14 +137,7 @@ public class Handler extends Thread {
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
-            case "sellCard":
-                try {
-                    Card card = Card.getCard(request.getParameter("card"));
-                    boolean success = ShopController.sellCard(user, card);
-                    return new Response(success, "");
-                } catch (Exception e){
-                    return new Response(false, e.getMessage());
-                }
+
             case "getNumberOfThisCardInShop":
                 String cardName = request.getParameter("cardName");
                 Response response = new Response(true, "");

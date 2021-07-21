@@ -17,12 +17,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 
 public class Scoreboard extends MenuParent implements Initializable {
 
+    @FXML
+    public TableColumn<ScoreBoardController, Boolean> isOnline;
     @FXML
     private TableView<ScoreBoardController> table;
     @FXML
@@ -47,9 +48,8 @@ public class Scoreboard extends MenuParent implements Initializable {
         rank.setCellValueFactory(new PropertyValueFactory<>("rank"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
-        ScoreBoardController.getAndSetDataFromUser();
-        ObservableList<ScoreBoardController> list = FXCollections.observableArrayList(ScoreBoardController.getScoreBoardControllers());
-//        table.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/CSS/Scoreboard.css")).toExternalForm());
+        isOnline.setCellValueFactory(new PropertyValueFactory<>("isOnline"));
+        ObservableList<ScoreBoardController> list = FXCollections.observableArrayList(ScoreBoardController.getAndSetDataFromUser());
         customiseFactory(name);
         table.setItems(list);
     }

@@ -4,6 +4,7 @@ import Utilities.GetFXML;
 import exceptions.NoPlayerAvailable;
 import fxmlController.App;
 import fxmlController.HeadOrTail;
+import fxmlController.SimpleMenu;
 import fxmlController.Size;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +12,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import model.Request;
 import model.Response;
 import model.User;
@@ -25,7 +25,7 @@ public class HeadOrTailController {
     int starter;
     User[] players = new User[2];
     HeadOrTail graphic;
-    Stage stage;
+    SimpleMenu menu;
     int round;
     int myTurn;
     boolean[] isSignSet = new boolean[]{false, false};
@@ -36,7 +36,7 @@ public class HeadOrTailController {
         this.myTurn = turn;
 
         graphic = new HeadOrTail(this, myTurn);
-        stage = new Stage();
+        menu = new SimpleMenu("Head or Tail");
         this.round = round;
 
     }
@@ -57,9 +57,8 @@ public class HeadOrTailController {
 
         try {
             Parent root = loader.load();
-            stage.setScene(new Scene(root));
-            App.getStage().close();
-            stage.show();
+            menu.setScene(new Scene(root));
+            App.pushMenu(menu, false);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,7 +104,9 @@ public class HeadOrTailController {
                                 NetworkController.getInstance().sendRequest(request);
                                 startGame();
                             });
-                            stage.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
+                            App.popMenu();
+                            menu.setScene(new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue()));
+                            App.pushMenu(menu, false);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -120,16 +121,14 @@ public class HeadOrTailController {
     }
 
     private void startGame() {
-        stage.close();
-
-        App.getStage().show();
+        App.popMenu();
 
         try {
-            if(starter==myTurn)
+            if (starter == myTurn)
                 myTurn = 0;
             else
                 myTurn = 1;
-            new GameController(players[starter], players[1 - starter], round,myTurn).run();
+            new GameController(players[starter], players[1 - starter], round, myTurn).run();
         } catch (NoPlayerAvailable noPlayerAvailable) {
             noPlayerAvailable.printStackTrace();
         }
