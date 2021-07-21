@@ -98,12 +98,29 @@ public class Handler extends Thread {
                 return handleMainMenuCommands(request);
             case "ShopController":
                 return handleShopCommands(request);
+            case "ScoreBoardController":
+                return handleScoreBoardCommands(request);
             case "GameController":
                 if (view == null)
                     break;
                 return view.handle(request);
         }
         return new Response(false, "controller not found");
+    }
+
+    private Response handleScoreBoardCommands(Request request) {
+        if (user == null) {
+            return new Response(false, "invalid token");
+        }
+
+        switch (request.getMethodToCall()) {
+            case "getScoreBoardControllers":
+                Response response = new Response(true, "");
+                response.addData("ScoreBoardControllers", ScoreBoardController.getAndSetDataFromUser());
+                return response;
+        }
+
+        return new Response(false, "method not found");
     }
 
     private Response handleShopCommands(Request request) {
@@ -117,7 +134,7 @@ public class Handler extends Thread {
                     Card card = Card.getCard(request.getParameter("card"));
                     boolean success = ShopController.buyCard(user, card);
                     return new Response(success, "");
-                } catch (Exception e){
+                } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
 

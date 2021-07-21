@@ -14,6 +14,7 @@
           <TableColumn fx:id="rank" editable="false" prefWidth="75.0" sortable="false" text="Rank" />
           <TableColumn fx:id="name" editable="false" prefWidth="75.0" sortable="false" text="Name" />
             <TableColumn fx:id="score" editable="false" prefWidth="75.0" sortable="false" text="Score" />
+            <TableColumn fx:id="isOnline" editable="false" prefWidth="75.0" sortable="false" text="IsOnline" />
         </columns>
       </TableView>
       <ImageView fitHeight="140.0" fitWidth="200.0" layoutX="794.0" layoutY="182.0">
