@@ -292,34 +292,11 @@ public class GameController {
 //        }
     }
 
-    public void endMatch() {
-        int winner;
-        if (winningRounds[0] > roundNumber / 2)
-            winner = 0;
-        else
-            winner = 1;
-        int looser = 1 - winner;
-        int winnerScore = 1000 * roundNumber;
-        int looserScore = 0;
-
-        int winnerPrize = roundNumber * (1000 + maxLifePoint[winner]);
-        int looserPrize = roundNumber * 100;
-
-        players[winner].increaseScore(winnerScore);
-        players[looser].increaseScore(looserScore);
-        players[winner].increaseMoney(winnerPrize);
-        players[looser].increaseMoney(looserPrize);
-
-        int[] scores = new int[2];
-        scores[winner] = winnerScore;
-        scores[looser] = looserScore;
-        Print.getInstance().printMessage(players[winner].getUsername() + " won the whole match" +
-                " with score: " + scores[0] + "-" + scores[1]);
-
-        closeGame();
+    public void endMatch(String message) {
+        Alert.getInstance().successfulPrint(message);
     }
 
-    private void closeGame() {
+    public void closeGame() {
         caller.end();
         stage.close();
         App.getStage().show();

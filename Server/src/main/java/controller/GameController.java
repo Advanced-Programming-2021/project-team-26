@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.Timer;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
@@ -646,13 +645,19 @@ public class GameController {
         int[] scores = new int[2];
         scores[winner] = winnerScore;
         scores[looser] = looserScore;
-//        Print.getInstance().printMessage(players[winner].getUsername() + " won the whole match" +
-//                " with score: " + scores[0] + "-" + scores[1]);
-
+        String message = players[winner].getUsername() + " won the whole match" +
+                " with score: " + scores[0] + "-" + scores[1];
+        Request request = new Request("", "endMatch");
+        request.addParameter("message", message);
+        callers[0].sendAndReceive(request);
+        callers[1].sendAndReceive(request);
         closeGame();
     }
 
     private void closeGame() {
+        Request request = new Request("", "closeGame");
+        callers[0].sendAndReceive(request);
+        callers[1].sendAndReceive(request);
         views[0].close();
         views[1].close();
         handlers[0].startGetInput();
