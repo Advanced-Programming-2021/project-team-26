@@ -50,7 +50,6 @@ public class CardInfoInShop extends MenuParent implements Initializable {
             Alert.getInstance().errorPrint("Not enough money");
             buyCard.setDisable(true);
         }
-
         try {
             shopController.buyCard(Shop.getCurrentCard());
         } catch (Exception e) {

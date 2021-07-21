@@ -1,5 +1,6 @@
 package fxmlController.Children;
 
+import Utilities.Alert;
 import Utilities.GetFXML;
 import com.google.gson.Gson;
 import controller.Database;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class AdminPanel extends MenuParent {
-    HashMap<String , String> parameters = new HashMap<>();
+
     @FXML
     public TextField cardName;
     @FXML
@@ -42,27 +43,33 @@ public class AdminPanel extends MenuParent {
 
     public void increaseInventory(ActionEvent event) {
        // parameters.put()
-        Request request = new Request("AdminPanel", "loginUser", parameters);
+        Request request = new Request("AdminPanel", "increaseInventory");
+        request.addParameter("cardName", cardName.getText());
+        request.addParameter("amount", Integer.parseInt(increaseAmount.getText()));
         Response response = NetworkController.getInstance().sendAndReceive(request);
-        throw new RuntimeException(response.getMessage());
+        Alert.getInstance().successfulPrint(response.getMessage());
     }
 
-    public boolean decreaseInventory(ActionEvent event) {
-        Request request = new Request("AdminPanel", "loginUser", parameters);
+    public void decreaseInventory(ActionEvent event) {
+        Request request = new Request("AdminPanel", "decreaseInventory");
+        request.addParameter("cardName", cardName.getText());
+        request.addParameter("amount", Integer.parseInt(decreaseAmount.getText()));
         Response response = NetworkController.getInstance().sendAndReceive(request);
-        throw new RuntimeException(response.getMessage());
+        Alert.getInstance().successfulPrint(response.getMessage());
     }
 
-    public boolean disableShopping(ActionEvent event) {
-        Request request = new Request("AdminPanel", "loginUser", parameters);
+    public void disableShopping(ActionEvent event) {
+        Request request = new Request("AdminPanel", "disableShopping");
+        request.addParameter("cardName", cardName.getText());
         Response response = NetworkController.getInstance().sendAndReceive(request);
-        throw new RuntimeException(response.getMessage());
+        Alert.getInstance().successfulPrint(response.getMessage());
     }
 
-    public boolean enableShopping(ActionEvent event) {
-        Request request = new Request("AdminPanel", "loginUser", parameters);
+    public void enableShopping(ActionEvent event) {
+        Request request = new Request("AdminPanel", "enableShopping");
+        request.addParameter("cardName", cardName.getText());
         Response response = NetworkController.getInstance().sendAndReceive(request);
-        throw new RuntimeException(response.getMessage());
+        Alert.getInstance().successfulPrint(response.getMessage());
     }
 
 }
