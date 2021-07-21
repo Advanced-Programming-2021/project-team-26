@@ -538,7 +538,7 @@ public class GameView implements Initializable {
                     if (card == null)
                         return new Response(false, "card not found");
                     gameController.summon(turn, card);
-                    return new Response(true, "summoned");
+                    return null;
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }

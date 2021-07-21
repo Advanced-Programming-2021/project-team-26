@@ -141,6 +141,7 @@ public class GameController {
             throw new AlreadySummonException();
 
         Monster selectedMonster = (Monster) selectedCard;
+        boolean responseSent = false;
 
         if (selectedMonster.getLevel() > 4 && selectedMonster.getLevel() <= 6) {
             if (game.getThisBoard().getMonsterZoneNumber() < 1)
@@ -149,6 +150,8 @@ public class GameController {
             ArrayList<Card> options = new ArrayList<>();
             for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
                 options.add(monsterController.getMonster());
+            handlers[game.getTurn()].sendResponse(new Response(true, "summoned"));
+            responseSent = true;
             ArrayList<Card> selected = views[turn].getCardInput(options, 1, "Select the monster you want to tribute:");
 
             if (selected.size() != 1)
@@ -167,6 +170,8 @@ public class GameController {
             ArrayList<Card> options = new ArrayList<>();
             for (MonsterController monsterController : game.getThisBoard().getMonstersZone())
                 options.add(monsterController.getMonster());
+            handlers[game.getTurn()].sendResponse(new Response(true, "summoned"));
+            responseSent = true;
             ArrayList<Card> selected = views[turn].getCardInput(options, 2, "Select the monsters you want to tribute");
 
             if (selected.size() != 2)
@@ -206,6 +211,8 @@ public class GameController {
         views[1 - game.getTurn()].updateOpponentHand();
         views[game.getTurn()].updateMyHand();
         views[game.getTurn()].updateMyMonsterZone();
+        if(!responseSent)
+            handlers[game.getTurn()].sendResponse(new Response(true, "summoned"));
         return "summoned successfully";
     }
 
