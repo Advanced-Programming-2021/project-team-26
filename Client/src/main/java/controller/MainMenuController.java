@@ -46,21 +46,13 @@ public class MainMenuController {
         if (!response.isSuccess())
             throw new RuntimeException(response.getMessage());
 
-        int turn = Integer.parseInt(response.getData("turn"));
-        if (response.getData("user") != null) {
-            User first = Database.getInstance().getCurrentUser();
-            User second = new Gson().fromJson(response.getData("user"), User.class);
-            new HeadOrTailController(first, second, round, turn).run();
-            return;
-        }
-
         cancelGame = false;
         loadWaitingPage();
 
-        new Thread(() -> waitForOpponent(round, turn)).start();
+        new Thread(() -> waitForOpponent(round)).start();
     }
 
-    private void waitForOpponent(int round, int turn) {
+    private void waitForOpponent(int round) {
         while (true) {
             if (cancelGame) {
                 Request request = new Request("MainMenuController", "cancelGame");
@@ -76,10 +68,12 @@ public class MainMenuController {
             Response response = NetworkController.getInstance().sendAndReceive(request);
 
             if (response.isSuccess()) {
-                User first = Database.getInstance().getCurrentUser();
-                User second = new Gson().fromJson(response.getData("user"), User.class);
+                int turn = Integer.parseInt(response.getData("turn"));
+                User[] users = new User[2];
+                users[turn] = Database.getInstance().getCurrentUser();
+                users[1 - turn] = new Gson().fromJson(response.getData("user"), User.class);
                 stopWaiting(null);
-                Platform.runLater(() -> new HeadOrTailController(first, second, round, turn).run());
+                Platform.runLater(() -> new HeadOrTailController(users[0], users[1], round, turn).run());
                 break;
             }
 

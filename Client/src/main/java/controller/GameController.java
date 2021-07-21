@@ -220,7 +220,7 @@ public class GameController {
 
     public String activateEffect(Card card, CardAddress address) {
         Request request = new Request("GameController", "activateEffect");
-        request.addParameter("card", card);
+        request.addParameter("card", card.getName());
         request.addParameter("address", address);
 
         Response response = NetworkController.getInstance().sendAndReceive(request);

@@ -19,7 +19,7 @@ public class Handler extends Thread {
     String token;
     DataInputStream dataInputStream;
     DataOutputStream dataOutputStream;
-    Handler opponent;
+    WaitingGame waitingGame;
     GameView view;
     int round = -1;
     private boolean getInput = true;
@@ -79,10 +79,10 @@ public class Handler extends Thread {
 
     private void cleanup() {
         Database.getInstance().removeLoggedInUser(token);
-        Database.getInstance().removeWaitingGame(this);
+        Database.getInstance().removeWaitingGame(waitingGame);
         user = null;
         token = null;
-        opponent = null;
+        waitingGame = null;
         view = null;
         round = -1;
         getInput = true;
@@ -117,7 +117,7 @@ public class Handler extends Thread {
                     Card card = Card.getCard(request.getParameter("card"));
                     boolean success = ShopController.buyCard(user, card);
                     return new Response(success, "");
-                } catch (Exception e){
+                } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
 
@@ -150,36 +150,40 @@ public class Handler extends Thread {
             case "newGame":
                 try {
                     int round = Integer.parseInt(request.getParameter("round"));
-                    opponent = MainMenuController.getInstance().createNewGameWithRealPlayer(this, round);
+                    waitingGame = MainMenuController.getInstance().createNewGameWithRealPlayer(this, round);
                     this.round = round;
                     Response response = new Response(true, "game created");
-                    if (opponent != null) {
-                        opponent.opponent = this;
-                        response.addData("user", opponent.user);
-                        response.addData("turn", String.valueOf(1));
-                        stopGetInput();
-                    } else {
-                        response.addData("turn", String.valueOf(0));
-                    }
                     return response;
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
             case "foundPlayer":
-                if (opponent != null) {
+                if (waitingGame.opponent != null) {
                     Response response = new Response(true, "found");
-                    response.addData("user", opponent.user);
+                    response.addData("user", waitingGame.opponent.user);
+                    response.addData("turn", 1);
                     sendResponse(response);
                     stopGetInput();
-                    new HeadOrTailController(this, opponent, round).run();
+                    new HeadOrTailController(waitingGame.opponent, this, round).run();
                     return null;
-                } else
-                    return new Response(false, "not found yet");
+                } else {
+                    WaitingGame getWaitingGame = Database.getInstance().findMatch(waitingGame);
+                    if (getWaitingGame == null)
+                        return new Response(false, "not found yet");
+                    else{
+                        Response response = new Response(true, "found");
+                        response.addData("user", getWaitingGame.handler.user);
+                        response.addData("turn", 0);
+                        sendResponse(response);
+                        stopGetInput();
+                        return null;
+                    }
+                }
             case "cancelGame":
-                if (opponent != null)
+                if (waitingGame.opponent != null)
                     return new Response(false, "can't cancel game");
                 else {
-                    Database.getInstance().removeWaitingGame(this);
+                    Database.getInstance().removeWaitingGame(waitingGame);
                     return new Response(true, "game canceled");
                 }
         }
