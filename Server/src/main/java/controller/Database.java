@@ -15,11 +15,15 @@ import model.cards.trap.Trap;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class Database {
+    private static final int MIN_SCORE_TO_MATCH = 2000;
+    private static final long MIN_TIME_TO_WAIT = 30;
     private static Database database;
     private final String monsterPath;
     private final String spellTrapPath;
@@ -390,21 +394,56 @@ public class Database {
 
     ArrayList<WaitingGame> waitingGames = new ArrayList<>();
 
-    public synchronized Handler findMatch(Handler handler, int round) {
+    public synchronized void addWaitingGame(WaitingGame waitingGame){
+        waitingGames.add(waitingGame);
+    }
+
+    public synchronized WaitingGame findMatch(WaitingGame current) {
         for(WaitingGame waitingGame:waitingGames){
-            if(waitingGame.round==round){
-                waitingGames.remove(waitingGame);
-                return waitingGame.handler;
+            if(waitingGame==current)
+                continue;
+            if(isMatch(current,waitingGame)){
+                match(current,waitingGame);
+                return waitingGame;
             }
         }
 
-        waitingGames.add(new WaitingGame(handler,round));
         return null;
     }
 
-    public synchronized void removeWaitingGame(Handler handler){
+    private void match(WaitingGame first, WaitingGame second) {
+        removeWaitingGame(first);
+        removeWaitingGame(second);
+        first.opponent = second.handler;
+        second.opponent = first.handler;
+    }
+
+    private boolean isMatch(WaitingGame first, WaitingGame second) {
+        if(first.opponent!=null || second.opponent!=null)
+            return false;
+        if(first.round!= second.round)
+            return false;
+        if(first.handler.getUser()==null || second.handler.getUser()==null)
+            return false;
+        int firstScore = first.handler.getUser().getScore();
+        int secondScore = second.handler.getUser().getScore();
+        if(Math.abs(firstScore-secondScore)<MIN_SCORE_TO_MATCH)
+            return true;
+        if(lastTime(first.time)>MIN_TIME_TO_WAIT)
+            return true;
+        if(lastTime(second.time)>MIN_TIME_TO_WAIT)
+            return true;
+        return false;
+    }
+
+    private long lastTime(LocalDateTime time) {
+        Duration duration = Duration.between(time,LocalDateTime.now());
+        return duration.getSeconds();
+    }
+
+    public synchronized void removeWaitingGame(WaitingGame toRemove){
         for(WaitingGame waitingGame:waitingGames){
-            if(waitingGame.handler==handler){
+            if(waitingGame==toRemove){
                 waitingGames.remove(waitingGame);
                 return;
             }
@@ -415,9 +454,13 @@ public class Database {
 class WaitingGame{
     Handler handler;
     int round;
+    LocalDateTime time;
+    Handler opponent;
 
     public WaitingGame(Handler handler,int round){
         this.handler = handler;
         this.round = round;
+        this.time = LocalDateTime.now();
+        this.opponent = null;
     }
 }

@@ -32,7 +32,7 @@ public class MainMenuController {
         //TODO load duel menu
     }
 
-    public Handler createNewGameWithRealPlayer(Handler handler, int round) {
+    public WaitingGame createNewGameWithRealPlayer(Handler handler, int round) {
         User user = handler.getUser();
         if (user.getActiveDeck() == null)
             throw new NoActiveDeck(user.getUsername());
@@ -43,7 +43,9 @@ public class MainMenuController {
         if (round != 1 && round != 3)
             throw new NotSupportedRoundNumber();
 
-        return Database.getInstance().findMatch(handler, round);
+        WaitingGame waitingGame = new WaitingGame(handler,round);
+        Database.getInstance().addWaitingGame(waitingGame);
+        return waitingGame;
     }
 
 //    public String enterMenu(Matcher matcher) throws InvalidMenuException {
