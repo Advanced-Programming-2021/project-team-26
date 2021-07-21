@@ -1,14 +1,14 @@
-package fxmlController.Children;
+package controller;
 
 import Utilities.GetFXML;
 import fxmlController.App;
 import fxmlController.MenuParent;
 import fxmlController.Size;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+
 import java.io.IOException;
 
 public class AdminPanel extends MenuParent {
@@ -31,22 +31,22 @@ public class AdminPanel extends MenuParent {
     }
 
 
-    public void increaseInventory(ActionEvent event) {
+    public void increaseInventory(String cardName, int amount) {
 
     }
 
-    public void decreaseInventory(ActionEvent event) {
+    public void decreaseInventory(String cardName, int amount) {
     }
 
-    public void disableBuying(ActionEvent event) {
+    public void disableBuying(String cardName) {
     }
 
-    public void disableSelling(ActionEvent event) {
+    public void enableBuying(String cardName) {
     }
 
-    public void enableBuying(ActionEvent event) {
+    public void disableSelling(String cardName) {
     }
 
-    public void enableSelling(ActionEvent event) {
+    public void enableSelling(String cardName) {
     }
 }
