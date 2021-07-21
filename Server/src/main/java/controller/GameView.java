@@ -520,26 +520,13 @@ public class GameView implements Initializable {
 
 
     public String getString(String message) {
-        final String[] result = {""};
-        try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/getString.fxml"));
-            Label question = (Label) root.lookup("#question");
-            Button confirm = (Button) root.lookup("#confirm");
-            TextField input = (TextField) root.lookup("#input");
-
-            question.setText(message);
-            confirm.setOnAction(ev -> {
-                result[0] = input.getText();
-                stage.close();
-            });
-
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-        } catch (Exception ignored) {
-
-        }
-        return result[0];
+        Request request = new Request("view","getString");
+        request.addParameter("message",message);
+        Response response = caller.sendAndReceive(request);
+        if(response.isSuccess())
+            return response.getData("result");
+        else
+            return "";
     }
 
     public Response handle(Request request) {
