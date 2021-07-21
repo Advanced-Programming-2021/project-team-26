@@ -207,7 +207,7 @@ public class GameController {
 
     public String attack(int attacker, int number) {
         Request request = new Request("GameController", "attack");
-        request.addParameter("index", String.valueOf(attacker));
+        request.addParameter("attacker", String.valueOf(attacker));
         request.addParameter("number", String.valueOf(number));
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
