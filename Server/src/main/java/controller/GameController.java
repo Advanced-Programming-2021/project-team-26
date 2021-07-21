@@ -1,8 +1,6 @@
 package controller;
 
 import exceptions.*;
-import fxmlController.App;
-import javafx.application.Platform;
 import model.*;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -16,7 +14,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
@@ -117,8 +114,8 @@ public class GameController {
         selectedSpellTrap = null;
     }
 
-    public synchronized void nextPhase(int turn,Phase phase) {
-        Logger.log("turn:" + turn + " want next Phase "+phase.phaseName + "now it's "+game.getTurn());
+    public synchronized void nextPhase(int turn, Phase phase) {
+        Logger.log("turn:" + turn + " want next Phase " + phase.phaseName + "now it's " + game.getTurn());
         while (turn == game.getTurn() && game.getPhase().compareTo(phase) < 0)
             game.nextPhase();
     }
@@ -450,21 +447,11 @@ public class GameController {
         getViews()[game.getTurn()].attackAnimation(attacker, number, Owner.Me);
         getViews()[1 - game.getTurn()].attackAnimation(attacker, number, Owner.Opponent);
 
-        Timer timer = new Timer();
-        AttackResult finalAttackResult = attackResult;
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    if (finalAttackResult.isRemoveOpCard())
-                        toBeAttacked.remove(selectedMonster);
-                    if (finalAttackResult.isRemoveMyCard())
-                        selectedMonster.remove(toBeAttacked);
-
-                    updateViewsGameBoard();
-                });
-            }
-        }, 1440);
+        if (attackResult.isRemoveOpCard())
+            toBeAttacked.remove(selectedMonster);
+        if (attackResult.isRemoveMyCard())
+            selectedMonster.remove(toBeAttacked);
+        updateViewsGameBoard();
 
         game.decreaseThisLifePoint(attackResult.getMyLPDecrease());
         game.decreaseOtherLifePoint(attackResult.getOpLPDecrease());

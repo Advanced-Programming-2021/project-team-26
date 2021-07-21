@@ -97,8 +97,7 @@ public class Game {
                         break;
                 }
                 nextPhase();
-            } else
-                Print.getInstance().printGame(this);
+            }
         } else if (this.phase == Phase.END) {
             nextPhase();
         }

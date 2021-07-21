@@ -212,7 +212,7 @@ public class GameController {
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess())
-            return "attack was successful";
+            return response.getMessage();
         else
             throw new RuntimeException(response.getMessage());
     }
