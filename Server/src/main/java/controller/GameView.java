@@ -507,31 +507,15 @@ public class GameView implements Initializable {
     }
 
     public Boolean ask(String message) {
-        final Boolean[] result = {null};
-        try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/askSurrender.fxml"));
-            Label question = (Label) root.lookup("#question");
-            Button yes = (Button) root.lookup("#yes");
-            Button no = (Button) root.lookup("#no");
+        Request request = new Request("view", "getCardInput");
+        request.addParameter("message",message);
 
-            question.setText(message);
-            yes.setOnAction(ev -> {
-                result[0] = true;
-                stage.close();
-            });
-
-            no.setOnAction(ev -> {
-                result[0] = false;
-                stage.close();
-            });
-
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-        } catch (Exception ignored) {
-
+        Response response = caller.sendAndReceive(request);
+        if(!response.isSuccess())
+            return false;
+        else {
+            return new Gson().fromJson(response.getData("result"),Boolean.class);
         }
-        return result[0];
     }
 
 

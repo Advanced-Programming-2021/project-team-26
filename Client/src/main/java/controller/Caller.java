@@ -85,6 +85,15 @@ public class Caller extends Thread {
                     sendResponse(response);
                 });
                 return null;
+            case "ask":
+                message = request.getParameter("message");
+                Platform.runLater(() -> {
+                    Boolean result = view.ask(message);
+                    Response response = new Response(true,"");
+                    response.addData("result",result);
+                    sendResponse(response);
+                });
+                return null;
             case "updateOpponentMonsterZone":
                 Platform.runLater(() -> view.updateOpponentMonsterZone());
                 return new Response(true, "");
