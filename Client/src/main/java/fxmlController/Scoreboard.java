@@ -49,8 +49,7 @@ public class Scoreboard extends MenuParent implements Initializable {
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
         isOnline.setCellValueFactory(new PropertyValueFactory<>("isOnline"));
-        ScoreBoardController.getAndSetDataFromUser();
-        ObservableList<ScoreBoardController> list = FXCollections.observableArrayList(ScoreBoardController.getScoreBoardControllers());
+        ObservableList<ScoreBoardController> list = FXCollections.observableArrayList(ScoreBoardController.getAndSetDataFromUser());
         customiseFactory(name);
         table.setItems(list);
     }

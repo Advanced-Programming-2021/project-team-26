@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScoreBoardController {
-    private static ArrayList<ScoreBoardController> scoreBoardControllers;
 
     private int rank;
     private String name;
@@ -24,32 +23,16 @@ public class ScoreBoardController {
         setOnline(isOnline);
     }
 
-    public static ArrayList<ScoreBoardController> getScoreBoardControllers() {
-        return scoreBoardControllers;
-    }
-
-    public static void getAndSetDataFromUser() {
+    public static ArrayList<ScoreBoardController> getAndSetDataFromUser() {
         Request request = new Request("ScoreBoardController", "getAndSetDataFromUser");
         Response response = NetworkController.getInstance().sendAndReceive(request);
         Type type = new TypeToken<List<ScoreBoardController>>() {
         }.getType();
-        scoreBoardControllers = new Gson().fromJson(response.getData("ScoreBoardControllers"), type);
-    }
-
-    public boolean isOnline() {
-        return isOnline;
-    }
-
-    public void setOnline(boolean online) {
-        isOnline = online;
+        return new Gson().fromJson(response.getData("ScoreBoardControllers"), type);
     }
 
     public void setRank(int rank) {
         this.rank = rank;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
@@ -59,5 +42,9 @@ public class ScoreBoardController {
     public void setScore(int score) {
         this.score = score;
     }
-}
 
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
+
+}

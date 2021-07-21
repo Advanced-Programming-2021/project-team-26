@@ -114,7 +114,7 @@ public class Handler extends Thread {
         }
 
         switch (request.getMethodToCall()) {
-            case "getScoreBoardControllers":
+            case "getAndSetDataFromUser":
                 Response response = new Response(true, "");
                 response.addData("ScoreBoardControllers", ScoreBoardController.getAndSetDataFromUser());
                 return response;
