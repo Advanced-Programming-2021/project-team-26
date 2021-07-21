@@ -99,6 +99,13 @@ public class CardInfoInShop extends MenuParent implements Initializable {
     }
 
     public void sellCard(ActionEvent actionEvent) {
-
+        try {
+            shopController.sellCard(Shop.getCurrentCard());
+        } catch (Exception e) {
+            Alert.getInstance().errorPrint(e.getMessage());
+        }
+        setBalance(shopController.getUserBalance());
+        setCardPrice(shopController.getPrice(Shop.getCurrentCard().getName()));
+        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInShop(Shop.getCurrentCard().getName()));
     }
 }
