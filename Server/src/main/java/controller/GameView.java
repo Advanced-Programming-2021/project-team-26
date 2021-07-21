@@ -498,7 +498,11 @@ public class GameView implements Initializable {
         else {
             Type cardListType = new TypeToken<ArrayList<Card>>() {
             }.getType();
-            return new Gson().fromJson(response.getData("selected"), cardListType);
+            ArrayList<Card> tmp = new Gson().fromJson(response.getData("selected"), cardListType);
+            ArrayList<Card> selected = new ArrayList<>();
+            for(Card card:tmp)
+                selected.add(Card.getCard(card.getName()));
+            return selected;
         }
     }
 
@@ -611,7 +615,7 @@ public class GameView implements Initializable {
                 }
             case "activateEffect":
                 try {
-                    Card card = new Gson().fromJson(request.getParameter("card"), Card.class);
+                    Card card = Card.getCard(request.getParameter("card"));
                     CardAddress address = new Gson().fromJson(request.getParameter("address"), CardAddress.class);
 
                     gameController.activateEffect(turn, card, address);
