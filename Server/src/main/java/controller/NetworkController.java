@@ -26,7 +26,7 @@ public class NetworkController {
 
     public void setupServer() {
         try {
-            ServerSocket serverSocket = new ServerSocket(8080);
+            ServerSocket serverSocket = new ServerSocket(8888);
             while (true) {
                 Socket socket = serverSocket.accept();
                 Handler handler = new Handler(socket);

@@ -85,6 +85,24 @@ public class Caller extends Thread {
                     sendResponse(response);
                 });
                 return null;
+            case "ask":
+                message = request.getParameter("message");
+                Platform.runLater(() -> {
+                    Boolean result = view.ask(message);
+                    Response response = new Response(true, "");
+                    response.addData("result", result);
+                    sendResponse(response);
+                });
+                return null;
+            case "getString":
+                message = request.getParameter("message");
+                Platform.runLater(() -> {
+                    String result = view.getString(message);
+                    Response response = new Response(true,"");
+                    response.addData("result",result);
+                    sendResponse(response);
+                });
+                return null;
             case "updateOpponentMonsterZone":
                 Platform.runLater(() -> view.updateOpponentMonsterZone());
                 return new Response(true, "");
@@ -129,7 +147,7 @@ public class Caller extends Thread {
             case "attackAnimation":
                 int attackerMonster = Integer.parseInt(request.getParameter("attackerMonster"));
                 int defenderMonster = Integer.parseInt(request.getParameter("defenderMonster"));
-                Owner owner = Owner.valueOf(request.getParameter("owner"));
+                Owner owner = new Gson().fromJson(request.getParameter("owner"), Owner.class);
                 Platform.runLater(() -> view.attackAnimation(attackerMonster, defenderMonster, owner));
                 return new Response(true, "");
             case "updatePhase":
@@ -138,6 +156,12 @@ public class Caller extends Thread {
             case "endGame":
                 Platform.runLater(() -> gameController.endGame(request.getParameter("message")));
                 return new Response(true, "");
+            case "endMatch":
+                Platform.runLater(() -> gameController.endMatch(request.getParameter("message")));
+                return new Response(true, "");
+            case "closeGame":
+                Platform.runLater(() -> gameController.closeGame());
+                return new Response(true,"");
         }
         return new Response(false, "method not supported");
     }

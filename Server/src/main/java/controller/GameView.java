@@ -498,60 +498,35 @@ public class GameView implements Initializable {
         else {
             Type cardListType = new TypeToken<ArrayList<Card>>() {
             }.getType();
-            return new Gson().fromJson(response.getData("selected"), cardListType);
+            ArrayList<Card> tmp = new Gson().fromJson(response.getData("selected"), cardListType);
+            ArrayList<Card> selected = new ArrayList<>();
+            for(Card card:tmp)
+                selected.add(Card.getCard(card.getName()));
+            return selected;
         }
     }
 
     public Boolean ask(String message) {
-        final Boolean[] result = {null};
-        try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/askSurrender.fxml"));
-            Label question = (Label) root.lookup("#question");
-            Button yes = (Button) root.lookup("#yes");
-            Button no = (Button) root.lookup("#no");
+        Request request = new Request("view", "getCardInput");
+        request.addParameter("message",message);
 
-            question.setText(message);
-            yes.setOnAction(ev -> {
-                result[0] = true;
-                stage.close();
-            });
-
-            no.setOnAction(ev -> {
-                result[0] = false;
-                stage.close();
-            });
-
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-        } catch (Exception ignored) {
-
+        Response response = caller.sendAndReceive(request);
+        if(!response.isSuccess())
+            return false;
+        else {
+            return new Gson().fromJson(response.getData("result"),Boolean.class);
         }
-        return result[0];
     }
 
 
     public String getString(String message) {
-        final String[] result = {""};
-        try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/getString.fxml"));
-            Label question = (Label) root.lookup("#question");
-            Button confirm = (Button) root.lookup("#confirm");
-            TextField input = (TextField) root.lookup("#input");
-
-            question.setText(message);
-            confirm.setOnAction(ev -> {
-                result[0] = input.getText();
-                stage.close();
-            });
-
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-        } catch (Exception ignored) {
-
-        }
-        return result[0];
+        Request request = new Request("view","getString");
+        request.addParameter("message",message);
+        Response response = caller.sendAndReceive(request);
+        if(response.isSuccess())
+            return response.getData("result");
+        else
+            return "";
     }
 
     public Response handle(Request request) {
@@ -563,7 +538,7 @@ public class GameView implements Initializable {
                     if (card == null)
                         return new Response(false, "card not found");
                     gameController.summon(turn, card);
-                    return new Response(true, "summoned");
+                    return null;
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
@@ -593,8 +568,8 @@ public class GameView implements Initializable {
                 try {
                     int attacker = Integer.parseInt(request.getParameter("attacker"));
 
-                    gameController.attackDirect(attacker);
-                    return new Response(true, "direct attack was successful");
+                    String message = gameController.attackDirect(attacker);
+                    return new Response(true, message);
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
@@ -611,7 +586,7 @@ public class GameView implements Initializable {
                 }
             case "activateEffect":
                 try {
-                    Card card = new Gson().fromJson(request.getParameter("card"), Card.class);
+                    Card card = Card.getCard(request.getParameter("card"));
                     CardAddress address = new Gson().fromJson(request.getParameter("address"), CardAddress.class);
 
                     gameController.activateEffect(turn, card, address);
@@ -643,6 +618,7 @@ public class GameView implements Initializable {
             case "setWinner":
                 String nickname = request.getParameter("nickname");
                 gameController.setWinner(nickname);
+                return new Response(true,"done");
         }
         return new Response(false, "method not supported");
     }
