@@ -1,6 +1,7 @@
 package controller;
 
 import exceptions.InvalidInput;
+import exceptions.NoCardToSell;
 import exceptions.NotEnoughCardException;
 import exceptions.NotEnoughCardForTribute;
 import model.User;
@@ -33,8 +34,7 @@ public class ShopController {
     public static boolean sellCard(User user, Card card) throws Exception{
         int numberOfCard ;
         if (!user.getAllCards().containsKey(card.getName()) || (numberOfCard = user.getAllCards().get(card.getName()))== 0)
-            throw new Exception("there is no card with this name to sell");
-
+            throw new NoCardToSell();
             user.setMoney(user.getMoney() + card.getPrice());
             user.getAllCards().put(card.getName(), --numberOfCard);
             allCards.put(card.getName(), allCards.get(card.getName()) + 1);
