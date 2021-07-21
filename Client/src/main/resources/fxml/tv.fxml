@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Tv">
+   <children>
+      <Button layoutX="149.0" layoutY="51.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="169.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="see Live Games" />
+      <Button layoutX="389.0" layoutY="51.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="222.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="Top players Games" />
+      <Button layoutX="697.0" layoutY="51.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="184.0" style="-fx-background-color: yellow; -fx-background-radius: 50;" text="see your own Games" />
+      <ImageView fx:id="gameTwo" fitHeight="437.0" fitWidth="732.0" layoutX="149.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true">
+       <image>
+           <Image url="@../Assets/Textures/GUI_T_Detail_ComboBase01.dds1.png" />
+       </image>
+      </ImageView>
+       <ImageView fx:id="gameOne" fitHeight="293.0" fitWidth="754.0" layoutX="149.0" layoutY="281.0" pickOnBounds="true" preserveRatio="true">
+           <image>
+               <Image url="@../Assets/Textures/GUI_T_Detail_ComboBase01.dds1.png" />
+           </image>
+       </ImageView>
+      <TextField layoutX="454.0" layoutY="550.0" prefHeight="24.0" prefWidth="91.0" style="-fx-background-color: red;" text="Player one" />
+      <TextField layoutX="454.0" layoutY="99.0" prefHeight="24.0" prefWidth="91.0" style="-fx-background-color: red;" text="Player Two">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </TextField>
+      <TextField layoutX="416.0" layoutY="268.0" opacity="0.39" prefHeight="100.0" prefWidth="169.0" text="TV">
+         <font>
+            <Font name="Noto Mono" size="65.0" />
+         </font>
+      </TextField>
+
+   </children>
+</AnchorPane>

@@ -12,12 +12,6 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 
 public class AdminPanel extends MenuParent {
-    @FXML
-    public TextField cardName;
-    @FXML
-    public TextField decreaseAmount;
-    @FXML
-    public TextField increaseAmount;
 
     public AdminPanel() {
         super("Admin Panel");
@@ -43,7 +37,7 @@ public class AdminPanel extends MenuParent {
         ShopController.disableShopping(cardName);
     }
 
-    public void enableBuying(String cardName) {
+    public void enableShopping(String cardName) {
         ShopController.enableShopping(cardName);
     }
 }
