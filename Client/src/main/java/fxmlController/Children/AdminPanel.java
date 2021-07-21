@@ -16,10 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import model.Request;
 import model.Response;
-import model.User;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class AdminPanel extends MenuParent {
 
@@ -42,7 +40,6 @@ public class AdminPanel extends MenuParent {
     }
 
     public void increaseInventory(ActionEvent event) {
-       // parameters.put()
         Request request = new Request("AdminPanel", "increaseInventory");
         request.addParameter("cardName", cardName.getText());
         request.addParameter("amount", Integer.parseInt(increaseAmount.getText()));
