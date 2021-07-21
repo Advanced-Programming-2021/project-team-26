@@ -593,8 +593,8 @@ public class GameView implements Initializable {
                 try {
                     int attacker = Integer.parseInt(request.getParameter("attacker"));
 
-                    gameController.attackDirect(attacker);
-                    return new Response(true, "direct attack was successful");
+                    String message = gameController.attackDirect(attacker);
+                    return new Response(true, message);
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
