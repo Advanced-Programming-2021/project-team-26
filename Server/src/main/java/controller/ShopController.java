@@ -2,6 +2,7 @@ package controller;
 
 import exceptions.InvalidInput;
 import exceptions.NotEnoughCardException;
+import exceptions.NotEnoughCardForTribute;
 import model.User;
 import model.cards.Card;
 import view.Scan;
@@ -29,6 +30,17 @@ public class ShopController {
         ShopController.allCards = allCards;
     }
 
+    public static boolean sellCard(User user, Card card) throws Exception{
+        int numberOfCard ;
+        if (!user.getAllCards().containsKey(card.getName()) || (numberOfCard = user.getAllCards().get(card.getName()))== 0)
+            throw new Exception("there is no card with this name to sell");
+
+            user.setMoney(user.getMoney() + card.getPrice());
+            user.getAllCards().put(card.getName(), --numberOfCard);
+            allCards.put(card.getName(), allCards.get(card.getName()) + 1);
+            return true;
+    }
+
     public static boolean buyCard(User user, Card card) throws Exception{
         if (allCards.get(card.getName()) == 0) throw new NotEnoughCardException();
         int cardPrice = card.getPrice();
@@ -36,6 +48,13 @@ public class ShopController {
         user.addCardToUserCards(card);
         allCards.put(card.getName(), allCards.get(card.getName()) - 1);
         return true;
+    }
+
+    public static void decreaseCardAmountInShop(int amount, String cardName){
+        allCards.put(cardName, (allCards.get(cardName) - amount) <= 0 ? 0 : (allCards.get(cardName) - amount));
+    }
+    public static void increaseCardAmountInShop(int amount, String cardName){
+        allCards.put(cardName, allCards.get(cardName) + amount);
     }
 
     public static int getNumberOfThisCardInShop(String cardName) {

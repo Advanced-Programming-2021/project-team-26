@@ -12,11 +12,11 @@ import java.awt.*;
 import java.io.IOException;
 
 public class AdminPanel extends MenuParent {
-
+    @FXML
     public TextField cardName;
-
+    @FXML
     public TextField decreaseAmount;
-
+    @FXML
     public TextField increaseAmount;
 
     public AdminPanel() {
@@ -29,4 +29,6 @@ public class AdminPanel extends MenuParent {
         scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
     }
+
+
 }
