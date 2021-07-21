@@ -631,6 +631,7 @@ public class GameView implements Initializable {
             case "setWinner":
                 String nickname = request.getParameter("nickname");
                 gameController.setWinner(nickname);
+                return new Response(true,"done");
         }
         return new Response(false, "method not supported");
     }

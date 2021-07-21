@@ -83,7 +83,6 @@ public class MainMenuController {
                 e.printStackTrace();
             }
         }
-        Platform.runLater(App::popMenu);
     }
 
     private void loadWaitingPage() {

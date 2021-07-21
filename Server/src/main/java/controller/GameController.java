@@ -553,7 +553,7 @@ public class GameController {
         scores[winner] = 1000;
         scores[1 - winner] = 0;
         String message = game.getUser(winner).getUsername() + " won the game" + " and the score is: " + scores[0] + "-" + scores[1];
-        Request request = new Request("", "endGame");
+        Request request = new Request("view", "endGame");
         request.addParameter("message", message);
         callers[0].sendAndReceive(request);
         callers[1].sendAndReceive(request);
@@ -647,7 +647,7 @@ public class GameController {
         scores[looser] = looserScore;
         String message = players[winner].getUsername() + " won the whole match" +
                 " with score: " + scores[0] + "-" + scores[1];
-        Request request = new Request("", "endMatch");
+        Request request = new Request("view", "endMatch");
         request.addParameter("message", message);
         callers[0].sendAndReceive(request);
         callers[1].sendAndReceive(request);
@@ -655,7 +655,7 @@ public class GameController {
     }
 
     private void closeGame() {
-        Request request = new Request("", "closeGame");
+        Request request = new Request("view", "closeGame");
         callers[0].sendAndReceive(request);
         callers[1].sendAndReceive(request);
         views[0].close();
