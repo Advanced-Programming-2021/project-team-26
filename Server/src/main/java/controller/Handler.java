@@ -113,11 +113,10 @@ public class Handler extends Thread {
             return new Response(false, "invalid token");
         }
 
-        switch (request.getMethodToCall()) {
-            case "getAndSetDataFromUser":
-                Response response = new Response(true, "");
-                response.addData("ScoreBoardControllers", ScoreBoardController.getAndSetDataFromUser());
-                return response;
+        if ("getAndSetDataFromUser".equals(request.getMethodToCall())) {
+            Response response = new Response(true, "");
+            response.addData("ScoreBoardControllers", ScoreBoardController.getAndSetDataFromUser());
+            return response;
         }
 
         return new Response(false, "method not found");

@@ -54,7 +54,6 @@ public class Scoreboard extends MenuParent implements Initializable {
         table.setItems(list);
     }
 
-
     private void customiseFactory(TableColumn<ScoreBoardController, String> cell) {
         cell.setCellFactory(column -> {
             return new TableCell<ScoreBoardController, String>() {
