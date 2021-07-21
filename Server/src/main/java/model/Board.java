@@ -45,51 +45,51 @@ public class Board {
         return spellTrapZone.size();
     }
 
-    public HashMap<Integer, MonsterController> getMonsterZoneMap() {
+    public synchronized HashMap<Integer, MonsterController> getMonsterZoneMap() {
         return monstersZone;
     }
 
-    public HashMap<Integer, SpellTrapController> getSpellTrapZoneMap() {
+    public synchronized HashMap<Integer, SpellTrapController> getSpellTrapZoneMap() {
         return spellTrapZone;
     }
 
-    public List<Card> getDeck() {
+    public synchronized List<Card> getDeck() {
         return deck;
     }
 
-    public Collection<MonsterController> getMonstersZone() {
+    public synchronized Collection<MonsterController> getMonstersZone() {
         return monstersZone.values();
     }
 
-    public MonsterController getMonsterByIndex(int index) {
+    public synchronized MonsterController getMonsterByIndex(int index) {
         if (monstersZone.containsKey(index))
             return monstersZone.get(index);
         return null;
     }
 
-    public Collection<SpellTrapController> getSpellTrapZone() {
+    public synchronized Collection<SpellTrapController> getSpellTrapZone() {
         return spellTrapZone.values();
     }
 
-    public SpellTrapController getSpellTrapByIndex(int index) {
+    public synchronized SpellTrapController getSpellTrapByIndex(int index) {
         if (spellTrapZone.containsKey(index))
             return spellTrapZone.get(index);
         return null;
     }
 
-    public List<Card> getGraveyard() {
+    public synchronized List<Card> getGraveyard() {
         return graveyard;
     }
 
-    public List<Card> getHand() {
+    public synchronized List<Card> getHand() {
         return hand;
     }
 
-    public SpellController getFieldZone() {
+    public synchronized SpellController getFieldZone() {
         return fieldZone;
     }
 
-    private void initDeck(Deck deck) {
+    private synchronized void initDeck(Deck deck) {
         ArrayList<String> mainDeck = deck.getMainDeck();
         this.deck = new ArrayList<>();
 
@@ -138,14 +138,14 @@ public class Board {
         fieldZone = null;
     }
 
-    private Board getOtherBoard() {
+    private synchronized Board getOtherBoard() {
         if (gameController.getGame().getOtherBoard() != this)
             return gameController.getGame().getOtherBoard();
         else
             return gameController.getGame().getThisBoard();
     }
 
-    private int getMyTurn() {
+    private synchronized int getMyTurn() {
         if (myTurn != -1)
             return myTurn;
         if (gameController.getGame().getBoard(0) == this)
@@ -155,7 +155,7 @@ public class Board {
         return myTurn;
     }
 
-    public Card addCardToHand() {
+    public synchronized Card addCardToHand() {
         if (this.deck.size() == 0)
             return null;
         Card addedCard = this.deck.remove(0);
@@ -165,13 +165,13 @@ public class Board {
         return addedCard;
     }
 
-    public void addCardToHand(Card card) {
+    public synchronized void addCardToHand(Card card) {
         hand.add(card);
         gameController.getViews()[getMyTurn()].moveFromDeckToHand(card);
         gameController.getViews()[1 - getMyTurn()].moveFromOpponentDeckToHand(card);
     }
 
-    public MonsterController putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {
+    public synchronized MonsterController putMonster(Monster monster, MonsterPosition position) throws MonsterNotFoundException, FullMonsterZone {
         if (!hand.contains(monster)) {
             throw new MonsterNotFoundException();
         }
@@ -188,11 +188,11 @@ public class Board {
         return monstersZone.get(lastEmpty);
     }
 
-    public void shuffleDeck() {
+    public synchronized void shuffleDeck() {
         Collections.shuffle(this.deck);
     }
 
-    public SpellTrapController putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
+    public synchronized SpellTrapController putSpellTrap(SpellTrap spellTrap, SpellTrapPosition position) throws SpellTrapNotFoundException, FullSpellTrapZone {
         if (!hand.contains(spellTrap)) {
             throw new SpellTrapNotFoundException();
         }
@@ -208,7 +208,7 @@ public class Board {
         return spellTrapZone.get(lastEmpty);
     }
 
-    public void removeMonster(int index) {
+    public synchronized void removeMonster(int index) {
         if (!monstersZone.containsKey(index))
             return;
         graveyard.add(monstersZone.get(index).getCard());
@@ -217,7 +217,7 @@ public class Board {
         monstersZone.remove(index);
     }
 
-    public void removeMonsterWithoutAddingToGraveyard(Monster monster) {
+    public synchronized void removeMonsterWithoutAddingToGraveyard(Monster monster) {
         for (Integer index : monstersZone.keySet()) {
             if (monstersZone.get(index).getMonster().equals(monster)) {
                 monstersZone.remove(index);
@@ -226,7 +226,7 @@ public class Board {
         }
     }
 
-    public void removeMonster(MonsterController monster) {
+    public synchronized void removeMonster(MonsterController monster) {
         for (Integer index : monstersZone.keySet()) {
             if (monstersZone.get(index) == monster) {
                 removeMonster(index);
@@ -235,7 +235,7 @@ public class Board {
         }
     }
 
-    public int getNumberOfMonstersINGraveyard() {
+    public synchronized int getNumberOfMonstersINGraveyard() {
         int count = 0;
         for (Card card : graveyard) {
             if (card instanceof Monster)
@@ -245,11 +245,11 @@ public class Board {
         return count;
     }
 
-    public void removeAllMonsters() {
+    public synchronized void removeAllMonsters() {
         monstersZone.clear();
     }
 
-    public void removeSpellTrap(int index) {
+    public synchronized void removeSpellTrap(int index) {
         if (!spellTrapZone.containsKey(index))
             return;
         graveyard.add(spellTrapZone.get(index).getCard());
@@ -258,7 +258,7 @@ public class Board {
         spellTrapZone.remove(index);
     }
 
-    public void removeSpellTrap(SpellTrapController spellTrap) {
+    public synchronized void removeSpellTrap(SpellTrapController spellTrap) {
         for (Integer index : spellTrapZone.keySet()) {
             if (spellTrapZone.get(index) == spellTrap) {
                 removeSpellTrap(index);
@@ -267,7 +267,7 @@ public class Board {
         }
     }
 
-    public void removeAllSpellTraps() {
+    public synchronized void removeAllSpellTraps() {
         spellTrapZone.clear();
     }
 
@@ -277,19 +277,19 @@ public class Board {
         }
     }
 
-    public int getMonsterZoneNumber() {
+    public synchronized int getMonsterZoneNumber() {
         return monstersZone.size();
     }
 
-    public boolean canDirectAttack() {
+    public synchronized boolean canDirectAttack() {
         return true;
     }
 
-    public int getSpellTrapZoneNumber() {
+    public synchronized int getSpellTrapZoneNumber() {
         return spellTrapZone.size();
     }
 
-    public SpellController putFiled(Spell spell) {
+    public synchronized SpellController putFiled(Spell spell) {
         Board otherBoard = getOtherBoard();
         otherBoard.fieldZone = null;
         this.fieldZone = SpellController.getInstance(gameController, spell, SpellTrapPosition.UP);
@@ -299,7 +299,7 @@ public class Board {
         return this.fieldZone;
     }
 
-    public Response handle(Request request) {
+    public synchronized Response handle(Request request) {
         switch (request.getParameter("function")) {
             case "getMonsterZoneMap":
                 HashMap<Integer, MonsterTransfer> map = new HashMap<>();

@@ -38,7 +38,7 @@ public class Game {
         boards[1].setGameController(gameController);
     }
 
-    public void setFinished(boolean finished) {
+    public synchronized void setFinished(boolean finished) {
         this.finished = finished;
     }
 
@@ -46,7 +46,7 @@ public class Game {
         return surrenderPlayer;
     }
 
-    public void setSurrenderPlayer(int surrenderPlayer) {
+    public synchronized void setSurrenderPlayer(int surrenderPlayer) {
         this.surrenderPlayer = surrenderPlayer;
         winner = 1 - surrenderPlayer;
         finished = true;
@@ -56,7 +56,7 @@ public class Game {
         return summonOrSetThisTurn;
     }
 
-    public void setSummonOrSetThisTurn(boolean summonOrSetThisTurn) {
+    public synchronized void setSummonOrSetThisTurn(boolean summonOrSetThisTurn) {
         this.summonOrSetThisTurn = summonOrSetThisTurn;
     }
 
@@ -97,18 +97,17 @@ public class Game {
                         break;
                 }
                 nextPhase();
-            } else
-                Print.getInstance().printGame(this);
+            }
         } else if (this.phase == Phase.END) {
             nextPhase();
         }
     }
 
-    public void standByPhase() {
+    public synchronized void standByPhase() {
         getThisBoard().standByPhase();
     }
 
-    public void drawPhase() {
+    public synchronized void drawPhase() {
         Card card = getThisBoard().addCardToHand();
         if (card == null) {
             finished = true;
@@ -119,7 +118,7 @@ public class Game {
         Print.getInstance().printMessage("new card added to the hand : " + card.getName());
     }
 
-    public void changeTurn() {
+    public synchronized void changeTurn() {
         if (firstTurn && this.turn == 0)
             firstTurn = false;
         this.turn = 1 - this.turn;
@@ -147,7 +146,7 @@ public class Game {
         Print.getInstance().printMessage("its " + getThisUser().getNickname() + "’s turn");
     }
 
-    public void temporaryChangeTurn() {
+    public synchronized void temporaryChangeTurn() {
         this.turn = 1 - this.turn;
         gameController.deselect();
         gameController.setTemporaryTurnChange(!gameController.isTemporaryTurnChange());
@@ -155,35 +154,35 @@ public class Game {
         Print.getInstance().printGame(this);
     }
 
-    public int getTurn() {
+    public synchronized int getTurn() {
         return turn;
     }
 
-    public User getUser(int turn) {
+    public synchronized User getUser(int turn) {
         return users[turn];
     }
 
-    public User getThisUser() {
+    public synchronized User getThisUser() {
         return users[turn];
     }
 
-    public User getOtherUser() {
+    public synchronized User getOtherUser() {
         return users[1 - turn];
     }
 
-    public Board getBoard(int turn) {
+    public synchronized Board getBoard(int turn) {
         return boards[turn];
     }
 
-    public Board getThisBoard() {
+    public synchronized Board getThisBoard() {
         return boards[turn];
     }
 
-    public Board getOtherBoard() {
+    public synchronized Board getOtherBoard() {
         return boards[1 - turn];
     }
 
-    public int getLifePoint(int turn) {
+    public synchronized int getLifePoint(int turn) {
         return lifePoints[turn];
     }
 
@@ -195,7 +194,7 @@ public class Game {
         return lifePoints[1 - turn];
     }
 
-    public void decreaseLifePoint(int turn, int amount) {
+    public synchronized void decreaseLifePoint(int turn, int amount) {
         lifePoints[turn] -= amount;
         gameController.getViews()[0].updateLifePoint();
         gameController.getViews()[1].updateLifePoint();
@@ -206,27 +205,27 @@ public class Game {
         }
     }
 
-    public void decreaseThisLifePoint(int amount) {
+    public synchronized void decreaseThisLifePoint(int amount) {
         decreaseLifePoint(turn, amount);
     }
 
-    public void decreaseOtherLifePoint(int amount) {
+    public synchronized void decreaseOtherLifePoint(int amount) {
         decreaseLifePoint(1 - turn, amount);
     }
 
-    public Phase getPhase() {
+    public synchronized Phase getPhase() {
         return this.phase;
     }
 
-    public int getWinner() {
+    public synchronized int getWinner() {
         return winner;
     }
 
-    public void setWinner(int winner) {
+    public synchronized void setWinner(int winner) {
         this.winner = winner;
     }
 
-    public Response handle(Request request) {
+    public synchronized Response handle(Request request) {
         switch (request.getParameter("function")){
             case "getTurn":
                 Response response = new Response(true,"");

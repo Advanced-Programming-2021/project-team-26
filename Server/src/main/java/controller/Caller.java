@@ -28,6 +28,7 @@ public class Caller {
 
     public boolean sendRequest(Request request) {
         try {
+            Logger.log("caller send:"+request.toJSON());
             dataOutputStream.writeUTF(request.toJSON());
             dataOutputStream.flush();
             return true;
@@ -40,6 +41,7 @@ public class Caller {
     public Response getResponse() {
         try {
             String responseString = dataInputStream.readUTF();
+            Logger.log("caller get:"+responseString);
             return new Gson().fromJson(responseString, Response.class);
         } catch (IOException e) {
             e.printStackTrace();

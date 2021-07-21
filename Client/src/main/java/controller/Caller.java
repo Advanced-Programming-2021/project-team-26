@@ -129,7 +129,7 @@ public class Caller extends Thread {
             case "attackAnimation":
                 int attackerMonster = Integer.parseInt(request.getParameter("attackerMonster"));
                 int defenderMonster = Integer.parseInt(request.getParameter("defenderMonster"));
-                Owner owner = Owner.valueOf(request.getParameter("owner"));
+                Owner owner = new Gson().fromJson(request.getParameter("owner"),Owner.class);
                 Platform.runLater(() -> view.attackAnimation(attackerMonster, defenderMonster, owner));
                 return new Response(true, "");
             case "updatePhase":

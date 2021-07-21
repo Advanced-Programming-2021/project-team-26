@@ -189,11 +189,11 @@ public class GameController {
 
     public String attackDirect(int attacker) {
         Request request = new Request("GameController", "attackDirect");
-        request.addParameter("index", String.valueOf(attacker));
+        request.addParameter("attacker", String.valueOf(attacker));
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess())
-            return "direct attack was successful";
+            return response.getMessage();
         else
             throw new RuntimeException(response.getMessage());
     }
@@ -207,12 +207,12 @@ public class GameController {
 
     public String attack(int attacker, int number) {
         Request request = new Request("GameController", "attack");
-        request.addParameter("index", String.valueOf(attacker));
+        request.addParameter("attacker", String.valueOf(attacker));
         request.addParameter("number", String.valueOf(number));
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess())
-            return "attack was successful";
+            return response.getMessage();
         else
             throw new RuntimeException(response.getMessage());
     }

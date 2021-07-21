@@ -125,6 +125,10 @@ public class HeadOrTailController {
         App.getStage().show();
 
         try {
+            if(starter==myTurn)
+                myTurn = 0;
+            else
+                myTurn = 1;
             new GameController(players[starter], players[1 - starter], round,myTurn).run();
         } catch (NoPlayerAvailable noPlayerAvailable) {
             noPlayerAvailable.printStackTrace();

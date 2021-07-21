@@ -8,7 +8,10 @@ import controller.SpellTrapTransfer;
 import model.cards.Card;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Board {
     private final int myTurn;
@@ -44,7 +47,11 @@ public class Board {
         Response response = NetworkController.getInstance().sendAndReceive(request);
         Type listType = new TypeToken<List<Card>>() {
         }.getType();
-        return new Gson().fromJson(response.getData("Deck"), listType);
+        List<Card> tmp = new Gson().fromJson(response.getData("Deck"), listType);
+        List<Card> deck = new ArrayList<>();
+        for(Card card:tmp)
+            deck.add(Card.getCard(card.getName()));
+        return deck;
     }
 
     public List<Card> getGraveyard() {
@@ -54,7 +61,11 @@ public class Board {
         Response response = NetworkController.getInstance().sendAndReceive(request);
         Type listType = new TypeToken<List<Card>>() {
         }.getType();
-        return new Gson().fromJson(response.getData("Graveyard"), listType);
+        List<Card> tmp = new Gson().fromJson(response.getData("Graveyard"), listType);
+        List<Card> graveyard = new ArrayList<>();
+        for(Card card:tmp)
+            graveyard.add(Card.getCard(card.getName()));
+        return graveyard;
     }
 
     public List<Card> getHand() {
@@ -64,6 +75,10 @@ public class Board {
         Response response = NetworkController.getInstance().sendAndReceive(request);
         Type listType = new TypeToken<List<Card>>() {
         }.getType();
-        return new Gson().fromJson(response.getData("Hand"), listType);
+        List<Card> tmp = new Gson().fromJson(response.getData("Hand"), listType);
+        List<Card> hand = new ArrayList<>();
+        for(Card card:tmp)
+            hand.add(Card.getCard(card.getName()));
+        return hand;
     }
 }

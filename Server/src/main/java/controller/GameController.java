@@ -1,8 +1,6 @@
 package controller;
 
 import exceptions.*;
-import fxmlController.App;
-import javafx.application.Platform;
 import model.*;
 import model.cards.Card;
 import model.cards.SpellTrap;
@@ -16,7 +14,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class GameController {
     private final int[] maxLifePoint = new int[]{0, 0};
@@ -117,12 +114,13 @@ public class GameController {
         selectedSpellTrap = null;
     }
 
-    public void nextPhase(int turn,Phase phase) {
+    public synchronized void nextPhase(int turn, Phase phase) {
+        Logger.log("turn:" + turn + " want next Phase " + phase.phaseName + "now it's " + game.getTurn());
         while (turn == game.getTurn() && game.getPhase().compareTo(phase) < 0)
             game.nextPhase();
     }
 
-    public String summon(int turn, Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
+    public synchronized String summon(int turn, Card card) throws NoCardSelectedException, CannotSummonException, ActionNotAllowed,
             MonsterNotFoundException, FullMonsterZone, AlreadySummonException, NotEnoughCardForTribute,
             InvalidSelection {
         if (turn != game.getTurn())
@@ -212,7 +210,7 @@ public class GameController {
         return "summoned successfully";
     }
 
-    public String set(int turn, Card card) throws NoCardSelectedException, CannotSetException {
+    public synchronized String set(int turn, Card card) throws NoCardSelectedException, CannotSetException {
         if (turn != game.getTurn())
             return null;
         selectedCard = card;
@@ -237,7 +235,7 @@ public class GameController {
         return "set successfully";
     }
 
-    private void setTrap() {
+    private synchronized void setTrap() {
         if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
             throw new FullSpellTrapZone();
 
@@ -249,7 +247,7 @@ public class GameController {
         views[game.getTurn()].updateMyHand();
     }
 
-    private void setSpell() {
+    private synchronized void setSpell() {
         if (game.getThisBoard().getSpellTrapZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
             throw new FullSpellTrapZone();
 
@@ -261,7 +259,7 @@ public class GameController {
         views[game.getTurn()].updateMyHand();
     }
 
-    private void setMonster(int turn) {
+    private synchronized void setMonster(int turn) {
         if (game.getThisBoard().getMonsterZoneNumber() >= Board.CARD_NUMBER_IN_ROW)
             throw new FullMonsterZone();
 
@@ -322,7 +320,7 @@ public class GameController {
         views[game.getTurn()].updateMyHand();
     }
 
-    public void setPosition(int turn, int index) {
+    public synchronized void setPosition(int turn, int index) {
         if (turn != game.getTurn())
             return;
         selectedMonster = game.getThisBoard().getMonsterByIndex(index);
@@ -357,7 +355,7 @@ public class GameController {
         views[1 - turn].updateOpponentMonsterZone();
     }
 
-    public String flipSummon(int turn, int index) {
+    public synchronized String flipSummon(int turn, int index) {
         if (turn != game.getTurn())
             return null;
         selectedMonster = game.getThisBoard().getMonsterByIndex(index);
@@ -376,7 +374,7 @@ public class GameController {
         return "flip summoned successfully";
     }
 
-    public String attackDirect(int attacker) {
+    public synchronized String attackDirect(int attacker) {
         selectedCard = game.getThisBoard().getMonsterByIndex(attacker).getCard();
         selectedMonster = game.getThisBoard().getMonsterByIndex(attacker);
         if (temporaryTurnChange)
@@ -418,7 +416,7 @@ public class GameController {
         }
     }
 
-    public String attack(int attacker, int number) {
+    public synchronized String attack(int attacker, int number) {
         selectedCard = game.getThisBoard().getMonsterByIndex(attacker).getCard();
         selectedMonster = game.getThisBoard().getMonsterByIndex(attacker);
         if (temporaryTurnChange)
@@ -449,21 +447,11 @@ public class GameController {
         getViews()[game.getTurn()].attackAnimation(attacker, number, Owner.Me);
         getViews()[1 - game.getTurn()].attackAnimation(attacker, number, Owner.Opponent);
 
-        Timer timer = new Timer();
-        AttackResult finalAttackResult = attackResult;
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    if (finalAttackResult.isRemoveOpCard())
-                        toBeAttacked.remove(selectedMonster);
-                    if (finalAttackResult.isRemoveMyCard())
-                        selectedMonster.remove(toBeAttacked);
-
-                    updateViewsGameBoard();
-                });
-            }
-        }, 1440);
+        if (attackResult.isRemoveOpCard())
+            toBeAttacked.remove(selectedMonster);
+        if (attackResult.isRemoveMyCard())
+            selectedMonster.remove(toBeAttacked);
+        updateViewsGameBoard();
 
         game.decreaseThisLifePoint(attackResult.getMyLPDecrease());
         game.decreaseOtherLifePoint(attackResult.getOpLPDecrease());
@@ -472,7 +460,7 @@ public class GameController {
         return attackResult.getMessage();
     }
 
-    public String activateEffect(int turn, Card card, CardAddress address) {
+    public synchronized String activateEffect(int turn, Card card, CardAddress address) {
         if (turn != game.getTurn())
             return null;
         selectedCard = card;
@@ -524,7 +512,7 @@ public class GameController {
         return "spell activated";
     }
 
-    private void activateEffectOnOpponentTurn() {
+    private synchronized void activateEffectOnOpponentTurn() {
         if (selectedCard == null)
             throw new NoCardSelectedException();
 
@@ -554,7 +542,7 @@ public class GameController {
         deselect();
     }
 
-    public void surrender(int turn) {
+    public synchronized void surrender(int turn) {
         game.setSurrenderPlayer(turn);
         endGame();
     }

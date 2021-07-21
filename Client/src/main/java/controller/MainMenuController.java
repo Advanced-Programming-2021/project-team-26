@@ -31,6 +31,7 @@ public class MainMenuController {
 
     public static void stopWaiting(ActionEvent actionEvent) {
         cancelGame = true;
+        Platform.runLater(() -> App.popMenu());
     }
 
     public void creatNewGameWithAI(Integer round) {
@@ -77,6 +78,7 @@ public class MainMenuController {
             if (response.isSuccess()) {
                 User first = Database.getInstance().getCurrentUser();
                 User second = new Gson().fromJson(response.getData("user"), User.class);
+                stopWaiting(null);
                 Platform.runLater(() -> new HeadOrTailController(first, second, round, turn).run());
                 break;
             }
