@@ -388,6 +388,14 @@ public class Database {
         return loggedInUsers.containsKey(token);
     }
 
+    public boolean isUserLoggedIn(User wantedUser){
+        for(User user:loggedInUsers.values()){
+            if(user.getUsername().equals(wantedUser.getUsername()))
+                return true;
+        }
+        return false;
+    }
+
     public void removeLoggedInUser(String token) {
         loggedInUsers.remove(token);
     }

@@ -33,7 +33,7 @@ public class ScoreBoardController {
         ArrayList<User> users = sortUsersBasedScore();
         int counter = 1;
         for (User user : users) {
-            scoreBoardControllers.add(new ScoreBoardController(counter, user.getUsername(), user.getScore(), Database.getInstance().isUserLoggedIn()));
+            scoreBoardControllers.add(new ScoreBoardController(counter, user.getUsername(), user.getScore(), Database.getInstance().isUserLoggedIn(user)));
             counter++;
         }
         return scoreBoardControllers;

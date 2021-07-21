@@ -5,18 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import fxmlController.CardImageView;
 import fxmlController.Size;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -29,94 +22,21 @@ import model.cards.spell.Spell;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
-public class GameView implements Initializable {
+public class GameView {
 
-    public static final String OPPONENT_PHASE_STYLE = "-fx-background-color: #e01313;";
-    public static final String OPPONENT_CURRENT_PHASE_STYLE = "-fx-background-color: #e01313;-fx-border-color: #570000; -fx-border-width: 5";
     private final ArrayList<CardImageView> myMonsters = new ArrayList<>();
     private final ArrayList<CardImageView> mySpellTraps = new ArrayList<>();
     private final ArrayList<CardImageView> oppMonsters = new ArrayList<>();
-    private final ArrayList<CardImageView> oppSpellTraps = new ArrayList<>();
     private final GameController gameController;
     private final int turn;
     private final Handler handler;
-    public Button drawPhaseBut;
-    public Button standbyPhaseBut;
-    public Button mainPhase1But;
-    public Button battlePhaseBut;
-    public Button mainPhase2But;
-    public Button endPhaseBut;
     public ImageView myGraveyard;
     public ImageView oppGraveyard;
     public ImageView field;
 
-    @FXML
-    private AnchorPane root;
-
-    @FXML
-    private CardImageView opoSpellTrap4;
-
-    @FXML
-    private CardImageView opoSpellTrap2;
-
-    @FXML
-    private CardImageView opoSpellTrap1;
-
-    @FXML
-    private CardImageView opoSpellTrap3;
-
-    @FXML
-    private CardImageView opoSpellTrap5;
-
-    @FXML
-    private CardImageView oppMonster5;
-
-    @FXML
-    private CardImageView oppMonster3;
-
-    @FXML
-    private CardImageView oppMonster1;
-
-    @FXML
-    private CardImageView oppMonster2;
-
-    @FXML
-    private CardImageView oppMonster4;
-
-    @FXML
-    private CardImageView myMonster5;
-
-    @FXML
-    private CardImageView myMonster3;
-
-    @FXML
-    private CardImageView myMonster1;
-
-    @FXML
-    private CardImageView myMonster2;
-
-    @FXML
-    private CardImageView myMonster4;
-
-    @FXML
-    private CardImageView mySpellTrap5;
-
-    @FXML
-    private CardImageView mySpellTrap3;
-
-    @FXML
-    private CardImageView mySpellTrap1;
-
-    @FXML
-    private CardImageView mySpellTrap2;
-
-    @FXML
-    private CardImageView mySpellTrap4;
 
     @FXML
     private ProgressBar opponentLPProgress;
@@ -170,70 +90,6 @@ public class GameView implements Initializable {
         caller.sendAndReceive(new Request("view", "updatePhase"));
     }
 
-    private void setButtonActivity(Button button, EventHandler<ActionEvent> e, boolean active) {
-        if (active) {
-            button.setOnAction(e);
-            button.setCursor(Cursor.HAND);
-        } else {
-            button.setOnAction(null);
-            button.setCursor(Cursor.DEFAULT);
-        }
-    }
-
-    private void updatePhaseOpponent() {
-        standbyPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-        drawPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-        mainPhase1But.setStyle(OPPONENT_PHASE_STYLE);
-        battlePhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-        mainPhase2But.setStyle(OPPONENT_PHASE_STYLE);
-        endPhaseBut.setStyle(OPPONENT_PHASE_STYLE);
-
-        setButtonActivity(standbyPhaseBut, null, false);
-        setButtonActivity(drawPhaseBut, null, false);
-        setButtonActivity(mainPhase1But, null, false);
-        setButtonActivity(battlePhaseBut, null, false);
-        setButtonActivity(mainPhase2But, null, false);
-        setButtonActivity(endPhaseBut, null, false);
-
-        switch (gameController.getGame().getPhase()) {
-            case DRAW:
-                drawPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case STANDBY:
-                standbyPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case MAIN1:
-                mainPhase1But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case BATTLE:
-                battlePhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case MAIN2:
-                mainPhase2But.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-            case END:
-                endPhaseBut.setStyle(OPPONENT_CURRENT_PHASE_STYLE);
-                break;
-        }
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        myLP.setText(String.valueOf(gameController.getGame().getLifePoint(turn)));
-        myNickname.setText(gameController.getGame().getUser(turn).getNickname());
-        myProfile.setImage(gameController.getGame().getUser(turn).getProfileImage());
-        myUsername.setText(gameController.getGame().getUser(turn).getUsername());
-
-        opponentLP.setText(String.valueOf(gameController.getGame().getLifePoint(1 - turn)));
-        opponentNickname.setText(gameController.getGame().getUser(1 - turn).getNickname());
-        opponentProfile.setImage(gameController.getGame().getUser(1 - turn).getProfileImage());
-        opponentUsername.setText(gameController.getGame().getUser(1 - turn).getUsername());
-        oppGraveyard.setRotate(180);
-        initField();
-        intiFieldClick();
-        setMyGraveyardOnClick();
-        setOppGraveyardOnClick();
-    }
 
     private void setOppGraveyardOnClick() {
         oppGraveyard.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -391,41 +247,6 @@ public class GameView implements Initializable {
         caller.sendAndReceive(request);
     }
 
-    private void initField() {
-        myMonsters.add(myMonster1);
-        myMonsters.add(myMonster2);
-        myMonsters.add(myMonster3);
-        myMonsters.add(myMonster4);
-        myMonsters.add(myMonster5);
-
-        mySpellTraps.add(mySpellTrap1);
-        mySpellTraps.add(mySpellTrap2);
-        mySpellTraps.add(mySpellTrap3);
-        mySpellTraps.add(mySpellTrap4);
-        mySpellTraps.add(mySpellTrap5);
-
-        oppMonsters.add(oppMonster1);
-        oppMonsters.add(oppMonster2);
-        oppMonsters.add(oppMonster3);
-        oppMonsters.add(oppMonster4);
-        oppMonsters.add(oppMonster5);
-
-        oppSpellTraps.add(opoSpellTrap1);
-        oppSpellTraps.add(opoSpellTrap2);
-        oppSpellTraps.add(opoSpellTrap3);
-        oppSpellTraps.add(opoSpellTrap4);
-        oppSpellTraps.add(opoSpellTrap5);
-
-        for (CardImageView imageView : myMonsters)
-            imageView.setGameView(null);
-        for (CardImageView imageView : mySpellTraps)
-            imageView.setGameView(null);
-        for (CardImageView imageView : oppMonsters)
-            imageView.setGameView(null);
-        for (CardImageView imageView : oppSpellTraps)
-            imageView.setGameView(null);
-    }
-
 
     public void moveFromDeckToHand(Card card) {
         Request request = new Request("view", "moveFromDeckToHand");
@@ -500,7 +321,7 @@ public class GameView implements Initializable {
             }.getType();
             ArrayList<Card> tmp = new Gson().fromJson(response.getData("selected"), cardListType);
             ArrayList<Card> selected = new ArrayList<>();
-            for(Card card:tmp)
+            for (Card card : tmp)
                 selected.add(Card.getCard(card.getName()));
             return selected;
         }
@@ -508,22 +329,22 @@ public class GameView implements Initializable {
 
     public Boolean ask(String message) {
         Request request = new Request("view", "getCardInput");
-        request.addParameter("message",message);
+        request.addParameter("message", message);
 
         Response response = caller.sendAndReceive(request);
-        if(!response.isSuccess())
+        if (!response.isSuccess())
             return false;
         else {
-            return new Gson().fromJson(response.getData("result"),Boolean.class);
+            return new Gson().fromJson(response.getData("result"), Boolean.class);
         }
     }
 
 
     public String getString(String message) {
-        Request request = new Request("view","getString");
-        request.addParameter("message",message);
+        Request request = new Request("view", "getString");
+        request.addParameter("message", message);
         Response response = caller.sendAndReceive(request);
-        if(response.isSuccess())
+        if (response.isSuccess())
             return response.getData("result");
         else
             return "";
@@ -595,9 +416,9 @@ public class GameView implements Initializable {
                     return new Response(false, e.getMessage());
                 }
             case "nextPhase":
-                Phase phase = new Gson().fromJson(request.getParameter("phase"),Phase.class);
-                gameController.nextPhase(turn,phase);
-                return new Response(true,"");
+                Phase phase = new Gson().fromJson(request.getParameter("phase"), Phase.class);
+                gameController.nextPhase(turn, phase);
+                return new Response(true, "");
             case "Board":
                 int wantedTurn = Integer.parseInt(request.getParameter("turn"));
                 Board board = gameController.getGame().getBoard(wantedTurn);
@@ -618,7 +439,7 @@ public class GameView implements Initializable {
             case "setWinner":
                 String nickname = request.getParameter("nickname");
                 gameController.setWinner(nickname);
-                return new Response(true,"done");
+                return new Response(true, "done");
         }
         return new Response(false, "method not supported");
     }
