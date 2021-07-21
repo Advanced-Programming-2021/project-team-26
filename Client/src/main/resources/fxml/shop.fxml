@@ -24,7 +24,7 @@
             <RowConstraints />
          </rowConstraints>
       </GridPane>
-      <Button layoutX="956.0" layoutY="2.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Admin Panel" textFill="#141022">
+      <Button onAction="#openAdminPanel" layoutX="956.0" layoutY="2.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Admin Panel" textFill="#141022">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>

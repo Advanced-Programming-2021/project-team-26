@@ -5,6 +5,7 @@ import fxmlController.App;
 import fxmlController.CardInfoInShop;
 import fxmlController.MenuParent;
 import fxmlController.Size;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,6 +42,10 @@ public class Shop extends MenuParent implements Initializable {
         AnchorPane root = (AnchorPane) GetFXML.getFXML("shop");
         this.scene = new Scene(root, Size.MAIN_WIDTH.getValue(), Size.MAIN_HEIGHT.getValue());
         App.pushMenu(this);
+    }
+
+    public void openAdminPanel(ActionEvent event) throws IOException {
+        new AdminPanel().run();
     }
 
     @Override
