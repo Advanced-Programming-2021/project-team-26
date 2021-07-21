@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 
 public class CardInfoInShop extends MenuParent implements Initializable {
+    public Button sellCard;
     ShopController shopController = new ShopController();
 
     @FXML
@@ -45,22 +46,6 @@ public class CardInfoInShop extends MenuParent implements Initializable {
 
     @FXML
     void buyCard(ActionEvent event) {
-        if (Shop.getCurrentCard().getPrice() > shopController.getUserBalance()){
-            Alert.getInstance().errorPrint("Not enough money");
-            buyCard.setDisable(true);
-        }
-        try {
-            shopController.buyCard(Shop.getCurrentCard());
-        } catch (Exception e) {
-            Alert.getInstance().errorPrint(e.getMessage());
-        }
-        setBalance(shopController.getUserBalance());
-        setCardPrice(shopController.getPrice(Shop.getCurrentCard().getName()));
-        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInShop(Shop.getCurrentCard().getName()));
-    }
-
-    @FXML
-    void sellCard(ActionEvent event) {
         if (Shop.getCurrentCard().getPrice() > shopController.getUserBalance()){
             Alert.getInstance().errorPrint("Not enough money");
             buyCard.setDisable(true);
@@ -113,4 +98,14 @@ public class CardInfoInShop extends MenuParent implements Initializable {
         cardPrice.setText(String.valueOf(price));
     }
 
+    public void sellCard(ActionEvent actionEvent) {
+        try {
+            shopController.sellCard(Shop.getCurrentCard());
+        } catch (Exception e) {
+            Alert.getInstance().errorPrint(e.getMessage());
+        }
+        setBalance(shopController.getUserBalance());
+        setCardPrice(shopController.getPrice(Shop.getCurrentCard().getName()));
+        setNumberOfThisCardInAllCards(shopController.getNumberOfThisCardInShop(Shop.getCurrentCard().getName()));
+    }
 }

@@ -136,7 +136,14 @@ public class Handler extends Thread {
                 } catch (Exception e) {
                     return new Response(false, e.getMessage());
                 }
-
+            case "sellCard":
+                try {
+                    Card card = Card.getCard(request.getParameter("card"));
+                    boolean success = ShopController.sellCard(user, card);
+                    return new Response(success, "");
+                } catch (Exception e) {
+                    return new Response(false, e.getMessage());
+                }
             case "getNumberOfThisCardInShop":
                 String cardName = request.getParameter("cardName");
                 Response response = new Response(true, "");
@@ -186,7 +193,7 @@ public class Handler extends Thread {
                     WaitingGame getWaitingGame = Database.getInstance().findMatch(waitingGame);
                     if (getWaitingGame == null)
                         return new Response(false, "not found yet");
-                    else{
+                    else {
                         Response response = new Response(true, "found");
                         response.addData("user", getWaitingGame.handler.user);
                         response.addData("turn", 0);

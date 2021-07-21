@@ -3,6 +3,7 @@ package controller;
 import exceptions.InvalidInput;
 import model.Request;
 import model.Response;
+import model.User;
 import model.cards.Card;
 import view.Scan;
 
@@ -10,6 +11,15 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 
 public class ShopController {
+    public boolean sellCard(Card card) throws Exception {
+        Request request = new Request("ShopController", "sellCard");
+        request.addParameter("card", card.getName());
+        Response response = NetworkController.getInstance().sendAndReceive(request);
+
+        if (response.isSuccess()) return true;
+        throw new RuntimeException(response.getMessage());
+    }
+
     public boolean buyCard(Card card) throws Exception {
         Request request = new Request("ShopController", "buyCard");
         request.addParameter("card", card.getName());
