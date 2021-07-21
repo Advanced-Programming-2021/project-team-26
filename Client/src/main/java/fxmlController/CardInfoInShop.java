@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 
 public class CardInfoInShop extends MenuParent implements Initializable {
+    public Button sellCard;
     ShopController shopController = new ShopController();
 
     @FXML
@@ -95,5 +96,9 @@ public class CardInfoInShop extends MenuParent implements Initializable {
 
     private void setCardPrice(int price) {
         cardPrice.setText(String.valueOf(price));
+    }
+
+    public void sellCard(ActionEvent actionEvent) {
+
     }
 }
