@@ -6,6 +6,7 @@ import controller.MainMenuController;
 import controller.UserController;
 import fxmlController.*;
 import fxmlController.Children.ImportExport.ImpExpMain;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -149,5 +150,10 @@ public class MainMenu extends MenuParent {
     public void logout() {
 //        if (App.isAreSoundsActive()) buttonClick.play();
         Alert.getInstance().successfulPrint(UserController.getInstance().logout());
+    }
+
+    public void openTv(ActionEvent event) throws IOException {
+        //        if (App.isAreSoundsActive()) buttonClick.play();
+        new Tv().run();
     }
 }
