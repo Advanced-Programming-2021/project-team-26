@@ -26,7 +26,7 @@ public class NetworkController {
 
     public static void setupClient() {
         try {
-            Socket socket = new Socket("6.tcp.ngrok.io", 16142);
+            Socket socket = new Socket("localhost", 8888);
             dataInputStream = new DataInputStream(socket.getInputStream());
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {

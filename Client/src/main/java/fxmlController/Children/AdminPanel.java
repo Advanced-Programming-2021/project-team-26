@@ -32,13 +32,17 @@ public class AdminPanel extends MenuParent {
 
 
     public void increaseInventory(ActionEvent event) {
+        int amount = Integer.parseInt(increaseAmount.getText());
 
     }
 
     public void decreaseInventory(ActionEvent event) {
+        int amount = Integer.parseInt(decreaseAmount.getText());
+
     }
 
     public void disableBuying(ActionEvent event) {
+
     }
 
     public void disableSelling(ActionEvent event) {
