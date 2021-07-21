@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.effect.Reflection?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxmlController.Scoreboard">
-   <children>
-      <TableView fx:id="table" layoutX="344.0" layoutY="29.0" prefHeight="380.0" prefWidth="312.0" style="-fx-background-color: yellow;">
-        <columns>
-          <TableColumn fx:id="rank" editable="false" prefWidth="75.0" sortable="false" text="Rank" />
-          <TableColumn fx:id="name" editable="false" prefWidth="75.0" sortable="false" text="Name" />
-            <TableColumn fx:id="score" editable="false" prefWidth="75.0" sortable="false" text="Score" />
-            <TableColumn fx:id="isOnline" editable="false" prefWidth="75.0" sortable="false" text="IsOnline" />
-        </columns>
-      </TableView>
-      <ImageView fitHeight="140.0" fitWidth="200.0" layoutX="794.0" layoutY="182.0">
-         <image>
-            <Image url="@../Assets/Arts/MBB_007038.dds.png" />
-         </image>
-         <effect>
-            <Reflection />
-         </effect>
-      </ImageView>
-      <ImageView fitHeight="299.0" fitWidth="523.0" layoutX="-18.0" layoutY="99.0">
-         <image>
-            <Image url="@../Assets/Arts/MBB_006990.dds.png" />
-         </image>
-         <effect>
-            <Reflection />
-         </effect>
-      </ImageView>
-   </children>
+<AnchorPane prefHeight="600.0" prefWidth="1070.0" style="-fx-background-color: black;"
+            xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="fxmlController.Scoreboard">
+    <children>
+        <TableView fx:id="table" layoutX="344.0" layoutY="29.0" prefHeight="380.0" prefWidth="312.0"
+                   style="-fx-background-color: yellow;">
+            <columns>
+                <TableColumn fx:id="rank" editable="false" prefWidth="75.0" sortable="false" text="Rank"/>
+                <TableColumn fx:id="name" editable="false" prefWidth="75.0" sortable="false" text="Name"/>
+                <TableColumn fx:id="score" editable="false" prefWidth="75.0" sortable="false" text="Score"/>
+                <TableColumn fx:id="isOnline" editable="false" prefWidth="75.0" sortable="false" text="IsOnline"/>
+            </columns>
+        </TableView>
+        <ImageView fitHeight="140.0" fitWidth="200.0" layoutX="794.0" layoutY="182.0">
+            <image>
+                <Image url="@../Assets/Arts/MBB_007038.dds.png"/>
+            </image>
+            <effect>
+                <Reflection/>
+            </effect>
+        </ImageView>
+        <ImageView fitHeight="299.0" fitWidth="523.0" layoutX="-18.0" layoutY="99.0">
+            <image>
+                <Image url="@../Assets/Arts/MBB_006990.dds.png"/>
+            </image>
+            <effect>
+                <Reflection/>
+            </effect>
+        </ImageView>
+    </children>
 </AnchorPane>
