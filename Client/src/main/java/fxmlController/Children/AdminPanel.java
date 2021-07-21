@@ -7,16 +7,14 @@ import fxmlController.Size;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 
 import java.awt.*;
 import java.io.IOException;
 
 public class AdminPanel extends MenuParent {
-    @FXML
     public TextField cardName;
-    @FXML
     public TextField decreaseAmount;
-    @FXML
     public TextField increaseAmount;
 
     public AdminPanel() {
