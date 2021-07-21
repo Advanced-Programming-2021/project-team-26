@@ -193,7 +193,7 @@ public class GameController {
 
         Response response = NetworkController.getInstance().sendAndReceive(request);
         if (response.isSuccess())
-            return "direct attack was successful";
+            return response.getMessage();
         else
             throw new RuntimeException(response.getMessage());
     }
